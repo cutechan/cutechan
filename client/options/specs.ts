@@ -65,7 +65,7 @@ export const specs: { [id: string]: OptionSpec } = {
 	},
 	// Desktop Notifications
 	notification: {
-		default: true,
+		default: false,
 		exec(enabled: boolean) {
 			const req = enabled
 				&& typeof Notification === "function"
