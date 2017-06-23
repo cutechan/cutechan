@@ -26,3 +26,4 @@ go/src/meguca/imager/images
 db.db
 easyjson-bootstrap*.go
 /package-lock.json
+tags
