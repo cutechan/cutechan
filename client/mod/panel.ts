@@ -4,7 +4,7 @@ import { Post } from "../posts"
 import { getModel } from "../state"
 
 let panel: ModPanel,
-	displayCheckboxes = localStorage.getItem("hideModCheckboxes") !== "true",
+	displayCheckboxes = localStorage.getItem("showModCheckboxes") === "true",
 	checkboxStyler: (toggle: boolean) => void
 
 // Moderation panel with various post moderation and other controls
@@ -41,12 +41,10 @@ export default class ModPanel extends View<null> {
 				this.setVisibility((event.target as HTMLInputElement).checked),
 			{ passive: true },
 		)
-
-		this.setVisibility(displayCheckboxes)
 	}
 
 	private setVisibility(on: boolean) {
-		localStorage.setItem("hideModCheckboxes", (!on).toString())
+		localStorage.setItem("showModCheckboxes", on.toString())
 		this.setSlideOut(on)
 		checkboxStyler(on)
 	}

@@ -347,7 +347,7 @@
 									<br>
 								</div>
 							{% endif %}
-							<input type="checkbox" name="showCheckboxes">
+							<input type="checkbox" name="showCheckboxes" title="Show mod checkboxes">
 							<select name="action">
 								{% code ids := append(make([]string, 0, 5), "deletePost", "deleteImage", "spoilerImage") %}
 								{% if pos >= auth.Moderator %}
