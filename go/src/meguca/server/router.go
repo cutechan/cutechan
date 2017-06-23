@@ -80,7 +80,7 @@ func createRouter() http.Handler {
 		// Artificially set board to "all"
 		r = r.WithContext(context.WithValue(
 			r.Context(),
-			httptreemux.ParamsContextKey,
+			0,
 			map[string]string{
 				"board": "all",
 			},
