@@ -24,6 +24,9 @@ func configurationTable(v reflect.Value, key string, needCaptcha bool) string {
 	// Assign values to all specs
 	for i, s := range withValues {
 		v := v.FieldByName(strings.Title(s.ID))
+		if !v.IsValid() {
+			continue
+		}
 		switch k := v.Kind(); k {
 		case reflect.Uint8, reflect.Uint16:
 			v = v.Convert(reflect.TypeOf(uint(0)))
