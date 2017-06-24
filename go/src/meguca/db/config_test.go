@@ -9,7 +9,7 @@ import (
 
 func TestLoadConfigs(t *testing.T) {
 	config.Clear()
-	assertExec(t, `UPDATE main SET val = '{"mature":true}' WHERE id = 'config'`)
+	assertExec(t, `UPDATE main SET val = '{"captcha":true}' WHERE id = 'config'`)
 
 	if err := loadConfigs(); err != nil {
 		t.Fatal(err)
@@ -17,7 +17,7 @@ func TestLoadConfigs(t *testing.T) {
 
 	AssertDeepEquals(t, config.Get(), &config.Configs{
 		Public: config.Public{
-			Mature: true,
+			Captcha: true,
 		},
 	})
 }
@@ -27,10 +27,10 @@ func TestUpdateConfigs(t *testing.T) {
 
 	std := config.Configs{
 		Public: config.Public{
-			Mature: true,
+			Captcha: true,
 		},
 	}
-	if err := updateConfigs(`{"mature":true}`); err != nil {
+	if err := updateConfigs(`{"captcha":true}`); err != nil {
 		t.Fatal(err)
 	}
 	AssertDeepEquals(t, config.Get(), &std)

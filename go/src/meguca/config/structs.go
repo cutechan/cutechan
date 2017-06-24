@@ -15,14 +15,11 @@ type Configs struct {
 	SessionExpiry uint   `json:"sessionExpiry"`
 	RootURL       string `json:"rootURL"`
 	Salt          string `json:"salt"`
-	FeedbackEmail string `json:"feedbackEmail"`
-	FAQ           string
 }
 
 // Public contains configurations exposeable through public availability APIs
 type Public struct {
 	Captcha           bool              `json:"captcha"`
-	Mature            bool              `json:"mature"`
 	DisableUserBoards bool              `json:"disableUserBoards"`
 	PruneThreads      bool              `json:"pruneThreads"`
 	ThreadExpiryMin   uint              `json:"threadExpiryMin"`
@@ -30,7 +27,6 @@ type Public struct {
 	DefaultLang       string            `json:"defaultLang"`
 	DefaultCSS        string            `json:"defaultCSS"`
 	ImageRootOverride string            `json:"imageRootOverride"`
-	Links             map[string]string `json:"links"`
 }
 
 // BoardConfigs stores board-specific configuration

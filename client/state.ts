@@ -8,7 +8,6 @@ import { send } from './connection'
 // Server-wide global configurations
 interface Configs {
 	captcha: boolean
-	mature: boolean // Website intended for mature audiences
 	disableUserBoards: boolean
 	pruneThreads: boolean
 	threadExpiryMin: number
@@ -16,7 +15,6 @@ interface Configs {
 	defaultLang: string
 	defaultCSS: string
 	imageRootOverride: string
-	links: { [key: string]: string }
 }
 
 // Board-specific configurations

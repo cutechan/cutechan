@@ -85,6 +85,9 @@ test:
 test_no_race:
 	go test -p 1 meguca/...
 
+test_clean:
+	rm -rf go/multipart-*
+
 upgrade_v4: generate
 	go get -v github.com/dancannon/gorethink
 	$(MAKE) -C scripts/migration/3to4 upgrade

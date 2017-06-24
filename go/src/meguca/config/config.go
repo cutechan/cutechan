@@ -45,20 +45,18 @@ var (
 	Defaults = Configs{
 		BoardExpiry:   7,
 		JPEGQuality:   90,
-		MaxSize:       5,
-		MaxHeight:     6000,
-		MaxWidth:      6000,
+		MaxSize:       10,
+		MaxHeight:     12000,
+		MaxWidth:      12000,
 		SessionExpiry: 30,
 		Salt:          "LALALALALALALALALALALALALALALALALALALALA",
-		FeedbackEmail: "admin@email.com",
 		RootURL:       "http://localhost",
-		FAQ:           defaultFAQ,
 		Public: Public{
-			DefaultCSS:      "moe",
-			DefaultLang:     "ru_RU",
-			ThreadExpiryMin: 7,
-			ThreadExpiryMax: 14,
-			Links:           map[string]string{"4chan": "http://www.4chan.org/"},
+			DisableUserBoards: true,
+			DefaultLang:       "ru_RU",
+			DefaultCSS:        "tea",
+			ThreadExpiryMin:   7,
+			ThreadExpiryMax:   14,
 		},
 	}
 
@@ -72,15 +70,6 @@ var (
 		"Anta baka?",
 	}
 )
-
-// Default string for the FAQ panel
-const defaultFAQ = `Supported upload file types are JPEG, PNG, APNG, WEBM, MP3, MP4, OGG, PDF, ZIP, 7Z, TAR.GZ and TAR.XZ.
-Encase text in ** to spoiler and in ` + "``" + ` to highlight programing code syntax.
-<hr>Hash commands:
-#d100 #2d100 - Roll dice
-#flip - Coin flip
-#8ball - An 8ball
-#sw24:30 #sw2:24:30 #sw24:30+30 #sw24:30-30 - "Syncwatch" synchronized time counter`
 
 // Generate /all/ board configs
 func init() {

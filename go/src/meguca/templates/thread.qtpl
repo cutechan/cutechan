@@ -20,11 +20,6 @@
 		{%= submit(true) %}
 	</form>
 	<span class="aside-container top-margin">
-		<span class="act" id="top">
-			<a href="#bottom">
-				{%s= ln.UI["bottom"] %}
-			</a>
-		</span>
 		<span class="act">
 			<a href=".">
 				{%s= ln.UI["return"] %}
@@ -61,11 +56,6 @@
 		<span class="act">
 			<a href="catalog">
 				{%s= ln.UI["catalog"] %}
-			</a>
-		</span>
-		<span class="act">
-			<a href="#top">
-				{%s= ln.UI["top"] %}
 			</a>
 		</span>
 		{% if !abbrev %}

@@ -1,4 +1,4 @@
-import { config, boards, posts } from '../../state'
+import { posts } from '../../state'
 import { renderPostLink, renderTempLink } from './etc'
 import { PostData, PostLink, TextState } from '../../common'
 import { escape, makeAttrs } from '../../util'
@@ -227,15 +227,6 @@ function parseFragment(frag: string, data: PostData): string {
                 if (m) {
                     html += parsePostLink(m, data.links)
                     matched = true
-                    break
-                }
-
-                // Internal and custom reference URLs
-                m = word.match(/^>>>(>*)\/(\w+)\/$/)
-                if (m) {
-                    html += parseReference(m)
-                    matched = true
-                    break
                 }
                 break
             case "#": // Hash commands
@@ -243,7 +234,6 @@ function parseFragment(frag: string, data: PostData): string {
                 if (m) {
                     html += parseCommand(m[1], data)
                     matched = true
-                    break
                 }
                 break
             default:
@@ -254,7 +244,6 @@ function parseFragment(frag: string, data: PostData): string {
                 if (pre && word.startsWith(pre)) {
                     html += parseURL(word)
                     matched = true
-                    break
                 }
         }
 
@@ -286,19 +275,6 @@ function parsePostLink(m: string[], links: PostLink[]): string {
         return m[0]
     }
     return m[1] + renderPostLink(id, op)
-}
-
-// Parse internal or customly set reference URL
-function parseReference(m: string[]): string {
-    let href: string
-    if (boards.includes(m[2])) {
-        href = `/${m[2]}/`
-    } else if (m[2] in config.links) {
-        href = config.links[m[2]]
-    } else {
-        return m[0]
-    }
-    return m[1] + newTabLink(href, `>>>/${m[2]}/`)
 }
 
 // Render and anchor link that opens in a new tab

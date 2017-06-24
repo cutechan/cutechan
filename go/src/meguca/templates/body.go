@@ -1,10 +1,8 @@
 package templates
 
 import (
-	"fmt"
 	"html"
 	"meguca/common"
-	"meguca/config"
 	"meguca/util"
 	"net/url"
 	"regexp"
@@ -23,7 +21,6 @@ const (
 
 var (
 	linkRegexp      = regexp.MustCompile(`^>>(>*)(\d+)$`)
-	referenceRegexp = regexp.MustCompile(`^>>>(>*)\/(\w+)\/$`)
 
 	providers = map[int]string{
 		youTube:    "Youtube",
@@ -224,10 +221,6 @@ func (c *bodyContext) parseFragment(frag string) {
 				// Post links
 				c.parsePostLink(m)
 				goto end
-			} else if m := referenceRegexp.FindStringSubmatch(word); m != nil {
-				// Internal and custom reference URLs
-				c.parseReference(m)
-				goto end
 			}
 		case '#': // Hash commands
 			if m := common.CommandRegexp.FindStringSubmatch(word); m != nil {
@@ -277,26 +270,6 @@ func (c *bodyContext) parsePostLink(m []string) {
 		c.string(m[1])
 	}
 	streampostLink(&c.Writer, id, op != c.OP, c.index)
-}
-
-// Parse internal or customly set reference URL
-func (c *bodyContext) parseReference(m []string) {
-	var (
-		m2   = string(m[2])
-		href string
-	)
-	if config.IsBoard(m2) {
-		href = fmt.Sprintf("/%s/", m2)
-	} else if href = config.Get().Links[m2]; href != "" {
-	} else {
-		c.string(m[0])
-		return
-	}
-
-	if len(m[1]) != 0 {
-		c.string(m[1])
-	}
-	c.newTabLink(href, fmt.Sprintf(">>>/%s/", string(m[2])))
 }
 
 // Format and anchor link that opens in a new tab

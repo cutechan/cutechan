@@ -151,7 +151,6 @@ var specs = map[string][]inputSpec{
 		},
 	},
 	"configureServer": {
-		{ID: "mature"},
 		{ID: "disableUserBoards"},
 		{ID: "pruneThreads"},
 		{
@@ -193,10 +192,6 @@ var specs = map[string][]inputSpec{
 			Required: true,
 		},
 		{
-			ID:   "feedbackEmail",
-			Type: _string,
-		},
-		{
 			ID:      "defaultLang",
 			Type:    _select,
 			Options: common.Langs,
@@ -231,15 +226,6 @@ var specs = map[string][]inputSpec{
 			Min:      1,
 			Required: true,
 			Max:      100,
-		},
-		{
-			ID:   "FAQ",
-			Type: _textarea,
-			Rows: 5,
-		},
-		{
-			ID:   "links",
-			Type: _map,
 		},
 	},
 }

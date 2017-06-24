@@ -1,4 +1,3 @@
-export * from "./banner"
 export { default as FormView } from "./forms"
 export { postAdded } from "./tab"
 export { default as notifyAboutReply, OverlayNotification } from "./notification"

@@ -1,9 +1,5 @@
 {
 	"forms": {
-		"FAQ": [
-			"Information panel text",
-			"Entries for the banner's Frequently Asked Questions list and information modal"
-		],
 		"JPEGQuality": [
 			"JPEG thumbnail quality",
 			"Quality of image JPEG thumbnails"
@@ -84,10 +80,6 @@
 			"Export",
 			"Export options to file"
 		],
-		"feedbackEmail": [
-			"Feedback email",
-			"User feedback email to display in the top banner"
-		],
 		"forcedAnon": [
 			"Forced Anonymous",
 			"Disable user names, tripcodes and emails on posts"
@@ -152,10 +144,6 @@
 			"Language",
 			"Change interface language"
 		],
-		"links": [
-			"External links",
-			"Add, remove or edit external >>>/4chan/-type references"
-		],
 		"live": [
 			"Live",
 			"Show your post to others as it is being typed"
@@ -167,10 +155,6 @@
 		"mascotImage": [
 			"",
 			"Image to use as the mascot"
-		],
-		"mature": [
-			"Mature content",
-			"Inform the user the website contains mature content on first visit"
 		],
 		"maxHeight": [
 			"Image height limit",
@@ -354,7 +338,6 @@
 		"assignStaff": "Assign staff",
 		"ban": "Ban",
 		"bannerSpecs": "Accepts up to 20 JPEG, PNG, GIF or WEBM files with maximum dimensions of 300x100, maximum file size of 100 KB and no sound.",
-		"bottom": "Bottom",
 		"by": "By",
 		"cancel": "Cancel",
 		"captcha": "Captcha",
@@ -370,7 +353,6 @@
 		"done": "Done",
 		"deleteBoard": "Delete board",
 		"expires": "Expires",
-		"feedback": "Feedback",
 		"global": "Global",
 		"identity": "Identity",
 		"live": "Live",
@@ -402,7 +384,6 @@
 		"syncCount": "Unique connected IP count",
 		"text": "Text",
 		"time": "Time",
-		"top": "Top",
 		"type": "Type",
 		"unban": "Unban"
 	},

@@ -19,6 +19,7 @@ thumb_*.jpg
 bin_data.go
 *_easyjson.go
 scripts/migration/3to4/3to4
+/go/multipart-*
 /go/pkg
 /go/bin/
 /go/src/*
