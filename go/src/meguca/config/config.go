@@ -55,7 +55,7 @@ var (
 		FAQ:           defaultFAQ,
 		Public: Public{
 			DefaultCSS:      "moe",
-			DefaultLang:     "en_GB",
+			DefaultLang:     "ru_RU",
 			ThreadExpiryMin: 7,
 			ThreadExpiryMax: 14,
 			Links:           map[string]string{"4chan": "http://www.4chan.org/"},

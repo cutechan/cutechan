@@ -39,11 +39,7 @@ client_vendor: client_deps
 	$(uglifyjs) node_modules/whatwg-fetch/fetch.js -o www/js/vendor/fetch.js
 	$(uglifyjs) node_modules/almond/almond.js -o www/js/vendor/almond.js
 
-server: generate server_deps
-	go build -v -o $(binary) meguca
-ifeq ($(is_windows), true)
-	cp /mingw64/bin/*.dll ./
-endif
+server: generate server_deps server_build
 
 generate:
 	go get -v github.com/valyala/quicktemplate/qtc github.com/jteeuwen/go-bindata/... github.com/mailru/easyjson/...
@@ -54,6 +50,12 @@ generate:
 
 server_deps:
 	go list -f '{{.Deps}}' meguca | tr -d '[]' | xargs go get -v
+
+server_build:
+	go build -v -o $(binary) meguca
+ifeq ($(is_windows), true)
+	cp /mingw64/bin/*.dll ./
+endif
 
 update_deps:
 	go get -u -v github.com/valyala/quicktemplate/qtc github.com/jteeuwen/go-bindata/... github.com/mailru/easyjson/...
