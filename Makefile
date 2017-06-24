@@ -4,8 +4,9 @@ export gulp=$(node_bins)/gulp
 export is_windows=false
 binary=meguca
 ifeq ($(GOPATH),)
-	export PATH:=$(PATH):$(HOME)/go/bin
-	export GOPATH=$(HOME)/go:$(PWD)/go
+	export PATH:=$(PATH):$(PWD)/go/bin
+	export GOPATH=$(PWD)/go
+	export TMPDIR=$(PWD)/go
 else
 	export PATH:=$(PATH):$(GOPATH)/bin
 	export GOPATH:=$(GOPATH):$(PWD)/go
@@ -65,7 +66,10 @@ update_deps:
 client_clean:
 	rm -rf www/js www/css/*.css www/css/maps www/lang
 
-clean: client_clean
+server_clean:
+	rm -rf go/src/github.com go/src/golang.org go/bin go/pkg
+
+clean: client_clean server_clean
 	rm -rf .build .ffmpeg .package meguca-*.zip meguca-*.tar.xz meguca meguca.exe
 	$(MAKE) -C scripts/migration/3to4 clean
 ifeq ($(is_windows), true)

@@ -20,9 +20,12 @@ bin_data.go
 *_easyjson.go
 scripts/migration/3to4/3to4
 /go/pkg
-/images
+/go/bin/
+/go/src/*
+!/go/src/meguca/
 go/src/meguca/imager/assets/images
 go/src/meguca/imager/images
+/images
 db.db
 easyjson-bootstrap*.go
 /package-lock.json
