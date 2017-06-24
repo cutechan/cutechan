@@ -36,8 +36,7 @@ var (
 		"en_GB", "ru_RU",
 	}
 	Themes = []string{
-		"ashita", "console", "gar", "glass", "higan", "inumi", "mawaru", "moe",
-		"moon", "ocean", "rave", "tea",
+		"tea",
 	}
 )
 
