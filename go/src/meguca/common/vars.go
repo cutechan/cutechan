@@ -36,7 +36,7 @@ var (
 		"en_GB", "ru_RU",
 	}
 	Themes = []string{
-		"tea",
+		"cute",
 	}
 )
 

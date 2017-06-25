@@ -54,7 +54,7 @@ var (
 		Public: Public{
 			DisableUserBoards: true,
 			DefaultLang:       "ru_RU",
-			DefaultCSS:        "tea",
+			DefaultCSS:        "cute",
 			ThreadExpiryMin:   7,
 			ThreadExpiryMax:   14,
 		},
