@@ -16,8 +16,6 @@ interface Options extends ChangeEmitter {
 	anonymise: boolean
 	postInlineExpand: boolean
 	relativeTime: boolean
-	nowPlaying: boolean
-	horizontalPosting: boolean
 	workModeToggle: boolean
 	alwaysLock: boolean
 	newPost: number

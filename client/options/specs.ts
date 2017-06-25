@@ -1,7 +1,7 @@
 // Specs for individual option models
 
 import { config } from '../state'
-import { makeEl, HTML } from "../util"
+import { makeEl } from "../util"
 
 // Types of option models
 export const enum optionType {
@@ -75,18 +75,6 @@ export const specs: { [id: string]: OptionSpec } = {
 	},
 	// Relative post timestamps
 	relativeTime: {},
-	// Tile posts horizontally too
-	horizontalPosting: {
-		exec: toggleHeadStyle(
-			'horizontal',
-			HTML`#thread-container {
-				display:flex;
-				flex-direction: row;
-				flex-wrap: wrap;
-				align-items: baseline;
-			}`,
-		)
-	},
 	// Change theme
 	theme: {
 		type: optionType.menu,
