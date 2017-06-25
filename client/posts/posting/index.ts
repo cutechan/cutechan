@@ -66,7 +66,7 @@ hook("getPostModel", () =>
 
 // Find the post creation button and style it, if any
 function stylePostControls(fn: (el: HTMLElement) => void) {
-	const el = document.querySelector("aside.posting")
+	const el = document.querySelector(".posting")
 	if (el) {
 		fn(el)
 	}
@@ -324,7 +324,7 @@ export default () => {
 
 	// Handle clicks on the [Reply] button
 	on(document, "click", openReply, {
-		selector: "aside.posting a",
+		selector: ".posting a",
 	})
 
 	// Handle clicks on post quoting links

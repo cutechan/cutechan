@@ -18,7 +18,6 @@ interface Options extends ChangeEmitter {
 	relativeTime: boolean
 	nowPlaying: boolean
 	horizontalPosting: boolean
-	replyRight: boolean
 	workModeToggle: boolean
 	alwaysLock: boolean
 	newPost: number

@@ -246,7 +246,6 @@ var optionSpecs = [...][]inputSpec{
 		{ID: "workModeToggle"},
 		{ID: "autogif"},
 		{ID: "spoilers"},
-		{ID: "replyRight"},
 		{ID: "horizontalPosting"},
 		{
 			ID:      "theme",

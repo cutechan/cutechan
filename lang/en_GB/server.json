@@ -208,10 +208,6 @@
 			"Repeat",
 			""
 		],
-		"replyRight": [
-			"[Reply] at Right",
-			"Move Reply button to the right side of the page"
-		],
 		"rootURL": [
 			"Root URL",
 			"Root URL of the imageboard. Required for some image search providers to work."

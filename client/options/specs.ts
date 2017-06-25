@@ -87,13 +87,6 @@ export const specs: { [id: string]: OptionSpec } = {
 			}`,
 		)
 	},
-	// Move [Reply] to the right side of the screen
-	replyRight: {
-		exec: toggleHeadStyle(
-			'reply-at-right',
-			'aside.posting{margin: -26px 0 2px auto;}'
-		)
-	},
 	// Change theme
 	theme: {
 		type: optionType.menu,

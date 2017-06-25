@@ -41,11 +41,6 @@
 	<hr>
 	{%z= postHTML %}
 	<div id="bottom-spacer"></div>
-	<aside class="act posting glass">
-		<a>
-			{%s= ln.UI["reply"] %}
-		</a>
-	</aside>
 	<hr>
 	<span class="aside-container">
 		<span class="act" id="bottom">
@@ -65,6 +60,9 @@
 				</a>
 			</span>
 		{% endif %}
+		<span class="act posting glass">
+			<a>{%s= ln.UI["reply"] %}</a>
+		</span>
 		<span id="lock" style="visibility: hidden;">
 			{%s= ln.UI["lockedToBottom"] %}
 		</span>
