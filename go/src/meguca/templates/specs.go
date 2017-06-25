@@ -258,22 +258,6 @@ var optionSpecs = [...][]inputSpec{
 			Type:    _select,
 			Options: common.Themes,
 		},
-		{ID: "userBG"},
-		{
-			ID:   "userBGImage",
-			Type: _image,
-		},
-		{ID: "mascot"},
-		{
-			ID:   "mascotImage",
-			Type: _image,
-		},
-		{ID: "customCSSToggle"},
-		{
-			ID:   "customCSS",
-			Type: _textarea,
-			Rows: 3,
-		},
 	},
 	{
 		{ID: "google"},
@@ -285,8 +269,6 @@ var optionSpecs = [...][]inputSpec{
 	},
 	{
 		{ID: "nowPlaying"},
-		{ID: "illyaDance"},
-		{ID: "illyaDanceMute"},
 	},
 	{
 		{

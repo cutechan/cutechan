@@ -1,7 +1,5 @@
 import { TabbedModal } from '../base'
-import {
-	models, default as options, optionType, storeBackground, storeMascot
-} from '../options'
+import { models, default as options, optionType } from '../options'
 import { load, hook } from '../util'
 import lang from '../lang'
 import { clearHidden } from "../posts"
@@ -99,19 +97,6 @@ export default class OptionsPanel extends TabbedModal {
 			case optionType.shortcut:
 				val = el.value.toUpperCase().codePointAt(0)
 				break
-			case optionType.image:
-				// Not recorded. Extracted directly by the handler
-				const file = (el as any).files[0]
-				el.value = ""
-				switch (id) {
-					case "userBGImage":
-						storeBackground(file)
-						break
-					case "mascotImage":
-						storeMascot(file)
-						break
-				}
-				return
 		}
 
 		if (!model.validate(val)) {

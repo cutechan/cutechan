@@ -2,10 +2,7 @@
 
 import { config } from '../state'
 import { makeEl, HTML } from "../util"
-import { render as renderBG } from "./background"
-import { render as renderMascot } from "./mascot"
 import initRadio from "./r-a-dio"
-import options from "."
 
 // Types of option models
 export const enum optionType {
@@ -29,10 +26,6 @@ export type OptionSpec = {
 
 	// Function that validates the users input
 	validation?: (val: any) => boolean
-}
-
-function renderBackground(_: boolean) {
-	renderBG()
 }
 
 // Specifications of option behavior, where needed. Some properties defined as
@@ -88,16 +81,6 @@ export const specs: { [id: string]: OptionSpec } = {
 		noExecOnStart: true,
 		exec: initRadio,
 	},
-	// Illya dance in the background
-	illyaDance: {
-		noExecOnStart: true,
-		exec: renderBackground,
-	},
-	// Mute Illya dance
-	illyaDanceMute: {
-		noExecOnStart: true,
-		exec: renderBackground,
-	},
 	// Tile posts horizontally too
 	horizontalPosting: {
 		exec: toggleHeadStyle(
@@ -132,45 +115,6 @@ export const specs: { [id: string]: OptionSpec } = {
 				.getElementById('theme-css')
 				.setAttribute('href', `/assets/css/${theme}.css`)
 		},
-	},
-	// Custom user-set background
-	userBG: {
-		noExecOnStart: true,
-		exec: renderBackground,
-	},
-	// Upload field for the custom background image
-	userBGImage: {
-		type: optionType.image,
-	},
-	// Mascot in the corner
-	mascot: {
-		noExecOnStart: true,
-		exec: renderMascot,
-	},
-	mascotImage: {
-		type: optionType.image,
-	},
-	// User-set CSS rules
-	customCSSToggle: {
-		noExecOnStart: true,
-		exec(on: boolean) {
-			let el = document
-				.getElementById("custom-CSS-style") as HTMLStyleElement
-			if (!el) {
-				el = document.createElement("style")
-				el.id = "custom-CSS-style"
-				document.head.append(el)
-				// The disabled property only exists on elements in the DOM,
-				// so we do another query
-				el = document
-					.getElementById("custom-CSS-style") as HTMLStyleElement
-			}
-			el.innerHTML = options.customCSS
-			el.disabled = !on
-		},
-	},
-	customCSS: {
-		type: optionType.textarea,
 	},
 	// Lock thread scrolling to bottom, when bottom in view, even when the
 	// tab is hidden

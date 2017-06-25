@@ -28,7 +28,6 @@
 		{% endcomment %}
 		<link rel="stylesheet" href="/assets/css/base.css">
 		<link rel="stylesheet" id="theme-css" href="/assets/css/{%s= conf.DefaultCSS %}.css">
-		<style id="user-background-style"></style>
 		{% comment %}
 			Hide various elements that are dysfunctional without JS
 		{% endcomment %}
@@ -153,7 +152,6 @@
 			Loading indicator image
 		{% endcomment %}
 		<image src="/assets/loading.gif" id="loading-image">
-		<div id="user-background"></div>
 		<div id="overlay-container">
 			{% comment %}
 				Top banner

@@ -32,14 +32,6 @@
 			"Captcha",
 			"Ask users to complete a captcha for certain tasks like registration and thread creation"
 		],
-		"customCSS": [
-			"",
-			"User-defined CSS rules loaded on top of the selected theme"
-		],
-		"customCSSToggle": [
-			"Custom CSS",
-			"Toggle use of custom CSS"
-		],
 		"defaultCSS": [
 			"Default theme",
 			"Theme to load by default, when none is set by the client"
@@ -108,14 +100,6 @@
 			"Login",
 			""
 		],
-		"illyaDance": [
-			"Illya Dance",
-			"Dancing loli in the background"
-		],
-		"illyaDanceMute": [
-			"Mute Illya",
-			"Mute dancing loli"
-		],
 		"imageHover": [
 			"Image Hover Expansion",
 			"Display image previews on hover"
@@ -147,14 +131,6 @@
 		"live": [
 			"Live",
 			"Show your post to others as it is being typed"
-		],
-		"mascot": [
-			"Mascot",
-			"Toggle mascot display"
-		],
-		"mascotImage": [
-			"",
-			"Image to use as the mascot"
 		],
 		"maxHeight": [
 			"Image height limit",
@@ -299,14 +275,6 @@
 		"toggleSpoiler": [
 			"Image Spoiler",
 			"Toggle spoiler in the open post"
-		],
-		"userBG": [
-			"Custom Background",
-			"Toggle custom page background"
-		],
-		"userBGImage": [
-			"",
-			"Image to use as the background"
 		],
 		"whatAnime": [
 			"WhatAnime",

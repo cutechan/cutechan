@@ -1,13 +1,9 @@
 // User-set settings storage and change handling
 
 import { OptionSpec, specs, optionType } from './specs'
-import initBackground from "./background"
 import initLoops from "./loop"
-import initMascot from "./mascot"
 import { trigger, emitChanges, ChangeEmitter, hook } from "../util"
 
-export { store as storeBackground } from "./background"
-export { store as storeMascot } from "./mascot"
 export * from "./specs"
 export { posterName } from "./r-a-dio"
 
@@ -25,14 +21,9 @@ interface Options extends ChangeEmitter {
 	postInlineExpand: boolean
 	relativeTime: boolean
 	nowPlaying: boolean
-	illyaDance: boolean
-	illyaDanceMute: boolean
 	horizontalPosting: boolean
 	replyRight: boolean
 	workModeToggle: boolean
-	userBG: boolean
-	customCSSToggle: boolean
-	mascot: boolean
 	alwaysLock: boolean
 	newPost: number
 	toggleSpoiler: number
@@ -42,7 +33,6 @@ interface Options extends ChangeEmitter {
 	lang: string
 	inlineFit: string
 	theme: string
-	customCSS: string
 }
 
 // Central options storage model
@@ -149,22 +139,11 @@ export function initOptions() {
 	}
 
 	// Conditionally load and execute optional modules
-	for (let opt of [
-		"userBG", "nowPlaying", "illyaDance", "mascot", "customCSSToggle",
-	]) {
+	for (let opt of ["nowPlaying"]) {
 		if (options[opt]) {
 			models[opt].execute(true)
 		}
 	}
 
-	// Change the applied custom CSS on CSS change
-	options.onChange("customCSS", () => {
-		if (options.customCSSToggle) {
-			models["customCSSToggle"].execute(true)
-		}
-	})
-
-	initBackground()
-	initMascot()
 	initLoops()
 }
