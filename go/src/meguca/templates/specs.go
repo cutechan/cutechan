@@ -268,9 +268,6 @@ var optionSpecs = [...][]inputSpec{
 		{ID: "exhentai"},
 	},
 	{
-		{ID: "nowPlaying"},
-	},
-	{
 		{
 			ID:   "newPost",
 			Type: _shortcut,

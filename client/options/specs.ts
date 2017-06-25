@@ -2,7 +2,6 @@
 
 import { config } from '../state'
 import { makeEl, HTML } from "../util"
-import initRadio from "./r-a-dio"
 
 // Types of option models
 export const enum optionType {
@@ -76,11 +75,6 @@ export const specs: { [id: string]: OptionSpec } = {
 	},
 	// Relative post timestamps
 	relativeTime: {},
-	// R/a/dio now playing banner
-	nowPlaying: {
-		noExecOnStart: true,
-		exec: initRadio,
-	},
 	// Tile posts horizontally too
 	horizontalPosting: {
 		exec: toggleHeadStyle(

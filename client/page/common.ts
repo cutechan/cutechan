@@ -5,7 +5,6 @@ import { Post, PostView } from "../posts"
 import lang from "../lang"
 import { postAdded, notifyAboutReply } from "../ui"
 import { pluralize, extractJSON } from "../util"
-import { posterName } from "../options"
 
 const threads = document.getElementById("threads")
 
@@ -139,8 +138,8 @@ function localizeBacklinks(post: Post) {
 // cacheability.
 export function localizeThreads() {
 	localizeOmitted()
-	if (posterName() || options.anonymise) {
-		const name = posterName() || lang.posts["anon"]
+	if (options.anonymise) {
+		const name = lang.posts["anon"]
 		for (let el of threads.querySelectorAll(".name")) {
 			el.textContent = name
 		}

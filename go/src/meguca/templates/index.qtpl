@@ -173,10 +173,6 @@
 					</noscript>
 				</nav>
 				{% comment %}
-					For r/a/dio stream status and such
-				{% endcomment %}
-				<b id="banner-center"></b>
-				{% comment %}
 					Various buttons, that unhide modal windows
 				{% endcomment %}
 				<a id="banner-options" class="banner-float" title="{%s= ln.UI["options"] %}">

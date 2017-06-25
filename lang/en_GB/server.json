@@ -168,10 +168,6 @@
 			"Desktop Notifications",
 			"Get desktop notifications when quoted or a syncwatch is about to start"
 		],
-		"nowPlaying": [
-			"Now Playing Banner",
-			"Currently playing song on r/a/dio and other stream information in the top banner."
-		],
 		"oldPassword": [
 			"Old password",
 			""
@@ -366,7 +362,6 @@
 		"General",
 		"Style",
 		"Image Search",
-		"Fun",
 		"Shortcuts"
 	],
 	"templates": {

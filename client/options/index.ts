@@ -5,10 +5,6 @@ import initLoops from "./loop"
 import { trigger, emitChanges, ChangeEmitter, hook } from "../util"
 
 export * from "./specs"
-export { posterName } from "./r-a-dio"
-
-// Delete legacy options localStorage entry, if any
-localStorage.removeItem("options")
 
 interface Options extends ChangeEmitter {
 	hideThumbs: boolean
@@ -137,13 +133,5 @@ export function initOptions() {
 	for (let id in specs) {
 		new OptionModel(id, specs[id])
 	}
-
-	// Conditionally load and execute optional modules
-	for (let opt of ["nowPlaying"]) {
-		if (options[opt]) {
-			models[opt].execute(true)
-		}
-	}
-
 	initLoops()
 }
