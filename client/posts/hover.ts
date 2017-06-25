@@ -238,11 +238,8 @@ function renderImagePreview(event: MouseEvent) {
 
 async function renderPostPreview(event: MouseEvent) {
 	let target = event.target as HTMLElement
-	if (!target.matches || !target.matches("a.post-link, .hash-link")) {
+	if (!target.matches || !target.matches("a.post-link")) {
 		return
-	}
-	if (target.classList.contains("hash-link")) {
-		target = target.previousElementSibling as HTMLElement
 	}
 	if (target.matches("em.expanded > a")) {
 		return

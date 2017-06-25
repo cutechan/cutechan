@@ -16,7 +16,7 @@ export function renderPostLink(id: number, op: number): string {
     if (mine.has(id)) { // Post, I made
         html += ' ' + lang.posts["you"]
     }
-    html += `</a><a class="hash-link" href="${url}"> #</a>`
+    html += `</a>`
     return html
 }
 

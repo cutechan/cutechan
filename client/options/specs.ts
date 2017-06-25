@@ -80,10 +80,6 @@ export const specs: { [id: string]: OptionSpec } = {
 	// Expand post links inline
 	postInlineExpand: {
 		default: true,
-		exec: toggleHeadStyle(
-			"postInlineExpand",
-			".hash-link{ display: inline; }"
-		),
 	},
 	// Relative post timestamps
 	relativeTime: {},

@@ -71,9 +71,6 @@ Common style for plain html tables
 		table, th, td {
 			border: 1px solid black;
 		}
-		.hash-link {
-			display: none;
-		}
 	</style>
 {% endstripspace %}{% endfunc %}
 
