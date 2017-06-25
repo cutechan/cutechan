@@ -65,7 +65,6 @@ func TestUpdateOnAddBoard(t *testing.T) {
 			BoardPublic: config.BoardPublic{
 				ForcedAnon: true,
 			},
-			Eightball: []string{"yes"},
 		},
 	}
 	if err := WriteBoard(nil, std); err != nil {
@@ -94,7 +93,6 @@ func TestUpdateBoardConfigs(t *testing.T) {
 			BoardPublic: config.BoardPublic{
 				ForcedAnon: true,
 			},
-			Eightball: []string{"yes"},
 		},
 	}
 	if err := WriteBoard(nil, std); err != nil {

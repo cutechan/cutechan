@@ -40,7 +40,6 @@ func writeSampleBoard(t *testing.T) {
 	b := BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
 			ID:        "a",
-			Eightball: []string{"yes"},
 		},
 	}
 	if err := WriteBoard(nil, b); err != nil {

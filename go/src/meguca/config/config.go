@@ -59,16 +59,6 @@ var (
 			ThreadExpiryMax:   14,
 		},
 	}
-
-	// EightballDefaults contains the default eightball answer set
-	EightballDefaults = []string{
-		"Yes",
-		"No",
-		"Maybe",
-		"It can't be helped",
-		"Hell yeah, motherfucker!",
-		"Anta baka?",
-	}
 )
 
 // Generate /all/ board configs

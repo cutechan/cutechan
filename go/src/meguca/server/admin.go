@@ -24,14 +24,9 @@ const (
 	// Body size limit for POST request JSON. Should never exceed 32 KB.
 	// Consider anything bigger an attack.
 	jsonLimit = 1 << 15
-
-	maxAnswers      = 100  // Maximum number of eightball answers
-	maxEightballLen = 2000 // Total chars in eightball
 )
 
 var (
-	errTooManyAnswers   = errors.New("too many eightball answers")
-	errEightballTooLong = common.ErrTooLong("eightball")
 	errTitleTooLong     = common.ErrTooLong("board title")
 	errNoticeTooLong    = common.ErrTooLong("notice")
 	errRulesTooLong     = common.ErrTooLong("rules")
@@ -161,17 +156,8 @@ func validateBoardConfigs(
 	w http.ResponseWriter,
 	conf config.BoardConfigs,
 ) bool {
-	totalLen := 0
-	for _, answer := range conf.Eightball {
-		totalLen += len(answer)
-	}
-
 	var err error
 	switch {
-	case len(conf.Eightball) > maxAnswers:
-		err = errTooManyAnswers
-	case totalLen > maxEightballLen:
-		err = errEightballTooLong
 	case len(conf.Notice) > common.MaxLenNotice:
 		err = errNoticeTooLong
 	case len(conf.Rules) > common.MaxLenRules:
@@ -296,7 +282,6 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 				Title: msg.Title,
 			},
 			ID:        msg.ID,
-			Eightball: config.EightballDefaults,
 		},
 	})
 	switch {

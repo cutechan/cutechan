@@ -9,7 +9,7 @@ import (
 )
 
 // CommandType are the various struct types of hash commands and their
-// responses, such as dice rolls, #flip, #8ball, etc.
+// responses, such as dice rolls, #flip, etc.
 type CommandType uint8
 
 const (
@@ -18,9 +18,6 @@ const (
 
 	// Flip is the coin flip command type
 	Flip
-
-	// EightBall is the the #8ball random answer dispenser command type
-	EightBall
 
 	// SyncWatch is the synchronized timer command type for synchronizing
 	// episode time during group anime watching and such
@@ -34,10 +31,9 @@ const (
 )
 
 // Command contains the type and value array of hash commands, such as dice
-// rolls, #flip, #8ball, etc. The Val field depends on the Type field.
+// rolls, #flip, etc. The Val field depends on the Type field.
 // Dice: []uint16
 // Flip: bool
-// EightBall: string
 // SyncWatch: [5]uint64
 // Pyu: uint64
 // Pcount: uint64
@@ -46,7 +42,6 @@ type Command struct {
 	Flip      bool
 	Pyu       uint64
 	SyncWatch [5]uint64
-	Eightball string
 	Dice      []uint16
 }
 
@@ -78,8 +73,6 @@ func (c Command) MarshalEasyJSON(w *jwriter.Writer) {
 			w.Uint64(v)
 		}
 		w.RawByte(']')
-	case EightBall:
-		w.String(c.Eightball)
 	case Dice:
 		w.RawByte('[')
 		for i, v := range c.Dice {
@@ -120,9 +113,6 @@ func (c *Command) UnmarshalJSON(data []byte) error {
 	case SyncWatch:
 		c.Type = SyncWatch
 		err = json.Unmarshal(data, &c.SyncWatch)
-	case EightBall:
-		c.Type = EightBall
-		err = json.Unmarshal(data, &c.Eightball)
 	case Dice:
 		c.Type = Dice
 		err = json.Unmarshal(data, &c.Dice)

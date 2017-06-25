@@ -51,26 +51,6 @@ func TestDice(t *testing.T) {
 	}
 }
 
-func Test8ball(t *testing.T) {
-	answers := []string{"Yes", "No"}
-	config.SetBoardConfigs(config.BoardConfigs{
-		ID:        "a",
-		Eightball: answers,
-	})
-
-	com, err := parseCommand([]byte("8ball"), "a")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if com.Type != common.EightBall {
-		t.Fatalf("unexpected command type: %d", com.Type)
-	}
-	val := com.Eightball
-	if val != answers[0] && val != answers[1] {
-		t.Fatalf("unexpected answer: %s", val)
-	}
-}
-
 func TestPyu(t *testing.T) {
 	if err := db.SetPyu(0); err != nil {
 		t.Fatal(err)

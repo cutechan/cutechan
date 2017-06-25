@@ -52,7 +52,6 @@ func TestInsertThread(t *testing.T) {
 		},
 	}
 	for _, c := range conf {
-		c.Eightball = []string{"Yes"}
 		if _, err := config.SetBoardConfigs(c.BoardConfigs); err != nil {
 			t.Fatal(err)
 		}
@@ -396,7 +395,6 @@ func writeSampleBoard(t testing.TB) {
 	b := db.BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
 			ID:        "a",
-			Eightball: []string{"yes"},
 		},
 	}
 	if err := db.WriteBoard(nil, b); err != nil {

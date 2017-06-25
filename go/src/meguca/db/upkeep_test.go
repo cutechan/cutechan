@@ -138,7 +138,6 @@ func testBoardNoThreads(t *testing.T) {
 		Created: time.Now().Add(-eightDays),
 		BoardConfigs: config.BoardConfigs{
 			ID:        "l",
-			Eightball: []string{},
 		},
 	})
 	if err != nil {
@@ -158,7 +157,6 @@ func testBoardPruningDisabled(t *testing.T) {
 		Created: time.Now().Add(-eightDays),
 		BoardConfigs: config.BoardConfigs{
 			ID:        "x",
-			Eightball: []string{},
 		},
 	})
 	if err != nil {
@@ -181,7 +179,6 @@ func testDeleteUnusedBoards(t *testing.T) {
 			Created: expired,
 			BoardConfigs: config.BoardConfigs{
 				ID:        id,
-				Eightball: []string{},
 			},
 		})
 		if err != nil {

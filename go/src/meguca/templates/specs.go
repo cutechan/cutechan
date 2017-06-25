@@ -129,11 +129,6 @@ var specs = map[string][]inputSpec{
 			Rows:      5,
 			MaxLength: common.MaxLenRules,
 		},
-		{
-			ID:        "eightball",
-			Type:      _array,
-			MaxLength: common.MaxLenEightball,
-		},
 	},
 	"createBoard": {
 		{

@@ -1,3 +1,2 @@
-select readOnly, textOnly, forcedAnon, disableRobots, id, title, notice, rules,
-		eightball
+select readOnly, textOnly, forcedAnon, disableRobots, id, title, notice, rules
 	from boards

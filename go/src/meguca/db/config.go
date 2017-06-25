@@ -7,8 +7,6 @@ import (
 	"meguca/templates"
 	"meguca/util"
 	"time"
-
-	"github.com/lib/pq"
 )
 
 // BoardConfigs contains extra fields not exposed on database reads
@@ -68,12 +66,10 @@ func loadBoardConfigs() error {
 }
 
 func scanBoardConfigs(r rowScanner) (c config.BoardConfigs, err error) {
-	var eightball pq.StringArray
 	err = r.Scan(
 		&c.ReadOnly, &c.TextOnly, &c.ForcedAnon, &c.DisableRobots, &c.ID,
-		&c.Title, &c.Notice, &c.Rules, &eightball,
+		&c.Title, &c.Notice, &c.Rules,
 	)
-	c.Eightball = []string(eightball)
 	return
 }
 
@@ -81,7 +77,7 @@ func scanBoardConfigs(r rowScanner) (c config.BoardConfigs, err error) {
 func WriteBoard(tx *sql.Tx, c BoardConfigs) error {
 	_, err := getStatement(tx, "write_board").Exec(
 		c.ID, c.ReadOnly, c.TextOnly, c.ForcedAnon, c.DisableRobots, c.Created,
-		c.Title, c.Notice, c.Rules, pq.StringArray(c.Eightball),
+		c.Title, c.Notice, c.Rules,
 	)
 	return err
 }
@@ -91,7 +87,7 @@ func UpdateBoard(c config.BoardConfigs) error {
 	return execPrepared(
 		"update_board",
 		c.ID, c.ReadOnly, c.TextOnly, c.ForcedAnon, c.DisableRobots, c.Title,
-		c.Notice, c.Rules, pq.StringArray(c.Eightball),
+		c.Notice, c.Rules,
 	)
 }
 

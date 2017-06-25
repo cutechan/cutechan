@@ -18,13 +18,11 @@ func TestReader(t *testing.T) {
 		{
 			BoardConfigs: config.BoardConfigs{
 				ID:        "a",
-				Eightball: []string{"yes"},
 			},
 		},
 		{
 			BoardConfigs: config.BoardConfigs{
 				ID:        "c",
-				Eightball: []string{"yes"},
 			},
 		},
 	}

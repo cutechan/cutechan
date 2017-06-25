@@ -86,28 +86,6 @@ func TestRenderBody(t *testing.T) {
 			},
 		},
 		{
-			name: "#8ball",
-			in:   "#8ball",
-			out:  "<strong>#8ball (bar)</strong>",
-			commands: []common.Command{
-				{
-					Type:      common.EightBall,
-					Eightball: "bar",
-				},
-			},
-		},
-		{
-			name: "with edge punctuation",
-			in:   " (#8ball? ",
-			out:  " (<strong>#8ball (bar)</strong>? ",
-			commands: []common.Command{
-				{
-					Type:      common.EightBall,
-					Eightball: "bar",
-				},
-			},
-		},
-		{
 			name: "#pyu",
 			in:   "#pyu",
 			out:  "<strong>#pyu (1)</strong>",

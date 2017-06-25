@@ -35,14 +35,6 @@ func parseCommand(match []byte, board string) (com common.Command, err error) {
 		com.Type = common.Flip
 		com.Flip = rand.Intn(2) == 0
 
-	// 8ball; select random string from the the 8ball answer array
-	case bytes.Equal(match, []byte("8ball")):
-		com.Type = common.EightBall
-		answers := config.GetBoardConfigs(board).Eightball
-		if len(answers) != 0 {
-			com.Eightball = answers[rand.Intn(len(answers))]
-		}
-
 	// Increment pyu counter
 	case bytes.Equal(match, []byte("pyu")):
 		if config.Get().Pyu {

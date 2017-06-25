@@ -34,7 +34,6 @@ type BoardConfigs struct {
 	BoardPublic
 	DisableRobots bool     `json:"disableRobots"`
 	ID            string   `json:"id"`
-	Eightball     []string `json:"eightball"`
 }
 
 // BoardPublic contains publically accessible board-specific configurations

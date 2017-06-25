@@ -57,7 +57,6 @@ func TestServePrivateBoardConfigs(t *testing.T) {
 	conf := db.BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
 			ID:        "a",
-			Eightball: []string{"a", "b", "c"},
 		},
 	}
 	_, err := config.SetBoardConfigs(conf.BoardConfigs)
@@ -86,12 +85,10 @@ func TestBoardConfiguration(t *testing.T) {
 		BoardPublic: config.BoardPublic{
 			ForcedAnon: true,
 		},
-		Eightball: []string{},
 	}
 	init := db.BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
 			ID:        board,
-			Eightball: []string{},
 		},
 	}
 	if err := db.WriteBoard(nil, init); err != nil {
@@ -128,20 +125,6 @@ func TestValidateBoardConfigs(t *testing.T) {
 			"all is well",
 			config.BoardConfigs{},
 			nil,
-		},
-		{
-			"too many eightball answers",
-			config.BoardConfigs{
-				Eightball: make([]string, maxEightballLen+1),
-			},
-			errTooManyAnswers,
-		},
-		{
-			"compound eightball length to big",
-			config.BoardConfigs{
-				Eightball: []string{GenString(maxEightballLen + 1)},
-			},
-			errEightballTooLong,
 		},
 		{
 			"notice too long",
@@ -253,7 +236,6 @@ func writeSampleBoard(t testing.TB) {
 	b := db.BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
 			ID:        "a",
-			Eightball: []string{"yes"},
 		},
 	}
 	if err := db.WriteBoard(nil, b); err != nil {
@@ -311,7 +293,6 @@ func TestBoardCreation(t *testing.T) {
 		BoardPublic: config.BoardPublic{
 			Title: title,
 		},
-		Eightball: config.EightballDefaults,
 	}
 	AssertDeepEquals(t, board, std)
 }
@@ -420,7 +401,6 @@ func TestDeletePost(t *testing.T) {
 	cConfigs := db.BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
 			ID:        "c",
-			Eightball: []string{"yes"},
 		},
 	}
 	err := db.WriteBoard(nil, cConfigs)

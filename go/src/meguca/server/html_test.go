@@ -76,7 +76,6 @@ func TestOwnedBoardSelection(t *testing.T) {
 		err := db.WriteBoard(nil, db.BoardConfigs{
 			BoardConfigs: config.BoardConfigs{
 				ID:        b,
-				Eightball: []string{"yes"},
 			},
 		})
 		if err != nil {
