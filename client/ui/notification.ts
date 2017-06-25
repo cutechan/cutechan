@@ -49,7 +49,7 @@ export default function notifyAboutReply(post: Post) {
 	n.onclick = () => {
 		n.close()
 		window.focus()
-		location.hash = "#p" + post.id
+		location.hash = "#" + post.id
 		scrollToAnchor()
 	}
 }

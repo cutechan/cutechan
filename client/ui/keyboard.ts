@@ -98,7 +98,7 @@ function navigateUp() {
 	}
 }
 
-const postSelector = "article[id^=p]"
+const postSelector = ".post"
 
 // move focus to next or previous visible post in document order.
 // starts with first post if none is selected via current url fragment

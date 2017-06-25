@@ -148,7 +148,7 @@ export default class PostView extends ImageHandler {
             link = nav.firstElementChild as HTMLAnchorElement,
             quote = nav.lastElementChild as HTMLAnchorElement,
             { id } = this.model
-        let url = `#p${id}`
+        let url = `#${id}`
         if (!page.thread && !page.catalog) {
             url = `/all/${id}?last=100` + url
         }

@@ -7,7 +7,7 @@
 
 {% func renderArticle(p common.Post, c articleContext) %}{% stripspace %}
 	{% code id := strconv.FormatUint(p.ID, 10) %}
-	<article id="p{%s= id %}" {%= postClass(p) %}>
+	<article id="{%s= id %}" {%= postClass(p) %}>
 		{%= deletedToggle() %}
 		<header class="spaced">
 			<input type="checkbox" class="mod-checkbox hidden">
@@ -46,7 +46,7 @@
 				{%s= formatTime(p.Time) %}
 			</time>
 			<nav>
-				{% code url := "#p" + id %}
+				{% code url := "#" + id %}
 				{% if c.index %}
 					{% code url = util.ConcatStrings("/all/", id, "?last=100", url) %}
 				{% endif %}

@@ -23,7 +23,7 @@ export function getID(el: Element): number {
 	if (!el) {
 		return 0
 	}
-	return parseInt(el.getAttribute('id').slice(1), 10)
+	return parseInt(el.id, 10)
 }
 
 // Retrieve post number of closest parent post element

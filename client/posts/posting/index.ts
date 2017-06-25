@@ -3,7 +3,7 @@
 import FormModel from "./model"
 import FormView from "./view"
 import { connState, connSM, handlers, message } from "../../connection"
-import { on, FSM, hook } from "../../util"
+import { on, FSM, hook, getID } from "../../util"
 import lang from "../../lang"
 import identity, { initIdentity } from "./identity"
 import { boardConfig, page } from "../../state"
@@ -125,7 +125,7 @@ function quotePost(e: MouseEvent) {
 		sel = lastSelection.text
 	}
 
-	const id = parseInt(post.id.slice(1))
+	const id = getID(post)
 
 	// On board pages, first navigate to the thread
 	if (!page.thread) {

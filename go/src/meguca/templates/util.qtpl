@@ -21,7 +21,7 @@ Render a link to another post. Can optionally be cross-thread.
 		{% code url = append(url, "/all/"...) %}
 		{% code url = strconv.AppendUint(url, id, 10) %}
 	{% endif %}
-	{% code url = append(url, "#p"...) %}
+	{% code url = append(url, "#"...) %}
 	{% code url = append(url, idBuf...) %}
 	<a class="post-link" data-id="{%z= idBuf %}" href="{%z= url %}">
 		&gt;&gt;
@@ -50,7 +50,7 @@ Render a link to another post. Can optionally be cross-thread.
 
 Render the class attribute of a post
 {% func postClass(p common.Post) %}{% stripspace %}
-	class="glass
+	class="post glass
 		{% if p.Editing %}
 			{% space %}editing
 		{% endif %}

@@ -8,7 +8,7 @@ import { makeAttrs, pluralize } from "../../util"
 export function renderPostLink(id: number, op: number): string {
     const cross = op !== page.thread,
         index = !page.thread && !page.catalog,
-        url = `${(cross || index) ? `/all/${id}` : ""}#p${id}`
+        url = `${(cross || index) ? `/all/${id}` : ""}#${id}`
     let html = `<a class="post-link" data-id="${id}" href="${url}">&gt;&gt;${id}`
     if (cross && !index) {
         html += " ➡"
@@ -25,7 +25,7 @@ export function renderTempLink(id: number): string {
     const attrs = {
         class: "post-link temp",
         "data-id": id.toString(),
-        href: `#p${id}`,
+        href: `#${id}`,
     }
     let html = `<a ${makeAttrs(attrs)}>>>${id}`
     if (mine.has(id)) {
