@@ -7,7 +7,7 @@
 
 {% func renderArticle(p common.Post, c articleContext) %}{% stripspace %}
 	{% code id := strconv.FormatUint(p.ID, 10) %}
-	<article id="{%s= id %}" {%= postClass(p) %}>
+	<article id="{%s= id %}" {%= postClass(p, p.ID == c.op) %}>
 		{%= deletedToggle() %}
 		<header class="spaced">
 			<input type="checkbox" class="mod-checkbox hidden">
@@ -18,9 +18,7 @@
 						/{%s= c.board %}/
 					</b>
 				{% endif %}
-				<h3>
-					「{%s c.subject %}」
-				</h3>
+				<h3>{%s c.subject %}</h3>
 			{% endif %}
 			<b class="name{% if p.Auth != "" %}{% space %}admin{% endif %}{% if p.Sage %}{% space %}sage{% endif %}">
 				{% if p.Name != "" || p.Trip == "" %}

@@ -27,6 +27,7 @@ article {
 	}
 	blockquote {
 		min-width: 15em;
+		margin: 1em;
 	}
 	audio {
 		width: 300px;
@@ -104,8 +105,6 @@ figure {
 }
 
 header {
-	margin-left: -14px;
-	padding-left: 14px;
 	nav {
 		display: initial;
 	}
@@ -202,9 +201,8 @@ header {
 	padding: 0.2em;
 }
 
-// Make OPs stand out, if no custom background set
-#threads:not(.custom-BG) section > article:first-of-type {
-	margin-left: 0;
+// Make OPs stand out
+.post-op {
 	padding-left: 0;
 	border: none;
 	background: none;

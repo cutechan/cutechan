@@ -46,7 +46,7 @@ func Board(
 	threadHTML []byte,
 ) []byte {
 	boardConf := config.GetBoardConfigs(b)
-	title := html.EscapeString(fmt.Sprintf("/%s/ - %s", b, boardConf.Title))
+	title := html.EscapeString(fmt.Sprintf("/%s/ — %s", b, boardConf.Title))
 	html := renderBoard(
 		threadHTML,
 		b, title,

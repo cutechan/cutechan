@@ -49,8 +49,12 @@ Render a link to another post. Can optionally be cross-thread.
 {% endstripspace %}{% endfunc %}
 
 Render the class attribute of a post
-{% func postClass(p common.Post) %}{% stripspace %}
-	class="post glass
+TODO: Add op property to Post struct
+{% func postClass(p common.Post, isOP bool) %}{% stripspace %}
+	class="post
+		{% if isOP %}
+			{% space %}post-op
+		{% endif %}
 		{% if p.Editing %}
 			{% space %}editing
 		{% endif %}
@@ -67,7 +71,6 @@ Renders a stylized deleted post display toggle
 {% func deletedToggle() %}{% stripspace %}
 	<input type="checkbox" class="deleted-toggle">
 {% endstripspace %}{% endfunc %}
-
 
 Notice widget, that reveals text on hover
 {% func hoverReveal(tag, text, label string) %}{% stripspace %}
