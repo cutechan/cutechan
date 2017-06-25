@@ -80,10 +80,13 @@ dist_clean: clean
 	rm -rf images error.log
 
 test:
-	go test --race -p 1 meguca/...
+	go test -race -p 1 meguca/...
 
 test_no_race:
 	go test -p 1 meguca/...
+
+test_custom:
+	go test meguca/... $(f)
 
 test_clean:
 	rm -rf go/multipart-*

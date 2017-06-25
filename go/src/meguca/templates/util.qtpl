@@ -24,7 +24,7 @@ Render a link to another post. Can optionally be cross-thread.
 	{% code url = append(url, "#p"...) %}
 	{% code url = append(url, idBuf...) %}
 	<a class="post-link" data-id="{%z= idBuf %}" href="{%z= url %}">
-		>>
+		&gt;&gt;
 		{%z= idBuf %}
 		{% if cross %}
 			{% space %}➡

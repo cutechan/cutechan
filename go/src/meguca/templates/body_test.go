@@ -10,13 +10,6 @@ import (
 )
 
 func TestRenderBody(t *testing.T) {
-	config.Set(config.Configs{
-		Public: config.Public{
-			Links: map[string]string{
-				"4chan": "http://4chan.org",
-			},
-		},
-	})
 	config.SetBoardConfigs(config.BoardConfigs{
 		ID: "a",
 	})
@@ -199,54 +192,39 @@ func TestRenderBody(t *testing.T) {
 		{
 			name: "no links in post",
 			in:   ">>20",
-			out:  "<em>>>20</em>",
+			out:  "<em>&gt;&gt;20</em>",
 		},
 		{
 			name:  "1 invalid link",
 			in:    ">>20",
-			out:   "<em>>>20</em>",
+			out:   "<em>&gt;&gt;20</em>",
 			links: [][2]uint64{{21, 21}},
 		},
 		{
 			name:  "valid link",
 			in:    ">>21",
-			out:   `<em><a class="post-link" data-id="21" href="#p21">>>21</a><a class="hash-link" href="#p21"> #</a></em>`,
+			out:   `<em><a class="post-link" data-id="21" href="#p21">&gt;&gt;21</a><a class="hash-link" href="#p21"> #</a></em>`,
 			op:    20,
 			links: [][2]uint64{{21, 20}},
 		},
 		{
 			name:  "valid link with extra quotes",
 			in:    ">>>>21",
-			out:   `<em>>><a class="post-link" data-id="21" href="#p21">>>21</a><a class="hash-link" href="#p21"> #</a></em>`,
+			out:   `<em>&gt;&gt;<a class="post-link" data-id="21" href="#p21">&gt;&gt;21</a><a class="hash-link" href="#p21"> #</a></em>`,
 			op:    20,
 			links: [][2]uint64{{21, 20}},
 		},
 		{
 			name:  "valid cross-thread link",
 			in:    ">>21",
-			out:   `<em><a class="post-link" data-id="21" href="/all/21#p21">>>21 ➡</a><a class="hash-link" href="/all/21#p21"> #</a></em>`,
+			out:   `<em><a class="post-link" data-id="21" href="/all/21#p21">&gt;&gt;21 ➡</a><a class="hash-link" href="/all/21#p21"> #</a></em>`,
 			op:    20,
 			links: [][2]uint64{{21, 22}},
 		},
 		{
 			name: "invalid reference",
 			in:   ">>>/fufufu/",
-			out:  `<em>>>>/fufufu/</em>`,
-		},
-		{
-			name: "link reference",
-			in:   ">>>/4chan/",
-			out:  `<em><a rel="noreferrer" href="http://4chan.org" target="_blank">&gt;&gt;&gt;/4chan/</a></em>`,
-		},
-		{
-			name: "board reference",
-			in:   ">>>/a/",
-			out:  `<em><a rel="noreferrer" href="/a/" target="_blank">&gt;&gt;&gt;/a/</a></em>`,
-		},
-		{
-			name: "reference with extra quotes",
-			in:   ">>>>>/a/",
-			out:  `<em>>><a rel="noreferrer" href="/a/" target="_blank">&gt;&gt;&gt;/a/</a></em>`,
+			out:  `<em>&gt;&gt;&gt;/fufufu/</em>`,
 		},
 		{
 			name: "HTTP URL",

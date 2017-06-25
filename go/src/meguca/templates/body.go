@@ -249,7 +249,7 @@ func (c *bodyContext) parseFragment(frag string) {
 // Parse a potential link to a post
 func (c *bodyContext) parsePostLink(m []string) {
 	if c.Links == nil {
-		c.string(m[0])
+		c.escape(m[0])
 		return
 	}
 
@@ -262,12 +262,12 @@ func (c *bodyContext) parsePostLink(m []string) {
 		}
 	}
 	if op == 0 {
-		c.string(m[0])
+		c.escape(m[0])
 		return
 	}
 
 	if len(m[1]) != 0 { // Write extra quotes
-		c.string(m[1])
+		c.escape(m[1])
 	}
 	streampostLink(&c.Writer, id, op != c.OP, c.index)
 }
