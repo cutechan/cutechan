@@ -19,7 +19,7 @@ export function scrollToAnchor() {
 		}
 		return
 	}
-	const el = document.querySelector(location.hash)
+	const el = document.getElementById(location.hash)
 	if (!el) {
 		return scrollToTop()
 	}
