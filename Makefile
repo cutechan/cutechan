@@ -25,20 +25,22 @@ endif
 
 all: server client
 
-client: client_vendor
-	$(gulp)
-
-client_deps:
-	npm install --progress false --depth 0
-
-watch:
-	$(gulp) -w
+client: client_vendor client_build
 
 client_vendor: client_deps
 	mkdir -p www/js/vendor
 	cp node_modules/dom4/build/dom4.js node_modules/core-js/client/core.min.js node_modules/core-js/client/core.min.js.map node_modules/babel-polyfill/dist/polyfill.min.js node_modules/proxy-polyfill/proxy.min.js www/js/vendor
 	$(uglifyjs) node_modules/whatwg-fetch/fetch.js -o www/js/vendor/fetch.js
 	$(uglifyjs) node_modules/almond/almond.js -o www/js/vendor/almond.js
+
+client_deps:
+	npm install --progress false --depth 0
+
+client_build:
+	$(gulp)
+
+watch:
+	$(gulp) -w
 
 server: generate server_deps server_build
 

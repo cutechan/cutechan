@@ -101,7 +101,7 @@ function buildClient() {
 		.pipe(sourcemaps.init())
 		.pipe(ts.createProject('client/tsconfig.json', {
 			typescript: require("typescript"),
-		})())
+		})(ts.reporter.nullReporter()))
 		.on('error', handleError)
 }
 
