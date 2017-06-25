@@ -38,13 +38,17 @@ export default class ModPanel extends View<null> {
 		checkboxToggle.addEventListener(
 			"change",
 			e =>
-				this.setVisibility((event.target as HTMLInputElement).checked),
+				this.setVisibility((event.target as HTMLInputElement).checked, true),
 			{ passive: true },
 		)
+
+		this.setVisibility(displayCheckboxes)
 	}
 
-	private setVisibility(on: boolean) {
-		localStorage.setItem("showModCheckboxes", on.toString())
+	private setVisibility(on: boolean, save?: boolean) {
+		if (save) {
+			localStorage.setItem("showModCheckboxes", on.toString())
+		}
 		this.setSlideOut(on)
 		checkboxStyler(on)
 	}
