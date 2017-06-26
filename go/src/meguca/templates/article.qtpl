@@ -71,29 +71,8 @@
 		{% if p.Image != nil %}
 			{% code img := *p.Image %}
 			{% code src =  assets.SourcePath(img.FileType, img.SHA1) %}
-			{% code ISSrc := c.root + assets.ImageSearchPath(img.ImageCommon) %}
 			<figcaption class="spaced">
 				<a class="image-toggle act" hidden></a>
-				<span class="spaced image-search-container">
-					<a class="image-search google" target="_blank" rel="nofollow" href="https://www.google.com/searchbyimage?image_url={%s= ISSrc %}">
-						G
-					</a>
-					<a class="image-search iqdb" target="_blank" rel="nofollow" href="http://iqdb.org/?url={%s= ISSrc %}">
-						Iq
-					</a>
-					<a class="image-search saucenao" target="_blank" rel="nofollow" href="http://saucenao.com/search.php?db=999&url={%s= ISSrc %}">
-						Sn
-					</a>
-					<a class="image-search whatAnime" target="_blank" rel="nofollow" href="https://whatanime.ga/?url={%s= ISSrc %}">
-						Wa
-					</a>
-					<a class="image-search desustorage" target="_blank" rel="nofollow" href="https://desuarchive.org/_/search/image/{%s= img.MD5 %}">
-						Ds
-					</a>
-					<a class="image-search exhentai" target="_blank" rel="nofollow" href="http://exhentai.org/?fs_similar=1&fs_exp=1&f_shash={%s= img.SHA1 %}">
-						Ex
-					</a>
-				</span>
 				<span class="fileinfo">
 					{% if img.Artist != "" %}<span class="media-artist">{%s= img.Artist %}</span>{% endif %}
 					{% if img.Title != "" %}<span class="media-title">{%s= img.Title %}</span>{% endif %}

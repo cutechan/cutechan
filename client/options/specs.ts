@@ -92,27 +92,6 @@ export const specs: { [id: string]: OptionSpec } = {
 	// Lock thread scrolling to bottom, when bottom in view, even when the
 	// tab is hidden
 	alwaysLock: {},
-	// Image search link toggles
-	google: {
-		default: true,
-		exec: toggleImageSearch("google"),
-	},
-	iqdb: {
-		exec: toggleImageSearch("iqdb"),
-	},
-	saucenao: {
-		default: true,
-		exec: toggleImageSearch("saucenao"),
-	},
-	whatAnime: {
-		exec: toggleImageSearch("whatAnime"),
-	},
-	desustorage: {
-		exec: toggleImageSearch("desustorage"),
-	},
-	exhentai: {
-		exec: toggleImageSearch("exhentai"),
-	},
 	// Shortcut keys
 	newPost: {
 		default: 78,
@@ -134,11 +113,6 @@ export const specs: { [id: string]: OptionSpec } = {
 		default: 66,
 		type: optionType.shortcut,
 	},
-}
-
-// Create a function that toggles the visibility of an image search link
-function toggleImageSearch(engine: string): (toggle: boolean) => void {
-	return toggleHeadStyle(engine, `.${engine}{display:initial;}`)
 }
 
 // Toggle an optional style element in the head

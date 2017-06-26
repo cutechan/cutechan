@@ -36,10 +36,6 @@
 			"Default language",
 			"Language pack to load by default"
 		],
-		"desustorage": [
-			"DesuStorage",
-			"desustorage.org image search"
-		],
 		"disableUserBoards": [
 			"Disable non-admin board creation",
 			"Prevents any account apart from the 'admin' account from creating new boards"
@@ -47,10 +43,6 @@
 		"done": [
 			"Finish Post",
 			"Close open post"
-		],
-		"exhentai": [
-			"Exhentai",
-			"exhentai.org image search"
 		],
 		"expandAll": [
 			"Expand All Images",
@@ -63,10 +55,6 @@
 		"galleryMode": [
 			"Gallery Mode",
 			"Only show posts containing images"
-		],
-		"google": [
-			"Google",
-			"Google image search"
 		],
 		"hidden": [
 			"Hidden: 0",
@@ -95,10 +83,6 @@
 		"inlineFit": [
 			"Expansion",
 			"Expand images inside the parent post and resize according to setting"
-		],
-		"iqdb": [
-			"IQDB",
-			"iqdb.org image search"
 		],
 		"janitors": [
 			"Janitors",
@@ -190,7 +174,7 @@
 		],
 		"rootURL": [
 			"Root URL",
-			"Root URL of the imageboard. Required for some image search providers to work."
+			"Root URL of the imageboard."
 		],
 		"rules": [
 			"Rules",
@@ -199,10 +183,6 @@
 		"salt": [
 			"Secure salt",
 			"Salt for secure tripcode and mnemonic generation. Recommended to be at least 40 characters long."
-		],
-		"saucenao": [
-			"SauceNao",
-			"saucenao.com image search"
 		],
 		"sessionExpiry": [
 			"Account session expiry",
@@ -235,10 +215,6 @@
 		"toggleSpoiler": [
 			"Image Spoiler",
 			"Toggle spoiler in the open post"
-		],
-		"whatAnime": [
-			"WhatAnime",
-			"whatanime.ga anime screenshot search"
 		],
 		"webmHover": [
 			"WebM Hover Expansion",
@@ -326,7 +302,6 @@
 	"tabs": [
 		"General",
 		"Style",
-		"Image Search",
 		"Shortcuts"
 	],
 	"templates": {

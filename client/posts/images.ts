@@ -8,42 +8,6 @@ import options from "../options"
 import { getModel, posts, config } from "../state"
 import lang from "../lang"
 
-// Specs for handling image search link clicks
-type ImageSearchSpec = {
-	type: ISType
-	url: string
-}
-
-// Types of data requested by the search provider
-const enum ISType { src, MD5, SHA1 }
-
-const ISSpecs: ImageSearchSpec[] = [
-	{
-		type: ISType.src,
-		url: "https://www.google.com/searchbyimage?image_url=",
-	},
-	{
-		type: ISType.src,
-		url: "http://iqdb.org/?url=",
-	},
-	{
-		type: ISType.src,
-		url: "http://saucenao.com/search.php?db=999&url=",
-	},
-	{
-		type: ISType.src,
-		url: "https://whatanime.ga/?url=",
-	},
-	{
-		type: ISType.MD5,
-		url: "https://desuarchive.org/_/search/image/",
-	},
-	{
-		type: ISType.SHA1,
-		url: "http://exhentai.org/?fs_similar=1&fs_exp=1&f_shash=",
-	},
-]
-
 // Expand all image thumbnails automatically
 export let expandAll = false
 
@@ -202,52 +166,7 @@ export default class ImageHandler extends View<Post> {
 		})
 		link.innerHTML = name
 
-		// Assign URLs to image search links
-		const ch = el.querySelector(".image-search-container").children
-		for (let i = 0; i < ch.length; i++) {
-			const { type, url } = ISSpecs[i]
-			let arg: string
-			switch (type) {
-				case ISType.src:
-					arg = this.resolveFuzzyIS()
-					break
-				case ISType.MD5:
-					arg = data.MD5
-					break
-				case ISType.SHA1:
-					arg = data.SHA1
-					break
-			}
-			ch[i].setAttribute("href", url + arg)
-		}
-
 		el.hidden = false
-	}
-
-	// Resolve URL of image search providers, that require to download the
-	// image file
-	private resolveFuzzyIS(): string {
-		const { fileType, thumbType, SHA1, size } = this.model.image
-		let root: string,
-			type: fileTypes
-		switch (fileType) {
-			case fileTypes.jpg:
-			case fileTypes.gif:
-			case fileTypes.png:
-				if (size > 8 << 20) {
-					root = "thumb"
-					type = thumbType
-				} else {
-					root = "src"
-					type = fileType
-				}
-				break
-			default:
-				root = "thumb"
-				type = thumbType
-		}
-		const s = `/assets/images/${root}/${SHA1}.${fileTypes[type]}`
-		return encodeURI(location.origin + s)
 	}
 
 	public toggleImageExpansion(event: MouseEvent) {

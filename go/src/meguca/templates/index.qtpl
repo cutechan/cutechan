@@ -76,21 +76,6 @@
 		<template name="figcaption">
 			<figcaption class="spaced">
 				<a class="image-toggle act" hidden></a>
-				<span class="spaced image-search-container">
-					{% code engines := [...][2]string{
-						{"google", "G"},
-						{"iqdb", "Iq"},
-						{"saucenao", "Sn"},
-						{"whatAnime", "Wa"},
-						{"desustorage", "Ds"},
-						{"exhentai", "Ex"},
-					} %}
-					{% for _, e := range engines %}
-						<a class="image-search{% space %}{%s= e[0] %}" target="_blank" rel="nofollow">
-							{%s= e[1] %}
-						</a>
-					{% endfor %}
-				</span>
 				<span class="fileinfo">
 					<span class="media-artist"></span>
 					<span class="media-title"></span>
