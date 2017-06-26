@@ -1,83 +1,83 @@
 body, article, code.code-tag {
-	color: @body;
+  color: @body;
 }
 
 a {
-	color: @link;
+  color: @link;
 }
 
 .modal hr {
-	border-top: 1px solid @link;
+  border-top: 1px solid @link;
 }
 
 .divide-rows {
-	tr:not(:last-child) {
-		border-bottom: 1px solid @link;
-	}
-	td {
-		padding: 0.5em;
-	}
+  tr:not(:last-child) {
+    border-bottom: 1px solid @link;
+  }
+  td {
+    padding: 0.5em;
+  }
 }
 
 #banner{
-	background: fade(@postBG, 70%);
-	border-bottom: @border;
+  background: fade(@postBG, 70%);
+  border-bottom: @border;
 }
 
 b {
-	color: @bold;
+  color: @bold;
 }
 
 .admin {
-	color: @admin;
+  color: @admin;
 }
 
 .sticky svg {
-	fill: @admin;
+  fill: @admin;
 }
 
 .popup-menu {
-	border: @border;
+  border: @border;
 }
 
 article audio {
-	&::-webkit-media-controls-current-time-display,
-	&::-webkit-media-controls-time-remaining-display {
-  		color: @link;
-	}
+  &::-webkit-media-controls-current-time-display,
+  &::-webkit-media-controls-time-remaining-display {
+      color: @link;
+  }
 }
 
 em, .ms-string {
-	color: @em;
+  color: @em;
 }
 
 em {
-	color: @em;
+  color: @em;
 }
 
 del {
-	text-decoration: none;
-	&, em {
-		background-color: @del;
-	}
-	&:hover, &.reveal {
-		color: #fff - @del;
-	}
-	&:not(:hover):not(.reveal) {
-		&, em, a {
-			color: @del;
-		}
-	}
+  text-decoration: none;
+  &, em {
+    background-color: @del;
+  }
+  &:hover, &.reveal {
+    color: #fff - @del;
+  }
+  &:not(:hover):not(.reveal) {
+    &, em, a {
+      color: @del;
+    }
+  }
 }
 
 .ms-operator {
-	color: @mod;
+  color: @mod;
 }
 
 .ms-comment {
-	color: fade(@body, 60%);
+  color: fade(@body, 60%);
 }
 
 .ms-function {
-	color: @link;
+  color: @link;
 }
