@@ -8,10 +8,6 @@
 			"Always Lock to Bottom",
 			"Lock scrolling to page bottom even when tab is hidden"
 		],
-		"anonymise": [
-			"Anonymise",
-			"Display all posters as anonymous"
-		],
 		"autogif": [
 			"Animated GIF Thumbnails",
 			"Animate GIF thumbnails"

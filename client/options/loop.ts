@@ -15,7 +15,6 @@ export default () => {
 		hideThumbs: renderImages,
 		spoilers: toggleSpoilers,
 		autogif: toggleAutoGIF,
-		anonymise: toggleAnonymisation,
 		relativeTime: renderTime,
 	}
 	for (let key in handlers) {
@@ -81,16 +80,6 @@ function toggleAutoGIF() {
 			!!image && image.fileType === fileTypes.gif,
 		({ view }) =>
 			view.renderImage(false),
-	)
-}
-
-// Self-delusion tripfag filter
-function toggleAnonymisation() {
-	loopPosts(
-		({ name, trip, auth }) =>
-			!!name || !!trip || !!auth,
-		({ view }) =>
-			view.renderName(),
 	)
 }
 

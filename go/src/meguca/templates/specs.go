@@ -231,7 +231,6 @@ var optionSpecs = [...][]inputSpec{
 		{ID: "imageHover"},
 		{ID: "webmHover"},
 		{ID: "notification"},
-		{ID: "anonymise"},
 		{ID: "postInlineExpand"},
 		{ID: "relativeTime"},
 		{ID: "alwaysLock"},

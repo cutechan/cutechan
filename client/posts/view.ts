@@ -184,11 +184,6 @@ export default class PostView extends ImageHandler {
     // Render the name and tripcode in the header
     public renderName() {
         const el = this.el.querySelector(".name")
-        if (options.anonymise) {
-            el.innerHTML = lang.posts["anon"]
-            return
-        }
-
         let html = ""
         const { trip, name, auth, sage } = this.model
 

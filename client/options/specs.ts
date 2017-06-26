@@ -67,8 +67,6 @@ export const specs: { [id: string]: OptionSpec } = {
 			}
 		},
 	},
-	// Anonymise all poster names
-	anonymise: {},
 	// Expand post links inline
 	postInlineExpand: {
 		default: true,

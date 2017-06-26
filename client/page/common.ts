@@ -138,12 +138,7 @@ function localizeBacklinks(post: Post) {
 // cacheability.
 export function localizeThreads() {
 	localizeOmitted()
-	if (options.anonymise) {
-		const name = lang.posts["anon"]
-		for (let el of threads.querySelectorAll(".name")) {
-			el.textContent = name
-		}
-	} else if (options.lang !== config.defaultLang) {
+	if (options.lang !== config.defaultLang) {
 		// Localize posts without a poster name or tripcode
 		for (let el of threads.querySelectorAll(".name")) {
 			if (el.textContent === "Anonymous") {

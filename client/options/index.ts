@@ -13,7 +13,6 @@ interface Options extends ChangeEmitter {
 	autogif: boolean
 	spoilers: boolean
 	notification: boolean
-	anonymise: boolean
 	postInlineExpand: boolean
 	relativeTime: boolean
 	workModeToggle: boolean
