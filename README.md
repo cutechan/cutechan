@@ -136,11 +136,11 @@ A reference list of commands can be found in `./docs/installation.md`
 * Open MSYS2 shell
 * Install dependencies listed above with the `mingw-w64-x86_64-` prefix with
 pacman
-* Navigate to the meguca root directory
+* Navigate to the cutechan root directory
 * Run `make`
 
 ## Setup
-* See `./meguca help` for server operation
+* See `./cutechan help` for server operation
 * Login into the "admin" account via the infinity symbol in the top banner with
 the password "password"
 * Change the default password
@@ -149,7 +149,7 @@ the password "password"
 
 ## Development
 * See `./docs` for more documentation
-* `./meguca` or `./meguca debug` run the server in development mode
+* `./cutechan` or `./cutechan debug` run the server in development mode
 * `make server` and `make client` build the server and client separately
 * `make watch` watches the file system for changes and incrementally rebuilds
 the client

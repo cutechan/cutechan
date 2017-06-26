@@ -2,7 +2,7 @@ export node_bins=$(PWD)/node_modules/.bin
 export uglifyjs=$(node_bins)/uglifyjs
 export gulp=$(node_bins)/gulp
 export is_windows=false
-binary=meguca
+binary=cutechan
 ifeq ($(GOPATH),)
 	export PATH:=$(PATH):$(PWD)/go/bin
 	export GOPATH=$(PWD)/go
@@ -18,7 +18,7 @@ ifeq ($(OS), Windows_NT)
 	export PKG_CONFIG_LIBDIR=/mingw64/lib/pkgconfig/
 	export PATH:=$(PATH):/mingw64/bin/
 	export is_windows=true
-	binary=meguca.exe
+	binary=cutechan.exe
 endif
 
 .PHONY: server client imager test
@@ -72,7 +72,7 @@ server_clean:
 	rm -rf go/src/github.com go/src/golang.org go/bin go/pkg
 
 clean: client_clean server_clean
-	rm -rf .build .ffmpeg .package meguca-*.zip meguca-*.tar.xz meguca meguca.exe
+	rm -rf .build .ffmpeg .package cutechan-*.zip cutechan-*.tar.xz cutechan cutechan.exe
 	$(MAKE) -C scripts/migration/3to4 clean
 ifeq ($(is_windows), true)
 	rm -rf /.meguca_build *.dll

@@ -4,8 +4,8 @@
 *.dll
 error.log
 node_modules
-/meguca
-/meguca.exe
+/cutechan
+/cutechan.exe
 scripts/*.local.sh
 www/illya.mp4
 www/illya.webm
