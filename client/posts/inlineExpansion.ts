@@ -82,7 +82,7 @@ function contractPost(id: number, parent: HTMLElement) {
 function toggleLinkReferences(parent: Element, childID: number, on: boolean) {
 	const p = parent.closest("article"),
 		ch = document.getElementById(`p${childID}`),
-		pID = p.closest("article").getAttribute("data-id")
+		pID = p.closest("article").id.slice(4)
 	for (let el of p.querySelectorAll(".post-link")) {
 		// Check, if not from a post inlined in the child
 		if (el.closest("article") === ch
