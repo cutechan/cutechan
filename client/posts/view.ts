@@ -25,7 +25,7 @@ export default class PostView extends ImageHandler {
                 attrs.class += " deleted"
             }
             attrs.tag = "article"
-            attrs.id = model.id.toString()
+            attrs.id = `post${model.id}`
         }
         super(attrs)
 

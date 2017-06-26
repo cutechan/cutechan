@@ -11,30 +11,9 @@ let scrolled = false
 // Indicates if the page is scrolled to its bottom
 export let atBottom: boolean
 
-// Scroll to target anchor element, if any
-export function scrollToAnchor() {
-	if (!location.hash) {
-		if (!page.thread) {
-			scrollToTop()
-		}
-		return
-	}
-	const el = document.getElementById(location.hash)
-	if (!el) {
-		return scrollToTop()
-	}
-	scrollToElement(el)
-	checkBottom()
-}
-
 // Scroll to particular element and compensate for the banner height
 export function scrollToElement(el: HTMLElement) {
 	window.scrollTo(0, el.offsetTop - banner.offsetHeight - 5)
-}
-
-function scrollToTop() {
-	window.scrollTo(0, 0)
-	checkBottom()
 }
 
 // Scroll to the bottom of the thread
@@ -97,7 +76,3 @@ if (!isCuck) {
 	el.innerHTML = `#lock, #alwaysLock, label[for="alwaysLock"]{display: none;}`
 	document.head.append(el)
 }
-
-window.addEventListener("hashchange", scrollToAnchor, {
-	passive: true,
-})

@@ -37,7 +37,7 @@ export function extractPost(
 	board: string,
 	backlinks: { [id: number]: { [id: number]: number } },
 ): boolean {
-	const el = document.getElementById(post.id.toString())
+	const el = document.getElementById(`post${post.id}`)
 	if (hidden.has(post.id)) {
 		el.remove()
 		return true

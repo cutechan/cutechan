@@ -97,7 +97,7 @@ allow caching of generated posts.
 	<div id="catalog">
 		{% for _, t := range b %}
 			{% code idStr:= strconv.FormatUint(t.ID, 10) %}
-			<article id="{%s= idStr %}" {%= postClass(t.Post, true) %} data-id="{%s= idStr %}">
+			<article{% space %}{%= postClass(t.Post, true) %}{% space %}id="post{%s= idStr %}">
 				{%= deletedToggle() %}
 				{% if t.Image != nil %}
 					<figure>

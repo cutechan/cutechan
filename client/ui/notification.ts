@@ -3,7 +3,7 @@ import options from "../options"
 import lang from "../lang"
 import { thumbPath, Post } from "../posts"
 import { repliedToMe } from "./tab"
-import { scrollToAnchor, importTemplate } from "../util"
+import { importTemplate } from "../util"
 import { View } from "../base"
 
 // Displayed, when there is no image in post
@@ -50,7 +50,6 @@ export default function notifyAboutReply(post: Post) {
 		n.close()
 		window.focus()
 		location.hash = "#" + post.id
-		scrollToAnchor()
 	}
 }
 

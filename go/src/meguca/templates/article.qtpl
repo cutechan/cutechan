@@ -7,7 +7,8 @@
 
 {% func renderArticle(p common.Post, c articleContext) %}{% stripspace %}
 	{% code id := strconv.FormatUint(p.ID, 10) %}
-	<article id="{%s= id %}" {%= postClass(p, p.ID == c.op) %}>
+	<article{% space %}{%= postClass(p, p.ID == c.op) %}{% space %}id="post{%s= id %}">
+		<a name="{%s= id %}"></a>
 		{%= deletedToggle() %}
 		<header class="spaced">
 			<input type="checkbox" class="mod-checkbox hidden">
@@ -45,8 +46,10 @@
 			</time>
 			<nav>
 				{% code url := "#" + id %}
+				{% code if p.ID == c.op { url = "" } %}
 				{% if c.index %}
-					{% code url = util.ConcatStrings("/all/", id, "?last=100", url) %}
+					{% code opStr := strconv.FormatUint(c.op, 10) %}
+					{% code url = util.ConcatStrings("/", c.board, "/", opStr, url) %}
 				{% endif %}
 				<a href="{%s= url %}">
 					No.
@@ -57,8 +60,8 @@
 			</nav>
 			{% if c.index && c.subject != "" %}
 				<span>
-					{%= expandLink("all", id) %}
-					{%= last100Link("all", id) %}
+					{%= expandLink(c.board, id) %}
+					{%= last100Link(c.board, id) %}
 				</span>
 			{% endif %}
 			<a class="control">
@@ -136,7 +139,7 @@
 				{% space %}image{% if c.imageOmit > 1 %}s{% endif %}
 				{% space %}omitted{% space %}
 				<span class="act">
-					<a href="{%s= strconv.FormatUint(c.op, 10) %}">
+					<a href="/{%s= c.board %}/{%s= strconv.FormatUint(c.op, 10) %}">
 						See All
 					</a>
 				</span>
