@@ -235,8 +235,9 @@
 		"screen": "fit to screen"
 	},
 	"ui": {
+		"aggregator": "Aggregator metaboard",
 		"FAQ": "Information",
-		"account": "Account and board management",
+		"account": "Account management",
 		"add": "Add",
 		"apply": "Apply",
 		"assignStaff": "Assign staff",

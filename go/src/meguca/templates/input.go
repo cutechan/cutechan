@@ -91,6 +91,7 @@ func (w *formWriter) input(spec inputSpec) {
 
 	switch spec.Type {
 	case _bool:
+		w.attr("class", "option-checkbox")
 		w.typ("checkbox")
 		if spec.Val != nil && spec.Val.(bool) {
 			w.attr("checked", "")
@@ -206,6 +207,7 @@ func (w *formWriter) label(spec inputSpec, inside *func()) {
 	ln := w.lang.Forms[spec.ID]
 
 	w.N().S("<label")
+	w.attr("class", "option-label")
 	if !spec.NoID {
 		w.attr("for", spec.ID)
 	}

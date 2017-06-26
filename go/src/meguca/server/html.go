@@ -269,7 +269,7 @@ func crossRedirect(w http.ResponseWriter, r *http.Request) {
 	case nil:
 		url := r.URL
 		url.Path = fmt.Sprintf("/%s/%d", board, op)
-		url.Fragment = "p" + idStr
+		url.Fragment = idStr
 		http.Redirect(w, r, url.String(), 301)
 	case sql.ErrNoRows:
 		text404(w)

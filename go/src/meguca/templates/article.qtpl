@@ -14,9 +14,9 @@
 			{%= renderSticky(c.sticky) %}
 			{% if c.subject != "" %}
 				{% if c.board != "" %}
-					<b class="board">
+					<a class="board" href="/{%s= c.board %}/">
 						/{%s= c.board %}/
-					</b>
+					</a>
 				{% endif %}
 				<h3>{%s c.subject %}</h3>
 			{% endif %}

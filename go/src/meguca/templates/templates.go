@@ -9,6 +9,7 @@ import (
 	"html"
 	"meguca/auth"
 	"meguca/config"
+	"meguca/lang"
 	"sync"
 )
 
@@ -46,7 +47,11 @@ func Board(
 	threadHTML []byte,
 ) []byte {
 	boardConf := config.GetBoardConfigs(b)
-	title := html.EscapeString(fmt.Sprintf("/%s/ — %s", b, boardConf.Title))
+	bTitle := boardConf.Title
+	if b == "all" {
+		bTitle = lang.Get().UI["aggregator"]
+	}
+	title := html.EscapeString(fmt.Sprintf("/%s/ — %s", b, bTitle))
 	html := renderBoard(
 		threadHTML,
 		b, title,

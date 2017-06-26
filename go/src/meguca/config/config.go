@@ -27,9 +27,6 @@ var (
 	AllBoardConfigs = BoardConfContainer{
 		BoardConfigs: BoardConfigs{
 			ID: "all",
-			BoardPublic: BoardPublic{
-				Title: "Aggregator metaboard",
-			},
 		},
 		Hash: "0",
 	}
