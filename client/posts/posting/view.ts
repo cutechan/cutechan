@@ -1,7 +1,6 @@
 import PostView from "../view"
 import FormModel from "./model"
 import { Post } from "../model"
-import { boardConfig } from "../../state"
 import {
     setAttrs, importTemplate, atBottom, scrollToBottom, firstChild,
 } from "../../util"
@@ -52,11 +51,9 @@ export default class FormView extends PostView {
             "input[name=\"cancel\"]": postSM.feeder(postEvent.done),
         })
 
-        if (!boardConfig.textOnly) {
-            this.upload = new UploadForm(this.model, this.el)
-            this.upload.input.addEventListener("change", () =>
-                this.model.uploadFile())
-        }
+        this.upload = new UploadForm(this.model, this.el)
+        this.upload.input.addEventListener("change", () =>
+            this.model.uploadFile())
         this.inputElement("done").hidden = !this.model.nonLive
 
         const bq = this.el.querySelector("blockquote")

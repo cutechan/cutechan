@@ -14,7 +14,6 @@ import (
 )
 
 var (
-	errReadOnly          = errors.New("read only board")
 	errInvalidImageToken = errors.New("invalid image token")
 	errImageNameTooLong  = errors.New("image name too long")
 	errNoTextOrImage     = errors.New("no text or image")
@@ -59,11 +58,6 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 		return
 	}
 
-	conf, err := getBoardConfig(req.Board)
-	if err != nil {
-		return
-	}
-
 	post, err = constructPost(
 		req.ReplyCreationRequest,
 		ip,
@@ -78,7 +72,7 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 	}
 
 	// Perform this last, so there are less dangling images because of any error
-	hasImage := !conf.TextOnly && req.Image.Token != "" && req.Image.Name != ""
+	hasImage := req.Image.Token != "" && req.Image.Name != ""
 	if hasImage {
 		img := req.Image
 		post.Image, err = getImage(img.Token, img.Name, img.Spoiler)
@@ -122,13 +116,8 @@ func CreatePost(
 		}
 	}
 
-	conf, err := getBoardConfig(board)
-	if err != nil {
-		return
-	}
-
 	// Post must have either at least one character or an image to be allocated
-	hasImage := !conf.TextOnly && req.Image.Token != "" && req.Image.Name != ""
+	hasImage := req.Image.Token != "" && req.Image.Name != ""
 	if req.Body == "" && !hasImage {
 		err = errNoTextOrImage
 		return
@@ -221,15 +210,6 @@ func (c *Client) closePreviousPost() error {
 		return c.closePost()
 	}
 	return nil
-}
-
-// Retrieve post-related board configurations
-func getBoardConfig(board string) (conf config.BoardConfigs, err error) {
-	conf = config.GetBoardConfigs(board).BoardConfigs
-	if conf.ReadOnly {
-		err = errReadOnly
-	}
-	return
 }
 
 // Construct the common parts of the new post for both threads and replies

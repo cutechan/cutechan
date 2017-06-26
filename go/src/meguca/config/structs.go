@@ -37,8 +37,6 @@ type BoardConfigs struct {
 
 // BoardPublic contains publically accessible board-specific configurations
 type BoardPublic struct {
-	ReadOnly   bool   `json:"readOnly"`
-	TextOnly   bool   `json:"textOnly"`
 	Title      string `json:"title"`
 	Notice     string `json:"notice"`
 	Rules      string `json:"rules"`

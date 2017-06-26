@@ -5,7 +5,6 @@ import (
 	"errors"
 	"meguca/auth"
 	"meguca/common"
-	"meguca/config"
 	"meguca/db"
 	"meguca/parser"
 	"meguca/util"
@@ -20,7 +19,6 @@ var (
 	errInvalidSpliceCoords = errors.New("invalid splice coordinates")
 	errSpliceTooLong       = errors.New("splice text too long")
 	errSpliceNOOP          = errors.New("splice NOOP")
-	errTextOnly            = errors.New("text only board")
 	errHasImage            = errors.New("post already has image")
 )
 
@@ -282,10 +280,6 @@ func (c *Client) insertImage(data []byte) (err error) {
 	err = decodeMessage(data, &req)
 	if err != nil {
 		return
-	}
-
-	if config.GetBoardConfigs(c.post.board).TextOnly {
-		return errTextOnly
 	}
 
 	img, err := getImage(req.Token, req.Name, req.Spoiler)

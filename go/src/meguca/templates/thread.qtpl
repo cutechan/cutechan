@@ -13,9 +13,7 @@
 		<input name="op" type="text" value="{%s= strconv.FormatUint(id, 10) %}" hidden>
 		{%= input(sageSpec.wrap(), ln) %}
 		{%= noscriptPostCreationFields(pos) %}
-		{% if !conf.TextOnly %}
-			{%= uploadForm() %}
-		{% endif %}
+		{%= uploadForm() %}
 		{%= captcha() %}
 		{%= submit(true) %}
 	</form>

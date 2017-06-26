@@ -38,15 +38,7 @@ func TestInsertThread(t *testing.T) {
 			BoardConfigs: config.BoardConfigs{
 				ID: "r",
 				BoardPublic: config.BoardPublic{
-					ReadOnly: true,
-				},
-			},
-		},
-		{
-			BoardConfigs: config.BoardConfigs{
-				ID: "a",
-				BoardPublic: config.BoardPublic{
-					TextOnly: true,
+					Title: "123",
 				},
 			},
 		},
@@ -66,7 +58,6 @@ func TestInsertThread(t *testing.T) {
 	}{
 		{"invalid board", "all", errInvalidBoard},
 		{"invalid board", "x", errInvalidBoard},
-		{"read-only board", "r", errReadOnly},
 	}
 
 	for i := range cases {
@@ -84,7 +75,6 @@ func TestInsertThread(t *testing.T) {
 	}
 
 	t.Run("with image", testCreateThread)
-	t.Run("text only board", testCreateThreadTextOnly)
 }
 
 func testCreateThread(t *testing.T) {
@@ -146,38 +136,10 @@ func testCreateThread(t *testing.T) {
 	AssertDeepEquals(t, thread, std)
 }
 
-func testCreateThreadTextOnly(t *testing.T) {
-	post, err := CreateThread(ThreadCreationRequest{
-		ReplyCreationRequest: ReplyCreationRequest{
-			Name:     "name",
-			Password: "123",
-		},
-		Subject: "subject",
-		Board:   "a",
-	}, "")
-	if err != nil {
-		t.Fatal(err)
-	}
-	if post.Image != nil {
-		t.Error("image inserted")
-	}
-
-	hasImage, err := db.HasImage(7)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if hasImage {
-		t.Error("image written to database")
-	}
-}
-
-func setBoardConfigs(t testing.TB, textOnly bool) {
+func setBoardConfigs(t testing.TB) {
 	config.ClearBoards()
 	_, err := config.SetBoardConfigs(config.BoardConfigs{
 		ID: "a",
-		BoardPublic: config.BoardPublic{
-			TextOnly: textOnly,
-		},
 	})
 	if err != nil {
 		t.Fatal(err)
@@ -229,7 +191,7 @@ func TestClosePreviousPostOnCreation(t *testing.T) {
 	if err := db.SetPostCounter(5); err != nil {
 		t.Fatal(err)
 	}
-	setBoardConfigs(t, true)
+	setBoardConfigs(t)
 
 	sv := newWSServer(t)
 	defer sv.Close()
@@ -258,7 +220,7 @@ func TestClosePreviousPostOnCreation(t *testing.T) {
 }
 
 func TestPostCreationValidations(t *testing.T) {
-	setBoardConfigs(t, false)
+	setBoardConfigs(t)
 
 	sv := newWSServer(t)
 	defer sv.Close()
@@ -294,7 +256,7 @@ func TestPostCreationValidations(t *testing.T) {
 func TestPostCreation(t *testing.T) {
 	feeds.Clear()
 	prepareForPostCreation(t)
-	setBoardConfigs(t, false)
+	setBoardConfigs(t)
 	writeSampleImage(t)
 	token, err := db.NewImageToken(stdJPEG.SHA1)
 	if err != nil {
@@ -425,43 +387,10 @@ func writeSampleThread(t testing.TB) {
 	}
 }
 
-func TestTextOnlyPostCreation(t *testing.T) {
-	feeds.Clear()
-	prepareForPostCreation(t)
-	setBoardConfigs(t, true)
-
-	sv := newWSServer(t)
-	defer sv.Close()
-	cl, _ := sv.NewClient()
-	registerClient(t, cl, 1, "a")
-	defer cl.Close(nil)
-
-	req := ReplyCreationRequest{
-		Body:     "a",
-		Password: "123",
-	}
-
-	if err := cl.insertPost(marshalJSON(t, req)); err != nil {
-		t.Fatal(err)
-	}
-
-	// Assert no image in post
-	hasImage, err := db.HasImage(6)
-	if err != nil {
-		t.Fatal(err)
-	}
-	if hasImage {
-		t.Error("DB post has image")
-	}
-	if cl.post.hasImage {
-		t.Error("openPost has image")
-	}
-}
-
 func BenchmarkPostCreation(b *testing.B) {
 	feeds.Clear()
 	prepareForPostCreation(b)
-	setBoardConfigs(b, true)
+	setBoardConfigs(b)
 
 	sv := newWSServer(b)
 	defer sv.Close()

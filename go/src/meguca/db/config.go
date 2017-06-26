@@ -67,7 +67,7 @@ func loadBoardConfigs() error {
 
 func scanBoardConfigs(r rowScanner) (c config.BoardConfigs, err error) {
 	err = r.Scan(
-		&c.ReadOnly, &c.TextOnly, &c.ID, &c.Title, &c.Notice, &c.Rules,
+		&c.ID, &c.Title, &c.Notice, &c.Rules,
 	)
 	return
 }
@@ -75,7 +75,7 @@ func scanBoardConfigs(r rowScanner) (c config.BoardConfigs, err error) {
 // WriteBoard writes a board complete with configurations to the database
 func WriteBoard(tx *sql.Tx, c BoardConfigs) error {
 	_, err := getStatement(tx, "write_board").Exec(
-		c.ID, c.ReadOnly, c.TextOnly, c.Created, c.Title, c.Notice, c.Rules,
+		c.ID, c.Created, c.Title, c.Notice, c.Rules,
 	)
 	return err
 }
@@ -84,7 +84,7 @@ func WriteBoard(tx *sql.Tx, c BoardConfigs) error {
 func UpdateBoard(c config.BoardConfigs) error {
 	return execPrepared(
 		"update_board",
-		c.ID, c.ReadOnly, c.TextOnly, c.Title, c.Notice, c.Rules,
+		c.ID, c.Title, c.Notice, c.Rules,
 	)
 }
 

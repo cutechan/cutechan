@@ -108,8 +108,6 @@ var specs = map[string][]inputSpec{
 		repeatPasswordSpec,
 	},
 	"configureBoard": {
-		{ID: "readOnly"},
-		{ID: "textOnly"},
 		{
 			ID:        "title",
 			Type:      _string,

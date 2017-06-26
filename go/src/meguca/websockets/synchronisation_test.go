@@ -39,7 +39,7 @@ func TestOldFeedClosing(t *testing.T) {
 
 func TestSyncToBoard(t *testing.T) {
 	feeds.Clear()
-	setBoardConfigs(t, false)
+	setBoardConfigs(t)
 
 	sv := newWSServer(t)
 	defer sv.Close()

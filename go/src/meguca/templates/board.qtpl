@@ -46,7 +46,7 @@
 				<input name="subject" placeholder="{%s= ln.UI["subject"] %}" required type="text" maxlength="100">
 				<br>
 				{%= noscriptPostCreationFields(pos) %}
-				{% if id == "all" || !conf.TextOnly %}
+				{% if id == "all" %}
 					{%= uploadForm() %}
 				{% endif %}
 				{%= captcha() %}

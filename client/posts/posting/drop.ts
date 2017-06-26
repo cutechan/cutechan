@@ -2,7 +2,7 @@
 
 import { postSM, postEvent } from "."
 import { trigger } from "../../util"
-import { page, boardConfig } from "../../state"
+import { page } from "../../state"
 import FormModel from "./model"
 
 // Handle file drop
@@ -16,10 +16,6 @@ function onDrop(e: DragEvent) {
 
 	e.stopPropagation()
 	e.preventDefault()
-
-	if (boardConfig.textOnly) {
-		return
-	}
 
 	// Create form, if none
 	postSM.feed(postEvent.open)

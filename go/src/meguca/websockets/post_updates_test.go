@@ -280,7 +280,7 @@ func TestClosePostWithLinks(t *testing.T) {
 		time:  time.Now().Unix(),
 		body:  []byte(" >>22 "),
 	}
-	setBoardConfigs(t, false)
+	setBoardConfigs(t)
 
 	if err := cl.closePost(); err != nil {
 		t.Fatal(err)
@@ -415,7 +415,7 @@ func TestSplice(t *testing.T) {
 	feeds.Clear()
 	assertTableClear(t, "boards")
 	writeSampleBoard(t)
-	setBoardConfigs(t, false)
+	setBoardConfigs(t)
 
 	const longSplice = `Never gonna give you up Never gonna let you down Never gonna run around and desert you Never gonna make you cry Never gonna say goodbye Never gonna tell a lie and hurt you `
 
@@ -600,34 +600,13 @@ func TestInsertImageIntoPostWithImage(t *testing.T) {
 	}
 }
 
-func TestInsertImageOnTextOnlyBoard(t *testing.T) {
-	setBoardConfigs(t, true)
-
-	sv := newWSServer(t)
-	defer sv.Close()
-	cl, _ := sv.NewClient()
-	cl.post = openPost{
-		id:    1,
-		board: "a",
-		time:  time.Now().Unix(),
-	}
-
-	req := ImageRequest{
-		Name:  "foo.jpeg",
-		Token: "123",
-	}
-	if err := cl.insertImage(marshalJSON(t, req)); err != errTextOnly {
-		UnexpectedError(t, err)
-	}
-}
-
 func TestInsertImage(t *testing.T) {
 	feeds.Clear()
 	assertTableClear(t, "boards", "images")
 	writeSampleBoard(t)
 	writeSampleThread(t)
 	writeSampleImage(t)
-	setBoardConfigs(t, false)
+	setBoardConfigs(t)
 
 	post := db.Post{
 		StandalonePost: common.StandalonePost{

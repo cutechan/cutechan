@@ -19,8 +19,6 @@ interface Configs {
 
 // Board-specific configurations
 export interface BoardConfigs {
-	readOnly: boolean
-	textOnly: boolean
 	title: string
 	notice: string
 	rules: string

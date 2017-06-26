@@ -176,10 +176,6 @@
 			"#pyu",
 			"Don't ask"
 		],
-		"readOnly": [
-			"Read only",
-			"Disable post creation"
-		],
 		"register": [
 			"Register",
 			""
@@ -223,10 +219,6 @@
 		"staffTitle": [
 			"Staff Title",
 			"Display your staff title in the post header"
-		],
-		"textOnly": [
-			"Text only",
-			"Disable file uploads"
 		],
 		"theme": [
 			"Theme",
