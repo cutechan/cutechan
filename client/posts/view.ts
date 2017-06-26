@@ -17,7 +17,7 @@ export default class PostView extends ImageHandler {
         if (el) {
             attrs.el = el
         } else {
-            attrs.class = 'glass'
+            attrs.class = 'post'
             if (model.editing) {
                 attrs.class += ' editing'
             }
@@ -25,7 +25,7 @@ export default class PostView extends ImageHandler {
                 attrs.class += " deleted"
             }
             attrs.tag = "article"
-            attrs.id = "p" + model.id
+            attrs.id = model.id.toString()
         }
         super(attrs)
 
@@ -41,7 +41,7 @@ export default class PostView extends ImageHandler {
     public render() {
         if (this.model.subject) {
             const el = this.el.querySelector("h3")
-            el.innerHTML = `「${escape(this.model.subject)}」`
+            el.innerHTML = escape(this.model.subject)
             el.hidden = false
         }
 

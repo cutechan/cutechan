@@ -277,7 +277,7 @@ export default class FormView extends PostView {
 
     // Transition into allocated post
     public renderAlloc() {
-        this.id = this.el.id = "p" + this.model.id
+        this.id = this.el.id = this.model.id.toString()
         this.el.querySelector("header").classList.remove("temporary")
         this.renderHeader()
         this.showDone()

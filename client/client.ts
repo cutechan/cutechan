@@ -60,7 +60,7 @@ export function insertPost(data: PostData) {
 	const last = document
 		.getElementById("thread-container")
 		.lastElementChild
-	if (last.id === "p0") {
+	if (last.id === "0") {
 		last.before(view.el)
 	} else {
 		last.after(view.el)
