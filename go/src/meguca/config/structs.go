@@ -32,7 +32,6 @@ type Public struct {
 // BoardConfigs stores board-specific configuration
 type BoardConfigs struct {
 	BoardPublic
-	DisableRobots bool     `json:"disableRobots"`
 	ID            string   `json:"id"`
 }
 

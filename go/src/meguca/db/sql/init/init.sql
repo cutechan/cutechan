@@ -63,7 +63,6 @@ create table image_tokens (
 create table boards (
 	readOnly boolean not null,
 	textOnly boolean not null,
-	disableRobots boolean not null default false,
 	id text primary key,
 	created timestamp not null,
 	title varchar(100) not null,

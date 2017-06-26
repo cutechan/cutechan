@@ -110,7 +110,6 @@ var specs = map[string][]inputSpec{
 	"configureBoard": {
 		{ID: "readOnly"},
 		{ID: "textOnly"},
-		{ID: "disableRobots"},
 		{
 			ID:        "title",
 			Type:      _string,

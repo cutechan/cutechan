@@ -1,3 +1,3 @@
-select readOnly, textOnly, disableRobots, id, title, notice, rules
+select readOnly, textOnly, id, title, notice, rules
 	from boards
 	where id = $1

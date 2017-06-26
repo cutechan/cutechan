@@ -40,10 +40,6 @@
 			"DesuStorage",
 			"desustorage.org image search"
 		],
-		"disableRobots": [
-			"Prevent crawlers",
-			"Prevent automated website crawlers, such as search engine indexers, from accessing this board."
-		],
 		"disableUserBoards": [
 			"Disable non-admin board creation",
 			"Prevents any account apart from the 'admin' account from creating new boards"
