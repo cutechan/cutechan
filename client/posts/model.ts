@@ -15,7 +15,6 @@ export class Post extends Model implements PostData {
 	public op: number
 	public editing: boolean
 	public deleted: boolean
-	public sage: boolean
 	public banned: boolean
 	public sticky: boolean
 	protected seenOnce: boolean

@@ -21,14 +21,12 @@ var (
 		Required:     true,
 		Autocomplete: "new-password",
 	}
-	sageSpec       = inputSpec{ID: "sage"}
 	staffTitleSpec = inputSpec{ID: "staffTitle"}
 )
 
 var specs = map[string][]inputSpec{
 	"identity": {
 		{ID: "live"},
-		sageSpec,
 		{
 			ID:           "name",
 			Type:         _string,

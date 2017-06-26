@@ -126,7 +126,6 @@ export default class FormView extends PostView {
         this.model.name = name.trim()
         this.model.trip = trip
         this.model.auth = auth ? "??" : ""
-        this.model.sage = identity.sage
         this.renderName()
     }
 

@@ -7,8 +7,6 @@ export interface ChangeEmitter {
 	// key can also be "*" to execute func on any property change
 	onChange(key: string, func: HookHandler): void
 	replaceWith(newObj: ChangeEmitter): void
-
-	[index: string]: any
 }
 
 // Wrap an object with a Proxy that executes handlers on property changes.

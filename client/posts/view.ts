@@ -185,7 +185,7 @@ export default class PostView extends ImageHandler {
     public renderName() {
         const el = this.el.querySelector(".name")
         let html = ""
-        const { trip, name, auth, sage } = this.model
+        const { trip, name, auth } = this.model
 
         if (name || !trip) {
             if (name) {
@@ -205,7 +205,6 @@ export default class PostView extends ImageHandler {
             el.classList.add("admin")
             html += ` ## ${lang.posts[auth] || "??"}`
         }
-        el.classList.toggle("sage", !!sage)
         el.innerHTML = html
     }
 

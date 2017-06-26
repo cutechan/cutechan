@@ -8,17 +8,14 @@ const base64 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_
 
 interface Identity extends ChangeEmitter {
 	auth: boolean
-	sage: boolean
 	live: boolean
 	name: string
 	postPassword: string
-	[index: string]: any
 }
 
 let identity = {
 	auth: false,
 	name: localStorage.getItem("name") || "",
-	sage: localStorage.getItem("sage") === "true",
 	postPassword: randomID(64),
 } as Identity
 const liveKey = localStorage.getItem("live")
@@ -78,7 +75,7 @@ class IdentityPanel extends BannerModal {
 // Generate a new base post allocation request
 export function newAllocRequest() {
 	const req: { [key: string]: any } = { password: identity.postPassword }
-	for (let key of ["name", "sage"]) {
+	for (let key of ["name"]) {
 		if (identity[key]) {
 			req[key] = identity[key]
 		}
