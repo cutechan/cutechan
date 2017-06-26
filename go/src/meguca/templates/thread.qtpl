@@ -9,8 +9,8 @@
 	{% code conf := config.GetBoardConfigs(board) %}
 	{% code ln := lang.Get() %}
 	<form id="new-reply-form" action="/api/create-reply" method="post" enctype="multipart/form-data" class="top-margin hidden">
-		<input name="board" type="text" value="{%s= board %}" hidden>
-		<input name="op" type="text" value="{%s= strconv.FormatUint(id, 10) %}" hidden>
+		<input name="board" type="text" value="{%s board %}" hidden>
+		<input name="op" type="text" value="{%s strconv.FormatUint(id, 10) %}" hidden>
 		{%= noscriptPostCreationFields(pos) %}
 		{%= uploadForm() %}
 		{%= captcha() %}
@@ -19,17 +19,17 @@
 	<span class="aside-container top-margin">
 		<span class="act">
 			<a href=".">
-				{%s= ln.UI["return"] %}
+				{%s ln.UI["return"] %}
 			</a>
 		</span>
 		<span class="act">
 			<a href="catalog">
-				{%s= ln.UI["catalog"] %}
+				{%s ln.UI["catalog"] %}
 			</a>
 		</span>
 		<span id="expand-images" class="act">
 			<a>
-				{%s= ln.Common.Posts["expandImages"] %}
+				{%s ln.Common.Posts["expandImages"] %}
 			</a>
 		</span>
 		{%= hoverReveal("span", conf.Notice, ln.UI["showNotice"]) %}
@@ -42,26 +42,26 @@
 	<span class="aside-container">
 		<span class="act" id="bottom">
 			<a href=".">
-				{%s= ln.UI["return"] %}
+				{%s ln.UI["return"] %}
 			</a>
 		</span>
 		<span class="act">
 			<a href="catalog">
-				{%s= ln.UI["catalog"] %}
+				{%s ln.UI["catalog"] %}
 			</a>
 		</span>
 		{% if !abbrev %}
 			<span class="act">
 				<a href="?last=100#bottom">
-					{%s= ln.Common.UI["last"] %}{% space %}100
+					{%s ln.Common.UI["last"] %}{% space %}100
 				</a>
 			</span>
 		{% endif %}
 		<span class="act posting glass">
-			<a>{%s= ln.UI["reply"] %}</a>
+			<a>{%s ln.UI["reply"] %}</a>
 		</span>
 		<span id="lock" style="visibility: hidden;">
-			{%s= ln.UI["lockedToBottom"] %}
+			{%s ln.UI["lockedToBottom"] %}
 		</span>
 	</span>
 {% endstripspace %}{% endfunc %}
@@ -69,7 +69,7 @@
 ThreadPosts renders the post content of a thread. Separate function to allow
 caching of generated posts.
 {% func ThreadPosts(t common.Thread, json []byte) %}{% stripspace %}
-	<section id="thread-container" data-id="{%s= strconv.FormatUint(t.ID, 10) %}">
+	<section id="thread-container" data-id="{%s strconv.FormatUint(t.ID, 10) %}">
 		{% code bls := extractBacklinks(1<<10, t) %}
 		{%= renderThreadPosts(t, bls, config.Get().RootURL, false) %}
 		<script id="post-data" type="application/json">

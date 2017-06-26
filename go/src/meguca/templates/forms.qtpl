@@ -7,7 +7,7 @@ OwnedBoard renders a form for selecting one of several boards owned by the user
 	{% if len(boards) != 0 %}
 		<select name="boards" required>
 			{% for _, b := range boards %}
-				<option value="{%s= b.ID %}">
+				<option value="{%s b.ID %}">
 					{%= formatTitle(b.ID, b.Title) %}
 				</option>
 			{% endfor %}
@@ -15,7 +15,7 @@ OwnedBoard renders a form for selecting one of several boards owned by the user
 		<br>
 		{%= submit(true) %}
 	{% else %}
-		{%s= lang.Get().UI["ownNoBoards"] %}
+		{%s lang.Get().UI["ownNoBoards"] %}
 		<br>
 		<br>
 		{%= cancel() %}
@@ -24,27 +24,27 @@ OwnedBoard renders a form for selecting one of several boards owned by the user
 {% endstripspace %}{% endfunc %}
 
 {% func formatTitle(id, title string) %}{% stripspace %}
-	/{%s= id %}/{% space %}-{% space %}{%s title %}
+	/{%s id %}/{% space %}-{% space %}{%s title %}
 {% endstripspace %}{% endfunc %}
 
 BoardNavigation renders a board selection and search form
 {% func BoardNavigation() %}{% stripspace %}
 	{% code ln := lang.Get().UI %}
-	<input type="text" class="full-width" name="search" placeholder="{%s= ln["search"] %}">
+	<input type="text" class="full-width" name="search" placeholder="{%s ln["search"] %}">
 	<br>
 	<form>
 		<span class="flex">
 			{%= submit(true) %}
 			<label>
 				<input type="checkbox" name="pointToCatalog">
-				{%s= ln["pointToCatalog"] %}
+				{%s ln["pointToCatalog"] %}
 			</label>
 		</span>
 		<div>
 			{% for _, b := range config.GetBoardTitles() %}
 				<label class="board">
-					<input type="checkbox" name="{%s= b.ID %}">
-					<a href="/{%s= b.ID %}/">
+					<input type="checkbox" name="{%s b.ID %}">
+					<a href="/{%s b.ID %}/">
 						{%= formatTitle(b.ID, b.Title) %}
 					</a>
 					<br>
@@ -76,8 +76,8 @@ CaptchaConfirmation renders a confirmation form with an optional captcha
 		<noscript>
 			<iframe width="240" height="100" marginwidth="0" marginheight="0" src="/api/captcha/noscript/load"></iframe>
 		</noscript>
-		<input type="text" name="captchaID" placeholder="{%s= ln["captchaID"] %}" required>
-		<input name="captcha" placeholder="{%s= ln["captcha"] %}" type="number" autocomplete="off" required>
+		<input type="text" name="captchaID" placeholder="{%s ln["captchaID"] %}" required>
+		<input name="captcha" placeholder="{%s ln["captcha"] %}" type="number" autocomplete="off" required>
 	</div>
 {% endstripspace %}{% endfunc %}
 
@@ -116,12 +116,12 @@ Form formatted as a table, with cancel and submit buttons
 Render a map form for inputting map-like data
 {% func renderMap(spec inputSpec) %}{% stripspace %}
 	{% code ln := lang.Get() %}
-	<div class="map-form" name="{%s= spec.ID %}" title="{%s= ln.Forms[spec.ID][1] %}">
+	<div class="map-form" name="{%s spec.ID %}" title="{%s ln.Forms[spec.ID][1] %}">
 		{% for k, v := range spec.Val.(map[string]string) %}
 			{%= keyValueForm(k, v) %}
 		{% endfor %}
 		<a class="map-add">
-			{%s= ln.UI["add"] %}
+			{%s ln.UI["add"] %}
 		</a>
 		<br>
 	</div>
@@ -130,12 +130,12 @@ Render a map form for inputting map-like data
 Render form for inputting array-like data
 {% func renderArray(spec inputSpec) %}{% stripspace %}
 	{% code ln := lang.Get() %}
-	<div class="array-form" name="{%s= spec.ID %}" title="{%s= ln.Forms[spec.ID][1] %}">
+	<div class="array-form" name="{%s spec.ID %}" title="{%s ln.Forms[spec.ID][1] %}">
 		{% for _, v := range spec.Val.([]string) %}
 			{%= arrayItemForm(v) %}
 		{% endfor %}
 		<a class="array-add">
-			{%s= ln.UI["add"] %}
+			{%s ln.UI["add"] %}
 		</a>
 		<br>
 	</div>
@@ -143,7 +143,7 @@ Render form for inputting array-like data
 
 Render submit and cancel buttons
 {% func submit(cancel bool) %}{% stripspace %}
-	<input type="submit" value="{%s= lang.Get().UI["submit"] %}">
+	<input type="submit" value="{%s lang.Get().UI["submit"] %}">
 	{% if cancel %}
 		{%= cancel() %}
 	{% endif %}
@@ -152,14 +152,14 @@ Render submit and cancel buttons
 
 Renders a cancel button
 {% func cancel() %}{% stripspace %}
-	<input type="button" name="cancel" value="{%s= lang.Get().UI["cancel"] %}">
+	<input type="button" name="cancel" value="{%s lang.Get().UI["cancel"] %}">
 {% endstripspace %}{% endfunc %}
 
 Render link to request new noscript captcha
 {% func NoscriptCaptchaLink() %}{% stripspace %}
 	<a href="/api/captcha/noscript/new" style="display: flex; width: 100%; height: 100%;">
 		<span style="align-self: center; margin: auto;">
-			{%s= lang.Get().UI["loadCaptcha"] %}
+			{%s lang.Get().UI["loadCaptcha"] %}
 		</span>
 	</a>
 {% endstripspace %}{% endfunc %}
@@ -169,15 +169,15 @@ Render the captcha for noscript browsers
 	{% code id := auth.GetNoscriptCaptcha(ip) %}
 	<div style="display: grid">
 		<span>
-			ID:{% space %}{%s= id %}
+			ID:{% space %}{%s id %}
 		</span>
-		<img src="/api/captcha/image/{%s= id %}.png">
+		<img src="/api/captcha/image/{%s id %}.png">
 	</div>
 {% endstripspace %}{% endfunc %}
 
 {% func BannerForm() %}{% stripspace %}
 	<div style="white-space: normal;">
-		{%s= lang.Get().UI["bannerSpecs"] %}
+		{%s lang.Get().UI["bannerSpecs"] %}
 	</div>
 	<br>
 	<input type="file" name="banners" multiple accept="image/png, image/gif, image/jpeg, video/webm">

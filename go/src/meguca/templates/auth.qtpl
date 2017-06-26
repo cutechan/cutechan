@@ -33,14 +33,14 @@ BanPage renders a ban page for a banned user
 {% func BanList(bans []auth.BanRecord, board string, canUnban bool) %}{% stripspace %}
 	{% code ln := lang.Get().UI %}
 	{%= tableStyle() %}
-	<form method="post" action="/api/unban/{%s= board %}">
+	<form method="post" action="/api/unban/{%s board %}">
 		<table>
 			<tr>
 				{% for _, id := range [...]string{"reason", "by", "post", "posterID", "expires"} %}
-					<th>{%s= ln[id] %}</th>
+					<th>{%s ln[id] %}</th>
 				{% endfor %}
 				{% if canUnban %}
-					<th>{%s= ln["unban"] %}</th>
+					<th>{%s ln["unban"] %}</th>
 				{% endif %}
 			</tr>
 			{% code salt := config.Get().Salt %}
@@ -86,7 +86,7 @@ Renders a moderation log page
 	<table>
 		<tr>
 			{% for _, id := range [...]string{"type", "by", "post", "time"} %}
-				<th>{%s= ln[id] %}</th>
+				<th>{%s ln[id] %}</th>
 			{% endfor %}
 		</tr>
 		{% for _, l := range log %}
@@ -94,15 +94,15 @@ Renders a moderation log page
 				<td>
 					{% switch l.Type %}
 					{% case auth.BanPost %}
-						{%s= ln["ban"] %}
+						{%s ln["ban"] %}
 					{% case auth.UnbanPost %}
-						{%s= ln["unban"] %}
+						{%s ln["unban"] %}
 					{% case auth.DeletePost %}
-						{%s= ln["deletePost"] %}
+						{%s ln["deletePost"] %}
 					{% case auth.DeleteImage %}
-						{%s= ln["deleteImage"] %}
+						{%s ln["deleteImage"] %}
 					{% case auth.SpoilerImage %}
-						{%s= ln["spoilerImage"] %}
+						{%s ln["spoilerImage"] %}
 					{% endswitch %}
 				</td>
 				<td>{%s l.By %}</td>

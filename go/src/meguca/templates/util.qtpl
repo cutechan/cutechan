@@ -6,7 +6,7 @@ Renders the tab selection butts in tabbed windows
 	<div class="tab-butts">
 		{% for i, n := range names %}
 			<a class="tab-link{% if i == 0 %}{% space %}tab-sel{% endif %}" data-id="{%d i %}">
-				{%s= n %}
+				{%s n %}
 			</a>
 		{% endfor %}
 	</div>
@@ -23,9 +23,9 @@ Render a link to another post. Can optionally be cross-thread.
 	{% endif %}
 	{% code url = append(url, "#"...) %}
 	{% code url = append(url, idBuf...) %}
-	<a class="post-link" data-id="{%z= idBuf %}" href="{%z= url %}">
+	<a class="post-link" data-id="{%z idBuf %}" href="{%z url %}">
 		&gt;&gt;
-		{%z= idBuf %}
+		{%z idBuf %}
 		{% if cross %}
 			{% space %}➡
 		{% endif %}
@@ -34,7 +34,7 @@ Render a link to another post. Can optionally be cross-thread.
 
 {% func expandLink(board, id string) %}{% stripspace %}
 	<span class="act">
-		<a class="expand-link" href="/{%s= board %}/{%s= id %}">
+		<a class="expand-link" href="/{%s board %}/{%s id %}">
 			Expand
 		</a>
 	</span>
@@ -42,7 +42,7 @@ Render a link to another post. Can optionally be cross-thread.
 
 {% func last100Link(board, id string) %}{% stripspace %}
 	<span class="act">
-		<a class="lastN-link" href="/{%s= board %}/{%s= id %}?last=100">
+		<a class="lastN-link" href="/{%s board %}/{%s id %}?last=100">
 			Last 100
 		</a>
 	</span>
@@ -77,14 +77,14 @@ Notice widget, that reveals text on hover
 	{% if text == "" %}
 		{% return %}
 	{% endif %}
-	<{%s= tag %}{% space %}class="hover-reveal{% if tag == "aside" %}{% space %}glass{% endif %}">
+	<{%s tag %}{% space %}class="hover-reveal{% if tag == "aside" %}{% space %}glass{% endif %}">
 		<span class="act">
-			{%s= label %}
+			{%s label %}
 		</span>
 		<span class="popup-menu glass">
 			{%s text %}
 		</span>
-	</{%s= tag %}>
+	</{%s tag %}>
 {% endstripspace %}{% endfunc %}
 
 Render pin signifying a thread is sticky

@@ -14,36 +14,36 @@
 		<h1 class="image-banner">
 			{% code url := fmt.Sprintf("/assets/banners/%s/%d", conf.ID, bannerID) %}
 			{% if mime == "video/webm" %}
-				<video src="{%s= url %}" autoplay loop>
+				<video src="{%s url %}" autoplay loop>
 			{% else %}
-				<img src="{%s= url %}">
+				<img src="{%s url %}">
 			{% endif %}
 		</h1>
 	{% endif %}
 	<h1 id="page-title">
-		{%s= title %}
+		{%s title %}
 	</h1>
 	<span class="aside-container">
 		<aside id="thread-form-container" class="glass">
 			<span class="act">
 				<a class="new-thread-button">
-					{%s= ln.UI["newThread"] %}
+					{%s ln.UI["newThread"] %}
 				</a>
 			</span>
 			<form id="new-thread-form" action="/api/create-thread" method="post" enctype="multipart/form-data" class="hidden">
 				{% if id == "all" %}
 					<select name="board" required>
 						{% for _, b := range config.GetBoardTitles() %}
-							<option value="{%s= b.ID %}">
+							<option value="{%s b.ID %}">
 								{%= formatTitle(b.ID, b.Title) %}
 							</option>
 						{% endfor %}
 					</select>
 					<br>
 				{% else %}
-					<input type="text" name="board" value="{%s= conf.ID %}" hidden>
+					<input type="text" name="board" value="{%s conf.ID %}" hidden>
 				{% endif %}
-				<input name="subject" placeholder="{%s= ln.UI["subject"] %}" required type="text" maxlength="100">
+				<input name="subject" placeholder="{%s ln.UI["subject"] %}" required type="text" maxlength="100">
 				<br>
 				{%= noscriptPostCreationFields(pos) %}
 				{% if id == "all" %}
@@ -55,7 +55,7 @@
 		</aside>
 		<aside id="refresh" class="act glass">
 			<a>
-				{%s= ln.Common.UI["refresh"] %}
+				{%s ln.Common.UI["refresh"] %}
 			</a>
 		</aside>
 		{%= catalogLink(catalog) %}
@@ -65,12 +65,12 @@
 		{%= hoverReveal("aside", conf.Notice, ln.UI["showNotice"]) %}
 		{%= hoverReveal("aside", conf.Rules, ln.UI["rules"]) %}
 		<span id="catalog-controls" class="margin-spaced">
-			<input type="text" name="search" placeholder="{%s= ln.UI["search"] %}" title="{%s= ln.UI["searchTooltip"] %}">
+			<input type="text" name="search" placeholder="{%s ln.UI["search"] %}" title="{%s ln.UI["searchTooltip"] %}">
 			{% if catalog %}
 				<select name="sortMode">
 					{% for i, s := range [...]string{"bump", "lastReply", "creation", "replyCount", "fileCount"} %}
-						<option value="{%s= s %}">
-							{%s= ln.SortModes[i] %}
+						<option value="{%s s %}">
+							{%s ln.SortModes[i] %}
 						</option>
 					{% endfor %}
 				</select>
@@ -97,28 +97,28 @@ allow caching of generated posts.
 	<div id="catalog">
 		{% for _, t := range b %}
 			{% code idStr:= strconv.FormatUint(t.ID, 10) %}
-			<article{% space %}{%= postClass(t.Post, true) %}{% space %}id="post{%s= idStr %}">
+			<article{% space %}{%= postClass(t.Post, true) %}{% space %}id="post{%s idStr %}">
 				{%= deletedToggle() %}
 				{% if t.Image != nil %}
 					<figure>
 						{% code img := *t.Image %}
-						<a href="/{%s= t.Board %}/{%s= idStr %}">
+						<a href="/{%s t.Board %}/{%s idStr %}">
 							{% if img.Spoiler %}
 								<img src="/assets/spoil/default.jpg" width="150" height="150" class="catalog">
 							{% else %}
-								<img width="{%s= strconv.FormatUint(uint64(img.Dims[2]), 10) %}" height="{%s= strconv.FormatUint(uint64(img.Dims[3]), 10) %}" class="catalog" src="{%s= assets.ThumbPath(img.ThumbType, img.SHA1) %}">
+								<img width="{%s strconv.FormatUint(uint64(img.Dims[2]), 10) %}" height="{%s strconv.FormatUint(uint64(img.Dims[3]), 10) %}" class="catalog" src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}">
 							{% endif %}
 						</a>
 					</figure>
 				{% endif %}
 				<span class="spaced thread-links hide-empty">
 					<b class="board">
-						/{%s= t.Board %}/
+						/{%s t.Board %}/
 					</b>
 					<span class="counters">
-						{%s= strconv.FormatUint(uint64(t.PostCtr), 10) %}
+						{%s strconv.FormatUint(uint64(t.PostCtr), 10) %}
 						/
-						{%s= strconv.FormatUint(uint64(t.ImageCtr), 10) %}
+						{%s strconv.FormatUint(uint64(t.ImageCtr), 10) %}
 					</span>
 					{% if t.Image == nil %}
 						{%= expandLink(t.Board, idStr) %}
@@ -147,7 +147,7 @@ IndexThreads renders abbreviated threads for display on board index pages
 	<div id="index-thread-container">
 		{% for _, t := range threads %}
 			{% code idStr := strconv.FormatUint(t.ID, 10) %}
-			<section class="index-thread{% if t.Deleted %}{% space %}deleted{% endif %}" data-id="{%s= idStr %}">
+			<section class="index-thread{% if t.Deleted %}{% space %}deleted{% endif %}" data-id="{%s idStr %}">
 				{%= deletedToggle() %}
 				{%= renderThreadPosts(t, bls, root, true) %}
 				<hr>
@@ -177,7 +177,7 @@ Render image upload form
 		<span data-id="spoiler">
 			<label>
 				<input type="checkbox" name="spoiler">
-				{%s= lang.Get().UI["spoiler"] %}
+				{%s lang.Get().UI["spoiler"] %}
 			</label>
 		</span>
 		<strong class="upload-status"></strong>
@@ -193,11 +193,11 @@ Link to catalog or board page
 	<aside class="act glass">
 		{% if catalog %}
 			<a href=".">
-				{%s= ln["return"] %}
+				{%s ln["return"] %}
 			</a>
 		{% else %}
 			<a href="catalog">
-				{%s= ln["catalog"] %}
+				{%s ln["catalog"] %}
 			</a>
 		{% endif %}
 	</aside>
@@ -233,6 +233,6 @@ Links to different pages og the board index
 Link to a different paginated board page
 {% func pageLink(i int, text string) %}{% stripspace %}
 	<a href="?page={%d i %}">
-		{%s= text %}
+		{%s text %}
 	</a>
 {% endstripspace %}{% endfunc %}
