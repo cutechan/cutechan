@@ -1,2 +1,2 @@
-select readOnly, textOnly, forcedAnon, disableRobots, id, title, notice, rules
+select readOnly, textOnly, disableRobots, id, title, notice, rules
 	from boards

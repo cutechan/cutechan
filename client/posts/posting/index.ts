@@ -6,7 +6,7 @@ import { connState, connSM, handlers, message } from "../../connection"
 import { on, FSM, hook, getID } from "../../util"
 import lang from "../../lang"
 import identity, { initIdentity } from "./identity"
-import { boardConfig, page } from "../../state"
+import { page } from "../../state"
 import initDrop from "./drop"
 import initThreads from "./threads"
 import options from "../../options"
@@ -142,7 +142,7 @@ function quotePost(e: MouseEvent) {
 
 // Update the draft post's fields on identity change, if any
 function updateIdentity() {
-	if (postSM.state === postState.draft && !boardConfig.forcedAnon) {
+	if (postSM.state === postState.draft) {
 		postForm.renderIdentity()
 	}
 }

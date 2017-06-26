@@ -21,7 +21,6 @@ interface Configs {
 export interface BoardConfigs {
 	readOnly: boolean
 	textOnly: boolean
-	forcedAnon: boolean
 	title: string
 	notice: string
 	rules: string

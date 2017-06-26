@@ -64,10 +64,6 @@
 			"Export",
 			"Export options to file"
 		],
-		"forcedAnon": [
-			"Forced Anonymous",
-			"Disable user names, tripcodes and emails on posts"
-		],
 		"galleryMode": [
 			"Gallery Mode",
 			"Only show posts containing images"

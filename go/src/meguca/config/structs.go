@@ -40,7 +40,6 @@ type BoardConfigs struct {
 type BoardPublic struct {
 	ReadOnly   bool   `json:"readOnly"`
 	TextOnly   bool   `json:"textOnly"`
-	ForcedAnon bool   `json:"forcedAnon"`
 	Title      string `json:"title"`
 	Notice     string `json:"notice"`
 	Rules      string `json:"rules"`

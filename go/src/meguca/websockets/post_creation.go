@@ -66,7 +66,6 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 
 	post, err = constructPost(
 		req.ReplyCreationRequest,
-		conf.ForcedAnon,
 		ip,
 		req.Board,
 	)
@@ -135,7 +134,7 @@ func CreatePost(
 		return
 	}
 
-	post, err = constructPost(req, conf.ForcedAnon, ip, board)
+	post, err = constructPost(req, ip, board)
 	if err != nil {
 		return
 	}
@@ -236,7 +235,6 @@ func getBoardConfig(board string) (conf config.BoardConfigs, err error) {
 // Construct the common parts of the new post for both threads and replies
 func constructPost(
 	req ReplyCreationRequest,
-	forcedAnon bool,
 	ip, board string,
 ) (
 	post db.Post, err error,
@@ -253,11 +251,9 @@ func constructPost(
 		IP: ip,
 	}
 
-	if !forcedAnon {
-		post.Name, post.Trip, err = parser.ParseName(req.Name)
-		if err != nil {
-			return
-		}
+	post.Name, post.Trip, err = parser.ParseName(req.Name)
+	if err != nil {
+		return
 	}
 
 	if utf8.RuneCountInString(req.Body) > common.MaxLenBody {

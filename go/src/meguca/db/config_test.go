@@ -63,7 +63,7 @@ func TestUpdateOnAddBoard(t *testing.T) {
 		BoardConfigs: config.BoardConfigs{
 			ID: "a",
 			BoardPublic: config.BoardPublic{
-				ForcedAnon: true,
+				Title: "123",
 			},
 		},
 	}
@@ -91,7 +91,7 @@ func TestUpdateBoardConfigs(t *testing.T) {
 		BoardConfigs: config.BoardConfigs{
 			ID: "a",
 			BoardPublic: config.BoardPublic{
-				ForcedAnon: true,
+				Title: "123",
 			},
 		},
 	}

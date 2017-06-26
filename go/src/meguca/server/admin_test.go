@@ -83,7 +83,7 @@ func TestBoardConfiguration(t *testing.T) {
 	conf := config.BoardConfigs{
 		ID: board,
 		BoardPublic: config.BoardPublic{
-			ForcedAnon: true,
+			Title: "123",
 		},
 	}
 	init := db.BoardConfigs{
