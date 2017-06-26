@@ -134,10 +134,6 @@ export const specs: { [id: string]: OptionSpec } = {
 		default: 66,
 		type: optionType.shortcut,
 	},
-	galleryMode: {
-		default: 71,
-		type: optionType.shortcut,
-	},
 }
 
 // Create a function that toggles the visibility of an image search link

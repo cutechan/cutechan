@@ -22,7 +22,6 @@ interface Options extends ChangeEmitter {
 	done: number
 	expandAll: number
 	workMode: number
-	galleryMode: number
 	lang: string
 	inlineFit: string
 	theme: string
