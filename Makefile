@@ -1,6 +1,4 @@
-export gulp=$(PWD)/node_modules/.bin/gulp
-export is_windows=false
-binary=cutechan
+export GULP=$(PWD)/node_modules/.bin/gulp
 ifeq ($(GOPATH),)
 	export PATH:=$(PATH):$(PWD)/go/bin
 	export GOPATH=$(PWD)/go
@@ -8,15 +6,6 @@ ifeq ($(GOPATH),)
 else
 	export PATH:=$(PATH):$(GOPATH)/bin
 	export GOPATH:=$(GOPATH):$(PWD)/go
-endif
-
-# Differentiate between Unix and mingw builds
-ifeq ($(OS), Windows_NT)
-	export PKG_CONFIG_PATH:=$(PKG_CONFIG_PATH):/mingw64/lib/pkgconfig/
-	export PKG_CONFIG_LIBDIR=/mingw64/lib/pkgconfig/
-	export PATH:=$(PATH):/mingw64/bin/
-	export is_windows=true
-	binary=cutechan.exe
 endif
 
 all: client server
@@ -27,10 +16,10 @@ client-deps:
 	npm install --progress=false
 
 client-build:
-	$(gulp)
+	$(GULP)
 
 watch:
-	$(gulp) -w
+	$(GULP) -w
 
 server: server-deps server-build
 
@@ -43,7 +32,7 @@ server-deps:
 
 server-build:
 	go generate meguca/...
-	go build -v -o $(binary) meguca
+	go build -v -o cutechan meguca
 
 update-deps:
 	go get -u -v \
@@ -66,28 +55,25 @@ test-no-race:
 test-custom:
 	go test meguca/... $(f)
 
-upgrade-v4: generate
-	go get -v github.com/dancannon/gorethink
-	$(MAKE) -C scripts/migration/3to4 upgrade
-
 client-clean:
-	rm -rf dist
+	rm -rf dist node_modules package-lock.json
 
 server-clean:
-	rm -rf go/src/github.com go/src/golang.org go/bin go/pkg \
+	rm -rf cutechan \
+		go/src/github.com go/src/golang.org go/bin go/pkg \
 		go/src/meguca/common/*_easyjson.go \
 		go/src/meguca/config/*_easyjson.go \
 		go/src/meguca/templates/*.qtpl.go
 
 test-clean:
-	rm -rf go/multipart-*
+	find go/src/meguca -name db.db -type f -delete
+	rm -rf go/multipart-* \
+		go/src/meguca/imager/images \
+		go/src/meguca/imager/assets/images \
+		go/src/meguca/imager/testdata/thumb_*.png \
+		go/src/meguca/imager/testdata/thumb_*.jpg
 
 clean: client-clean server-clean test-clean
-	rm -rf .build .ffmpeg .package cutechan-*.zip cutechan-*.tar.xz cutechan cutechan.exe
-	$(MAKE) -C scripts/migration/3to4 clean
-ifeq ($(is_windows), true)
-	rm -rf /.meguca_build *.dll
-endif
 
 distclean: clean
-	rm -rf images db.db error.log
+	rm -rf images db.db
