@@ -4,7 +4,6 @@
 	"compilerOptions": {
 		"target": "ES6",
 		"module": "amd",
-		"outFile": "main.js",
 		"moduleResolution": "node",
 		"newLine": "LF",
 		"removeComments": true,

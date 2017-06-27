@@ -189,7 +189,7 @@
 				Array.prototype[Symbol.iterator]
 		}
 
-		loadScript("es" + (window.legacy ? 5 : 6) + "/main")
+		loadScript("app" + (window.legacy ? ".es5" : ""))
 			.onload = function () {
 				require("main")
 			}

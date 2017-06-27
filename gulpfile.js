@@ -18,9 +18,8 @@ const runSequence = require("run-sequence");
 
 const DIST_DIR = "dist";
 const STATIC_DIR = path.join(DIST_DIR, "static");
-const ES6_DIR = path.join(STATIC_DIR, "js", "es6");
-const ES5_DIR = path.join(STATIC_DIR, "js", "es5");
-const VENDOR_DIR = path.join(STATIC_DIR, "js", "vendor");
+const JS_DIR = path.join(STATIC_DIR, "js");
+const VENDOR_DIR = path.join(JS_DIR, "vendor");
 const CSS_DIR = path.join(STATIC_DIR, "css");
 const LANG_DIR = path.join(STATIC_DIR, "lang");
 
@@ -63,23 +62,24 @@ function createTask(name, path, task) {
   }
 }
 
-function buildClient() {
+function buildClient(outFile) {
   return gulp.src("client/**/*.ts")
     .pipe(sourcemaps.init())
     .pipe(ts.createProject("client/tsconfig.json", {
-      typescript: require("typescript"),
+      outFile,
     })(ts.reporter.nullReporter()))
     .on("error", handleError);
 }
 
 // Builds the client files of the appropriate ECMAScript version.
+// TODO(Kagami): ES6-aware minifier.
 function buildES6() {
   const name = "es6";
   tasks.push(name);
   gulp.task(name, () =>
-    buildClient()
+    buildClient("app.js")
       .pipe(sourcemaps.write("maps"))
-      .pipe(gulp.dest(ES6_DIR)));
+      .pipe(gulp.dest(JS_DIR)));
 
   // Recompile on source update, if running with the `-w` flag.
   if (watch) {
@@ -88,18 +88,19 @@ function buildES6() {
 }
 
 // Build legacy ES5 client for old browsers.
+// TODO(Kagami): Output to ES5 in TS instead.
 function buildES5() {
   const name = "es5";
   tasks.push(name);
   gulp.task(name, () =>
-    buildClient()
+    buildClient("app.es5.js")
       .pipe(babel({
         presets: ["latest"],
       }))
       .pipe(uglify())
       .on("error", handleError)
       .pipe(sourcemaps.write("maps"))
-      .pipe(gulp.dest(ES5_DIR))
+      .pipe(gulp.dest(JS_DIR))
   );
 }
 
