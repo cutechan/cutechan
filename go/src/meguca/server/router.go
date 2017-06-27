@@ -35,7 +35,7 @@ var (
 )
 
 // Used for overriding during tests
-var webRoot = "www"
+var webRoot = "dist/static"
 
 func startWebServer() (err error) {
 	r := createRouter()

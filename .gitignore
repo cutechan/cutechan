@@ -7,12 +7,6 @@ node_modules
 /cutechan
 /cutechan.exe
 scripts/*.local.sh
-www/illya.mp4
-www/illya.webm
-www/css/*.css
-www/css/maps
-www/js
-www/lang
 thumb_*.png
 thumb_*.jpg
 *.qtpl.go
@@ -31,3 +25,4 @@ db.db
 easyjson-bootstrap*.go
 /package-lock.json
 tags
+/dist/

@@ -1,5 +1,7 @@
 "use strict";
 
+const path = require("path");
+const del = require("del");
 const stripAnsi = require("strip-ansi");
 const gulp = require("gulp");
 const babel = require("gulp-babel");
@@ -12,6 +14,16 @@ const sourcemaps = require("gulp-sourcemaps");
 const ts = require("gulp-typescript");
 const uglify = require("gulp-uglify");
 const notify = require("gulp-notify");
+const runSequence = require("run-sequence");
+
+const DIST_DIR = "dist";
+const STATIC_DIR = path.join(DIST_DIR, "static");
+const ES6_DIR = path.join(STATIC_DIR, "js", "es6");
+const ES5_DIR = path.join(STATIC_DIR, "js", "es5");
+const SCRIPTS_DIR = path.join(STATIC_DIR, "js", "scripts");
+const VENDOR_DIR = path.join(STATIC_DIR, "js", "vendor");
+const CSS_DIR = path.join(STATIC_DIR, "css");
+const LANG_DIR = path.join(STATIC_DIR, "lang");
 
 // Keep script alive and rebuild on file changes.
 // Triggered with the `-w` flag.
@@ -26,91 +38,6 @@ const notifyError = notify.onError({
   message: "<%= options.stripAnsi(error.message) %>",
   templateOptions: {stripAnsi},
 });
-
-// Client JS files.
-buildES6();
-buildES5();
-
-// Various little scripts.
-createTask("scripts", "clientScripts/*.js", src =>
-  src
-    .pipe(sourcemaps.init())
-    .pipe(uglify())
-    .on("error", handleError)
-    .pipe(sourcemaps.write("maps"))
-    .pipe(gulp.dest("www/js/scripts"))
-);
-
-// Compile Less to CSS.
-{
-  const name = "css";
-  tasks.push(name);
-  gulp.task(name, () =>
-    gulp.src(["less/*.less", "!less/*.mix.less"])
-      .pipe(sourcemaps.init())
-      .pipe(less())
-      .on("error", handleError)
-      .pipe(nano())
-      .pipe(sourcemaps.write("maps"))
-      .pipe(gulp.dest("www/css"))
-  );
-
-  // Recompile on source update, if running with the `-w` flag.
-  if (watch) {
-    gulp.watch("less/*.less", () =>
-      gulp.start("css"));
-  }
-}
-
-// Language packs.
-createTask("lang", "lang/**/*.json", src =>
-  src
-    .pipe(jsonminify())
-    .on("error", handleError)
-    .pipe(gulp.dest("www/lang"))
-);
-
-gulp.task("default", tasks);
-
-// Builds the client files of the appropriate ECMAScript version.
-function buildES6() {
-  const name = "es6";
-  tasks.push(name);
-  gulp.task(name, () =>
-    buildClient()
-      .pipe(sourcemaps.write("maps"))
-      .pipe(gulp.dest("www/js/es6")));
-
-  // Recompile on source update, if running with the `-w` flag.
-  if (watch) {
-    gulp.watch("client/**/*.ts", [name])
-  }
-}
-
-// Build legacy ES5 client for old browsers.
-function buildES5() {
-  const name = "es5";
-  tasks.push(name);
-  gulp.task(name, () =>
-    buildClient()
-      .pipe(babel({
-        presets: ["latest"],
-      }))
-      .pipe(uglify())
-      .on("error", handleError)
-      .pipe(sourcemaps.write("maps"))
-      .pipe(gulp.dest("www/js/es5"))
-  );
-}
-
-function buildClient() {
-  return gulp.src("client/**/*.ts")
-    .pipe(sourcemaps.init())
-    .pipe(ts.createProject("client/tsconfig.json", {
-      typescript: require("typescript"),
-    })(ts.reporter.nullReporter()))
-    .on("error", handleError);
-}
 
 // Simply log the error on continuos builds, but fail the build and exit
 // with an error status, if failing a one-time build. This way we can
@@ -136,3 +63,102 @@ function createTask(name, path, task) {
     gulp.watch(path, [name]);
   }
 }
+
+function buildClient() {
+  return gulp.src("client/**/*.ts")
+    .pipe(sourcemaps.init())
+    .pipe(ts.createProject("client/tsconfig.json", {
+      typescript: require("typescript"),
+    })(ts.reporter.nullReporter()))
+    .on("error", handleError);
+}
+
+// Builds the client files of the appropriate ECMAScript version.
+function buildES6() {
+  const name = "es6";
+  tasks.push(name);
+  gulp.task(name, () =>
+    buildClient()
+      .pipe(sourcemaps.write("maps"))
+      .pipe(gulp.dest(ES6_DIR)));
+
+  // Recompile on source update, if running with the `-w` flag.
+  if (watch) {
+    gulp.watch("client/**/*.ts", [name])
+  }
+}
+
+// Build legacy ES5 client for old browsers.
+function buildES5() {
+  const name = "es5";
+  tasks.push(name);
+  gulp.task(name, () =>
+    buildClient()
+      .pipe(babel({
+        presets: ["latest"],
+      }))
+      .pipe(uglify())
+      .on("error", handleError)
+      .pipe(sourcemaps.write("maps"))
+      .pipe(gulp.dest(ES5_DIR))
+  );
+}
+
+gulp.task("clean", () => {
+  return del(DIST_DIR);
+});
+
+// Client JS files.
+buildES6();
+buildES5();
+
+// Various little scripts.
+createTask("scripts", "clientScripts/*.js", src =>
+  src
+    .pipe(sourcemaps.init())
+    .pipe(uglify())
+    .on("error", handleError)
+    .pipe(sourcemaps.write("maps"))
+    .pipe(gulp.dest(SCRIPTS_DIR))
+);
+
+// Third-party dependencies.
+createTask("vendor", [
+  "node_modules/almond/almond.js ",
+  "node_modules/babel-polyfill/dist/polyfill.min.js",
+  "node_modules/whatwg-fetch/fetch.js ",
+  "node_modules/dom4/build/dom4.js",
+  "node_modules/core-js/client/core.min.js",
+  "node_modules/proxy-polyfill/proxy.min.js",
+], src =>
+  src
+    .pipe(gulp.dest(VENDOR_DIR))
+);
+
+// Compile Less to CSS.
+createTask("css", ["less/*.less", "!less/*.mix.less"], src =>
+  src
+    .pipe(sourcemaps.init())
+    .pipe(less())
+    .on("error", handleError)
+    .pipe(nano())
+    .pipe(sourcemaps.write("maps"))
+    .pipe(gulp.dest(CSS_DIR))
+);
+
+// Language packs.
+createTask("lang", "lang/**/*.json", src =>
+  src
+    .pipe(jsonminify())
+    .on("error", handleError)
+    .pipe(gulp.dest(LANG_DIR))
+);
+
+// Static assets.
+createTask("assets", "assets/**", src =>
+  src
+    .pipe(gulp.dest(STATIC_DIR))
+);
+
+// Build everything.
+gulp.task("default", runSequence("clean", tasks));

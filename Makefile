@@ -1,6 +1,4 @@
-export node_bins=$(PWD)/node_modules/.bin
-export uglifyjs=$(node_bins)/uglifyjs
-export gulp=$(node_bins)/gulp
+export gulp=$(PWD)/node_modules/.bin/gulp
 export is_windows=false
 binary=cutechan
 ifeq ($(GOPATH),)
@@ -26,17 +24,7 @@ all: client server
 client: client-deps client-build
 
 client-deps:
-	npm install --progress false --depth 0
-	mkdir -p www/js/vendor
-	cp \
-		node_modules/dom4/build/dom4.js \
-		node_modules/core-js/client/core.min.js \
-		node_modules/core-js/client/core.min.js.map \
-		node_modules/babel-polyfill/dist/polyfill.min.js \
-		node_modules/proxy-polyfill/proxy.min.js \
-		www/js/vendor
-	$(uglifyjs) node_modules/whatwg-fetch/fetch.js -o www/js/vendor/fetch.js
-	$(uglifyjs) node_modules/almond/almond.js -o www/js/vendor/almond.js
+	npm install --progress=false
 
 client-build:
 	$(gulp)
@@ -83,7 +71,7 @@ upgrade-v4: generate
 	$(MAKE) -C scripts/migration/3to4 upgrade
 
 client-clean:
-	rm -rf www/js www/css/*.css www/css/maps www/lang
+	rm -rf dist
 
 server-clean:
 	rm -rf go/src/github.com go/src/golang.org go/bin go/pkg \

@@ -38,6 +38,11 @@ var (
 	errNoDuration       = errors.New("no ban duration provided")
 
 	boardNameValidation = regexp.MustCompile(`^[a-z0-9]{1,10}$`)
+
+	// TODO(Kagami): Forbid spoofing names like "admin" too?
+	reservedBoards      = [...]string{
+		"html", "json", "api", "assets", "all",
+	}
 )
 
 type boardActionRequest struct {
@@ -240,7 +245,7 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 
 	// Returns, if the board name, matches a reserved ID
 	isReserved := func() bool {
-		for _, s := range [...]string{"html", "json", "api", "assets", "all"} {
+		for _, s := range reservedBoards {
 			if msg.ID == s {
 				return true
 			}
