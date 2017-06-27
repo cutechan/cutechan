@@ -64,7 +64,7 @@ var boardCache = cache.FrontEnd{
 	},
 
 	// Board pages are built as a list of individually fetched and cached
-	// threads with up to 5 replies each
+	// threads with up to 3 replies each.
 	GetFresh: func(k cache.Key) (interface{}, error) {
 		// Get thread IDs in the right order
 		var (
@@ -102,7 +102,7 @@ var boardCache = cache.FrontEnd{
 				}
 			}
 
-			k := cache.ThreadKey(id, 5)
+			k := cache.ThreadKey(id, numPostsAtIndex)
 			json, data, _, err := cache.GetJSONAndData(k, threadCache)
 			if err != nil {
 				return nil, err

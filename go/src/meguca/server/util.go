@@ -14,6 +14,11 @@ import (
 	"github.com/dimfeld/httptreemux"
 )
 
+const (
+	numPostsAtIndex = 3
+	numPostsOnRequest = 100
+)
+
 // Base set of HTTP headers for both HTML and JSON
 var vanillaHeaders = map[string]string{
 	"X-Frame-Options": "sameorigin",

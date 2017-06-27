@@ -63,13 +63,13 @@ func writeJSON(
 	writeData(w, r, buf)
 }
 
-// Validate the client's last N posts to display setting. To allow for better
-// caching the only valid values are 5 and 50. 5 is for index-like thread
-// previews and 50 is for short threads.
+// Validate the client's last N posts to display setting. To allow for
+// better caching the only valid values are 3 and 100. 3 is for
+// index-like thread previews and 100 is for short threads.
 func detectLastN(r *http.Request) int {
 	if q := r.URL.Query().Get("last"); q != "" {
 		n, err := strconv.Atoi(q)
-		if err == nil && (n == 100 || n == 5) {
+		if err == nil && (n == numPostsAtIndex || n == numPostsOnRequest) {
 			return n
 		}
 	}
