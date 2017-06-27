@@ -75,7 +75,7 @@ func Thread(
 	pos auth.ModerationLevel,
 	postHTML []byte,
 ) []byte {
-	title = html.EscapeString(fmt.Sprintf("/%s/ - %s", board, title))
+	title = html.EscapeString(fmt.Sprintf("/%s/ — %s", board, title))
 	html := renderThread(postHTML, id, board, abbrev, pos)
 	return execIndex(html, title, pos)
 }
