@@ -28,14 +28,7 @@ var (
 
 	// For overriding during tests
 	imageWebRoot = "images"
-
-	// Path to the service worker script. Overrideable in tests.
-	workerPath = getWorkerPath()
 )
-
-func getWorkerPath() string {
-	return filepath.FromSlash(webRoot + "/js/scripts/worker.js")
-}
 
 // More performant handler for serving image assets. These are immutable
 // (except deletion), so we can also set separate caching policies for them.
@@ -91,10 +84,8 @@ func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 	http.ServeContent(w, r, path, modTime, file)
 }
 
-// Serve the service worker script file. It needs to be on the root scope for
-// security reasons.
 func serveWorker(w http.ResponseWriter, r *http.Request) {
-	serveFile(w, r, workerPath)
+	serveFile(w, r, filepath.FromSlash(webRoot + "/js/worker.js"))
 }
 
 // Set the banners of a board

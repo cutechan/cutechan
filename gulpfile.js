@@ -20,7 +20,6 @@ const DIST_DIR = "dist";
 const STATIC_DIR = path.join(DIST_DIR, "static");
 const ES6_DIR = path.join(STATIC_DIR, "js", "es6");
 const ES5_DIR = path.join(STATIC_DIR, "js", "es5");
-const SCRIPTS_DIR = path.join(STATIC_DIR, "js", "scripts");
 const VENDOR_DIR = path.join(STATIC_DIR, "js", "vendor");
 const CSS_DIR = path.join(STATIC_DIR, "css");
 const LANG_DIR = path.join(STATIC_DIR, "lang");
@@ -111,16 +110,6 @@ gulp.task("clean", () => {
 // Client JS files.
 buildES6();
 buildES5();
-
-// Various little scripts.
-createTask("scripts", "clientScripts/*.js", src =>
-  src
-    .pipe(sourcemaps.init())
-    .pipe(uglify())
-    .on("error", handleError)
-    .pipe(sourcemaps.write("maps"))
-    .pipe(gulp.dest(SCRIPTS_DIR))
-);
 
 // Third-party dependencies.
 createTask("vendor", [

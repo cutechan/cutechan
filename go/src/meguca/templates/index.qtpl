@@ -368,6 +368,6 @@
 			{% code buf, _ := json.Marshal(ln.Common) %}
 			{%z= buf %}
 		</script>
-		<script src="/assets/js/scripts/loader.js"></script>
+		<script src="/assets/js/loader.js"></script>
 	</body>
 {% endstripspace %}{% endfunc %}
