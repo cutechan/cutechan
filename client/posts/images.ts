@@ -68,7 +68,7 @@ export default class ImageHandler extends View<Post> {
 
 		if (data.spoiler && options.spoilers) {
 			// Spoilered and spoilers enabled
-			thumb = '/assets/spoil/default.jpg'
+			thumb = '/assets/img/spoiler.jpg'
 			thumbHeight = thumbWidth = 150
 		} else if (data.fileType === fileTypes.gif && options.autogif) {
 			// Animated GIF thumbnails

@@ -7,7 +7,7 @@ import { importTemplate } from "../util"
 import { View } from "../base"
 
 // Displayed, when there is no image in post
-const defaultIcon = "/assets/notification-icon.png",
+const defaultIcon = "/assets/img/notification.png",
 	overlay = document.getElementById("modal-overlay")
 
 // Notify the user that one of their posts has been replied to
@@ -33,7 +33,7 @@ export default function notifyAboutReply(post: Post) {
 		if (post.image) {
 			const { SHA1, thumbType } = post.image
 			if (post.image.spoiler) {
-				icon = '/assets/spoil/default.jpg'
+				icon = '/assets/img/spoiler.jpg'
 			} else {
 				icon = thumbPath(SHA1, thumbType)
 			}

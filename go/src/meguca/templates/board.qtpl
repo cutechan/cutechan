@@ -104,7 +104,7 @@ allow caching of generated posts.
 						{% code img := *t.Image %}
 						<a href="/{%s t.Board %}/{%s idStr %}">
 							{% if img.Spoiler %}
-								<img src="/assets/spoil/default.jpg" width="150" height="150" class="catalog">
+								<img src="/assets/img/spoiler.jpg" width="150" height="150" class="catalog">
 							{% else %}
 								<img width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}" class="catalog" src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}">
 							{% endif %}

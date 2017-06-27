@@ -9,13 +9,13 @@
 	{% code ln := lang.Get() %}
 	{% code confJSON, _ := config.GetClient() %}
 	{% code boards := config.GetBoards() %}
-	<!doctype html>
+	<!DOCTYPE html>
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
-		<meta name="application-name" content="meguca">
-		<meta name="description" content="Realtime imageboard">
-		<link type="image/x-icon" rel="shortcut icon" id="favicon" href="/assets/favicons/default.ico">
+		<meta name="application-name" content="cutechan">
+		<meta name="description" content="Cute chan">
+		<link rel="icon" id="favicon" href="/assets/favicons/default.ico">
 		<title>
 			{% comment %}
 				Only expanded in the second parse of the template
@@ -41,7 +41,7 @@
 			{% code boardJSON, _ := json.Marshal(boards) %}
 			var config={%z= confJSON %},boards={%z= boardJSON %},position={%d int(pos) %};
 			if (localStorage.theme !== config.DefaultCSS) {
-				document.getElementById('theme-css').href = '/assets/css/' + localStorage.theme + '.css'
+				document.getElementById("theme-css").href = "/assets/css/" + localStorage.theme + ".css";
 			}
 		</script>
 		{% comment %}
@@ -133,7 +133,7 @@
 		{% comment %}
 			Loading indicator image
 		{% endcomment %}
-		<image src="/assets/loading.gif" id="loading-image">
+		<image src="/assets/img/loading.gif" id="loading-image">
 		<div id="overlay-container">
 			{% comment %}
 				Top banner
