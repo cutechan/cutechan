@@ -269,23 +269,6 @@
 						{% for i, sp := range optionSpecs %}
 							<div data-id="{%d i %}"{% if i == 0 %}{% space %}class="tab-sel"{% endif %}>
 								{%= options(sp, ln) %}
-								{% comment %}
-									Hidden post reset, Export and Import links for first tab
-								{% endcomment %}
-								{% if i == 0 %}
-									<br>
-									<span class="spaced">
-										{% for _, id := range [...]string{"export", "import", "hidden"} %}
-											<a id="{%s id %}" title="{%s ln.Forms[id][1] %}">
-												{%s ln.Forms[id][0] %}
-											</a>
-										{% endfor %}
-									</span>
-									{% comment %}
-										Hidden file input for uploading the JSON
-									{% endcomment %}
-									<input type="file" id="importSettings" hidden>
-								{% endif %}
 							</div>
 						{% endfor %}
 					</div>

@@ -48,18 +48,6 @@
 			"Expand All Images",
 			"Expand all images. Webm, PDF and MP3 and your own post aren't affected. New post images are also expanded."
 		],
-		"export": [
-			"Export",
-			"Export options to file"
-		],
-		"galleryMode": [
-			"Gallery Mode",
-			"Only show posts containing images"
-		],
-		"hidden": [
-			"Hidden: 0",
-			"Clear hidden posts"
-		],
 		"hideThumbs": [
 			"Hide thumbnails",
 			"Display a [Show] button in place of thumbnails"
@@ -75,10 +63,6 @@
 		"imageRootOverride": [
 			"Image root override",
 			"If you wish to host images from a separate location like a CDN, enter the full root address here. Leave empty to use the default address. Example: 'https://images.meguca.org'"
-		],
-		"import": [
-			"Import",
-			"Import options from file"
 		],
 		"inlineFit": [
 			"Expansion",

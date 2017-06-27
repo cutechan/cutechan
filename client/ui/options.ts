@@ -1,42 +1,23 @@
 import { TabbedModal } from '../base'
 import { models, default as options, optionType } from '../options'
-import { load, hook } from '../util'
-import lang from '../lang'
-import { clearHidden } from "../posts"
-import { hidden } from "../state"
+import { hook } from '../util'
 
 // Only instance of the options panel
 export let panel: OptionsPanel
 
 // View of the options panel
 export default class OptionsPanel extends TabbedModal {
-	private hidden: HTMLElement
-	private import: HTMLInputElement
-
 	constructor() {
 		super(document.getElementById("options"))
 		panel = this
-		this.hidden = document.getElementById('hidden')
-		this.import = this.el
-			.querySelector("#importSettings") as HTMLInputElement
 
-		this.onClick({
-			'#export': () =>
-				this.exportConfigs(),
-			'#import': e =>
-				this.importConfigs(e),
-			'#hidden': clearHidden,
-		})
 		this.on('change', e =>
 			this.applyChange(e))
 
-		this.renderHidden(hidden.size)
 		this.assignValues()
 
 		hook("renderOptionValue", ([id, type, val]) =>
 			this.assignValue(id, type, val))
-		hook("renderHiddenCount", n =>
-			this.renderHidden(n))
 	}
 
 	// Assign loaded option settings to the respective elements in the options
@@ -104,54 +85,5 @@ export default class OptionsPanel extends TabbedModal {
 		} else {
 			options[id] = val
 		}
-	}
-
-	// Dump options to JSON file and upload to user
-	private exportConfigs() {
-		const a = document.getElementById('export')
-		const blob = new Blob([JSON.stringify(localStorage)], {
-			type: 'octet/stream'
-		})
-		a.setAttribute('href', window.URL.createObjectURL(blob))
-		a.setAttribute('download', 'meguca-config.json')
-	}
-
-	// Import options from uploaded JSON file
-	private importConfigs(event: Event) {
-		// Proxy to hidden file input
-		this.import.click()
-		const handler = () =>
-			this.importConfigFile()
-		this.import.addEventListener("change", handler, { once: true })
-	}
-
-	// After the file has been uploaded, parse it and import the configs
-	private async importConfigFile() {
-		const reader = new FileReader()
-		reader.readAsText(this.import.files[0])
-		const event = await load(reader) as any
-
-		// In case of corruption
-		let json: { [key: string]: string }
-		try {
-			json = JSON.parse(event.target.result)
-		}
-		catch (err) {
-			alert(lang.ui["importCorrupt"])
-			return
-		}
-
-		localStorage.clear()
-		for (let key in json) {
-			localStorage.setItem(key, json[key])
-		}
-		alert(lang.ui["importDone"])
-		location.reload()
-	}
-
-	// Render Hidden posts counter
-	private renderHidden(count: number) {
-		const el = this.hidden
-		el.textContent = el.textContent.replace(/\d+$/, count.toString())
 	}
 }
