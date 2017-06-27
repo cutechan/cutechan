@@ -50,13 +50,6 @@
 				{%s ln.UI["catalog"] %}
 			</a>
 		</span>
-		{% if !abbrev %}
-			<span class="act">
-				<a href="?last=100#bottom">
-					{%s ln.Common.UI["last"] %}{% space %}100
-				</a>
-			</span>
-		{% endif %}
 		<span class="act posting glass">
 			<a>{%s ln.UI["reply"] %}</a>
 		</span>
