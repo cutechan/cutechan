@@ -56,9 +56,10 @@ server_deps:
 	go list -f '{{.Deps}}' meguca | tr -d '[]' | xargs go get -v
 
 server_gen:
-	rm -f go/src/meguca/common/*_easyjson.go
-	rm -f go/src/meguca/config/*_easyjson.go
-	rm -f go/src/meguca/templates/*.qtpl.go
+	rm -f \
+		go/src/meguca/common/*_easyjson.go \
+		go/src/meguca/config/*_easyjson.go \
+		go/src/meguca/templates/*.qtpl.go
 	go generate meguca/...
 
 server_build:

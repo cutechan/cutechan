@@ -3,12 +3,12 @@
 {% import "meguca/common" %}
 {% import "meguca/lang" %}
 {% import "meguca/imager/assets" %}
-{% import "meguca/util" %}
 
+TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 {% func renderArticle(p common.Post, c articleContext) %}{% stripspace %}
-	{% code id := strconv.FormatUint(p.ID, 10) %}
-	<article{% space %}{%= postClass(p, p.ID == c.op) %}{% space %}id="post{%s id %}">
-		<a name="{%s id %}"></a>
+	{% code idStr := strconv.FormatUint(p.ID, 10) %}
+	<article{% space %}{%= postClass(p, p.ID == c.op) %}{% space %}id="post{%s idStr %}">
+		<a name="{%s idStr %}"></a>
 		{%= deletedToggle() %}
 		<header class="spaced">
 			<input type="checkbox" class="mod-checkbox hidden">
@@ -45,23 +45,18 @@
 				{%s formatTime(p.Time) %}
 			</time>
 			<nav>
-				{% code url := "#" + id %}
+				{% code url := "#" + idStr %}
 				{% code if p.ID == c.op { url = "" } %}
 				{% if c.index %}
-					{% code opStr := strconv.FormatUint(c.op, 10) %}
-					{% code url = util.ConcatStrings("/", c.board, "/", opStr, url) %}
+					{% code url = fmt.Sprintf("/%s/%d%s", c.board, c.op, url) %}
 				{% endif %}
-				<a href="{%s url %}">
-					No.
-				</a>
-				<a class="quote" href="{%s url %}">
-					{%s id %}
-				</a>
+				<a href="{%s url %}">No.</a>
+				<a class="quote" href="{%s url %}">{%s idStr %}</a>
 			</nav>
 			{% if c.index && c.subject != "" %}
 				<span>
-					{%= expandLink(c.board, id) %}
-					{%= last100Link(c.board, id) %}
+					{%= expandLink(c.board, idStr) %}
+					{%= last100Link(c.board, idStr) %}
 				</span>
 			{% endif %}
 			<a class="control">
@@ -95,9 +90,7 @@
 					{% endif %}
 					<span class="filesize">{%s readableFileSize(img.Size) %}</span>
 					<span class="dims">
-					{%s strconv.FormatUint(uint64(img.Dims[0]), 10) %}
-					x
-					{%s strconv.FormatUint(uint64(img.Dims[1]), 10) %}
+						{%d int(img.Dims[0]) %}×{%d int(img.Dims[1]) %}
 					</span>
 				</span>
 				{% code name := imageName(img.FileType, img.Name) %}
