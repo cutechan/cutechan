@@ -3,7 +3,7 @@
 import options from "../options"
 import { FormModel, postSM, postEvent, toggleExpandAll } from "../posts"
 import { page } from "../state"
-import { scrollToElement, trigger } from "../util"
+import { scrollToElement, trigger, getID } from "../util"
 
 // Bind keyboard event listener to the document
 export default () =>
@@ -71,8 +71,6 @@ function handleShortcut(event: KeyboardEvent) {
 
 	}
 
-
-
 	if (caught) {
 		event.stopImmediatePropagation()
 		event.preventDefault()
@@ -88,31 +86,29 @@ function navigateUp() {
 		url = "/all/"
 	}
 	if (url) {
-		// Convert to absolute URL
-		const a = document.createElement("a")
-		a.href = url
 		location.href = url
 	}
 }
 
 const postSelector = ".post"
 
-// move focus to next or previous visible post in document order.
-// starts with first post if none is selected via current url fragment
+// Move focus to next or previous visible post in document order.
+// Starts with first post if none is selected via current url fragment.
 function navigatePost(reverse: boolean) {
-	let all: Element[] = Array.from(document.querySelectorAll(postSelector))
-	let current: Element = document.querySelector(postSelector + ":target") || all[0]
+	const all = Array.from(document.querySelectorAll(postSelector))
+	const currentId = location.hash.slice(1)
+	let current = document.getElementById("post" + currentId) || all[0]
 	let currentIdx = all.indexOf(current)
 
 	while (current) {
 		currentIdx = reverse ? currentIdx - 1 : currentIdx + 1
 		current = all[currentIdx]
-		if (current && window.getComputedStyle(current).display != "none") {
+		if (current && getComputedStyle(current).display !== "none") {
 			break
 		}
 	}
 
 	if (current) {
-		window.location.hash = current.id
+		location.hash = "#" + getID(current)
 	}
 }
