@@ -4,10 +4,6 @@
 			"JPEG thumbnail quality",
 			"Quality of image JPEG thumbnails"
 		],
-		"alwaysLock": [
-			"Always Lock to Bottom",
-			"Lock scrolling to page bottom even when tab is hidden"
-		],
 		"autogif": [
 			"Animated GIF Thumbnails",
 			"Animate GIF thumbnails"
@@ -242,7 +238,6 @@
 		"identity": "Identity",
 		"live": "Live",
 		"loadCaptcha": "Click to load captcha",
-		"lockedToBottom": "Locked to bottom",
 		"logout": "Logout",
 		"logoutAll": "Log out all devices",
 		"newThread": "New thread",

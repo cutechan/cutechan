@@ -226,7 +226,6 @@ var optionSpecs = [...][]inputSpec{
 		{ID: "notification"},
 		{ID: "postInlineExpand"},
 		{ID: "relativeTime"},
-		{ID: "alwaysLock"},
 	},
 	{
 		{

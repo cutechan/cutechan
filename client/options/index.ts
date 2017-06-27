@@ -15,7 +15,6 @@ interface Options extends ChangeEmitter {
 	postInlineExpand: boolean
 	relativeTime: boolean
 	workModeToggle: boolean
-	alwaysLock: boolean
 	newPost: number
 	toggleSpoiler: number
 	done: number

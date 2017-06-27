@@ -89,9 +89,6 @@ export const specs: { [id: string]: OptionSpec } = {
 				.setAttribute('href', `/assets/css/${theme}.css`)
 		},
 	},
-	// Lock thread scrolling to bottom, when bottom in view, even when the
-	// tab is hidden
-	alwaysLock: {},
 	// Shortcut keys
 	newPost: {
 		default: 78,
