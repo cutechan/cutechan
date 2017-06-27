@@ -145,7 +145,7 @@ createTask("lang", "lang/**/*.json", src =>
 );
 
 // Static assets.
-createTask("assets", "assets/**", src =>
+createTask("assets", "assets/**/*", src =>
   src
     .pipe(gulp.dest(STATIC_DIR))
 );

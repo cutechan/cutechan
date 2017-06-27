@@ -100,7 +100,7 @@ export default class ImageHandler extends View<Post> {
 			this.el.querySelector("header").after(el)
 		}
 
-		const [hToggle, , info, link] = Array.from(el.children) as HTMLElement[]
+		const [hToggle, info, link] = Array.from(el.children) as HTMLElement[]
 		if (!options.hideThumbs && !options.workModeToggle) {
 			hToggle.hidden = true
 		} else {
