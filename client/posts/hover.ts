@@ -205,16 +205,10 @@ function renderImagePreview(event: MouseEvent) {
 		case "xz":
 			return clear()
 		case "webm":
-			if (!options.webmHover) {
-				return clear()
-			}
 			tag = "video"
 			break
 		case "mp4":
 		case "ogg":
-			if (!options.webmHover) {
-				return clear()
-			}
 			const model = getModel(link)
 			// No video OGG and MP4 are treated just like MP3
 			if (!model || !model.image.video) {

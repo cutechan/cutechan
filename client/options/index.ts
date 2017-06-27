@@ -9,7 +9,6 @@ export * from "./specs"
 interface Options extends ChangeEmitter {
 	hideThumbs: boolean
 	imageHover: boolean
-	webmHover: boolean
 	autogif: boolean
 	spoilers: boolean
 	notification: boolean

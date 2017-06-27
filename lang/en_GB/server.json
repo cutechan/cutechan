@@ -57,8 +57,8 @@
 			""
 		],
 		"imageHover": [
-			"Image Hover Expansion",
-			"Display image previews on hover"
+			"Media hover expansion",
+			"Display media previews on hover"
 		],
 		"imageRootOverride": [
 			"Image root override",
@@ -199,10 +199,6 @@
 		"toggleSpoiler": [
 			"Image Spoiler",
 			"Toggle spoiler in the open post"
-		],
-		"webmHover": [
-			"WebM Hover Expansion",
-			"Display WebM previews on hover. Requires Image Hover Expansion enabled."
 		],
 		"workMode": [
 			"Work mode",

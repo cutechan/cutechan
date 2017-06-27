@@ -223,7 +223,6 @@ var specs = map[string][]inputSpec{
 var optionSpecs = [...][]inputSpec{
 	{
 		{ID: "imageHover"},
-		{ID: "webmHover"},
 		{ID: "notification"},
 		{ID: "postInlineExpand"},
 		{ID: "relativeTime"},

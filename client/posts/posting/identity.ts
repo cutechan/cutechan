@@ -18,8 +18,7 @@ let identity = {
 	name: localStorage.getItem("name") || "",
 	postPassword: randomID(64),
 } as Identity
-const liveKey = localStorage.getItem("live")
-identity.live = liveKey ? liveKey === "true" : true
+identity.live = localStorage.getItem("live") === "true"
 export default identity = emitChanges(identity)
 
 // Poster identity input panel

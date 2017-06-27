@@ -47,8 +47,6 @@ export const specs: { [id: string]: OptionSpec } = {
 	imageHover: {
 		default: true,
 	},
-	// WebM hover expansion
-	webmHover: {},
 	// Animated GIF thumbnails
 	autogif: {},
 	// Enable thumbnail spoilers
@@ -72,7 +70,9 @@ export const specs: { [id: string]: OptionSpec } = {
 		default: true,
 	},
 	// Relative post timestamps
-	relativeTime: {},
+	relativeTime: {
+		default: true,
+	},
 	// Change theme
 	theme: {
 		type: optionType.menu,
