@@ -20,7 +20,7 @@
 			{% endif %}
 		</h1>
 	{% endif %}
-	<h1 id="page-title">
+	<h1 class="page-title">
 		{%s title %}
 	</h1>
 	<span class="aside-container">

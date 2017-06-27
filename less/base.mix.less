@@ -1,8 +1,93 @@
-@import 'overlays.mix.less';
-@import 'mod.mix.less';
-@import 'posts.mix.less';
+@import "overlays.mix.less";
+@import "mod.mix.less";
+@import "posts.mix.less";
+
+body {
+  background-color: @bg;
+}
+
+body, article, code.code-tag {
+  color: @body;
+}
+
+.modal hr {
+  border-top: 1px solid @link;
+}
+
+.divide-rows {
+  tr:not(:last-child) {
+    border-bottom: 1px solid @link;
+  }
+  td {
+    padding: 0.5em;
+  }
+}
+
+#banner{
+  background: fade(@postBG, 60%);
+  border-bottom: 1px solid #aaa;
+}
+
+b {
+  color: @bold;
+}
+
+.admin {
+  color: @admin;
+}
+
+.sticky svg {
+  fill: @admin;
+}
+
+.popup-menu {
+  border: @border;
+}
+
+article audio {
+  &::-webkit-media-controls-current-time-display,
+  &::-webkit-media-controls-time-remaining-display {
+      color: @link;
+  }
+}
+
+em, .ms-string {
+  color: @em;
+}
+
+em {
+  color: @em;
+}
+
+del {
+  text-decoration: none;
+  &, em {
+    background-color: @del;
+  }
+  &:hover, &.reveal {
+    color: #fff - @del;
+  }
+  &:not(:hover):not(.reveal) {
+    &, em, a {
+      color: @del;
+    }
+  }
+}
+
+.ms-operator {
+  color: @mod;
+}
+
+.ms-comment {
+  color: fade(@body, 60%);
+}
+
+.ms-function {
+  color: @link;
+}
 
 a {
+  color: @link;
   border: none;
   text-decoration: none !important;
   &.nope, &.nope:hover {
@@ -30,7 +115,7 @@ input[type=checkbox] {
 
 article, aside {
   padding: 4px 10px;
-  margin: 1px;
+  margin: 3px;
 }
 
 body, #page-container {

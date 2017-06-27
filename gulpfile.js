@@ -43,6 +43,7 @@ const notifyError = notify.onError({
 function handleError(err) {
   if (watch) {
     notifyError(err);
+    this.emit("end");
   } else {
     throw err;
   }
@@ -50,7 +51,7 @@ function handleError(err) {
 
 // Create a new gulp task and set it to execute on default and
 // incrementally.
-function createTask(name, path, task) {
+function createTask(name, path, task, watchPath) {
   tasks.push(name);
   gulp.task(name, () =>
     task(gulp.src(path))
@@ -58,7 +59,7 @@ function createTask(name, path, task) {
 
   // Recompile on source update, if running with the `-w` flag.
   if (watch) {
-    gulp.watch(path, [name]);
+    gulp.watch(watchPath || path, [name]);
   }
 }
 
@@ -126,15 +127,15 @@ createTask("vendor", [
 );
 
 // Compile Less to CSS.
-createTask("css", ["less/*.less", "!less/*.mix.less"], src =>
-  src
+createTask("css", ["less/*.less", "!less/*.mix.less"], src => {
+  return src
     .pipe(sourcemaps.init())
     .pipe(less())
     .on("error", handleError)
     .pipe(nano())
     .pipe(sourcemaps.write("maps"))
     .pipe(gulp.dest(CSS_DIR))
-);
+}, "less/*.less");
 
 // Language packs.
 createTask("lang", "lang/**/*.json", src =>

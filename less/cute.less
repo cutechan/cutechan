@@ -1,13 +1,21 @@
-@import "common.mix.less";
+@import "base.mix.less";
+
+@bg: #eee;
 @body: #0a0a0a;
 @link: #54578c;
 @em: #6e9e06;
 @del: black;
-@postBG: #d9f0d6;
-@border: 1px solid #b9d9b7;
+@postBG: #ddd;
+@border: 1px solid #ccc;
 @bold: #1a8522;
 @admin: #d60000;
 @mod: #7800b3;
+@font: "Trebuchet MS", sans-serif;
+
+body {
+  font-family: @font;
+  font-size: 14px;
+}
 
 blockquote a {
   color: #54578c;
@@ -19,8 +27,8 @@ a:hover {
 
 article, aside {
   background-color: @postBG;
-  border-right: @border;
-  border-bottom: @border;
+  border: @border;
+  border-radius: 5px;
 }
 
 article {
@@ -28,8 +36,7 @@ article {
     border: solid @border;
   }
   &.highlight:not(.editing) {
-    background-color: #b9ccb4;
-    border-color: #9fbf9d;
+    background-color: #bbb;
     article {
       border: solid 1px #9fbf9d;
     }
@@ -43,23 +50,14 @@ article {
   }
 }
 
-body {
-  background-color: #f4ffee;
-  font-family: Helvetica, sans-serif;
-  font-size: 10pt;
-}
-
 h1 {
   color: #b32407;
-  font-family: Helvetica, sans-serif;
   font-size: 30px;
-  text-shadow: #8e3523 1px 1px 0px;
   letter-spacing: 1px;
 }
 
 h2 {
   color: #b32407;
-  font-family: Helvetica, sans-serif;
   text-shadow: #8e3523 1px 1px 0px;
 }
 
@@ -80,7 +78,7 @@ hr {
 }
 
 .modal, .preview:not(.editing), .popup-menu, .side-panel {
-  background-color: #f6faf3;
+  background-color: #eee;
 }
 
 a.tab-sel {
@@ -89,4 +87,11 @@ a.tab-sel {
 
 .omit {
   color: #73806c;
+}
+
+.page-title {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 15px 0;
+  color: #f60;
 }
