@@ -2,6 +2,7 @@
 
 'use strict'
 
+const stripAnsi = require("strip-ansi")
 const babel = require("gulp-babel"),
 	gulp = require('gulp'),
 	gutil = require('gulp-util'),
@@ -11,7 +12,8 @@ const babel = require("gulp-babel"),
 	rename = require('gulp-rename'),
 	sourcemaps = require('gulp-sourcemaps'),
 	ts = require('gulp-typescript'),
-	uglify = require('gulp-uglify')
+	uglify = require('gulp-uglify'),
+	notify = require('gulp-notify')
 
 // Keep script alive and rebuild on file changes
 // Triggered with the `-w` flag
@@ -19,6 +21,13 @@ const watch = gutil.env.w
 
 // Dependency tasks for the default tasks
 const tasks = []
+
+// Notify about errors
+const notifyError = notify.onError({
+	title: "<%= error.name %>",
+	message: "<%= options.stripAnsi(error.message) %>",
+	templateOptions: {stripAnsi},
+})
 
 // Client JS files
 buildES6()
@@ -109,10 +118,10 @@ function buildClient() {
 // an error status, if failing a one-time build. This way we can use failure to
 // build the client to not pass Travis CL tests.
 function handleError(err) {
-	if (!watch) {
-		throw err
+	if (watch) {
+		notifyError(err)
 	} else {
-		console.error(err.message)
+		throw err
 	}
 }
 
