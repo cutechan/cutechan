@@ -23,12 +23,10 @@ endif
 
 all: client server
 
-client: client_deps client_vendor client_build
+client: client-deps client-build
 
-client_deps:
+client-deps:
 	npm install --progress false --depth 0
-
-client_vendor:
 	mkdir -p www/js/vendor
 	cp \
 		node_modules/dom4/build/dom4.js \
@@ -40,26 +38,26 @@ client_vendor:
 	$(uglifyjs) node_modules/whatwg-fetch/fetch.js -o www/js/vendor/fetch.js
 	$(uglifyjs) node_modules/almond/almond.js -o www/js/vendor/almond.js
 
-client_build:
+client-build:
 	$(gulp)
 
 watch:
 	$(gulp) -w
 
-server: server_deps server_build
+server: server-deps server-build
 
-server_deps:
+server-deps:
 	go get -v \
 		github.com/valyala/quicktemplate/qtc \
 		github.com/jteeuwen/go-bindata/... \
 		github.com/mailru/easyjson/...
 	go list -f '{{.Deps}}' meguca | tr -d '[]' | xargs go get -v
 
-server_build:
+server-build:
 	go generate meguca/...
 	go build -v -o $(binary) meguca
 
-update_deps:
+update-deps:
 	go get -u -v \
 		github.com/valyala/quicktemplate/qtc \
 		github.com/jteeuwen/go-bindata/... \
@@ -74,34 +72,34 @@ update_deps:
 test:
 	go test -race -p 1 meguca/...
 
-test_no_race:
+test-no-race:
 	go test -p 1 meguca/...
 
-test_custom:
+test-custom:
 	go test meguca/... $(f)
 
-upgrade_v4: generate
+upgrade-v4: generate
 	go get -v github.com/dancannon/gorethink
 	$(MAKE) -C scripts/migration/3to4 upgrade
 
-client_clean:
+client-clean:
 	rm -rf www/js www/css/*.css www/css/maps www/lang
 
-server_clean:
+server-clean:
 	rm -rf go/src/github.com go/src/golang.org go/bin go/pkg \
 		go/src/meguca/common/*_easyjson.go \
 		go/src/meguca/config/*_easyjson.go \
 		go/src/meguca/templates/*.qtpl.go
 
-test_clean:
+test-clean:
 	rm -rf go/multipart-*
 
-clean: client_clean server_clean test_clean
+clean: client-clean server-clean test-clean
 	rm -rf .build .ffmpeg .package cutechan-*.zip cutechan-*.tar.xz cutechan cutechan.exe
 	$(MAKE) -C scripts/migration/3to4 clean
 ifeq ($(is_windows), true)
 	rm -rf /.meguca_build *.dll
 endif
 
-dist_clean: clean
+distclean: clean
 	rm -rf images db.db error.log
