@@ -7,7 +7,7 @@
 {% func renderIndex(pos auth.ModerationLevel) %}{% stripspace %}
 	{% code conf := config.Get() %}
 	{% code ln := lang.Get() %}
-	{% code confJSON, confHash := config.GetClient() %}
+	{% code confJSON, _ := config.GetClient() %}
 	{% code boards := config.GetBoards() %}
 	<!doctype html>
 	<head>
@@ -38,11 +38,8 @@
 			Configuration injection and theme adjustment
 		{% endcomment %}
 		<script>
-			var config = {%z= confJSON %},
-				configHash = '{%s confHash %}',
-				{% code boardJSON, _ := json.Marshal(boards) %}
-				boards = {%z= boardJSON %},
-				position = {%d int(pos) %};
+			{% code boardJSON, _ := json.Marshal(boards) %}
+			var config={%z= confJSON %},boards={%z= boardJSON %},position={%d int(pos) %};
 			if (localStorage.theme !== config.DefaultCSS) {
 				document.getElementById('theme-css').href = '/assets/css/' + localStorage.theme + '.css'
 			}

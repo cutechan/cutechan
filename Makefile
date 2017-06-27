@@ -46,7 +46,7 @@ client_build:
 watch:
 	$(gulp) -w
 
-server: server_deps server_gen server_build
+server: server_deps server_build
 
 server_deps:
 	go get -v \
@@ -55,14 +55,8 @@ server_deps:
 		github.com/mailru/easyjson/...
 	go list -f '{{.Deps}}' meguca | tr -d '[]' | xargs go get -v
 
-server_gen:
-	rm -f \
-		go/src/meguca/common/*_easyjson.go \
-		go/src/meguca/config/*_easyjson.go \
-		go/src/meguca/templates/*.qtpl.go
-	go generate meguca/...
-
 server_build:
+	go generate meguca/...
 	go build -v -o $(binary) meguca
 
 update_deps:
@@ -94,7 +88,10 @@ client_clean:
 	rm -rf www/js www/css/*.css www/css/maps www/lang
 
 server_clean:
-	rm -rf go/src/github.com go/src/golang.org go/bin go/pkg
+	rm -rf go/src/github.com go/src/golang.org go/bin go/pkg \
+		go/src/meguca/common/*_easyjson.go \
+		go/src/meguca/config/*_easyjson.go \
+		go/src/meguca/templates/*.qtpl.go
 
 test_clean:
 	rm -rf go/multipart-*
