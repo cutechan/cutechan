@@ -35,8 +35,6 @@ export const specs: { [id: string]: OptionSpec } = {
 		type: optionType.menu,
 		default: "width",
 	},
-	// Hide thumbnails
-	hideThumbs: {},
 	// Boss key toggle
 	workModeToggle: {
 		type: optionType.checkbox,

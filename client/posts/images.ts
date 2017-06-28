@@ -21,8 +21,7 @@ export default class ImageHandler extends View<Post> {
 			this.el.querySelector(".post-container").prepend(el)
 		}
 
-		const showThumb = (!options.hideThumbs && !options.workModeToggle)
-			|| reveal
+		const showThumb = !options.workModeToggle || reveal
 		el.hidden = !showThumb
 		if (showThumb) {
 			(el.firstElementChild as HTMLElement).hidden = false
@@ -98,7 +97,7 @@ export default class ImageHandler extends View<Post> {
 		}
 
 		const [hToggle, info] = Array.from(el.children) as HTMLElement[]
-		if (!options.hideThumbs && !options.workModeToggle) {
+		if (!options.workModeToggle) {
 			hToggle.hidden = true
 		} else {
 			hToggle.hidden = false

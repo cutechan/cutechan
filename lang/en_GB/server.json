@@ -94,7 +94,7 @@
 		],
 		"notification": [
 			"Desktop Notifications",
-			"Get desktop notifications when quoted or a syncwatch is about to start"
+			"Get desktop notifications when quoted"
 		],
 		"oldPassword": [
 			"Old password",
@@ -254,8 +254,7 @@
 		"File count"
 	],
 	"tabs": [
-		"General",
-		"Style",
+		"Options",
 		"Shortcuts"
 	],
 	"templates": {

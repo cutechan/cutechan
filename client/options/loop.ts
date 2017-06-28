@@ -12,7 +12,6 @@ import { fileTypes } from "../common"
 export default () => {
 	const handlers: { [key: string]: () => void } = {
 		workModeToggle: renderImages,
-		hideThumbs: renderImages,
 		spoilers: toggleSpoilers,
 		autogif: toggleAutoGIF,
 		relativeTime: renderTime,
@@ -47,7 +46,7 @@ function renderImages() {
 	if (page.catalog) {
 		// Quick render, because we don't have views in the catalog
 		let display = ""
-		if (options.hideThumbs || options.workModeToggle) {
+		if (options.workModeToggle) {
 			display = "none"
 		}
 		for (let el of document.querySelectorAll("img.catalog")) {

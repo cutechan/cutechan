@@ -71,8 +71,7 @@ export function extractPost(
 
 	const { image } = model
 	if (image) {
-		if (options.hideThumbs
-			|| options.workModeToggle
+		if (options.workModeToggle
 			|| (image.spoiler && !options.spoilers)
 			|| (image.fileType === fileTypes.gif && options.autogif)
 		) {

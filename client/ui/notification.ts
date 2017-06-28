@@ -29,7 +29,7 @@ export default function notifyAboutReply(post: Post) {
 	}
 
 	let icon: string
-	if (!options.hideThumbs && !options.workModeToggle) {
+	if (!options.workModeToggle) {
 		if (post.image) {
 			const { SHA1, thumbType } = post.image
 			if (post.image.spoiler) {

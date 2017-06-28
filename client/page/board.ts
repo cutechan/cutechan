@@ -122,7 +122,7 @@ export function sortThreads(initial: boolean) {
 	const [cont, threads] = getThreads()
 
 	// Index board pages use the same localization functions as threads
-	if (page.catalog && (options.hideThumbs || options.workModeToggle)) {
+	if (page.catalog && options.workModeToggle) {
 		for (let el of cont.querySelectorAll("img.catalog")) {
 			el.style.display = "none"
 		}

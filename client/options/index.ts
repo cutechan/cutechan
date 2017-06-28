@@ -7,7 +7,6 @@ import { trigger, emitChanges, ChangeEmitter, hook } from "../util"
 export * from "./specs"
 
 interface Options extends ChangeEmitter {
-	hideThumbs: boolean
 	imageHover: boolean
 	autogif: boolean
 	spoilers: boolean
