@@ -7,7 +7,7 @@ import { posts } from "../state"
 const titleEl = document.head.querySelector("title"),
 	title = titleEl.textContent,
 	faviconEl = document.getElementById("favicon"),
-	urlBase = "/assets/favicons/",
+	urlBase = "/static/favicons/",
 	queue: Post[] = []
 
 // All possible favicon states

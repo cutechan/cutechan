@@ -148,8 +148,8 @@ func createRouter() http.Handler {
 	// Assets
 	assets := r.NewGroup("/assets")
 	assets.GET("/banners/:board/:id", serveBanner)
-	assets.GET("/*path", serveAssets)
 	assets.GET("/images/*path", serveImages)
+	r.GET("/static/*path", serveAssets)
 	r.GET("/worker.js", serveWorker)
 
 	h := http.Handler(r)

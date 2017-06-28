@@ -15,23 +15,23 @@
 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
 		<meta name="application-name" content="cutechan">
 		<meta name="description" content="Cute chan">
-		<link rel="icon" id="favicon" href="/assets/favicons/default.ico">
+		<link rel="icon" id="favicon" href="/static/favicons/default.ico">
 		<title>
 			{% comment %}
 				Only expanded in the second parse of the template
 			{% endcomment %}
 			$$$
 		</title>
-		<link rel="manifest" href="/assets/mobile/manifest.json">
+		<link rel="manifest" href="/static/mobile/manifest.json">
 		{% comment %}
 			Main and theme-specific stylesheets
 		{% endcomment %}
-		<link rel="stylesheet" id="theme-css" href="/assets/css/{%s conf.DefaultCSS %}.css">
+		<link rel="stylesheet" id="theme-css" href="/static/css/{%s conf.DefaultCSS %}.css">
 		{% comment %}
 			Hide various elements that are dysfunctional without JS
 		{% endcomment %}
 		<noscript>
-			<link rel="stylesheet" href="/assets/css/noscript.css">
+			<link rel="stylesheet" href="/static/css/noscript.css">
 		</noscript>
 		{% comment %}
 			Configuration injection and theme adjustment
@@ -40,7 +40,7 @@
 			{% code boardJSON, _ := json.Marshal(boards) %}
 			var config={%z= confJSON %},boards={%z= boardJSON %},position={%d int(pos) %};
 			if (localStorage.theme !== config.DefaultCSS) {
-				document.getElementById("theme-css").href = "/assets/css/" + localStorage.theme + ".css";
+				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
 			}
 		</script>
 		{% comment %}
@@ -134,7 +134,7 @@
 		{% comment %}
 			Loading indicator image
 		{% endcomment %}
-		<image src="/assets/img/loading.gif" id="loading-image">
+		<image src="/static/img/loading.gif" id="loading-image">
 		<div id="overlay-container">
 			{% comment %}
 				Top banner
@@ -335,11 +335,11 @@
 		{% comment %}
 			Dynamic module loader
 		{% endcomment %}
-		<script src="/assets/js/vendor/almond.js"></script>
+		<script src="/static/js/vendor/almond.js"></script>
 		<script id="lang-data" type="application/json">
 			{% code buf, _ := json.Marshal(ln.Common) %}
 			{%z= buf %}
 		</script>
-		<script src="/assets/js/loader.js"></script>
+		<script src="/static/js/loader.js"></script>
 	</body>
 {% endstripspace %}{% endfunc %}

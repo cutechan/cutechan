@@ -86,7 +86,7 @@ export const specs: { [id: string]: OptionSpec } = {
 			}
 			document
 				.getElementById('theme-css')
-				.setAttribute('href', `/assets/css/${theme}.css`)
+				.setAttribute('href', `/static/css/${theme}.css`)
 		},
 	},
 	// Shortcut keys

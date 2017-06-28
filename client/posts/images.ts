@@ -68,7 +68,7 @@ export default class ImageHandler extends View<Post> {
 
 		if (data.spoiler && options.spoilers) {
 			// Spoilered and spoilers enabled
-			thumb = '/assets/img/spoiler.jpg'
+			thumb = '/static/img/spoiler.jpg'
 			thumbHeight = thumbWidth = 150
 		} else if (data.fileType === fileTypes.gif && options.autogif) {
 			// Animated GIF thumbnails
@@ -314,7 +314,7 @@ export default class ImageHandler extends View<Post> {
 }
 
 function imageRoot(): string {
-	return config.imageRootOverride || "/assets/images"
+	return config.imageRootOverride || "/static/images"
 }
 
 // Get the thumbnail path of an image, accounting for not thumbnail of specific

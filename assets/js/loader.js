@@ -177,7 +177,7 @@
 	function loadScript(path) {
 		var script = document.createElement('script')
 		script.type = 'text/javascript'
-		script.src = '/assets/js/' + path + '.js'
+		script.src = '/static/js/' + path + '.js'
 		head.appendChild(script)
 		return script
 	}
