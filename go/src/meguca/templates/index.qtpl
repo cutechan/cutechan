@@ -81,7 +81,6 @@
 					<span class="filesize"></span>
 					<span class="dims"></span>
 				</span>
-				<a></a>
 			</figcaption>
 		</template>
 		<template name="figure">

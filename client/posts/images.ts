@@ -2,7 +2,7 @@ import { Post } from "./model"
 import { fileTypes } from "../common"
 import { View } from "../base"
 import {
-	setAttrs, on, trigger, firstChild, importTemplate, escape, pad
+	setAttrs, on, trigger, firstChild, importTemplate, pad
 } from "../util"
 import options from "../options"
 import { getModel, posts, config } from "../state"
@@ -100,7 +100,7 @@ export default class ImageHandler extends View<Post> {
 			this.el.querySelector("header").after(el)
 		}
 
-		const [hToggle, info, link] = Array.from(el.children) as HTMLElement[]
+		const [hToggle, info] = Array.from(el.children) as HTMLElement[]
 		if (!options.hideThumbs && !options.workModeToggle) {
 			hToggle.hidden = true
 		} else {
@@ -157,15 +157,6 @@ export default class ImageHandler extends View<Post> {
 			}
 		}
 
-		// Render a name + download link of an image
-		const ext = fileTypes[data.fileType],
-			name = `${escape(data.name)}.${ext}`
-		setAttrs(el.lastElementChild, {
-			href: `/assets/images/src/${data.SHA1}.${ext}`,
-			download: name,
-		})
-		link.innerHTML = name
-
 		el.hidden = false
 	}
 
@@ -183,7 +174,7 @@ export default class ImageHandler extends View<Post> {
 			case fileTypes["tar.gz"]:
 			case fileTypes["tar.xz"]:
 				event.preventDefault()
-				return this.el.querySelector("figcaption a[download]").click()
+				return this.el.querySelector("figure a").click()
 			case fileTypes.mp3:
 				event.preventDefault()
 				return this.renderAudio()

@@ -37,8 +37,8 @@ type ReplyCreationRequest struct {
 
 // ImageRequest contains data for allocating an image
 type ImageRequest struct {
-	Spoiler     bool
-	Token, Name string
+	Spoiler bool
+	Token   string
 }
 
 // CreateThread creates a new tread and writes it to the database.
@@ -72,10 +72,10 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 	}
 
 	// Perform this last, so there are less dangling images because of any error
-	hasImage := req.Image.Token != "" && req.Image.Name != ""
+	hasImage := req.Image.Token != ""
 	if hasImage {
 		img := req.Image
-		post.Image, err = getImage(img.Token, img.Name, img.Spoiler)
+		post.Image, err = getImage(img.Token, "", img.Spoiler)
 		if err != nil {
 			return
 		}
@@ -117,7 +117,7 @@ func CreatePost(
 	}
 
 	// Post must have either at least one character or an image to be allocated
-	hasImage := req.Image.Token != "" && req.Image.Name != ""
+	hasImage := req.Image.Token != ""
 	if req.Body == "" && !hasImage {
 		err = errNoTextOrImage
 		return
@@ -130,7 +130,7 @@ func CreatePost(
 
 	if hasImage {
 		img := req.Image
-		post.Image, err = getImage(img.Token, img.Name, img.Spoiler)
+		post.Image, err = getImage(img.Token, "", img.Spoiler)
 		if err != nil {
 			return
 		}

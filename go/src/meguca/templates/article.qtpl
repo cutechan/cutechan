@@ -93,10 +93,6 @@ TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 						{%d int(img.Dims[0]) %}×{%d int(img.Dims[1]) %}
 					</span>
 				</span>
-				{% code name := imageName(img.FileType, img.Name) %}
-				<a href="{%s assets.RelativeSourcePath(img.FileType, img.SHA1) %}" download="{%s name %}">
-					{%s name %}
-				</a>
 			</figcaption>
 		{% endif %}
 		<div class="post-container">

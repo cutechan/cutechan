@@ -66,7 +66,7 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 
 	// Handle image, if any, and extract file name
 	var token string
-	_, header, err := r.FormFile("image")
+	_, _, err = r.FormFile("image")
 	switch err {
 	case nil:
 		var code int
@@ -98,7 +98,6 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 		req.Image = websockets.ImageRequest{
 			Spoiler: f.Get("spoiler") == "on",
 			Token:   token,
-			Name:    header.Filename,
 		}
 	}
 

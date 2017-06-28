@@ -282,7 +282,7 @@ func (c *Client) insertImage(data []byte) (err error) {
 		return
 	}
 
-	img, err := getImage(req.Token, req.Name, req.Spoiler)
+	img, err := getImage(req.Token, "", req.Spoiler)
 	if err != nil {
 		return
 	}
