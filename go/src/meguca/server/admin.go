@@ -41,7 +41,7 @@ var (
 
 	// TODO(Kagami): Forbid spoofing names like "admin" too?
 	reservedBoards      = [...]string{
-		"html", "json", "api", "assets", "all",
+		"html", "json", "api", "static", "assets", "all",
 	}
 )
 
