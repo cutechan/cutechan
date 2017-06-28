@@ -1,7 +1,7 @@
 export { Post } from "./model"
 export { default as PostView } from "./view"
 export { postEvent, postSM, postState, FormModel } from "./posting"
-export { default as ImageHandler, toggleExpandAll, thumbPath } from "./images"
+export { default as ImageHandler, thumbPath } from "./images"
 export * from "./render"
 export { default as PostCollection } from "./collection"
 export { findSyncwatches } from "./syncwatch"

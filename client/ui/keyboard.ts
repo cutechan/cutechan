@@ -1,9 +1,9 @@
 // Keyboard shortcuts and such
 
 import options from "../options"
-import { FormModel, postSM, postEvent, toggleExpandAll } from "../posts"
+import { postSM, postEvent } from "../posts"
 import { page } from "../state"
-import { scrollToElement, trigger, getID } from "../util"
+import { scrollToElement, getID } from "../util"
 
 // Bind keyboard event listener to the document
 export default () =>
@@ -46,18 +46,6 @@ function handleShortcut(event: KeyboardEvent) {
 					tf.click()
 					scrollToElement(tf)
 				}
-				break
-			case options.done:
-				postSM.feed(postEvent.done, event)
-				break
-			case options.toggleSpoiler:
-				const m = trigger("getPostModel") as FormModel
-				if (m) {
-					m.view.toggleSpoiler()
-				}
-				break
-			case options.expandAll:
-				toggleExpandAll()
 				break
 			case options.workMode:
 				options.workModeToggle = !options.workModeToggle

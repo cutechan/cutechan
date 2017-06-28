@@ -148,7 +148,6 @@ export class Post extends Model implements PostData {
 	public insertImage(img: ImageData) {
 		this.image = img
 		this.view.renderImage(false)
-		this.view.autoExpandImage()
 	}
 
 	// Spoiler an already allocated imageThreadData

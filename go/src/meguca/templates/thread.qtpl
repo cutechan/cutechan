@@ -27,11 +27,6 @@
 				{%s ln.UI["catalog"] %}
 			</a>
 		</span>
-		<span id="expand-images" class="act">
-			<a>
-				{%s ln.Common.Posts["expandImages"] %}
-			</a>
-		</span>
 		{%= hoverReveal("span", conf.Notice, ln.UI["showNotice"]) %}
 		{%= hoverReveal("span", conf.Rules, ln.UI["rules"]) %}
 	</span>

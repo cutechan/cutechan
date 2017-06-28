@@ -36,14 +36,6 @@
 			"Disable non-admin board creation",
 			"Prevents any account apart from the 'admin' account from creating new boards"
 		],
-		"done": [
-			"Finish Post",
-			"Close open post"
-		],
-		"expandAll": [
-			"Expand All Images",
-			"Expand all images. Webm, PDF and MP3 and your own post aren't affected. New post images are also expanded."
-		],
 		"hideThumbs": [
 			"Hide thumbnails",
 			"Display a [Show] button in place of thumbnails"
@@ -183,10 +175,6 @@
 		"title": [
 			"Board title",
 			"Short descriptive title of the board"
-		],
-		"toggleSpoiler": [
-			"Image Spoiler",
-			"Toggle spoiler in the open post"
 		],
 		"workMode": [
 			"Work mode",

@@ -94,18 +94,6 @@ export const specs: { [id: string]: OptionSpec } = {
 		default: 78,
 		type: optionType.shortcut,
 	},
-	done: {
-		default: 83,
-		type: optionType.shortcut,
-	},
-	toggleSpoiler: {
-		default: 73,
-		type: optionType.shortcut,
-	},
-	expandAll: {
-		default: 69,
-		type: optionType.shortcut,
-	},
 	workMode: {
 		default: 66,
 		type: optionType.shortcut,

@@ -33,7 +33,6 @@ export default class PostView extends ImageHandler {
         if (!el) {
             this.el.append(importTemplate("article"))
             this.render()
-            this.autoExpandImage()
         }
     }
 

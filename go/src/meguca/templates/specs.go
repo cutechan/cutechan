@@ -240,18 +240,6 @@ var optionSpecs = [...][]inputSpec{
 			Type: _shortcut,
 		},
 		{
-			ID:   "done",
-			Type: _shortcut,
-		},
-		{
-			ID:   "toggleSpoiler",
-			Type: _shortcut,
-		},
-		{
-			ID:   "expandAll",
-			Type: _shortcut,
-		},
-		{
 			ID:   "workMode",
 			Type: _shortcut,
 		},

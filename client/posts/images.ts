@@ -5,11 +5,8 @@ import {
 	setAttrs, on, trigger, firstChild, importTemplate, pad
 } from "../util"
 import options from "../options"
-import { getModel, posts, config } from "../state"
+import { getModel, config } from "../state"
 import lang from "../lang"
-
-// Expand all image thumbnails automatically
-export let expandAll = false
 
 // Mixin for image expansion and related functionality
 export default class ImageHandler extends View<Post> {
@@ -191,13 +188,6 @@ export default class ImageHandler extends View<Post> {
 		}
 	}
 
-	// Automatically expand an image, if expandAll is set
-	public autoExpandImage() {
-		if (expandAll && shouldAutoExpand(this.model)) {
-			this.expandImage(null, true)
-		}
-	}
-
 	// Contract an image and optionally omit scrolling to post and delay the
 	// rendering of the change to the next animation frame.
 	public contractImage(e: MouseEvent | null, scroll: boolean) {
@@ -314,7 +304,7 @@ export default class ImageHandler extends View<Post> {
 }
 
 function imageRoot(): string {
-	return config.imageRootOverride || "/static/images"
+	return config.imageRootOverride || "/assets/images"
 }
 
 // Get the thumbnail path of an image, accounting for not thumbnail of specific
@@ -356,57 +346,10 @@ function toggleHiddenThumbnail(event: Event) {
 	model.image.revealed = !revealed
 }
 
-// Toggle image expansion on [Expand Images] click
-export function toggleExpandAll() {
-	expandAll = !expandAll
-
-	const e = document.querySelector("#expand-images a")
-	if (e) {
-		const k = (expandAll ? "contract" : "expand") + "Images"
-		e.textContent = lang.posts[k]
-	}
-
-	// Loop over all models and apply changes
-	for (let post of posts) {
-		if (!shouldAutoExpand(post)) {
-			continue
-		}
-		if (expandAll) {
-			post.view.expandImage(null, true)
-		} else {
-			post.view.contractImage(null, false)
-		}
-	}
-}
-
-// Externally set the value of expandAll
-export function setExpandAll(b: boolean) {
-	expandAll = b
-}
-
-// Resolve, if post should be automatically expanded or contracted
-function shouldAutoExpand(model: Post): boolean {
-	if (!model.image) {
-		return false
-	}
-	switch (model.image.fileType) {
-		case fileTypes.jpg:
-		case fileTypes.png:
-		case fileTypes.gif:
-			return true
-		default:
-			return false
-	}
-}
-
 on(document, "click", handleImageClick, {
 	selector: "img, video",
 })
 on(document, "click", toggleHiddenThumbnail, {
 	passive: true,
 	selector: ".image-toggle",
-})
-on(document, "click", toggleExpandAll, {
-	passive: true,
-	selector: "#expand-images a",
 })
