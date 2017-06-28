@@ -1,21 +1,17 @@
 @import "base.mix.less";
 
-@bg: #eee;
+@bodyBG: #eee;
+@postBG: #ddd;
 @body: #0a0a0a;
 @link: #54578c;
 @em: #6e9e06;
 @del: black;
-@postBG: #ddd;
 @border: 1px solid #ccc;
 @bold: #1a8522;
 @admin: #d60000;
 @mod: #7800b3;
 @font: "Trebuchet MS", sans-serif;
-
-body {
-  font-family: @font;
-  font-size: 14px;
-}
+@size: 14px;
 
 blockquote a {
   color: #54578c;
@@ -33,13 +29,11 @@ article, aside {
 
 article {
   article {
-    border: solid @border;
+    border: @border;
   }
   &.highlight:not(.editing) {
     background-color: #bbb;
-    article {
-      border: solid 1px #9fbf9d;
-    }
+    border-color: #999;
   }
   &.editing {
     background-color: #f0e5ba;
@@ -82,7 +76,7 @@ hr {
 }
 
 a.tab-sel {
-  color: #BA8D7A;
+  color: #ba8d7a;
 }
 
 .omit {
@@ -90,8 +84,5 @@ a.tab-sel {
 }
 
 .page-title {
-  font-size: 2em;
-  font-weight: bold;
-  margin: 15px 0;
   color: #f60;
 }
