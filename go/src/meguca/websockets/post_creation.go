@@ -153,10 +153,10 @@ func CreatePost(
 
 // Insert a new post into the database
 func (c *Client) insertPost(data []byte) (err error) {
-	err = c.closePreviousPost()
-	if err != nil {
-		return
-	}
+	// err = c.closePreviousPost()
+	// if err != nil {
+	// 	return
+	// }
 
 	var req ReplyCreationRequest
 	err = decodeMessage(data, &req)
@@ -205,12 +205,12 @@ func (c *Client) submitCaptcha(data []byte) (err error) {
 }
 
 // If the client has a previous post, close it silently
-func (c *Client) closePreviousPost() error {
-	if c.post.id != 0 {
-		return c.closePost()
-	}
-	return nil
-}
+// func (c *Client) closePreviousPost() error {
+// 	if c.post.id != 0 {
+// 		return c.closePost()
+// 	}
+// 	return nil
+// }
 
 // Construct the common parts of the new post for both threads and replies
 func constructPost(

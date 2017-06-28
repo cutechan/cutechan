@@ -6,7 +6,6 @@ import {
 } from "../../util"
 import { postSM, postEvent, postState } from "."
 import UploadForm from "./upload"
-import identity from "./identity"
 import { CaptchaView } from "../../ui"
 import { message, send } from "../../connection"
 
@@ -143,7 +142,7 @@ export default class FormView extends PostView {
 
         document.getElementById("thread-container").append(this.el)
         this.resizeSpacer()
-        this.setEditing(identity.live)
+        this.setEditing(false)
     }
 
     // Resize bottomSpacer to the same top position as this post

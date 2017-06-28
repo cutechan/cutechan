@@ -55,6 +55,9 @@ test-no-race:
 test-custom:
 	go test meguca/... $(f)
 
+test-build:
+	go build -o /dev/null meguca
+
 client-clean:
 	rm -rf dist node_modules package-lock.json
 
@@ -66,7 +69,6 @@ server-clean:
 		go/src/meguca/templates/*.qtpl.go
 
 test-clean:
-	find go/src/meguca -name db.db -type f -delete
 	rm -rf go/multipart-* \
 		go/src/meguca/imager/images \
 		go/src/meguca/imager/assets/images \
@@ -76,4 +78,4 @@ test-clean:
 clean: client-clean server-clean test-clean
 
 distclean: clean
-	rm -rf images db.db
+	rm -rf images

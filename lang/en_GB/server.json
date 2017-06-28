@@ -72,10 +72,6 @@
 			"Language",
 			"Change interface language"
 		],
-		"live": [
-			"Live",
-			"Show your post to others as it is being typed"
-		],
 		"maxHeight": [
 			"Image height limit",
 			"Maximum height of uploaded images"
@@ -232,7 +228,6 @@
 		"expires": "Expires",
 		"global": "Global",
 		"identity": "Identity",
-		"live": "Live",
 		"loadCaptcha": "Click to load captcha",
 		"logout": "Logout",
 		"logoutAll": "Log out all devices",

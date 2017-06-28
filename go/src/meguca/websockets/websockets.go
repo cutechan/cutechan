@@ -318,16 +318,16 @@ func (c *Client) Close(err error) {
 
 // Helper for determining, if the client currently has an open post not older
 // than 29 minutes. If the post is older, it is closed automatically.
-func (c *Client) hasPost() (bool, error) {
-	switch {
-	case c.post.id == 0:
-		return false, errNoPostOpen
-	case c.post.time < time.Now().Add(-time.Minute*29).Unix():
-		return false, c.closePost()
-	default:
-		return true, nil
-	}
-}
+// func (c *Client) hasPost() (bool, error) {
+// 	switch {
+// 	case c.post.id == 0:
+// 		return false, errNoPostOpen
+// 	case c.post.time < time.Now().Add(-time.Minute*29).Unix():
+// 		return false, c.closePost()
+// 	default:
+// 		return true, nil
+// 	}
+// }
 
 // Redirect closes any open posts and forces the client to sync to the target
 // board

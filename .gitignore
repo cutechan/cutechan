@@ -14,5 +14,4 @@ bin_data.go
 thumb_*.png
 thumb_*.jpg
 images
-db.db
 tags

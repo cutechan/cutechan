@@ -14,7 +14,7 @@ import { getAuth } from "../../mod";
 export default class FormModel extends Post {
 	public sentAllocRequest: boolean
 	public isAllocated: boolean
-	public nonLive = !identity.live  // Disable live post updates
+	public nonLive = true  // Disable live post updates
 	public needCaptcha: boolean // Need to solve a captcha to allocate
 
 	// Text that is not submitted yet to defer post allocation

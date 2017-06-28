@@ -8,13 +8,11 @@ const base64 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_
 
 interface Identity extends ChangeEmitter {
 	staffTitle: boolean
-	live: boolean
 	postPassword: string
 }
 
 let identity = {postPassword: randomID(64)} as Identity
 identity.staffTitle = localStorage.getItem("staffTitle") === "true"
-identity.live = localStorage.getItem("live") === "true"
 export default identity = emitChanges(identity)
 
 // Poster identity input panel

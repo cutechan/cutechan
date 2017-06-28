@@ -25,9 +25,6 @@ var (
 )
 
 var specs = map[string][]inputSpec{
-	"identity": {
-		{ID: "live"},
-	},
 	"noscriptPostCreation": {
 		{
 			ID:           "name",

@@ -238,9 +238,9 @@ func InsertPost(p Post, sage bool) (err error) {
 		return
 	}
 
-	if p.Editing {
-		err = SetOpenBody(p.ID, []byte(p.Body))
-	}
+	// if p.Editing {
+	// 	err = SetOpenBody(p.ID, []byte(p.Body))
+	// }
 
 	return
 }
@@ -284,9 +284,9 @@ func WritePost(tx *sql.Tx, p Post) (err error) {
 		return
 	}
 
-	if p.Editing {
-		err = SetOpenBody(p.ID, []byte(p.Body))
-	}
+	// if p.Editing {
+	// 	err = SetOpenBody(p.ID, []byte(p.Body))
+	// }
 
 	return
 }
@@ -305,9 +305,9 @@ func InsertThread(subject string, p Post) (err error) {
 		return
 	}
 
-	if p.Editing {
-		err = SetOpenBody(p.ID, []byte(p.Body))
-	}
+	// if p.Editing {
+	// 	err = SetOpenBody(p.ID, []byte(p.Body))
+	// }
 
 	return
 }
