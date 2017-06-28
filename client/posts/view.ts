@@ -183,29 +183,12 @@ export default class PostView extends ImageHandler {
 
     // Render the name and tripcode in the header
     public renderName() {
-        const el = this.el.querySelector(".name")
-        let html = ""
-        const { trip, name, auth } = this.model
-
-        if (name || !trip) {
-            if (name) {
-                html += escape(name)
-            } else {
-                html += lang.posts["anon"]
-            }
-            if (trip) {
-                html += ' '
-            }
-        }
-
-        if (trip) {
-            html += `<code>!${escape(trip)}</code>`
-        }
-        if (auth) { // Render staff title
+        const { auth } = this.model
+        if (auth) {
+            const el = this.el.querySelector(".name")
             el.classList.add("admin")
-            html += ` ## ${lang.posts[auth] || "??"}`
+            el.textContent = `## ${lang.posts[auth]}`
         }
-        el.innerHTML = html
     }
 
     // Render "USER WAS BANNED FOR THIS POST" message

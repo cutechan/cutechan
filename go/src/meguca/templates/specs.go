@@ -27,12 +27,6 @@ var (
 var specs = map[string][]inputSpec{
 	"identity": {
 		{ID: "live"},
-		{
-			ID:           "name",
-			Type:         _string,
-			MaxLength:    common.MaxLenName,
-			Autocomplete: "off",
-		},
 	},
 	"noscriptPostCreation": {
 		{

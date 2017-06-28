@@ -8,6 +8,7 @@ import { extend } from "../../util"
 import { SpliceResponse } from "../../client"
 import { FileData } from "./upload"
 import identity, { newAllocRequest } from "./identity"
+import { getAuth } from "../../mod";
 
 // Form Model of an OP post
 export default class FormModel extends Post {
@@ -37,9 +38,7 @@ export default class FormModel extends Post {
 			sticky: false,
 			time: Math.floor(Date.now() / 1000),
 			body: "",
-			name: "",
-			auth: "",
-			trip: "",
+			auth: identity.staffTitle ? getAuth() : "",
 			state: {
 				spoiler: false,
 				quote: false,

@@ -32,7 +32,7 @@ type ReplyCreationRequest struct {
 	Image      ImageRequest
 	auth.SessionCreds
 	auth.Captcha
-	Name, Password, Body string
+	Password, Body string
 }
 
 // ImageRequest contains data for allocating an image
@@ -228,11 +228,6 @@ func constructPost(
 			Board: board,
 		},
 		IP: ip,
-	}
-
-	post.Name, post.Trip, err = parser.ParseName(req.Name)
-	if err != nil {
-		return
 	}
 
 	if utf8.RuneCountInString(req.Body) > common.MaxLenBody {

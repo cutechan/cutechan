@@ -29,6 +29,21 @@ export const enum ModerationLevel {
 // Current staff position on this page
 export const position: ModerationLevel = (window as any).position
 
+export function getAuth(): string {
+	switch (position) {
+	case ModerationLevel.admin:
+		return "admin"
+	case ModerationLevel.boardOwner:
+		return "owners"
+	case ModerationLevel.moderator:
+		return "moderators"
+	case ModerationLevel.janitor:
+		return "janitors"
+	default:
+		return ""
+	}
+}
+
 // Only active AccountPanel instance
 export let accountPanel: AccountPanel
 

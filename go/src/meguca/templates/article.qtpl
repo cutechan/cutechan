@@ -21,24 +21,9 @@ TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 				{% endif %}
 				<h3>{%s c.subject %}</h3>
 			{% endif %}
-			<b class="name{% if p.Auth != "" %}{% space %}admin{% endif %}{% if p.Sage %}{% space %}sage{% endif %}">
-				{% if p.Name != "" || p.Trip == "" %}
-					{% if p.Name != "" %}
-						{%s p.Name %}
-					{% else %}
-						Anonymous
-					{% endif %}
-					{% if p.Trip != "" %}
-						{% space %}
-					{% endif %}
-				{% endif %}
-				{% if p.Trip != "" %}
-					<code>
-						!{%s p.Trip %}
-					</code>
-				{% endif %}
+			<b class="name{% if p.Auth != "" %}{% space %}admin{% endif %}">
 				{% if p.Auth != "" %}
-					{% space %}##{% space %}{%s lang.Get().Common.Posts[p.Auth] %}
+					##{% space %}{%s lang.Get().Common.Posts[p.Auth] %}
 				{% endif %}
 			</b>
 			<time>

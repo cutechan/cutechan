@@ -111,24 +111,6 @@ export default class FormView extends PostView {
                 .focus())
     }
 
-    // Render a temporary view of the identity fields, so the user can see what
-    // credentials he is about to post with
-    public renderIdentity() {
-        let { name, auth } = identity,
-            trip = ""
-        const i = name.indexOf("#")
-        if (i !== -1) {
-            trip = "?"
-            name = name.slice(0, i)
-        }
-
-        this.el.querySelector(".name").classList.remove("admin")
-        this.model.name = name.trim()
-        this.model.trip = trip
-        this.model.auth = auth ? "??" : ""
-        this.renderName()
-    }
-
     // Show button for closing allocated posts
     private showDone() {
         const c = firstChild(this.el.querySelector("#post-controls"), ch =>
@@ -147,7 +129,7 @@ export default class FormView extends PostView {
         bottomSpacer = document.getElementById("bottom-spacer")
         this.el.classList.add("reply-form")
         this.el.querySelector("header").classList.add("temporary")
-        this.renderIdentity()
+        this.renderName()
 
         // Keep this post and bottomSpacer the same height
         this.observer = new MutationObserver(() =>

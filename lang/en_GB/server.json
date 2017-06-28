@@ -92,10 +92,6 @@
 			"Moderators",
 			"Moderator account IDs. Moderators can delete posts, ban posters and distinguish posters by their mnemonic IDs."
 		],
-		"name": [
-			"Name",
-			"Name to attach to new posts"
-		],
 		"newPassword": [
 			"New password",
 			""

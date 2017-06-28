@@ -20,8 +20,6 @@ export interface PostData {
 	id: number
 	op: number
 	body: string
-	name: string
-	trip: string
 	auth: string
 	board?: string
 	state: TextState

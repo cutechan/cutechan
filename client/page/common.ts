@@ -134,18 +134,11 @@ function localizeBacklinks(post: Post) {
 	}
 }
 
-// Apply extra client-side localizations. Not done server-side for better
-// cacheability.
+// Apply extra client-side localizations. Not done server-side for
+// better cacheability.
 export function localizeThreads() {
 	localizeOmitted()
 	if (options.lang !== config.defaultLang) {
-		// Localize posts without a poster name or tripcode
-		for (let el of threads.querySelectorAll(".name")) {
-			if (el.textContent === "Anonymous") {
-				el.textContent = lang.posts["anon"]
-			}
-		}
-
 		// Localize banned post notices
 		for (let el of threads.querySelectorAll(".banned")) {
 			el.innerText = lang.posts["banned"]

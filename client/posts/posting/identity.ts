@@ -7,17 +7,13 @@ import { loginID, sessionToken } from "../../mod"
 const base64 = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz-_'
 
 interface Identity extends ChangeEmitter {
-	auth: boolean
+	staffTitle: boolean
 	live: boolean
-	name: string
 	postPassword: string
 }
 
-let identity = {
-	auth: false,
-	name: localStorage.getItem("name") || "",
-	postPassword: randomID(64),
-} as Identity
+let identity = {postPassword: randomID(64)} as Identity
+identity.staffTitle = localStorage.getItem("staffTitle") === "true"
 identity.live = localStorage.getItem("live") === "true"
 export default identity = emitChanges(identity)
 
@@ -62,10 +58,6 @@ class IdentityPanel extends BannerModal {
 		const el = e.target as HTMLInputElement,
 			name = el.getAttribute("name"),
 			val = el.checked
-		if (name === "staffTitle") {
-			identity["auth"] = val
-			return
-		}
 		identity[name] = val
 		localStorage.setItem(name, val.toString())
 	}
@@ -74,12 +66,7 @@ class IdentityPanel extends BannerModal {
 // Generate a new base post allocation request
 export function newAllocRequest() {
 	const req: { [key: string]: any } = { password: identity.postPassword }
-	for (let key of ["name"]) {
-		if (identity[key]) {
-			req[key] = identity[key]
-		}
-	}
-	if (identity.auth) {
+	if (identity.staffTitle) {
 		extend(req, {
 			userID: loginID(),
 			session: sessionToken(),
