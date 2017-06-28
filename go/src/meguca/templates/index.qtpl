@@ -190,12 +190,17 @@
 					Information panel
 				{% endcomment %}
 				<div id="FAQ" class="modal">
-					meguca is licensed under the{% space %}
+					cutechan is licensed under the{% space %}
 					<a href="https://www.gnu.org/licenses/agpl.html" target="_blank">
 						GNU Affero General Public License
 					</a>
 					<br>
-					Source code repository:{% space %}
+					source code repository:{% space %}
+					<a href="https://github.com/cutechan/cutechan" target="_blank">
+						github.com/cutechan/cutechan
+					</a>
+					<br>
+					original project:{% space %}
 					<a href="https://github.com/bakape/meguca" target="_blank">
 						github.com/bakape/meguca
 					</a>
