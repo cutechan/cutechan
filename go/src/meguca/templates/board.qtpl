@@ -24,7 +24,7 @@
 		{%s title %}
 	</h1>
 	<span class="aside-container">
-		<aside id="thread-form-container" class="glass">
+		<aside id="thread-form-container">
 			<span class="act">
 				<a class="new-thread-button">
 					{%s ln.UI["newThread"] %}
@@ -53,7 +53,7 @@
 				{%= submit(false) %}
 			</form>
 		</aside>
-		<aside id="refresh" class="act glass">
+		<aside id="refresh" class="act">
 			<a>
 				{%s ln.Common.UI["refresh"] %}
 			</a>
@@ -188,7 +188,7 @@ Render image upload form
 Link to catalog or board page
 {% func catalogLink(catalog bool) %}{% stripspace %}
 	{% code ln := lang.Get().UI %}
-	<aside class="act glass">
+	<aside class="act">
 		{% if catalog %}
 			<a href=".">
 				{%s ln["return"] %}
@@ -203,7 +203,7 @@ Link to catalog or board page
 
 Links to different pages og the board index
 {% func pagination(page, total int) %}{% stripspace %}
-	<aside class="glass pagination spaced">
+	<aside class="pagination spaced">
 		{% if page != 0 %}
 			{% if page-1 != 0 %}
 				{%= pageLink(0, "<<") %}

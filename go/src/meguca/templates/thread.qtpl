@@ -50,7 +50,7 @@
 				{%s ln.UI["catalog"] %}
 			</a>
 		</span>
-		<span class="act posting glass">
+		<span class="act posting">
 			<a>{%s ln.UI["reply"] %}</a>
 		</span>
 	</span>

@@ -90,7 +90,7 @@ class MenuView extends View<Post> {
 		super({
 			model,
 			tag: "ul",
-			class: "popup-menu glass",
+			class: "popup-menu",
 		})
 		this.parent = parent
 		parent._popup_menu = this

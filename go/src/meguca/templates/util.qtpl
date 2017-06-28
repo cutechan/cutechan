@@ -77,11 +77,11 @@ Notice widget, that reveals text on hover
 	{% if text == "" %}
 		{% return %}
 	{% endif %}
-	<{%s tag %}{% space %}class="hover-reveal{% if tag == "aside" %}{% space %}glass{% endif %}">
+	<{%s tag %}{% space %}class="hover-reveal">
 		<span class="act">
 			{%s label %}
 		</span>
-		<span class="popup-menu glass">
+		<span class="popup-menu">
 			{%s text %}
 		</span>
 	</{%s tag %}>

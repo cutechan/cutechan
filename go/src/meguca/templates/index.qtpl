@@ -112,7 +112,7 @@
 			</div>
 		</template>
 		<template name="notification">
-			<div class="notification modal glass">
+			<div class="notification modal">
 				<b class="admin"><b>
 			</div>
 		</template>
@@ -137,7 +137,7 @@
 			{% comment %}
 				Top banner
 			{% endcomment %}
-			<span id="banner" class="glass">
+			<span id="banner">
 				<nav id="board-navigation">
 					<noscript>
 						[
@@ -190,7 +190,7 @@
 				{% comment %}
 					Information panel
 				{% endcomment %}
-				<div id="FAQ" class="modal glass">
+				<div id="FAQ" class="modal">
 					meguca is licensed under the{% space %}
 					<a href="https://www.gnu.org/licenses/agpl.html" target="_blank">
 						GNU Affero General Public License
@@ -204,7 +204,7 @@
 				{% comment %}
 					Post creation credentials
 				{% endcomment %}
-				<div id="identity" class="modal glass">
+				<div id="identity" class="modal">
 					{% code fields := specs["identity"] %}
 					{% if pos > auth.NotStaff %}
 						{% code fields = make([]inputSpec, 1, len(fields)+1) %}
@@ -216,7 +216,7 @@
 				{% comment %}
 					Account login and registration
 				{% endcomment %}
-				<div id="account-panel" class="modal glass">
+				<div id="account-panel" class="modal">
 					{% if pos == auth.NotLoggedIn %}
 						<div id="login-forms">
 							{% code f := ln.Forms %}
@@ -262,7 +262,7 @@
 				{% comment %}
 					Options panel
 				{% endcomment %}
-				<div id="options" class="modal glass">
+				<div id="options" class="modal">
 					{%= tabButts(ln.Tabs) %}
 					<div class="tab-cont">
 						{% for i, sp := range optionSpecs %}
@@ -273,7 +273,7 @@
 					</div>
 				</div>
 				{% if pos > auth.NotStaff %}
-					<div id="moderation-panel" class="modal glass">
+					<div id="moderation-panel" class="modal">
 						<form>
 							{% if pos >= auth.Moderator %}
 								<div id="ban-form" class="hidden">
@@ -324,7 +324,7 @@
 		{% endcomment %}
 		<div class="overlay" id="hover-overlay"></div>
 		<div id="page-container">
-			<section id="left-panel" class="side-panel glass"></section>
+			<section id="left-panel" class="side-panel"></section>
 			{% comment %}
 				Used to move #threads to the side, when a #left-panel is shown
 			{% endcomment %}
@@ -339,7 +339,7 @@
 				{% endcomment %}
 				$$$
 			</section>
-			<section id="right-panel" class="side-panel glass"></section>
+			<section id="right-panel" class="side-panel"></section>
 			<div id="right-spacer" class="side-spacer"></div>
 		</div>
 		{% comment %}
