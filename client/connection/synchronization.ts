@@ -1,7 +1,7 @@
 import { handlers, message } from "./messages"
 import { connSM, connEvent, send } from "./state"
 import {
-	postSM, postEvent, postState, identity, FormModel, Post
+	postSM, postEvent, postState, FormModel, Post
 } from "../posts"
 import { page, posts, displayLoading } from "../state"
 import { trigger, uncachedGET, extend } from "../util"
@@ -41,7 +41,7 @@ export function synchronise() {
 		if (m.time > (Date.now() / 1000 - 15 * 60)) {
 			send(message.reclaim, {
 				id: m.id,
-				password: identity.postPassword,
+				password: "",
 			})
 		} else {
 			postSM.feed(postEvent.abandon)

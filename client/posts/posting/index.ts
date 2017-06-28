@@ -5,14 +5,12 @@ import FormView from "./view"
 import { connState, connSM, handlers, message } from "../../connection"
 import { on, FSM, hook, getID } from "../../util"
 import lang from "../../lang"
-import identity, { initIdentity } from "./identity"
 import { page } from "../../state"
 import initDrop from "./drop"
 import initThreads from "./threads"
 import options from "../../options"
 
 export { default as FormModel } from "./model"
-export { default as identity } from "./identity"
 
 // Sent to the FSM via the "open" and "hijack" events
 export type FormMessage = {
@@ -140,22 +138,15 @@ function quotePost(e: MouseEvent) {
 	postModel.addReference(id, sel)
 }
 
-// Update the draft post's fields on identity change, if any
-function updateIdentity() {
-	if (postSM.state === postState.draft) {
-		postForm.renderName()
-	}
-}
-
 // Toggle live update committing on the input form, if any
-function toggleLive(live: boolean) {
-	if (!postModel || postModel.sentAllocRequest) {
-		return
-	}
-	postForm.setEditing(live)
-	postForm.inputElement("done").hidden = live
-	postModel.nonLive = !live
-}
+// function toggleLive(live: boolean) {
+// 	if (!postModel || postModel.sentAllocRequest) {
+// 		return
+// 	}
+// 	postForm.setEditing(live)
+// 	postForm.inputElement("done").hidden = live
+// 	postModel.nonLive = !live
+// }
 
 async function openReply(e: MouseEvent) {
 	// Don't trigger, when user is trying to open in a new tab
@@ -349,13 +340,6 @@ export default () => {
 		}
 	})
 
-	// Trigger post form updates on post option change
-	for (let id of ["name", "auth"]) {
-		identity.onChange(id, updateIdentity)
-	}
-	identity.onChange("live", toggleLive)
-
 	initDrop()
 	initThreads()
-	initIdentity()
 }

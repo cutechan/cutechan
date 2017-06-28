@@ -8,6 +8,7 @@ import { postSM, postEvent, postState } from "."
 import UploadForm from "./upload"
 import { CaptchaView } from "../../ui"
 import { message, send } from "../../connection"
+import { getAuth } from "../../mod";
 
 // Element at the bottom of the thread to keep the fixed reply form from
 // overlapping any other posts, when scrolled till bottom
@@ -28,8 +29,8 @@ export default class FormView extends PostView {
         this.initDraft()
     }
 
-    // Render extra input fields for inputting text and optionally uploading
-    // images
+    // Render extra input fields for inputting text and optionally
+    // uploading images.
     private renderInputs() {
         this.input = document.createElement("textarea")
         setAttrs(this.input, {
@@ -73,6 +74,18 @@ export default class FormView extends PostView {
             }
             requestAnimationFrame(() =>
                 this.input.focus())
+        }
+
+        const staffEl = this.el.querySelector("[name=staffTitle]") as HTMLInputElement
+        const onStaffChange = () => {
+            localStorage.setItem("staffTitle", staffEl.checked.toString())
+            this.model.auth = staffEl.checked ? getAuth() : ""
+            this.renderName()
+        };
+        staffEl.addEventListener("change", onStaffChange)
+        staffEl.checked = localStorage.getItem("staffTitle") === "true"
+        if (staffEl.checked) {
+            onStaffChange()
         }
     }
 

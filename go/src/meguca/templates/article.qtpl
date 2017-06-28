@@ -23,7 +23,7 @@ TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 			{% endif %}
 			<span class="post-name{% if p.Auth != "" %}{% space %}admin{% endif %}">
 				{% if p.Auth != "" %}
-					##{% space %}{%s lang.Get().Common.Posts[p.Auth] %}
+					##{% space %}{%s lang.Get().Common.Posts[p.Auth] %}{% space %}##
 				{% endif %}
 			</span>
 			<time>

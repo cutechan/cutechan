@@ -7,8 +7,7 @@ import { postSM, postEvent, postState } from "."
 import { extend } from "../../util"
 import { SpliceResponse } from "../../client"
 import { FileData } from "./upload"
-import identity, { newAllocRequest } from "./identity"
-import { getAuth } from "../../mod";
+import { loginID, sessionToken } from "../../mod"
 
 // Form Model of an OP post
 export default class FormModel extends Post {
@@ -38,7 +37,7 @@ export default class FormModel extends Post {
 			sticky: false,
 			time: Math.floor(Date.now() / 1000),
 			body: "",
-			auth: identity.staffTitle ? getAuth() : "",
+			auth: "",
 			state: {
 				spoiler: false,
 				quote: false,
@@ -229,6 +228,17 @@ export default class FormModel extends Post {
 		}
 	}
 
+	private newAllocRequest() {
+		const req = {password: ""}
+		if (this.auth) {
+			extend(req, {
+				userID: loginID(),
+				session: sessionToken(),
+			})
+		}
+		return req
+	}
+
 	// Commit a post made with live updates disabled
 	public async commitNonLive() {
 		if (!this.bufferedText && !this.bufferedFile) {
@@ -237,7 +247,7 @@ export default class FormModel extends Post {
 
 		this.sentAllocRequest = true
 
-		const req = newAllocRequest()
+		const req = this.newAllocRequest()
 		if (this.bufferedFile) {
 			req["image"] = await this.view.upload.uploadFile(this.bufferedFile)
 		}
@@ -269,7 +279,7 @@ export default class FormModel extends Post {
 
 	// Request allocation of a draft post to the server
 	private requestAlloc(body: string | null, image: FileData | null) {
-		const req = newAllocRequest()
+		const req = this.newAllocRequest()
 
 		this.view.setEditing(true)
 		this.nonLive = false
