@@ -21,11 +21,11 @@ TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 				{% endif %}
 				<h3>{%s c.subject %}</h3>
 			{% endif %}
-			<b class="name{% if p.Auth != "" %}{% space %}admin{% endif %}">
+			<span class="post-name{% if p.Auth != "" %}{% space %}admin{% endif %}">
 				{% if p.Auth != "" %}
 					##{% space %}{%s lang.Get().Common.Posts[p.Auth] %}
 				{% endif %}
-			</b>
+			</span>
 			<time>
 				{%s formatTime(p.Time) %}
 			</time>

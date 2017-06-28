@@ -85,7 +85,7 @@ export default class FormView extends PostView {
         // Hide all other post controls till the captcha is submitted
         const controls = [
             this.el.querySelector(".post-container"),
-            this.el.querySelector("#post-controls"),
+            this.el.querySelector(".post-controls"),
         ]
         for (let el of controls) {
             el.style.display = "none"
@@ -113,7 +113,7 @@ export default class FormView extends PostView {
 
     // Show button for closing allocated posts
     private showDone() {
-        const c = firstChild(this.el.querySelector("#post-controls"), ch =>
+        const c = firstChild(this.el.querySelector(".post-controls"), ch =>
             ch.getAttribute("name") === "cancel")
         if (c) {
             c.remove()
@@ -222,7 +222,7 @@ export default class FormView extends PostView {
             this.upload.cancel()
         }
         this.el.classList.remove("reply-form")
-        const pc = this.el.querySelector("#post-controls")
+        const pc = this.el.querySelector(".post-controls")
         if (pc) {
             pc.remove()
         }

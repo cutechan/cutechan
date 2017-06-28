@@ -51,7 +51,7 @@
 			<header class="spaced">
 				<input type="checkbox" class="mod-checkbox hidden">
 				<h3 hidden></h3>
-				<b class="name"></b>
+				<span class="post-name"></span>
 				<time></time>
 				<nav>
 					<a>
@@ -95,7 +95,7 @@
 				{%= captcha() %}
 				{%= submit(true) %}
 			</form>
-			<div id="post-controls">
+			<div class="post-controls">
 				{%= cancel() %}
 				<input name="done" type="button" value="{%s ln.UI["done"] %}" hidden>
 				<span class="upload-container" hidden>

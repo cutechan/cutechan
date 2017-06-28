@@ -34,10 +34,6 @@ b {
   font-family: monospace;
 }
 
-.admin {
-  color: @admin;
-}
-
 .sticky svg {
   fill: @admin;
 }
@@ -652,6 +648,24 @@ article {
   }
 }
 
+.post-op {
+  padding-left: 0;
+  border: none;
+  background: none;
+}
+
+.post-name {
+  font-weight: bold;
+}
+
+.admin {
+  color: @admin;
+}
+
+.post-controls {
+  padding: 0.2em;
+}
+
 code.code-tag {
   margin: 0;
   white-space: pre-wrap;
@@ -721,7 +735,7 @@ header {
       height: 0.7em;
     }
   }
-  &.temporary > *:not(.name) {
+  &.temporary > *:not(.post-name) {
     display: none;
   }
 }
@@ -787,17 +801,6 @@ header {
   figure ~ blockquote {
     margin-left: 0px;
   }
-}
-
-#post-controls {
-  padding: 0.2em;
-}
-
-// Make OPs stand out
-.post-op {
-  padding-left: 0;
-  border: none;
-  background: none;
 }
 
 #threads {
@@ -883,7 +886,7 @@ header {
       display: block;
     }
   }
-  #post-controls  {
+  .post-controls  {
     width: 100%;
   }
 }

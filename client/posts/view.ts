@@ -185,7 +185,7 @@ export default class PostView extends ImageHandler {
     public renderName() {
         const { auth } = this.model
         if (auth) {
-            const el = this.el.querySelector(".name")
+            const el = this.el.querySelector(".post-name")
             el.classList.add("admin")
             el.textContent = `## ${lang.posts[auth]}`
         }
