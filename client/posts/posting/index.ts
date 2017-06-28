@@ -8,7 +8,6 @@ import lang from "../../lang"
 import { page } from "../../state"
 import initDrop from "./drop"
 import initThreads from "./threads"
-import options from "../../options"
 
 export { default as FormModel } from "./model"
 
@@ -285,8 +284,6 @@ export default () => {
 		if (e && postModel.nonLive) {
 			if (e.target instanceof HTMLInputElement) {
 				commitNonLive = e.target.getAttribute("name") === "done"
-			} else if (e instanceof KeyboardEvent) {
-				commitNonLive = e.which === options.done
 			}
 		}
 		if (commitNonLive) {

@@ -8,20 +8,17 @@ export * from "./specs"
 
 interface Options extends ChangeEmitter {
 	imageHover: boolean
-	autogif: boolean
-	spoilers: boolean
-	notification: boolean
 	postInlineExpand: boolean
 	relativeTime: boolean
+	notification: boolean
+	inlineFit: string
 	workModeToggle: boolean
+	autogif: boolean
+	spoilers: boolean
+	theme: string
 	newPost: number
-	toggleSpoiler: number
-	done: number
-	expandAll: number
 	workMode: number
 	lang: string
-	inlineFit: string
-	theme: string
 }
 
 // Central options storage model

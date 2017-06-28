@@ -16,8 +16,7 @@ export default class OptionsPanel extends TabbedModal {
 
 		this.assignValues()
 
-		hook("renderOptionValue", ([id, type, val]) =>
-			this.assignValue(id, type, val))
+		hook("renderOptionValue", this.assignValue.bind(this))
 	}
 
 	// Assign loaded option settings to the respective elements in the options
