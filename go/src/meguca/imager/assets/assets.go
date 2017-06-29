@@ -36,16 +36,24 @@ var (
 	}
 )
 
+func imageRoot() string {
+	r := config.Get().ImageRootOverride
+	if r != "" {
+		return r
+	}
+	return "/uploads"
+}
+
 // GetFilePaths generates file paths of the source file and its thumbnail
 func GetFilePaths(SHA1 string, fileType, thumbType uint8) (paths [2]string) {
 	paths[0] = util.ConcatStrings(
-		"/images/src/",
+		"/uploads/src/",
 		SHA1,
 		".",
 		common.Extensions[fileType],
 	)
 	paths[1] = util.ConcatStrings(
-		"/images/thumb/",
+		"/uploads/thumb/",
 		SHA1,
 		".",
 		common.Extensions[thumbType],
@@ -55,48 +63,6 @@ func GetFilePaths(SHA1 string, fileType, thumbType uint8) (paths [2]string) {
 	}
 
 	return
-}
-
-// RelativeSourcePath returns an file's source path relative to the root path
-func RelativeSourcePath(fileType uint8, SHA1 string) string {
-	return util.ConcatStrings(
-		"/assets/images/src/",
-		SHA1,
-		".",
-		common.Extensions[fileType],
-	)
-}
-
-func relativeThumbPath(thumbType uint8, SHA1 string) string {
-	return util.ConcatStrings(
-		"/assets/images/thumb/",
-		SHA1,
-		".",
-		common.Extensions[thumbType],
-	)
-}
-
-// ImageSearchPath returns the relative path used for image search file lookups.
-// If files is not JPEG, PNG or GIF, returns the thumbnail instead of the source
-// file.
-func ImageSearchPath(img common.ImageCommon) string {
-	switch img.FileType {
-	case common.JPEG, common.PNG, common.GIF:
-		if img.Size > 8<<20 {
-			return relativeThumbPath(img.ThumbType, img.SHA1)
-		}
-		return RelativeSourcePath(img.FileType, img.SHA1)
-	default:
-		return relativeThumbPath(img.ThumbType, img.SHA1)
-	}
-}
-
-func imageRoot() string {
-	r := config.Get().ImageRootOverride
-	if r != "" {
-		return r
-	}
-	return "/assets/images"
 }
 
 // ThumbPath returns the path to the thumbnail of an image
@@ -167,7 +133,7 @@ func Delete(SHA1 string, fileType, thumbType uint8) error {
 // CreateDirs creates directories for processed image storage
 func CreateDirs() error {
 	for _, dir := range [...]string{"src", "thumb"} {
-		path := filepath.Join("images", dir)
+		path := filepath.Join("uploads", dir)
 		if err := os.MkdirAll(path, 0700); err != nil {
 			return err
 		}
@@ -178,7 +144,7 @@ func CreateDirs() error {
 // DeleteDirs recursively deletes the image storage folder. Only used for
 // cleaning up after tests.
 func DeleteDirs() error {
-	return os.RemoveAll("images")
+	return os.RemoveAll("uploads")
 }
 
 // ResetDirs removes all contents from the image storage directories. Only

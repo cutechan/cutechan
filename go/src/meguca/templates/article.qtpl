@@ -50,10 +50,8 @@ TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 				</svg>
 			</a>
 		</header>
-		{% code var src string %}
 		{% if p.Image != nil %}
 			{% code img := *p.Image %}
-			{% code src =  assets.SourcePath(img.FileType, img.SHA1) %}
 			<figcaption class="spaced">
 				<a class="image-toggle act" hidden></a>
 				<span class="fileinfo">
@@ -84,7 +82,7 @@ TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 			{% if p.Image != nil %}
 				{% code img := *p.Image %}
 				<figure>
-					<a target="_blank" href="{%s src %}">
+					<a target="_blank" href="{%s assets.SourcePath(img.FileType, img.SHA1) %}">
 						{% if img.Spoiler %}
 							{% comment %}
 								TODO: board-specific server-side spoiler rendering

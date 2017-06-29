@@ -27,8 +27,13 @@ var (
 	}
 
 	// For overriding during tests
-	imageWebRoot = "images"
+	imageWebRoot = "uploads"
 )
+
+// Server static assets
+func serveStatic(w http.ResponseWriter, r *http.Request) {
+	serveFile(w, r, cleanJoin(webRoot, extractParam(r, "path")))
+}
 
 // More performant handler for serving image assets. These are immutable
 // (except deletion), so we can also set separate caching policies for them.
@@ -51,11 +56,6 @@ func serveImages(w http.ResponseWriter, r *http.Request) {
 
 func cleanJoin(a, b string) string {
 	return filepath.Clean(filepath.Join(a, b))
-}
-
-// Server static assets
-func serveAssets(w http.ResponseWriter, r *http.Request) {
-	serveFile(w, r, cleanJoin(webRoot, extractParam(r, "path")))
 }
 
 func serveFile(w http.ResponseWriter, r *http.Request, path string) {

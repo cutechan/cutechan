@@ -70,12 +70,12 @@ server-clean:
 
 test-clean:
 	rm -rf go/multipart-* \
-		go/src/meguca/imager/images \
-		go/src/meguca/imager/assets/images \
+		go/src/meguca/imager/uploads \
+		go/src/meguca/imager/assets/uploads \
 		go/src/meguca/imager/testdata/thumb_*.jpg \
 		go/src/meguca/imager/testdata/thumb_*.png
 
 clean: client-clean server-clean test-clean
 
 distclean: clean
-	rm -rf images
+	rm -rf uploads

@@ -153,7 +153,7 @@ export default class ImageHandler extends View<Post> {
 }
 
 function imageRoot(): string {
-	return config.imageRootOverride || "/assets/images"
+	return config.imageRootOverride || "/uploads"
 }
 
 // Get the thumbnail path of an image, accounting for not thumbnail of specific

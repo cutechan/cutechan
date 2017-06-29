@@ -146,10 +146,9 @@ func createRouter() http.Handler {
 	NSCaptcha.GET("/new", noscriptCaptcha)
 
 	// Assets
-	assets := r.NewGroup("/assets")
-	assets.GET("/banners/:board/:id", serveBanner)
-	assets.GET("/images/*path", serveImages)
-	r.GET("/static/*path", serveAssets)
+	r.GET("/banners/:board/:id", serveBanner)
+	r.GET("/uploads/*path", serveImages)
+	r.GET("/static/*path", serveStatic)
 	r.GET("/worker.js", serveWorker)
 
 	h := http.Handler(r)

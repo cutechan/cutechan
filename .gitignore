@@ -11,7 +11,7 @@ bin_data.go
 /go/pkg/
 /go/multipart-*
 /scripts/migration/3to4/3to4
+uploads
 thumb_*.jpg
 thumb_*.png
-images
 tags
