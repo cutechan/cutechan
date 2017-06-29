@@ -41,7 +41,7 @@ const (
 // Available language packs and themes. Change this, when adding any new ones.
 var (
 	Langs = []string{
-		"en_GB", "ru_RU",
+		"en_US", "ru_RU",
 	}
 	Themes = []string{
 		"cute",
