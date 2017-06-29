@@ -1,15 +1,14 @@
 {
-	"enableAutoDiscovery": true,
-	"compileOnSave": false,
-	"compilerOptions": {
-		"target": "ES6",
-		"module": "amd",
-		"moduleResolution": "node",
-		"newLine": "LF",
-		"removeComments": true,
-		"noImplicitAny": true,
-		"noImplicitThis": true,
-		"suppressImplicitAnyIndexErrors": true,
-		"noUnusedLocals": true
-	}
+  "enableAutoDiscovery": true,
+  "compileOnSave": false,
+  "compilerOptions": {
+    "module": "amd",
+    "moduleResolution": "node",
+    "newLine": "LF",
+    "removeComments": true,
+    "noImplicitAny": true,
+    "noImplicitThis": true,
+    "suppressImplicitAnyIndexErrors": true,
+    "noUnusedLocals": true
+  }
 }

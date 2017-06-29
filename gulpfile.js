@@ -6,7 +6,6 @@ const stripAnsi = require("strip-ansi");
 const autoprefixer = require("autoprefixer");
 const cssnano = require("cssnano");
 const gulp = require("gulp");
-const babel = require("gulp-babel");
 const gutil = require("gulp-util");
 const jsonminify = require("gulp-jsonminify");
 const less = require("gulp-less");
@@ -65,12 +64,11 @@ function createTask(name, path, task, watchPath) {
   }
 }
 
-function buildClient(outFile) {
+function buildClient(tsOpts) {
+  const tsProject = ts.createProject("client/tsconfig.json", tsOpts);
   return gulp.src("client/**/*.ts")
     .pipe(sourcemaps.init())
-    .pipe(ts.createProject("client/tsconfig.json", {
-      outFile,
-    })(ts.reporter.nullReporter()))
+    .pipe(tsProject(ts.reporter.nullReporter()))
     .on("error", handleError);
 }
 
@@ -80,7 +78,7 @@ function buildES6() {
   const name = "es6";
   tasks.push(name);
   gulp.task(name, () =>
-    buildClient("app.js")
+    buildClient({target: "ES6", outFile: "app.js"})
       .pipe(sourcemaps.write("maps"))
       .pipe(gulp.dest(JS_DIR)));
 
@@ -91,17 +89,17 @@ function buildES6() {
 }
 
 // Build legacy ES5 client for old browsers.
-// TODO(Kagami): Output to ES5 in TS instead.
 function buildES5() {
   const name = "es5";
   tasks.push(name);
   gulp.task(name, () =>
-    buildClient("app.es5.js")
-      .pipe(babel({
-        presets: ["latest"],
-      }))
+    buildClient({
+      target: "ES5",
+      lib: ["DOM", "ES6", "DOM.Iterable", "ScriptHost"],
+      downlevelIteration: true,
+      outFile: "app.es5.js"
+    })
       .pipe(uglify())
-      .on("error", handleError)
       .pipe(sourcemaps.write("maps"))
       .pipe(gulp.dest(JS_DIR))
   );
@@ -118,11 +116,10 @@ buildES5();
 // Third-party dependencies.
 createTask("vendor", [
   "node_modules/almond/almond.js ",
-  "node_modules/babel-polyfill/dist/polyfill.min.js",
-  "node_modules/whatwg-fetch/fetch.js ",
-  "node_modules/dom4/build/dom4.js",
   "node_modules/core-js/client/core.min.js",
   "node_modules/proxy-polyfill/proxy.min.js",
+  "node_modules/dom4/build/dom4.js",
+  "node_modules/whatwg-fetch/fetch.js ",
 ], src =>
   src
     .pipe(gulp.dest(JS_DIR))

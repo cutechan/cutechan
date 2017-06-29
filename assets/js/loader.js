@@ -61,14 +61,30 @@
   for (var i = 0; i < es6Tests.length; i++) {
     if (!check(es6Tests[i])) {
       window.legacy = true;
-      polyfills.push("polyfill.min");
       break;
     }
   }
 
-  // Fetch API.
-  if (!checkFunction("window.fetch")) {
-    polyfills.push("fetch");
+  // Stdlib functions and methods.
+  var stdlibTests = [
+    "Set",
+    "Map",
+    "Promise",
+    "Symbol",
+    "Array.from",
+    "Array.prototype.includes",
+    "String.prototype.includes",
+    "String.prototype.repeat",
+  ];
+  for (var i = 0; i < stdlibTests.length; i++) {
+    if (!checkFunction(stdlibTests[i])) {
+      polyfills.push("core.min");
+      break;
+    }
+  }
+
+  if (!checkFunction("Proxy")) {
+    polyfills.push("proxy.min");
   }
 
   var DOMMethods = [
@@ -92,7 +108,6 @@
       break;
     }
   }
-
   // Check event listener option support.
   if (DOMUpToDate) {
     var s = "var a = document.createElement(\"a\");"
@@ -102,31 +117,13 @@
       + "return ctr === 1;";
     DOMUpToDate = check(s);
   }
-
-  if (!DOMUpToDate || window.legacy) {
+  if (!DOMUpToDate) {
     polyfills.push("dom4");
   }
 
-  // Stdlib functions and methods.
-  var stdlibTests = [
-    "Set",
-    "Map",
-    "Promise",
-    "Symbol",
-    "Array.from",
-    "Array.prototype.includes",
-    "String.prototype.includes",
-    "String.prototype.repeat",
-  ];
-  for (var i = 0; i < stdlibTests.length; i++) {
-    if (!checkFunction(stdlibTests[i])) {
-      polyfills.push("core.min");
-      break;
-    }
-  }
-
-  if (!checkFunction("Proxy")) {
-    polyfills.push("proxy.min");
+  // Fetch API.
+  if (!checkFunction("window.fetch")) {
+    polyfills.push("fetch");
   }
 
   // Remove prefixes on Web Crypto API for Safari.

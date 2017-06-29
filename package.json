@@ -7,7 +7,6 @@
   },
   "dependencies": {
     "almond": "^0.3.3",
-    "babel-polyfill": "^6.16.0",
     "core-js": "^2.4.1",
     "dom4": "^1.8.3",
     "font-awesome": "^4.7.0",
@@ -21,7 +20,6 @@
     "cssnano": "^3.10.0",
     "del": "^3.0.0",
     "gulp": "^3.8.11",
-    "gulp-babel": "^6.1.2",
     "gulp-jsonminify": "^1.0.0",
     "gulp-less": "^3.0.1",
     "gulp-notify": "^3.0.0",
