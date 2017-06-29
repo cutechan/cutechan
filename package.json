@@ -20,6 +20,7 @@
     "cssnano": "^3.10.0",
     "del": "^3.0.0",
     "gulp": "^3.8.11",
+    "gulp-if": "^2.0.2",
     "gulp-jsonminify": "^1.0.0",
     "gulp-less": "^3.0.1",
     "gulp-notify": "^3.0.0",
@@ -31,6 +32,7 @@
     "gulp-util": "^3.0.4",
     "run-sequence": "^1.2.2",
     "strip-ansi": "^4.0.0",
-    "typescript": "^2.0.0"
+    "typescript": "^2.0.0",
+    "uglify-es": "^3.0.21"
   }
 }

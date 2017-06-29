@@ -5,15 +5,17 @@ const del = require("del");
 const stripAnsi = require("strip-ansi");
 const autoprefixer = require("autoprefixer");
 const cssnano = require("cssnano");
+const uglifyes = require("uglify-es");
 const gulp = require("gulp");
 const gutil = require("gulp-util");
+const gulpif = require("gulp-if");
 const jsonminify = require("gulp-jsonminify");
 const less = require("gulp-less");
 const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
 const sourcemaps = require("gulp-sourcemaps");
 const ts = require("gulp-typescript");
-const uglify = require("gulp-uglify");
+const composer = require("gulp-uglify/composer");
 const notify = require("gulp-notify");
 const runSequence = require("run-sequence");
 
@@ -37,6 +39,9 @@ const notifyError = notify.onError({
   message: "<%= options.stripAnsi(error.message) %>",
   templateOptions: {stripAnsi},
 });
+
+// ES6 minification.
+const minify = composer(uglifyes, console);
 
 // Simply log the error on continuos builds, but fail the build and exit
 // with an error status, if failing a one-time build. This way we can
@@ -73,12 +78,12 @@ function buildClient(tsOpts) {
 }
 
 // Builds the client files of the appropriate ECMAScript version.
-// TODO(Kagami): ES6-aware minifier.
 function buildES6() {
   const name = "es6";
   tasks.push(name);
   gulp.task(name, () =>
     buildClient({target: "ES6", outFile: "app.js"})
+      .pipe(gulpif(!watch, minify()))
       .pipe(sourcemaps.write("maps"))
       .pipe(gulp.dest(JS_DIR)));
 
@@ -99,7 +104,7 @@ function buildES5() {
       downlevelIteration: true,
       outFile: "app.es5.js"
     })
-      .pipe(uglify())
+      .pipe(minify())
       .pipe(sourcemaps.write("maps"))
       .pipe(gulp.dest(JS_DIR))
   );
