@@ -87,10 +87,9 @@ TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 							{% comment %}
 								TODO: board-specific server-side spoiler rendering
 							{% endcomment %}
-							<img src="/static/img/spoiler.jpg" width="125" height="125">
+							<img src="/static/img/spoiler.jpg" width="200" height="200">
 						{% else %}
-							{% code w, h := correctDims(c.subject != "", img.Dims[2], img.Dims[3]) %}
-							<img src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%s w %}" height="{%s h %}">
+							<img src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
 						{% endif %}
 					</a>
 				</figure>

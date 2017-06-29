@@ -77,7 +77,6 @@ export interface ImageData {
 	name: string
 
 	// Added client-side
-	large: boolean  // Render larger thumbnails
 	revealed: boolean  // Revealing a hidden image with [Show]
 }
 
@@ -85,3 +84,5 @@ export interface ImageData {
 export enum fileTypes {
 	jpg, png, gif, webm, pdf, svg, mp4, mp3, ogg, zip, "7z", "tar.gz", "tar.xz",
 }
+
+export const thumbSize = 200

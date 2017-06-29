@@ -1,5 +1,5 @@
 import { Post } from "./model"
-import { fileTypes } from "../common"
+import { fileTypes, thumbSize } from "../common"
 import { View } from "../base"
 import { setAttrs, on, firstChild, importTemplate, pad } from "../util"
 import options from "../options"
@@ -63,15 +63,9 @@ export default class ImageHandler extends View<Post> {
 		if (data.spoiler && options.spoilers) {
 			// Spoilered and spoilers enabled
 			thumb = '/static/img/spoiler.jpg'
-			thumbHeight = thumbWidth = 150
+			thumbHeight = thumbWidth = thumbSize
 		} else {
 			thumb = thumbPath(data.SHA1, data.thumbType)
-		}
-
-		// Downscale thumbnail for higher DPI, unless specified not to
-		if (!data.large && (thumbWidth > 125 || thumbHeight > 125)) {
-			thumbWidth *= 0.8333
-			thumbHeight *= 0.8333
 		}
 
 		el.setAttribute("href", src)

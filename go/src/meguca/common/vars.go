@@ -31,6 +31,7 @@ const (
 
 // Some hardcoded options
 const (
+	ThumbSize = 200
 	MaxWidth = 12000
 	MaxHeight = 12000
 	JPEGQuality = 90

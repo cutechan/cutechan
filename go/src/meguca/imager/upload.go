@@ -181,8 +181,8 @@ func newThumbnail(data []byte, img common.ImageCommon) (int, string, error) {
 			Height: common.MaxHeight,
 		},
 		ThumbDims: thumbnailer.Dims{
-			Width:  150,
-			Height: 150,
+			Width:  common.ThumbSize,
+			Height: common.ThumbSize,
 		},
 		AcceptedMimeTypes: allowedMimeTypes,
 	})

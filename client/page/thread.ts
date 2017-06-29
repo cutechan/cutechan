@@ -26,9 +26,6 @@ export default function () {
     setPostCount(data.postCtr, data.imageCtr, data.bumpTime)
 
     extractPost(data, data.id, data.board, backlinks)
-    if (data.image) {
-        data.image.large = true
-    }
 
     for (let post of posts) {
         extractPost(post, data.id, data.board, backlinks)

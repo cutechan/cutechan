@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"compress/gzip"
 	"io"
+	"meguca/common"
 
 	"github.com/bakape/thumbnailer"
 	"github.com/ulikunitz/xz"
@@ -98,13 +99,13 @@ func processArchive(src thumbnailer.Source, _ thumbnailer.Options) (
 		Image: thumbnailer.Image{
 			Data: MustAsset("archive.png"),
 			Dims: thumbnailer.Dims{
-				Width:  150,
-				Height: 150,
+				Width:  common.ThumbSize,
+				Height: common.ThumbSize,
 			},
 		},
 		IsPNG: true,
 	}
-	src.Width = 150
-	src.Height = 150
+	src.Width = common.ThumbSize
+	src.Height = common.ThumbSize
 	return src, thumb, nil
 }
