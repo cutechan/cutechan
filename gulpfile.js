@@ -8,7 +8,7 @@ const babel = require("gulp-babel");
 const gutil = require("gulp-util");
 const jsonminify = require("gulp-jsonminify");
 const less = require("gulp-less");
-const nano = require("gulp-cssnano");
+const cssnano = require("gulp-cssnano");
 const rename = require("gulp-rename");
 const sourcemaps = require("gulp-sourcemaps");
 const ts = require("gulp-typescript");
@@ -22,6 +22,7 @@ const JS_DIR = path.join(STATIC_DIR, "js");
 const VENDOR_DIR = path.join(JS_DIR, "vendor");
 const CSS_DIR = path.join(STATIC_DIR, "css");
 const LANG_DIR = path.join(STATIC_DIR, "lang");
+const FONTS_DIR = path.join(STATIC_DIR, "fonts");
 
 // Keep script alive and rebuild on file changes.
 // Triggered with the `-w` flag.
@@ -132,7 +133,7 @@ createTask("css", ["less/*.less", "!less/*.mix.less"], src => {
     .pipe(sourcemaps.init())
     .pipe(less())
     .on("error", handleError)
-    .pipe(nano())
+    .pipe(cssnano({discardComments: {removeAll: true}}))
     .pipe(sourcemaps.write("maps"))
     .pipe(gulp.dest(CSS_DIR))
 }, "less/*.less");
@@ -149,6 +150,13 @@ createTask("lang", "lang/**/*.json", src =>
 createTask("assets", "assets/**/*", src =>
   src
     .pipe(gulp.dest(STATIC_DIR))
+);
+
+// Fonts.
+createTask("fonts", "node_modules/font-awesome/fonts/fontawesome-webfont.*",
+           src =>
+  src
+    .pipe(gulp.dest(FONTS_DIR))
 );
 
 // Build everything.
