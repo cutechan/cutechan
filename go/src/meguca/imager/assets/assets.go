@@ -44,52 +44,42 @@ func imageRoot() string {
 	return "/uploads"
 }
 
-// GetFilePaths generates file paths of the source file and its thumbnail
-func GetFilePaths(SHA1 string, fileType, thumbType uint8) (paths [2]string) {
-	paths[0] = util.ConcatStrings(
-		"/uploads/src/",
-		SHA1,
-		".",
-		common.Extensions[fileType],
-	)
-	paths[1] = util.ConcatStrings(
-		"/uploads/thumb/",
-		SHA1,
-		".",
-		common.Extensions[thumbType],
-	)
-	for i := range paths {
-		paths[i] = filepath.FromSlash(paths[i][1:])
-	}
-
-	return
-}
-
-// ThumbPath returns the path to the thumbnail of an image
-func ThumbPath(thumbType uint8, SHA1 string) string {
+func imagePath(root string, dir string, typ uint8, SHA1 string) string {
 	return util.ConcatStrings(
-		imageRoot(),
-		"/thumb/",
-		SHA1,
+		root,
+		"/",
+		dir,
+		"/",
+		SHA1[:2],
+		"/",
+		SHA1[2:],
 		".",
-		common.Extensions[thumbType],
+		common.Extensions[typ],
 	)
 }
 
 // SourcePath returns the path to the source file on an image
 func SourcePath(fileType uint8, SHA1 string) string {
-	return util.ConcatStrings(
-		imageRoot(),
-		"/src/",
-		SHA1,
-		".",
-		common.Extensions[fileType],
-	)
+	return imagePath(imageRoot(), "src", fileType, SHA1)
+}
+
+// ThumbPath returns the path to the thumbnail of an image
+func ThumbPath(thumbType uint8, SHA1 string) string {
+	return imagePath(imageRoot(), "thumb", thumbType, SHA1)
+}
+
+// Generate file paths of the source file and its thumbnail
+func getFilePaths(SHA1 string, fileType, thumbType uint8) (paths [2]string) {
+	path := imagePath(common.ImageWebRoot, "src", fileType, SHA1)
+	paths[0] = filepath.FromSlash(path)
+	path = imagePath(common.ImageWebRoot, "thumb", thumbType, SHA1)
+	paths[1] = filepath.FromSlash(path)
+	return
 }
 
 // Write writes file assets to disk
 func Write(SHA1 string, fileType, thumbType uint8, src, thumb []byte) error {
-	paths := GetFilePaths(SHA1, fileType, thumbType)
+	paths := getFilePaths(SHA1, fileType, thumbType)
 
 	ch := make(chan error)
 	go func() {
@@ -109,6 +99,11 @@ func Write(SHA1 string, fileType, thumbType uint8, src, thumb []byte) error {
 
 // Write a single file to disk with the appropriate permissions and flags
 func writeFile(path string, data []byte) error {
+	dir := filepath.Dir(path)
+	if err := os.Mkdir(dir, 0700); err != nil && !os.IsExist(err) {
+		return err
+	}
+
 	file, err := os.OpenFile(path, fileCreationFlags, 0660)
 	if err != nil {
 		return err
@@ -121,7 +116,7 @@ func writeFile(path string, data []byte) error {
 
 // Delete deletes file assets belonging to a single upload
 func Delete(SHA1 string, fileType, thumbType uint8) error {
-	for _, path := range GetFilePaths(SHA1, fileType, thumbType) {
+	for _, path := range getFilePaths(SHA1, fileType, thumbType) {
 		// Ignore somehow absent images
 		if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
 			return err

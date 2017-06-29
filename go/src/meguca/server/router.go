@@ -34,9 +34,6 @@ var (
 	isTest bool
 )
 
-// Used for overriding during tests
-var webRoot = "dist/static"
-
 func startWebServer() (err error) {
 	r := createRouter()
 	log.Println("listening on " + address)

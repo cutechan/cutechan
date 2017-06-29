@@ -159,12 +159,12 @@ function imageRoot(): string {
 // Get the thumbnail path of an image, accounting for not thumbnail of specific
 // type being present
 export function thumbPath(SHA1: string, thumbType: fileTypes): string {
-	return `${imageRoot()}/thumb/${SHA1}.${fileTypes[thumbType]}`
+	return `${imageRoot()}/thumb/${SHA1.slice(0, 2)}/${SHA1.slice(2)}.${fileTypes[thumbType]}`
 }
 
 // Resolve the path to the source file of an upload
 export function sourcePath(SHA1: string, fileType: fileTypes): string {
-	return `${imageRoot()}/src/${SHA1}.${fileTypes[fileType]}`
+	return `${imageRoot()}/src/${SHA1.slice(0, 2)}/${SHA1.slice(2)}.${fileTypes[fileType]}`
 }
 
 // Reveal/hide thumbnail by clicking [Show]/[Hide] in hidden thumbnail mode

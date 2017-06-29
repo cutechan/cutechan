@@ -25,21 +25,18 @@ var (
 		"Cache-Control":   "max-age=30240000, public, immutable",
 		"X-Frame-Options": "sameorigin",
 	}
-
-	// For overriding during tests
-	imageWebRoot = "uploads"
 )
 
 // Server static assets
 func serveStatic(w http.ResponseWriter, r *http.Request) {
-	serveFile(w, r, cleanJoin(webRoot, extractParam(r, "path")))
+	serveFile(w, r, cleanJoin(common.WebRoot, extractParam(r, "path")))
 }
 
 // More performant handler for serving image assets. These are immutable
 // (except deletion), so we can also set separate caching policies for them.
 func serveImages(w http.ResponseWriter, r *http.Request) {
 	path := extractParam(r, "path")
-	file, err := os.Open(cleanJoin(imageWebRoot, path))
+	file, err := os.Open(cleanJoin(common.ImageWebRoot, path))
 	if err != nil {
 		text404(w)
 		return
@@ -85,7 +82,7 @@ func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 }
 
 func serveWorker(w http.ResponseWriter, r *http.Request) {
-	serveFile(w, r, filepath.FromSlash(webRoot + "/js/worker.js"))
+	serveFile(w, r, filepath.FromSlash(common.WebRoot + "/js/worker.js"))
 }
 
 // Set the banners of a board
