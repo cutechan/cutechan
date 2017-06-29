@@ -21,7 +21,6 @@ const runSequence = require("run-sequence");
 const DIST_DIR = "dist";
 const STATIC_DIR = path.join(DIST_DIR, "static");
 const JS_DIR = path.join(STATIC_DIR, "js");
-const VENDOR_DIR = path.join(JS_DIR, "vendor");
 const CSS_DIR = path.join(STATIC_DIR, "css");
 const LANG_DIR = path.join(STATIC_DIR, "lang");
 const FONTS_DIR = path.join(STATIC_DIR, "fonts");
@@ -126,7 +125,7 @@ createTask("vendor", [
   "node_modules/proxy-polyfill/proxy.min.js",
 ], src =>
   src
-    .pipe(gulp.dest(VENDOR_DIR))
+    .pipe(gulp.dest(JS_DIR))
 );
 
 // Compile Less to CSS.

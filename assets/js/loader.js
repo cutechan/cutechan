@@ -61,14 +61,14 @@
   for (var i = 0; i < es6Tests.length; i++) {
     if (!check(es6Tests[i])) {
       window.legacy = true;
-      polyfills.push("vendor/polyfill.min");
+      polyfills.push("polyfill.min");
       break;
     }
   }
 
   // Fetch API.
   if (!checkFunction("window.fetch")) {
-    polyfills.push("vendor/fetch");
+    polyfills.push("fetch");
   }
 
   var DOMMethods = [
@@ -104,7 +104,7 @@
   }
 
   if (!DOMUpToDate || window.legacy) {
-    polyfills.push("vendor/dom4");
+    polyfills.push("dom4");
   }
 
   // Stdlib functions and methods.
@@ -120,13 +120,13 @@
   ];
   for (var i = 0; i < stdlibTests.length; i++) {
     if (!checkFunction(stdlibTests[i])) {
-      polyfills.push("vendor/core.min");
+      polyfills.push("core.min");
       break;
     }
   }
 
   if (!checkFunction("Proxy")) {
-    polyfills.push("vendor/proxy.min");
+    polyfills.push("proxy.min");
   }
 
   // Remove prefixes on Web Crypto API for Safari.
