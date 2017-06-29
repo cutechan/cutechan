@@ -3,12 +3,14 @@
 const path = require("path");
 const del = require("del");
 const stripAnsi = require("strip-ansi");
+const autoprefixer = require("autoprefixer");
+const cssnano = require("cssnano");
 const gulp = require("gulp");
 const babel = require("gulp-babel");
 const gutil = require("gulp-util");
 const jsonminify = require("gulp-jsonminify");
 const less = require("gulp-less");
-const cssnano = require("gulp-cssnano");
+const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
 const sourcemaps = require("gulp-sourcemaps");
 const ts = require("gulp-typescript");
@@ -133,7 +135,10 @@ createTask("css", ["less/*.less", "!less/*.mix.less"], src => {
     .pipe(sourcemaps.init())
     .pipe(less())
     .on("error", handleError)
-    .pipe(cssnano({discardComments: {removeAll: true}}))
+    .pipe(postcss([
+      autoprefixer(),
+      cssnano({discardComments: {removeAll: true}}),
+    ]))
     .pipe(sourcemaps.write("maps"))
     .pipe(gulp.dest(CSS_DIR))
 }, "less/*.less");
