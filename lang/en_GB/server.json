@@ -14,7 +14,7 @@
 		],
 		"boardTitle": [
 			"Board title",
-			"Title of the new board, such as 'Animu & Mango'. Up to 100 characters long."
+			"Title of the new board, such as 'K-pop music'. Up to 100 characters long."
 		],
 		"captcha": [
 			"Captcha",
@@ -140,6 +140,10 @@
 			"Account session expiry",
 			"Time in days until user accounts are automatically logged out"
 		],
+		"spoiler": [
+			"NSFW",
+			"Mark image as NSFW"
+		],
 		"spoilers": [
 			"Hide NSFW",
 			"Don't display NSFW images"
@@ -223,8 +227,7 @@
 		"setBanners": "Set banners",
 		"showNotice": "Notice",
 		"sortMode": "Sort threads by",
-		"spoiler": "NSFW",
-		"spoilerImage": "Mark as NSFW",
+		"spoilerImage": "Mark image as NSFW",
 		"subject": "Subject",
 		"submit": "Submit",
 		"sync": "Connection status",

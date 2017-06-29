@@ -101,10 +101,7 @@
 				<span class="upload-container" hidden>
 					<input type="file" name="image" accept="image/png, image/gif, image/jpeg, video/webm, video/ogg, audio/ogg, application/ogg, video/mp4, audio/mp4, audio/mp3, application/zip, application/x-7z-compressed, application/x-xz, application/x-gzip">
 					<span data-id="spoiler">
-						<label>
-							<input type="checkbox" name="spoiler">
-							{%s ln.Common.Posts["spoiler"] %}
-						</label>
+						{%= input(spoilerSpec.wrap(), ln) %}
 					</span>
 					<strong class="upload-status"></strong>
 					{% if pos > auth.NotStaff %}

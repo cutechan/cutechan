@@ -21,18 +21,12 @@ var (
 		Required:     true,
 		Autocomplete: "new-password",
 	}
+	spoilerSpec = inputSpec{ID: "spoiler", NoBR: true}
 	staffTitleSpec = inputSpec{ID: "staffTitle"}
 )
 
 var specs = map[string][]inputSpec{
 	"noscriptPostCreation": {
-		{
-			ID:           "name",
-			Type:         _string,
-			MaxLength:    common.MaxLenName,
-			Placeholder:  true,
-			Autocomplete: "off",
-		},
 		inputSpec{
 			ID:        "body",
 			Type:      _textarea,

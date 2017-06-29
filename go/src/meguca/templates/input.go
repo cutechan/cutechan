@@ -31,6 +31,7 @@ const (
 type inputSpec struct {
 	Type                                   inputType
 	Required, Placeholder, NoID, WrapLabel bool
+	NoBR                                   bool
 	Min, Max, MaxLength, Rows              int
 	ID, Pattern, Autocomplete              string
 	Options                                []string
@@ -256,7 +257,9 @@ func streaminput(qw *quicktemplate.Writer, spec inputSpec, lang lang.Pack) {
 			w.label(spec, nil)
 		}
 	}
-	w.N().S(`<br>`)
+	if (!spec.NoBR) {
+		w.N().S(`<br>`)
+	}
 }
 
 // Render the options inputs of an options panel

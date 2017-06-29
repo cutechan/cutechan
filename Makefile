@@ -72,8 +72,8 @@ test-clean:
 	rm -rf go/multipart-* \
 		go/src/meguca/imager/images \
 		go/src/meguca/imager/assets/images \
-		go/src/meguca/imager/testdata/thumb_*.png \
-		go/src/meguca/imager/testdata/thumb_*.jpg
+		go/src/meguca/imager/testdata/thumb_*.jpg \
+		go/src/meguca/imager/testdata/thumb_*.png
 
 clean: client-clean server-clean test-clean
 

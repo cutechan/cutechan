@@ -1,6 +1,6 @@
 // Post and image hover previews
 
-import { posts, getModel } from "../state"
+import { posts } from "../state"
 import options from "../options"
 import {
 	setAttrs, getClosestID, fetchJSON, emitChanges, ChangeEmitter
@@ -189,27 +189,13 @@ function renderImagePreview(event: MouseEvent) {
 	let tag: string
 
 	switch (ext) {
-		case "pdf": // Nothing to preview for PDF or MP3
-		case "mp3":
-		case "zip":
-		case "7z":
-		case "gz":
-		case "xz":
-			return clear()
-		case "webm":
-			tag = "video"
-			break
-		case "mp4":
-		case "ogg":
-			const model = getModel(link)
-			// No video OGG and MP4 are treated just like MP3
-			if (!model || !model.image.video) {
-				return clear()
-			}
-			tag = "video"
-			break
-		default:
-			tag = "img"
+	case "jpg":
+	case "png":
+	case "gif":
+		tag = "img"
+		break
+	default:
+		return clear()
 	}
 
 	const el = document.createElement(tag)

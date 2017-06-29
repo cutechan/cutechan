@@ -46,9 +46,7 @@
 				<input name="subject" placeholder="{%s ln.UI["subject"] %}" required type="text" maxlength="100">
 				<br>
 				{%= noscriptPostCreationFields(pos) %}
-				{% if id == "all" %}
-					{%= uploadForm() %}
-				{% endif %}
+				{%= uploadForm() %}
 				{%= captcha() %}
 				{%= submit(false) %}
 			</form>
@@ -161,6 +159,9 @@ IndexThreads renders abbreviated threads for display on board index pages
 Render noscript-specific post creation fields
 {% func noscriptPostCreationFields(pos auth.ModerationLevel) %}{% stripspace %}
 	{% code ln := lang.Get() %}
+	<span data-id="spoiler">
+		{%= input(spoilerSpec.wrap(), ln) %}
+	</span>
 	{% if pos > auth.NotStaff %}
 		{%= input(staffTitleSpec.wrap(), ln) %}
 	{% endif %}
@@ -172,12 +173,6 @@ Render noscript-specific post creation fields
 Render image upload form
 {% func uploadForm() %}{% stripspace %}
 	<span class="upload-container">
-		<span data-id="spoiler">
-			<label>
-				<input type="checkbox" name="spoiler">
-				{%s lang.Get().UI["spoiler"] %}
-			</label>
-		</span>
 		<strong class="upload-status"></strong>
 		<br>
 		<input type="file" name="image" accept="image/png, image/gif, image/jpeg, video/webm, video/ogg, audio/ogg, application/ogg, video/mp4, audio/mp4, audio/mp3, application/zip, application/x-7z-compressed, application/x-xz, application/x-gzip">
