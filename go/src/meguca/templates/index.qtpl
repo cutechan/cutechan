@@ -333,11 +333,11 @@
 		{% comment %}
 			Dynamic module loader
 		{% endcomment %}
-		<script src="/static/js/vendor/almond.js"></script>
 		<script id="lang-data" type="application/json">
 			{% code buf, _ := json.Marshal(ln.Common) %}
 			{%z= buf %}
 		</script>
+		<script src="/static/js/almond.js"></script>
 		<script src="/static/js/loader.js"></script>
 	</body>
 {% endstripspace %}{% endfunc %}
