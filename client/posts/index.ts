@@ -9,14 +9,11 @@ export { findSyncwatches } from "./syncwatch"
 import initEtc from "./etc"
 import initPosting from "./posting"
 import initMenu from "./menu"
-import initInlineExpansion from "./inlineExpansion"
 import initHover from "./hover"
 
 export default () => {
 	initEtc()
 	initPosting()
 	initMenu()
-	initInlineExpansion()
 	initHover()
 }
-

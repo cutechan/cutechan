@@ -56,10 +56,6 @@ export const specs: { [id: string]: OptionSpec } = {
 			}
 		},
 	},
-	// Expand post links inline
-	postInlineExpand: {
-		default: false,
-	},
 	// Relative post timestamps
 	relativeTime: {
 		default: true,

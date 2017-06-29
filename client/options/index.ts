@@ -9,11 +9,10 @@ export * from "./specs"
 interface Options extends ChangeEmitter {
 	theme: string
 	imageHover: boolean
-	postInlineExpand: boolean
 	relativeTime: boolean
+	spoilers: boolean
 	notification: boolean
 	workModeToggle: boolean
-	spoilers: boolean
 	newPost: number
 	workMode: number
 	lang: string

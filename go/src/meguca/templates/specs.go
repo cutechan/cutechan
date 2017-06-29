@@ -219,11 +219,10 @@ var optionSpecs = [...][]inputSpec{
 			Options: common.Themes,
 		},
 		{ID: "imageHover"},
-		{ID: "postInlineExpand"},
 		{ID: "relativeTime"},
+		{ID: "spoilers"},
 		{ID: "notification"},
 		{ID: "workModeToggle"},
-		{ID: "spoilers"},
 	},
 	{
 		{
