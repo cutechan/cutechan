@@ -1,19 +1,15 @@
 {
 	"forms": {
-		"JPEGQuality": [
-			"JPEG thumbnail quality",
-			"Quality of image JPEG thumbnails"
-		],
 		"boardExpiry": [
 			"Board expiry time",
 			"Number of days without new posts before a board is deleted"
 		],
 		"boardName": [
-			"Board name",
+			"Name",
 			"Name of the new board. Can contain up to 10 lowercase Latin letters or numbers."
 		],
 		"boardTitle": [
-			"Board title",
+			"Title",
 			"Title of the new board, such as 'K-pop music'. Up to 100 characters long."
 		],
 		"captcha": [
@@ -56,17 +52,9 @@
 			"Language",
 			"Change interface language"
 		],
-		"maxHeight": [
-			"Image height limit",
-			"Maximum height of uploaded images"
-		],
 		"maxSize": [
 			"Image size limit",
 			"Maximum size of uploaded images in MB"
-		],
-		"maxWidth": [
-			"Image width limit",
-			"Maximum width of uploaded images"
 		],
 		"moderators": [
 			"Moderators",
@@ -108,10 +96,6 @@
 			"Prune threads",
 			"Delete threads that have not had any posts in N days"
 		],
-		"pyu": [
-			"#pyu",
-			"Don't ask"
-		],
 		"register": [
 			"Register",
 			""
@@ -131,14 +115,6 @@
 		"rules": [
 			"Rules",
 			"Board rules to display in the rule modal window"
-		],
-		"salt": [
-			"Secure salt",
-			"Salt for secure tripcode and mnemonic generation. Recommended to be at least 40 characters long."
-		],
-		"sessionExpiry": [
-			"Account session expiry",
-			"Time in days until user accounts are automatically logged out"
 		],
 		"spoiler": [
 			"NSFW",
@@ -165,7 +141,7 @@
 			"Number of days without new posts before a thread is deleted"
 		],
 		"title": [
-			"Board title",
+			"Title",
 			"Short descriptive title of the board"
 		],
 		"workMode": [

@@ -40,20 +40,15 @@ var (
 
 	// Defaults contains the default server configuration values
 	Defaults = Configs{
-		BoardExpiry:   7,
-		JPEGQuality:   90,
-		MaxSize:       10,
-		MaxHeight:     12000,
-		MaxWidth:      12000,
-		SessionExpiry: 30,
-		Salt:          "LALALALALALALALALALALALALALALALALALALALA",
-		RootURL:       "http://localhost",
+		MaxSize:     40,
+		RootURL:     "http://localhost",
+		BoardExpiry: 100,
 		Public: Public{
 			DisableUserBoards: true,
 			DefaultLang:       "ru_RU",
 			DefaultCSS:        "cute",
-			ThreadExpiryMin:   7,
-			ThreadExpiryMax:   14,
+			ThreadExpiryMin:   100,
+			ThreadExpiryMax:   100,
 		},
 	}
 )

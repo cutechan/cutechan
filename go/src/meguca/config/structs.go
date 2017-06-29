@@ -7,14 +7,9 @@ type Configs struct {
 	Public
 	PruneBoards   bool `json:"pruneBoards"`
 	Pyu           bool `json:"pyu"`
-	JPEGQuality   uint8
-	MaxWidth      uint16 `json:"maxWidth"`
-	MaxHeight     uint16 `json:"maxHeight"`
 	BoardExpiry   uint   `json:"boardExpiry"`
 	MaxSize       uint   `json:"maxSize"`
-	SessionExpiry uint   `json:"sessionExpiry"`
 	RootURL       string `json:"rootURL"`
-	Salt          string `json:"salt"`
 }
 
 // Public contains configurations exposeable through public availability APIs

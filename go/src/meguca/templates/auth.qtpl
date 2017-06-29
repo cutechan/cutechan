@@ -2,9 +2,7 @@
 {% import "time" %}
 {% import "strconv" %}
 {% import "meguca/auth" %}
-{% import "meguca/config" %}
 {% import "meguca/lang" %}
-{% import "github.com/bakape/mnemonics" %}
 
 BanPage renders a ban page for a banned user
 {% func BanPage(rec auth.BanRecord) %}{% stripspace %}
@@ -43,13 +41,11 @@ BanPage renders a ban page for a banned user
 					<th>{%s ln["unban"] %}</th>
 				{% endif %}
 			</tr>
-			{% code salt := config.Get().Salt %}
 			{% for _, b := range bans %}
 				<tr>
 					<td>{%s b.Reason %}</td>
 					<td>{%s b.By %}</td>
 					<td>{%= staticPostLink(b.ForPost) %}</td>
-					<td>{%s mnemonic.Mnemonic(b.IP, salt) %}</td>
 					<td>{%s b.Expires.Format(time.UnixDate) %}</td>
 					{% if canUnban %}
 						<td>

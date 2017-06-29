@@ -4,8 +4,7 @@ import (
 	"errors"
 	"strings"
 
-	"github.com/aquilax/tripcode"
-	"meguca/config"
+	// "github.com/aquilax/tripcode"
 	"meguca/common"
 )
 
@@ -15,29 +14,29 @@ var (
 )
 
 // ParseName parses the name field into a name and tripcode, if any
-func ParseName(name string) (string, string, error) {
-	if name == "" {
-		return name, name, nil
-	}
-	if len(name) > common.MaxLenName {
-		return "", "", common.ErrNameTooLong
-	}
-	name = strings.TrimSpace(name)
+// func ParseName(name string) (string, string, error) {
+// 	if name == "" {
+// 		return name, name, nil
+// 	}
+// 	if len(name) > common.MaxLenName {
+// 		return "", "", common.ErrNameTooLong
+// 	}
+// 	name = strings.TrimSpace(name)
 
-	// #password for tripcodes and ##password for secure tripcodes
-	firstHash := strings.IndexByte(name, '#')
-	if firstHash > -1 {
-		password := name[firstHash+1:]
-		name = name[:firstHash]
-		if password[0] == '#' {
-			trip := tripcode.SecureTripcode(password[1:], config.Get().Salt)
-			return name, trip, nil
-		}
-		return name, tripcode.Tripcode(password), nil
-	}
+// 	// #password for tripcodes and ##password for secure tripcodes
+// 	firstHash := strings.IndexByte(name, '#')
+// 	if firstHash > -1 {
+// 		password := name[firstHash+1:]
+// 		name = name[:firstHash]
+// 		if password[0] == '#' {
+// 			trip := tripcode.SecureTripcode(password[1:], "")
+// 			return name, trip, nil
+// 		}
+// 		return name, tripcode.Tripcode(password), nil
+// 	}
 
-	return name, "", nil
-}
+// 	return name, "", nil
+// }
 
 // ParseSubject verifies and trims a thread subject string
 func ParseSubject(s string) (string, error) {

@@ -229,8 +229,9 @@
 						<div id="form-selection">
 							{% for _, l := range [...]string{
 								"logout", "logoutAll", "changePassword",
-								"createBoard", "configureBoard", "deleteBoard",
-								"assignStaff", "setBanners",
+								"createBoard",
+								"configureBoard", "setBanners", "assignStaff",
+								"deleteBoard",
 							} %}
 								<a id="{%s l %}">
 									{%s ln.UI[l] %}

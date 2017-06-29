@@ -174,12 +174,11 @@ func parseUploadForm(req *http.Request) error {
 // Create a new thumbnail, commit its resources to the DB and filesystem, and
 // pass the image data to the client.
 func newThumbnail(data []byte, img common.ImageCommon) (int, string, error) {
-	conf := config.Get()
 	thumb, img, err := processFile(data, img, thumbnailer.Options{
-		JPEGQuality: conf.JPEGQuality,
+		JPEGQuality: common.JPEGQuality,
 		MaxSourceDims: thumbnailer.Dims{
-			Width:  uint(conf.MaxWidth),
-			Height: uint(conf.MaxHeight),
+			Width:  common.MaxWidth,
+			Height: common.MaxHeight,
 		},
 		ThumbDims: thumbnailer.Dims{
 			Width:  150,

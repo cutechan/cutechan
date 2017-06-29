@@ -84,7 +84,7 @@ func FindPosition(board, userID string) (pos auth.ModerationLevel, err error) {
 
 // WriteLoginSession writes a new user login session to the DB
 func WriteLoginSession(account, token string) error {
-	expiryTime := time.Duration(config.Get().SessionExpiry) * time.Hour * 24
+	expiryTime := time.Duration(common.SessionExpiry) * time.Hour * 24
 	return execPrepared(
 		"write_login_session",
 		account,

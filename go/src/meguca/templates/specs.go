@@ -125,7 +125,31 @@ var specs = map[string][]inputSpec{
 		},
 	},
 	"configureServer": {
+		{ID: "captcha"},
 		{ID: "disableUserBoards"},
+		{
+			ID:      "defaultCSS",
+			Type:    _select,
+			Options: common.Themes,
+		},
+		{
+			ID:      "defaultLang",
+			Type:    _select,
+			Options: common.Langs,
+		},
+		{
+			ID:       "maxSize",
+			Type:     _number,
+			Min:      1,
+			Required: true,
+		},
+		{ID: "pruneBoards"},
+		{
+			ID:       "boardExpiry",
+			Type:     _number,
+			Min:      1,
+			Required: true,
+		},
 		{ID: "pruneThreads"},
 		{
 			ID:       "threadExpiryMin",
@@ -139,13 +163,6 @@ var specs = map[string][]inputSpec{
 			Min:      1,
 			Required: true,
 		},
-		{ID: "pruneBoards"},
-		{
-			ID:       "boardExpiry",
-			Type:     _number,
-			Min:      1,
-			Required: true,
-		},
 		{
 			ID:   "rootURL",
 			Type: _string,
@@ -153,53 +170,6 @@ var specs = map[string][]inputSpec{
 		{
 			ID:   "imageRootOverride",
 			Type: _string,
-		},
-		{
-			ID:   "salt",
-			Type: _string,
-		},
-		{ID: "captcha"},
-		{
-			ID:       "sessionExpiry",
-			Type:     _number,
-			Min:      1,
-			Required: true,
-		},
-		{
-			ID:      "defaultLang",
-			Type:    _select,
-			Options: common.Langs,
-		},
-		{
-			ID:      "defaultCSS",
-			Type:    _select,
-			Options: common.Themes,
-		},
-		{ID: "pyu"},
-		{
-			ID:       "maxWidth",
-			Type:     _number,
-			Min:      1,
-			Required: true,
-		},
-		{
-			ID:       "maxHeight",
-			Type:     _number,
-			Min:      1,
-			Required: true,
-		},
-		{
-			ID:       "maxSize",
-			Type:     _number,
-			Min:      1,
-			Required: true,
-		},
-		{
-			ID:       "JPEGQuality",
-			Type:     _number,
-			Min:      1,
-			Required: true,
-			Max:      100,
 		},
 	},
 }

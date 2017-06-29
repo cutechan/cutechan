@@ -5,7 +5,6 @@ import (
 	"errors"
 	"meguca/auth"
 	"meguca/common"
-	"meguca/config"
 	"meguca/db"
 	"net/http"
 	"strings"
@@ -86,7 +85,7 @@ func commitLogin(w http.ResponseWriter, r *http.Request, userID string) {
 	// One hour less, so the cookie expires a bit before the DB session gets
 	// deleted
 	expires := time.Now().
-		Add(time.Duration(config.Get().SessionExpiry)*time.Hour*24 - time.Hour)
+		Add(time.Duration(common.SessionExpiry)*time.Hour*24 - time.Hour)
 	loginCookie := http.Cookie{
 		Name:    "loginID",
 		Value:   userID,

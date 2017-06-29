@@ -98,7 +98,9 @@ a, .control {
 }
 
 input[type=checkbox] {
-  margin: .2em;
+  margin: 0;
+  height: 14px;
+  vertical-align: middle;
 }
 
 .control, .banner-float {
@@ -172,7 +174,6 @@ label {
 }
 
 .option-label {
-  margin-left: 5px;
   cursor: pointer;
   -webkit-user-select: none;
   -moz-user-select: none;
@@ -899,4 +900,9 @@ header {
     }
     font-size: 120%;
   }
+}
+
+// Avoid accidental deletion. Make annoying confirm later.
+#deleteBoard {
+  display: none;
 }

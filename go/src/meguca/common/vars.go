@@ -29,6 +29,14 @@ const (
 	LenImageToken = 86
 )
 
+// Some hardcoded options
+const (
+	MaxWidth = 12000
+	MaxHeight = 12000
+	JPEGQuality = 90
+	SessionExpiry = 5 * 365  // Days
+)
+
 // Available language packs and themes. Change this, when adding any new ones.
 var (
 	Langs = []string{
