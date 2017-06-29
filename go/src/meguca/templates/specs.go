@@ -213,23 +213,17 @@ var specs = map[string][]inputSpec{
 // Specs of option inputs grouped by tab
 var optionSpecs = [...][]inputSpec{
 	{
-		{ID: "imageHover"},
-		{ID: "postInlineExpand"},
-		{ID: "relativeTime"},
-		{ID: "notification"},
-		{
-			ID:      "inlineFit",
-			Type:    _select,
-			Options: []string{"none", "width", "screen"},
-		},
-		{ID: "workModeToggle"},
-		{ID: "autogif"},
-		{ID: "spoilers"},
 		{
 			ID:      "theme",
 			Type:    _select,
 			Options: common.Themes,
 		},
+		{ID: "imageHover"},
+		{ID: "postInlineExpand"},
+		{ID: "relativeTime"},
+		{ID: "notification"},
+		{ID: "workModeToggle"},
+		{ID: "spoilers"},
 	},
 	{
 		{

@@ -7,15 +7,13 @@ import { trigger, emitChanges, ChangeEmitter, hook } from "../util"
 export * from "./specs"
 
 interface Options extends ChangeEmitter {
+	theme: string
 	imageHover: boolean
 	postInlineExpand: boolean
 	relativeTime: boolean
 	notification: boolean
-	inlineFit: string
 	workModeToggle: boolean
-	autogif: boolean
 	spoilers: boolean
-	theme: string
 	newPost: number
 	workMode: number
 	lang: string

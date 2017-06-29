@@ -30,11 +30,6 @@ export type OptionSpec = {
 // Specifications of option behavior, where needed. Some properties defined as
 // getters to prevent race with "state" module
 export const specs: { [id: string]: OptionSpec } = {
-	// Thumbnail inline expansion mode
-	inlineFit: {
-		type: optionType.menu,
-		default: "width",
-	},
 	// Boss key toggle
 	workModeToggle: {
 		type: optionType.checkbox,
@@ -45,8 +40,6 @@ export const specs: { [id: string]: OptionSpec } = {
 	imageHover: {
 		default: true,
 	},
-	// Animated GIF thumbnails
-	autogif: {},
 	// Enable thumbnail spoilers
 	spoilers: {
 		default: true,

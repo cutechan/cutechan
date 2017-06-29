@@ -4,10 +4,6 @@
 			"JPEG thumbnail quality",
 			"Quality of image JPEG thumbnails"
 		],
-		"autogif": [
-			"Animated GIF Thumbnails",
-			"Animate GIF thumbnails"
-		],
 		"boardExpiry": [
 			"Board expiry time",
 			"Number of days without new posts before a board is deleted"
@@ -51,10 +47,6 @@
 		"imageRootOverride": [
 			"Image root override",
 			"If you wish to host images from a separate location like a CDN, enter the full root address here. Leave empty to use the default address. Example: 'https://images.meguca.org'"
-		],
-		"inlineFit": [
-			"Expansion",
-			"Expand images inside the parent post and resize according to setting"
 		],
 		"janitors": [
 			"Janitors",
@@ -153,8 +145,8 @@
 			"Time in days until user accounts are automatically logged out"
 		],
 		"spoilers": [
-			"Image Spoilers",
-			"Don't spoiler images"
+			"Hide NSFW",
+			"Don't display NSFW images"
 		],
 		"staffTitle": [
 			"Staff Title",
@@ -178,11 +170,11 @@
 		],
 		"workMode": [
 			"Work mode",
-			"Hides images and disables user background"
+			"Hides images"
 		],
 		"workModeToggle": [
 			"Work mode",
-			"Hides images and disables user background"
+			"Hides images"
 		]
 	},
 	"options": {
@@ -235,8 +227,8 @@
 		"setBanners": "Set banners",
 		"showNotice": "Notice",
 		"sortMode": "Sort threads by",
-		"spoiler": "Spoiler",
-		"spoilerImage": "Spoiler image",
+		"spoiler": "NSFW",
+		"spoilerImage": "Mark as NSFW",
 		"subject": "Subject",
 		"submit": "Submit",
 		"sync": "Connection status",

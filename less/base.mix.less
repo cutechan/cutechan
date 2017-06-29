@@ -17,11 +17,6 @@ body, article, code.code-tag {
   }
 }
 
-#banner{
-  background: fade(@postBG, 60%);
-  border-bottom: 1px solid #aaa;
-}
-
 b {
   color: @bold;
 }
@@ -177,7 +172,11 @@ label {
 }
 
 .option-label {
+  margin-left: 5px;
   cursor: pointer;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
   user-select: none;
 }
 
@@ -383,7 +382,7 @@ article, section {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: ~"calc(100% - 1.5em)";
+  height: ~"calc(100% - 1.3em)";
   pointer-events: none;
   align-items: flex-start;
 }
@@ -426,11 +425,14 @@ article, section {
 
 #banner {
   display: inline-block;
+  box-sizing: border-box;
   text-align: center;
   width: 100%;
   height: 1.3em;
   top: 0;
   left: 0;
+  background: fade(@postBG, 60%);
+  border-bottom: 1px solid #aaa;
 }
 
 .side-panel {
@@ -705,15 +707,6 @@ figure {
 .image-search {
   font-weight: bold;
   display: none;
-}
-
-.fit-to-width {
-  max-width: 100%;
-}
-
-.fit-to-screen {
-  max-width: 100%;
-  max-height: 100vh;
 }
 
 header {

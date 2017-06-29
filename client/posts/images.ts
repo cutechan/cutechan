@@ -1,9 +1,7 @@
 import { Post } from "./model"
 import { fileTypes } from "../common"
 import { View } from "../base"
-import {
-	setAttrs, on, trigger, firstChild, importTemplate, pad
-} from "../util"
+import { setAttrs, on, firstChild, importTemplate, pad } from "../util"
 import options from "../options"
 import { getModel, config } from "../state"
 import lang from "../lang"
@@ -66,9 +64,6 @@ export default class ImageHandler extends View<Post> {
 			// Spoilered and spoilers enabled
 			thumb = '/static/img/spoiler.jpg'
 			thumbHeight = thumbWidth = 150
-		} else if (data.fileType === fileTypes.gif && options.autogif) {
-			// Animated GIF thumbnails
-			thumb = src
 		} else {
 			thumb = thumbPath(data.SHA1, data.thumbType)
 		}
@@ -155,151 +150,6 @@ export default class ImageHandler extends View<Post> {
 
 		el.hidden = false
 	}
-
-	public toggleImageExpansion(event: MouseEvent) {
-		const img = this.model.image
-		if (img.expanded) {
-			return this.contractImage(event, true)
-		}
-
-		switch (img.fileType) {
-			// Simply download the file
-			case fileTypes.pdf:
-			case fileTypes.zip:
-			case fileTypes["7z"]:
-			case fileTypes["tar.gz"]:
-			case fileTypes["tar.xz"]:
-				event.preventDefault()
-				return this.el.querySelector("figure a").click()
-			case fileTypes.mp3:
-				event.preventDefault()
-				return this.renderAudio()
-			case fileTypes.mp4:
-			case fileTypes.ogg:
-				if (!this.model.image.video) {
-					event.preventDefault()
-					return this.renderAudio()
-				} else {
-					return this.expandImage(event, false)
-				}
-			default:
-				return this.expandImage(event, false)
-		}
-	}
-
-	// Contract an image and optionally omit scrolling to post and delay the
-	// rendering of the change to the next animation frame.
-	public contractImage(e: MouseEvent | null, scroll: boolean) {
-		const img = this.model.image
-
-		switch (img.fileType) {
-			case fileTypes.ogg:
-			case fileTypes.mp3:
-			case fileTypes.mp4:
-			case fileTypes.webm:
-				// Firefox provides no way of detecting, if the controls where
-				// clicked instead of the video. Estimate this by height.
-				if (e) {
-					const max = (e.target as HTMLElement).offsetHeight - 25
-					if (e.offsetY > max) {
-						return
-					}
-				}
-
-				const v = this.el.querySelector("video")
-				if (v) {
-					v.remove()
-				}
-				const a = this.el.querySelector("audio")
-				if (a) {
-					a.remove()
-				}
-				this.el.querySelector("figure img").hidden = false
-				break
-		}
-
-		if (e) {
-			e.preventDefault()
-		}
-		this.renderImage(false)
-
-		// Scroll the post back into view, if contracting images taller than
-		// the viewport
-		if (img.tallerThanViewport && scroll) {
-			this.el.scrollIntoView()
-		}
-
-		img.expanded = img.tallerThanViewport = img.revealed = false
-	}
-
-	public expandImage(event: Event | null, noScroll: boolean) {
-		const mode = options.inlineFit,
-			img = this.model.image
-		let cls = "expanded "
-
-		switch (mode) {
-			case "none":
-				return
-			case "width":
-				cls += "fit-to-width"
-				img.tallerThanViewport = img.dims[1] > window.innerHeight
-				if (img.tallerThanViewport && !noScroll) {
-					this.el.scrollIntoView()
-				}
-				break
-			case "screen":
-				cls += "fit-to-screen"
-				break
-		}
-		this.model.image.expanded = true
-		if (event) {
-			event.preventDefault()
-		}
-
-		// Hide any hover previews
-		trigger("imageExpanded")
-
-		const figure = this.el.querySelector("figure"),
-			imgEl = figure.querySelector("img"),
-			src = sourcePath(img.SHA1, img.fileType)
-		switch (img.fileType) {
-			case fileTypes.ogg:
-			case fileTypes.mp4:
-			case fileTypes.webm:
-				const video = document.createElement("video")
-				setAttrs(video, {
-					src,
-					class: cls,
-					autoplay: "",
-					controls: "",
-					loop: "",
-				})
-				imgEl.hidden = true
-				figure.append(video)
-				break
-			default:
-				const el = document.createElement("img")
-				setAttrs(el, {
-					src,
-					class: cls,
-				})
-				imgEl.replaceWith(el)
-		}
-	}
-
-	// Render audio controls for uploaded MP3 files
-	private renderAudio() {
-		const el = document.createElement("audio"),
-			img = this.model.image
-		setAttrs(el, {
-			autoplay: "",
-			loop: "",
-			controls: "",
-			src: sourcePath(img.SHA1, img.fileType),
-		})
-		this.model.image.expanded = true
-		this.el.querySelector("figure").after(el)
-	}
 }
 
 function imageRoot(): string {
@@ -317,23 +167,6 @@ export function sourcePath(SHA1: string, fileType: fileTypes): string {
 	return `${imageRoot()}/src/${SHA1}.${fileTypes[fileType]}`
 }
 
-// Delegate image clicks to views. More performant than dedicated listeners for
-// each view.
-function handleImageClick(event: MouseEvent) {
-	const el = event.target as Element
-	const bypass = options.inlineFit === "none"
-		|| event.which !== 1
-		|| el.classList.contains("catalog")
-	if (bypass) {
-		return
-	}
-	const model = getModel(el)
-	if (!model) {
-		return
-	}
-	model.view.toggleImageExpansion(event)
-}
-
 // Reveal/hide thumbnail by clicking [Show]/[Hide] in hidden thumbnail mode
 function toggleHiddenThumbnail(event: Event) {
 	const model = getModel(event.target as Element)
@@ -345,9 +178,6 @@ function toggleHiddenThumbnail(event: Event) {
 	model.image.revealed = !revealed
 }
 
-on(document, "click", handleImageClick, {
-	selector: "img, video",
-})
 on(document, "click", toggleHiddenThumbnail, {
 	passive: true,
 	selector: ".image-toggle",

@@ -1,6 +1,6 @@
 import { setBoardConfig, hidden, mine, posts, page, config } from "../state"
 import options from "../options"
-import { PostData, fileTypes } from "../common"
+import { PostData } from "../common"
 import { Post, PostView } from "../posts"
 import lang from "../lang"
 import { postAdded, notifyAboutReply } from "../ui"
@@ -71,10 +71,7 @@ export function extractPost(
 
 	const { image } = model
 	if (image) {
-		if (options.workModeToggle
-			|| (image.spoiler && !options.spoilers)
-			|| (image.fileType === fileTypes.gif && options.autogif)
-		) {
+		if (options.workModeToggle || (image.spoiler && !options.spoilers)) {
 			view.renderImage(false)
 		}
 	}

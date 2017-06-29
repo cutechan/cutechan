@@ -5,7 +5,6 @@
 import { posts, page } from "../state"
 import options from "."
 import { Post } from "../posts"
-import { fileTypes } from "../common"
 
 // Listen for changes on the options object and call appropriate handlers on
 // all applicable posts
@@ -13,7 +12,6 @@ export default () => {
 	const handlers: { [key: string]: () => void } = {
 		workModeToggle: renderImages,
 		spoilers: toggleSpoilers,
-		autogif: toggleAutoGIF,
 		relativeTime: renderTime,
 	}
 	for (let key in handlers) {
@@ -67,16 +65,6 @@ function toggleSpoilers() {
 	loopPosts(
 		({ image }) =>
 			!!image && image.spoiler,
-		({ view }) =>
-			view.renderImage(false),
-	)
-}
-
-// Animated GIF thumbnails
-function toggleAutoGIF() {
-	loopPosts(
-		({ image }) =>
-			!!image && image.fileType === fileTypes.gif,
 		({ view }) =>
 			view.renderImage(false),
 	)

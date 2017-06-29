@@ -3,7 +3,7 @@
 import { posts, getModel } from "../state"
 import options from "../options"
 import {
-	setAttrs, getClosestID, fetchJSON, hook, emitChanges, ChangeEmitter
+	setAttrs, getClosestID, fetchJSON, emitChanges, ChangeEmitter
 } from "../util"
 import { Post } from "./model"
 import ImageHandler from "./images"
@@ -89,14 +89,6 @@ class PostPreview extends ImageHandler {
 				continue
 			}
 			el.classList.add("referenced")
-		}
-
-		// Contract any expanded open thumbnails
-		const img = this.sourceModel.image
-		if (img && img.expanded) {
-			// Clone parent model's image and render contracted thumbnail
-			this.model.image = Object.assign({}, this.sourceModel.image)
-			this.contractImage(null, false)
 		}
 
 		const fc = overlay.firstChild
@@ -272,8 +264,4 @@ export default () => {
 	})
 	mouseMove.onChange("event", renderPostPreview)
 	mouseMove.onChange("event", renderImagePreview)
-
-	// Clear previews, when an image is expanded
-	hook("imageExpanded", clear)
 }
-
