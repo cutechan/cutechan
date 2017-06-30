@@ -8,14 +8,8 @@ import (
 	"path/filepath"
 )
 
-var (
-	// Currently used language pack
-	pack Pack
-
-	// Precompiled table of relations between browser Accept-Language HTTP
-	// header values and internal POSIX language codes
-	languageCodes map[string]string
-)
+// Currently used language pack
+var pack Pack
 
 // Pack contains a localization language pack for a single language
 type Pack struct {
@@ -36,7 +30,6 @@ type Pack struct {
 // Loads and parses the selected JSON language pack
 func Load() (err error) {
 	lang := config.Get().DefaultLang
-
 	buf, err := Asset(filepath.Join(lang, "server.json"))
 	if err != nil {
 		return
@@ -45,17 +38,7 @@ func Load() (err error) {
 	if err != nil {
 		return
 	}
-
-	buf, err = Asset(filepath.Join(lang, "common.json"))
-	if err != nil {
-		return
-	}
-	err = json.Unmarshal(buf, &pack.Common)
-	if err != nil {
-		return
-	}
 	pack.ID = lang
-
 	return
 }
 
