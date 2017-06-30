@@ -310,6 +310,7 @@
       ]
     },
     "ui": {
+      "replies": "Replies",
       "reading": "reading",
       "mustMatch": "Passwords must match",
       "invalidCaptcha": "Invalid captcha",

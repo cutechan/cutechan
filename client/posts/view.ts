@@ -180,15 +180,15 @@ export default class PostView extends ImageHandler {
         this.reparseBody()
     }
 
-    // Render the name and tripcode in the header
+    // Render the name in the header
     public renderName() {
         const el = this.el.querySelector(".post-name")
         const { auth } = this.model
         if (auth) {
-            el.classList.add("admin")
+            el.classList.add("post-name_staff")
             el.textContent = `## ${lang.posts[auth]} ##`
         } else {
-            el.classList.remove("admin")
+            el.classList.remove("post-name_staff")
             el.textContent = ""
         }
     }

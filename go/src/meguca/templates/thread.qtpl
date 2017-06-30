@@ -27,6 +27,9 @@
 				{%s ln.UI["catalog"] %}
 			</a>
 		</span>
+		<span class="act posting">
+			<a>{%s ln.UI["reply"] %}</a>
+		</span>
 		{%= hoverReveal("span", conf.Notice, ln.UI["showNotice"]) %}
 		{%= hoverReveal("span", conf.Rules, ln.UI["rules"]) %}
 	</span>

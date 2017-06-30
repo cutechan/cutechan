@@ -141,13 +141,13 @@
 					</noscript>
 				</nav>
 				<a id="banner-options" class="banner-item banner-icon" title="{%s ln.UI["options"] %}">
-					<span class="fa fa-gear"></span>
+					<i class="fa fa-gear"></i>
 				</a>
 				<a id="banner-account" class="banner-item banner-icon" title="{%s ln.UI["account"] %}">
-					<span class="fa fa-user-circle-o"></span>
+					<i class="fa fa-user-circle-o"></i>
 				</a>
 				<a id="banner-FAQ" class="banner-item banner-icon" title="{%s ln.UI["FAQ"] %}">
-					<span class="fa fa-info-circle"></span>
+					<i class="fa fa-info-circle"></i>
 				</a>
 				<span id="sync-counter" class="banner-item banner-status" title="{%s ln.UI["syncCount"] %}"></span>
 				<span id="sync-status" class="banner-item banner-status" title="{%s ln.UI["sync"] %}"></span>

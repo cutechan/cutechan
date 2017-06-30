@@ -6,87 +6,78 @@
 
 TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 {% func renderArticle(p common.Post, c articleContext) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	{% code isOP := p.ID == c.op %}
 	{% code idStr := strconv.FormatUint(p.ID, 10) %}
-	<article{% space %}{%= postClass(p, p.ID == c.op) %}{% space %}id="post{%s idStr %}">
-		<a name="{%s idStr %}"></a>
-		{%= deletedToggle() %}
-		<header class="spaced">
-			<input type="checkbox" class="mod-checkbox hidden">
+	<article class="{%s postClass(p, isOP) %}" id="post{%s idStr %}">
+
+		<header class="post-header">
+			<a class="anchor" name="{%s idStr %}"></a>
 			{%= renderSticky(c.sticky) %}
-			{% if c.subject != "" %}
-				{% if c.board != "" %}
-					<a class="board" href="/{%s c.board %}/">
-						/{%s c.board %}/
-					</a>
-				{% endif %}
-				<h3>{%s c.subject %}</h3>
-			{% endif %}
-			<span class="post-name{% if p.Auth != "" %}{% space %}admin{% endif %}">
+			<span class="post-name{% if p.Auth != "" %}{% space %}post-name_staff{% endif %}">
 				{% if p.Auth != "" %}
-					##{% space %}{%s lang.Get().Common.Posts[p.Auth] %}{% space %}##
+					##{% space %}{%s ln.Common.Posts[p.Auth] %}{% space %}##
 				{% endif %}
 			</span>
-			<time>
-				{%s formatTime(p.Time) %}
-			</time>
-			<nav>
-				{% code url := "#" + idStr %}
-				{% code if p.ID == c.op { url = "" } %}
+			<nav class="post-nav">
+				{% if isOP %}
+					<a class="post-board" href="/{%s c.board %}/">/{%s c.board %}/</a>
+				{% endif %}
+				{% code url := "" %}
+				{% if !isOP %}
+					{% code url = "#" + idStr %}
+				{% endif %}
 				{% if c.index %}
 					{% code url = fmt.Sprintf("/%s/%d%s", c.board, c.op, url) %}
 				{% endif %}
-				<a href="{%s url %}">No.</a>
-				<a class="quote" href="{%s url %}">{%s idStr %}</a>
+				<a class="post-id" href="{%s url %}">#{%s idStr %}</a>
 			</nav>
+			<h3 class="post-subject">{%s c.subject %}</h3>
 			{% if c.index && c.subject != "" %}
 				<span>
-					{%= expandLink(c.board, idStr) %}
 					{%= last100Link(c.board, idStr) %}
 				</span>
 			{% endif %}
-			<a class="control">
-				<svg xmlns="http://www.w3.org/2000/svg" width="8" height="8" viewBox="0 0 8 8">
-					<path d="M1.5 0l-1.5 1.5 4 4 4-4-1.5-1.5-2.5 2.5-2.5-2.5z" transform="translate(0 1)" />
-				</svg>
-			</a>
+			<time class="post-time">{%s formatTime(p.Time) %}</time>
 		</header>
+
 		{% if p.Image != nil %}
-			{% code img := *p.Image %}
-			<figcaption class="spaced">
-				<a class="image-toggle act" hidden></a>
-				<span class="fileinfo">
-					{% if img.Artist != "" %}<span class="media-artist">{%s img.Artist %}</span>{% endif %}
-					{% if img.Title != "" %}<span class="media-title">{%s img.Title %}</span>{% endif %}
-					{% if img.Audio %}<span class="has-audio">♫</span>{% endif %}
-					{% if img.Length != 0 %}<span class="media-length">
-						{% code l := img.Length %}
-						{% if l < 60 %}
-							{%s fmt.Sprintf("0:%02d", l) %}
-						{% else %}
-							{% code min := l / 60 %}
-							{%s fmt.Sprintf("%02d:%02d", min, l - min * 60) %}
-						{% endif %}
-						</span>
+		{% code img := *p.Image %}
+		<figcaption class="post-info spaced">
+			<a class="image-toggle act" hidden></a>
+			<span class="fileinfo">
+				{% if img.Artist != "" %}<span class="media-artist">{%s img.Artist %}</span>{% endif %}
+				{% if img.Title != "" %}<span class="media-title">{%s img.Title %}</span>{% endif %}
+				{% if img.Audio %}<span class="has-audio">♫</span>{% endif %}
+				{% if img.Length != 0 %}<span class="media-length">
+					{% code l := img.Length %}
+					{% if l < 60 %}
+						{%s fmt.Sprintf("0:%02d", l) %}
+					{% else %}
+						{% code min := l / 60 %}
+						{%s fmt.Sprintf("%02d:%02d", min, l - min * 60) %}
 					{% endif %}
-					{% if img.APNG %}
-						<span class="is-apng">APNG</span>
-					{% endif %}
-					<span class="filesize">{%s readableFileSize(img.Size) %}</span>
-					<span class="dims">
-						{%d int(img.Dims[0]) %}×{%d int(img.Dims[1]) %}
 					</span>
+				{% endif %}
+				{% if img.APNG %}
+					<span class="is-apng">APNG</span>
+				{% endif %}
+				<span class="filesize">{%s readableFileSize(img.Size) %}</span>
+				<span class="dims">
+					{%d int(img.Dims[0]) %}×{%d int(img.Dims[1]) %}
 				</span>
-			</figcaption>
+			</span>
+		</figcaption>
 		{% endif %}
-		<div class="post-container">
+
+		{%= deletedToggle() %}
+
+		<section class="post-body">
 			{% if p.Image != nil %}
 				{% code img := *p.Image %}
-				<figure>
-					<a target="_blank" href="{%s assets.SourcePath(img.FileType, img.SHA1) %}">
+				<figure class="post-image">
+					<a class="post-image-link" target="_blank" href="{%s assets.SourcePath(img.FileType, img.SHA1) %}">
 						{% if img.Spoiler %}
-							{% comment %}
-								TODO: board-specific server-side spoiler rendering
-							{% endcomment %}
 							<img src="/static/img/spoiler.jpg" width="200" height="200">
 						{% else %}
 							<img src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
@@ -94,29 +85,21 @@ TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 					</a>
 				</figure>
 			{% endif %}
-			<blockquote>
+			<blockquote class="post-message">
 				{%= body(p, c.op, c.index) %}
 			</blockquote>
 			{% if p.Banned %}
 				<b class="admin banned">
-					{%s lang.Get().Common.Posts["banned"] %}
+					{%s ln.Common.Posts["banned"] %}
 				</b>
 			{% endif %}
-		</div>
-		{% if c.omit != 0 %}
-			<span class="omit" data-omit="{%d c.omit %}" data-image-omit="{%d c.imageOmit %}">
-				{%d c.omit %}{% space %}post{% if c.omit > 1 %}s{% endif %}
-				{% space %}and{% space %}{%d c.imageOmit %}
-				{% space %}image{% if c.imageOmit > 1 %}s{% endif %}
-				{% space %}omitted{% space %}
-				<span class="act">
-					<a href="/{%s c.board %}/{%s strconv.FormatUint(c.op, 10) %}">
-						See All
-					</a>
-				</span>
+		</section>
+
+		<footer class="post-footer">
+			{% if bls := c.backlinks[p.ID]; bls != nil %}
+			<span class="post-pre-backlinks">
+				{%s ln.Common.UI["replies"] %}:{% space %}
 			</span>
-		{% endif %}
-		{% if bls := c.backlinks[p.ID]; bls != nil %}
 			<span class="backlinks spaced">
 				{% for id, op := range bls %}
 					<em>
@@ -124,6 +107,30 @@ TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 					</em>
 				{% endfor %}
 			</span>
-		{% endif %}
+			{% endif %}
+			<div class="post-controls">
+				<a class="post-control">
+					<i class="fa fa-minus-square-o"></i>
+				</a>
+				<a class="post-control post-control-reply">
+					<i class="fa fa-reply"></i>
+				</a>
+			</div>
+		</footer>
+
 	</article>
+
+	{% if c.omit != 0 %}
+	<div class="omit" data-omit="{%d c.omit %}" data-image-omit="{%d c.imageOmit %}">
+		{%d c.omit %}{% space %}post{% if c.omit > 1 %}s{% endif %}
+		{% space %}and{% space %}{%d c.imageOmit %}
+		{% space %}image{% if c.imageOmit > 1 %}s{% endif %}
+		{% space %}omitted{% space %}
+		<span class="act">
+			<a href="/{%s c.board %}/{%s strconv.FormatUint(c.op, 10) %}">
+				See All
+			</a>
+		</span>
+	</div>
+	{% endif %}
 {% endstripspace %}{% endfunc %}

@@ -1,5 +1,7 @@
 @import "base.mix.less";
 
+@font: "Trebuchet MS", sans-serif;
+@fontSize: 14px;
 @bodyBG: #eee;
 @postBG: #ddd;
 @body: #0a0a0a;
@@ -10,8 +12,7 @@
 @bold: #1a8522;
 @admin: #d60000;
 @mod: #7800b3;
-@font: "Trebuchet MS", sans-serif;
-@fontSize: 14px;
+@orange: #f60;
 
 blockquote a {
   color: #54578c;
@@ -24,7 +25,7 @@ a:hover {
 article, aside {
   background-color: @postBG;
   border: @border;
-  border-radius: 5px;
+  border-radius: 3px;
 }
 
 article {
@@ -44,6 +45,14 @@ article {
   }
 }
 
+.post-id {
+  color: @orange;
+}
+
+.post-time {
+  color: #333;
+}
+
 h1 {
   color: #b32407;
   font-size: 30px;
@@ -59,10 +68,6 @@ h3 {
   color: #2f4d0c;
 }
 
-header nav a {
-  color: #0a0a0a;
-}
-
 hr {
   border-top: 1px solid #bac9b7;
 }
@@ -71,7 +76,7 @@ hr {
   background-color: #f9fcf7;
 }
 
-.modal, .preview:not(.editing), .popup-menu, .side-panel {
+.modal, .popup-menu, .side-panel {
   background-color: #eee;
 }
 
@@ -84,5 +89,5 @@ a.tab-sel {
 }
 
 .page-title {
-  color: #f60;
+  color: @orange;
 }

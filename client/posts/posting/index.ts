@@ -317,7 +317,7 @@ export default () => {
 
 	// Handle clicks on post quoting links
 	on(document, "click", quotePost, {
-		selector: "a.quote",
+		selector: ".post-control-reply, .post-control-reply i",
 	})
 
 	// Store last selected range that is not a quote link
@@ -328,7 +328,7 @@ export default () => {
 			return
 		}
 		const el = start.parentElement
-		if (el && !el.classList.contains("quote")) {
+		if (el && !el.classList.contains("post-control-reply")) {
 			lastSelection = {
 				start: sel.anchorNode,
 				end: sel.focusNode,

@@ -76,12 +76,12 @@ func readableFileSize(s int) string {
 
 	switch {
 	case s < (1 << 10):
-		return format(strconv.Itoa(s), " B")
+		return format(strconv.Itoa(s), "b")
 	case s < (1 << 20):
-		return format(strconv.Itoa(s/(1<<10)), " KB")
+		return format(strconv.Itoa(s/(1<<10)), "Kb")
 	default:
 		n := strconv.FormatFloat(float64(s)/(1<<20), 'f', 1, 32)
-		return format(n, " MB")
+		return format(n, "Mb")
 	}
 }
 

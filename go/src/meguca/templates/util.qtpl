@@ -49,22 +49,12 @@ Render a link to another post. Can optionally be cross-thread.
 {% endstripspace %}{% endfunc %}
 
 Render the class attribute of a post
-TODO: Add op property to Post struct
 {% func postClass(p common.Post, isOP bool) %}{% stripspace %}
-	class="post
-		{% if isOP %}
-			{% space %}post-op
-		{% endif %}
-		{% if p.Editing %}
-			{% space %}editing
-		{% endif %}
-		{% if p.Deleted %}
-			{% space %}deleted
-		{% endif %}
-		{% if p.Image != nil %}
-			{% space %}media
-		{% endif %}
-	"
+	post
+	{% if isOP %}{% space %}post_op{% endif %}
+	{% if p.Editing %}{% space %}editing{% endif %}
+	{% if p.Deleted %}{% space %}deleted{% endif %}
+	{% if p.Image != nil %}{% space %}media{% endif %}
 {% endstripspace %}{% endfunc %}
 
 Renders a stylized deleted post display toggle

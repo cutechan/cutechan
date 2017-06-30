@@ -233,18 +233,18 @@
   },
   "common": {
     "posts": {
-      "ago": "тому назад",
+      "ago": "назад",
       "and": "и",
       "banned": "USER WAS BANNED FOR THIS POST",
       "contractImages": "Свернуть изображения",
-      "deleteBySameIP": "Удалить все с этого IP",
+      "deleteBySameIP": "Удалить всё с этого IP",
       "expandImages": "Развернуть изображения",
       "expand": "Развернуть",
       "hide": "Скрыть",
       "in": "в",
       "justNow": "только что",
       "omitted": "пропущено",
-      "seeAll": "Смотреть все",
+      "seeAll": "Перейти к треду",
       "show": "Показать",
       "you": "(Вы)",
       "admin": "Админ",
@@ -310,6 +310,7 @@
       ]
     },
     "ui": {
+      "replies": "Ответы",
       "reading": "читают",
       "mustMatch": "Пароли должны совпадать",
       "invalidCaptcha": "Неверная капча",
