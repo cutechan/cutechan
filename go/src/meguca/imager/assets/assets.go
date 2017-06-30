@@ -4,7 +4,7 @@ package assets
 import (
 	"meguca/common"
 	"meguca/config"
-	"meguca/util"
+	"strings"
 	"os"
 	"path/filepath"
 )
@@ -45,17 +45,12 @@ func imageRoot() string {
 }
 
 func imagePath(root string, dir string, typ uint8, SHA1 string) string {
-	return util.ConcatStrings(
+	return strings.Join([]string{
 		root,
-		"/",
 		dir,
-		"/",
 		SHA1[:2],
-		"/",
-		SHA1[2:],
-		".",
-		common.Extensions[typ],
-	)
+		SHA1[2:] + "." + common.Extensions[typ],
+	}, "/")
 }
 
 // SourcePath returns the path to the source file on an image
