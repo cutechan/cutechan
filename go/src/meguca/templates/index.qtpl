@@ -124,8 +124,6 @@
 		{% endif %}
 	</head>
 	<body>
-		<img src="/static/img/loading.gif" id="loading-image">
-
 		<div class="overlay-container">
 			{% comment %}
 				Top banner.
