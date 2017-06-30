@@ -1,4 +1,34 @@
 (function () {
+  var scriptCount = 0;
+  var polyfills = [];
+  var head = document.getElementsByTagName("head")[0];
+
+  // Check for browser compatibility by trying to detect some ES6
+  // features.
+  function check(func) {
+    try {
+      return eval("(function(){" + func + "})()");
+    } catch (e) {
+      return false;
+    }
+  }
+
+  // Check if a browser API function is defined.
+  function checkFunction(func) {
+    try {
+      return typeof eval(func) === "function";
+    } catch (e) {
+      return false;
+    }
+  }
+
+  function loadScript(path) {
+    var script = document.createElement("script");
+    script.src = "/static/js/" + path + ".js"
+    head.appendChild(script);
+    return script;
+  }
+
   var es6Tests = [
     // Arrow functions
     'return (()=>5)()===5;',
@@ -54,10 +84,6 @@
     + 'passed &= item.value === undefined && item.done === true;'
     + 'return passed;'
   ];
-
-  var scriptCount = 0;
-  var polyfills = [];
-
   for (var i = 0; i < es6Tests.length; i++) {
     if (!check(es6Tests[i])) {
       window.legacy = true;
@@ -126,12 +152,17 @@
     polyfills.push("fetch");
   }
 
-  // Remove prefixes on Web Crypto API for Safari.
-  if (!checkFunction("window.crypto.subtle.digest")) {
-    window.crypto.subtle = window.crypto.webkitSubtle;
+  // Iterable NodeList.
+  // TODO(Kagami): Check if still needed.
+  if (!checkFunction("NodeList.prototype[Symbol.iterator]")) {
+    NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
   }
 
-  var head = document.getElementsByTagName("head")[0];
+  // Remove prefixes on Web Crypto API for Safari.
+  if (checkFunction("window.crypto.subtle")
+      && !checkFunction("window.crypto.subtle.digest")) {
+    window.crypto.subtle = window.crypto.webkitSubtle;
+  }
 
   if (polyfills.length) {
     for (var i = 0; i < polyfills.length; i++) {
@@ -142,46 +173,13 @@
     loadClient();
   }
 
-  // Check for browser compatibility by trying to detect some ES6
-  // features.
-  function check(func) {
-    try {
-      return eval("(function(){" + func + "})()");
-    } catch (e) {
-      return false;
-    }
-  }
-
-  // Check if a browser API function is defined.
-  function checkFunction(func) {
-    try {
-      return typeof eval(func) === "function";
-    } catch (e) {
-      return false;
-    }
-  }
-
   function checkAllLoaded() {
-    // This function might be called multiple times. Only load the
-    // client, when all polyfills are loaded.
     if (--scriptCount === 0) {
       loadClient();
     }
   }
 
-  function loadScript(path) {
-    var script = document.createElement("script");
-    script.src = "/static/js/" + path + ".js"
-    head.appendChild(script);
-    return script;
-  }
-
   function loadClient() {
-    // Iterable NodeList.
-    if (!checkFunction("NodeList.prototype[Symbol.iterator]")) {
-      NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
-    }
-
     loadScript("app" + (window.legacy ? ".es5" : "")).onload = function () {
       require("main");
     }
