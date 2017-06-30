@@ -1,0 +1,43 @@
+@media screen and (max-device-width: 700px) {
+  body {
+    margin: 1px 0;
+  }
+  blockquote {
+    margin: 0.5em 0 0.5em 0.5em;
+  }
+  #threads {
+    padding: 0.3em;
+  }
+  figure img.expanded {
+    margin: 0;
+  }
+  #thread-post-counters, #sync-counter, .image-banner {
+    display: none;
+  }
+  .reply-form:not(.preview) {
+    margin: 0;
+    padding-right: 10px;
+    padding-left: 10px;
+    width: ~"calc(100vw - 20px)";
+    max-width: initial;
+    z-index: 310;
+    .post-container {
+      display: block;
+    }
+  }
+  .post-controls  {
+    width: 100%;
+  }
+}
+
+@media (pointer: coarse) {
+  .banner {
+    &, a {
+      font-size: 120%;
+    }
+    height: 1.5em;
+  }
+  .banner-float {
+    font-size: 120%;
+  }
+}

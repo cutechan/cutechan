@@ -12,7 +12,7 @@ let navigation: BoardNavigation,
 // View for navigating between boards and selecting w
 class BoardNavigation extends View<null> {
 	constructor() {
-		super({ el: document.getElementById("board-navigation") })
+		super({ el: document.querySelector(".navigation") })
 		this.render()
 		this.onClick({
 			".board-selection": e =>
@@ -29,20 +29,18 @@ class BoardNavigation extends View<null> {
 				html += " / "
 			}
 			html += HTML
-				`<a href="../${boards[i]}/${catalog}">
+				`<a class="banner-item" href="../${boards[i]}/${catalog}">
 					${boards[i]}
 				</a>`
 		}
 		html += HTML
 			`] [
-			<a class="board-selection bold mono">
-				+
-			</a>
+			<a class="banner-item board-selection">+</a>
 			]
 			</nav>`
 
 		this.el.innerHTML = html
-		document.querySelector("#banner").prepend(this.el)
+		document.querySelector(".banner").prepend(this.el)
 	}
 
 	private togglePanel(el: Element) {

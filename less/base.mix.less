@@ -1,10 +1,20 @@
 @import (inline) "node_modules/normalize.css/normalize.css";
 @import (inline) "node_modules/font-awesome/css/font-awesome.css";
 
+//////////////////////////////
+// VARS
+//////////////////////////////
+
+@bannerHeight: 25px;
+
+//////////////////////////////
+// MAIN
+//////////////////////////////
+
 body {
   background-color: @bodyBG;
   font-family: @font;
-  font-size: @size;
+  font-size: @fontSize;
 }
 
 body, article, code.code-tag {
@@ -106,12 +116,6 @@ input[type=checkbox] {
   vertical-align: middle;
 }
 
-.control, .banner-float {
-  svg {
-    fill: currentColor;
-  }
-}
-
 article, aside {
   padding: 4px 10px;
   margin: 3px;
@@ -191,10 +195,6 @@ h3 {
 hr {
   border: none;
   clear: both;
-}
-
-.hidden {
-  display: none;
 }
 
 .spaced {
@@ -364,13 +364,16 @@ article, section {
   margin: 15px 0;
 }
 
-#overlay-container {
-  width: 100%;
-  height: 100%;
-  top: 0;
-  right: 0;
+//////////////////////////////
+// OVERLAY
+//////////////////////////////
+
+.overlay-container {
   position: fixed;
-  z-index: 300;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
   pointer-events: none;
 }
 
@@ -378,23 +381,22 @@ article, section {
   display: flex;
   flex-direction: column;
   width: 100%;
-  height: ~"calc(100% - 1.3em)";
-  pointer-events: none;
+  height: ~"calc(100% - @{bannerHeight})";
   align-items: flex-start;
+  pointer-events: none;
 }
 
 #loading-image {
   position: fixed;
-  z-index: 310;
   right: 0;
   bottom: 0;
   pointer-events: none;
 }
 
 #hover-overlay {
+  position: fixed;
   bottom: 0;
   right: 0;
-  position: fixed;
   z-index: 320;
   & > video, & > img {
     max-height: 100%;
@@ -403,6 +405,57 @@ article, section {
     display: block;
     object-fit: contain;
   }
+}
+
+.modal, .banner {
+  pointer-events: all;
+}
+
+//////////////////////////////
+// BANNER
+//////////////////////////////
+
+.banner {
+  box-sizing: border-box;
+  width: 100%;
+  height: @bannerHeight;
+  line-height: @bannerHeight;
+  text-align: center;
+  background: fade(@postBG, 60%);
+  border-bottom: 1px solid #aaa;
+  user-select: none;
+}
+
+.navigation {
+  float: left;
+}
+
+.banner-item {
+  font-weight: bold;
+}
+
+.banner-status {
+  float: right;
+  cursor: default;
+  color: #1a8522;
+  margin-right: 10px;
+  &:empty {
+    display: none;
+  }
+  &:before {
+    content: "[ ";
+  }
+  &:after {
+    content: " ]";
+  }
+}
+
+.banner-icon {
+  float: right;
+  cursor: pointer;
+  width: 22px;
+  font-size: 18px;
+  display: inline-block;
 }
 
 .popup-menu {
@@ -417,18 +470,6 @@ article, section {
     margin: 0;
     padding: 3px 3px 3px 5px;
   }
-}
-
-#banner {
-  display: inline-block;
-  box-sizing: border-box;
-  text-align: center;
-  width: 100%;
-  height: 1.3em;
-  top: 0;
-  left: 0;
-  background: fade(@postBG, 60%);
-  border-bottom: 1px solid #aaa;
 }
 
 .side-panel {
@@ -462,22 +503,9 @@ article, section {
   margin-right: 0;
 }
 
-.banner-float {
-  font-weight: bold;
-  float: right;
-  margin: 0 0.15em 0 0.15em;
-  svg {
-    width: 1em;
-    height: 1em;
-  }
-}
-
-#board-navigation {
-  float: left;
-  a {
-    font-weight: bold;
-  }
-}
+//////////////////////////////
+// TABS
+//////////////////////////////
 
 .tab-butts {
   text-align: center;
@@ -516,6 +544,10 @@ article, section {
     display: block;
   }
 }
+
+//////////////////////////////
+// MODAL
+//////////////////////////////
 
 .modal {
   text-align: left;
@@ -561,10 +593,6 @@ article, section {
       }
     }
   }
-}
-
-.modal, #banner {
-  pointer-events: all;
 }
 
 #options {
@@ -613,6 +641,10 @@ a.referenced {
   flex-direction: column;
   align-items: flex-start;
 }
+
+//////////////////////////////
+// POST
+//////////////////////////////
 
 article {
   word-break: break-word;
@@ -694,6 +726,9 @@ figcaption {
 figure {
   margin: 0;
   float: left;
+  a {
+    outline: none;
+  }
   img {
     border: 0;
     margin: 3px 20px 0 0;
@@ -844,55 +879,21 @@ header {
   height: 1em;
 }
 
-@media screen and (max-device-width: 700px) {
-  body {
-    margin: 1px 0;
-  }
-  blockquote {
-    margin: 0.5em 0 0.5em 0.5em;
-  }
-  #threads {
-    padding: 0.3em;
-  }
-  figure img.expanded {
-    margin: 0;
-  }
-  #thread-post-counters, #sync-counter, .image-banner {
-    display: none;
-  }
-  .reply-form:not(.preview) {
-    margin: 0;
-    padding-right: 10px;
-    padding-left: 10px;
-    width: ~"calc(100vw - 20px)";
-    max-width: initial;
-    z-index: 310;
-    .post-container {
-      display: block;
-    }
-  }
-  .post-controls  {
-    width: 100%;
-  }
-}
-
-@media (pointer: coarse) {
-  #banner {
-    &, a {
-      font-size: 120%;
-    }
-    height: 1.5em;
-  }
-  .banner-float {
-    svg {
-      width: 1.2em;
-      height: 1.2em;
-    }
-    font-size: 120%;
-  }
-}
-
 // Avoid accidental deletion. Make annoying confirm later.
 #deleteBoard {
   display: none;
 }
+
+//////////////////////////////
+// UTILS
+//////////////////////////////
+
+.hidden {
+  display: none;
+}
+
+//////////////////////////////
+// RESPONSIVE
+//////////////////////////////
+
+@import "responsive.mix.less";
