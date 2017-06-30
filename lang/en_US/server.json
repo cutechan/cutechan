@@ -1,234 +1,234 @@
 {
-	"forms": {
-		"boardExpiry": [
-			"Board expiry time",
-			"Number of days without new posts before a board is deleted"
-		],
-		"boardName": [
-			"Name",
-			"Name of the new board. Can contain up to 10 lowercase Latin letters or numbers."
-		],
-		"boardTitle": [
-			"Title",
-			"Title of the new board, such as 'K-pop music'. Up to 100 characters long."
-		],
-		"captcha": [
-			"Captcha",
-			"Ask users to complete a captcha for certain tasks like registration and thread creation"
-		],
-		"defaultCSS": [
-			"Default theme",
-			"Theme to load by default, when none is set by the client"
-		],
-		"defaultLang": [
-			"Default language",
-			"Language pack to load by default"
-		],
-		"disableUserBoards": [
-			"Disable non-admin board creation",
-			"Prevents any account apart from the 'admin' account from creating new boards"
-		],
-		"hideThumbs": [
-			"Hide thumbnails",
-			"Display a [Show] button in place of thumbnails"
-		],
-		"id": [
-			"Login",
-			""
-		],
-		"imageHover": [
-			"Media hover expansion",
-			"Display media previews on hover"
-		],
-		"imageRootOverride": [
-			"Image root override",
-			"If you wish to host images from a separate location like a CDN, enter the full root address here. Leave empty to use the default address. Example: 'https://images.meguca.org'"
-		],
-		"janitors": [
-			"Janitors",
-			"Janitor account IDs. Janitors can only delete posts."
-		],
-		"lang": [
-			"Language",
-			"Change interface language"
-		],
-		"maxSize": [
-			"Image size limit",
-			"Maximum size of uploaded images in MB"
-		],
-		"moderators": [
-			"Moderators",
-			"Moderator account IDs. Moderators can delete posts, ban posters and distinguish posters by their mnemonic IDs."
-		],
-		"newPassword": [
-			"New password",
-			""
-		],
-		"newPost": [
-			"New Post",
-			"Open new post"
-		],
-		"notice": [
-			"Notice",
-			"Short informational message displayed at the top of the page"
-		],
-		"notification": [
-			"Desktop Notifications",
-			"Get desktop notifications when quoted"
-		],
-		"oldPassword": [
-			"Old password",
-			""
-		],
-		"owners": [
-			"Owners",
-			"Owner account IDs. Board owners have full access to all board controls. Must contain at least one."
-		],
-		"password": [
-			"Password",
-			""
-		],
-		"pruneBoards": [
-			"Prune boards",
-			"Delete boards that have not had any new posts for N days"
-		],
-		"pruneThreads": [
-			"Prune threads",
-			"Delete threads that have not had any posts in N days"
-		],
-		"register": [
-			"Register",
-			""
-		],
-		"relativeTime": [
-			"Relative Timestamps",
-			"Relative post timestamps. Ex.: '1 hour ago'"
-		],
-		"repeat": [
-			"Repeat",
-			""
-		],
-		"rootURL": [
-			"Root URL",
-			"Root URL of the imageboard."
-		],
-		"rules": [
-			"Rules",
-			"Board rules to display in the rule modal window"
-		],
-		"spoiler": [
-			"NSFW",
-			"Mark image as NSFW"
-		],
-		"spoilers": [
-			"Hide NSFW",
-			"Don't display NSFW images"
-		],
-		"staffTitle": [
-			"Staff Title",
-			"Display your staff title in the post header"
-		],
-		"theme": [
-			"Theme",
-			"Select CSS theme"
-		],
-		"threadExpiryMax": [
-			"Maximal thread expiry time",
-			"Number of days without new posts before a thread is deleted"
-		],
-		"threadExpiryMin": [
-			"Minimal thread expiry time",
-			"Number of days without new posts before a thread is deleted"
-		],
-		"title": [
-			"Title",
-			"Short descriptive title of the board"
-		],
-		"workMode": [
-			"Work mode",
-			"Hides images"
-		],
-		"workModeToggle": [
-			"Work mode",
-			"Hides images"
-		]
-	},
-	"options": {
-		"none": "none",
-		"width": "fit to width",
-		"screen": "fit to screen"
-	},
-	"ui": {
-		"aggregator": "Aggregator metaboard",
-		"FAQ": "Information",
-		"account": "Account",
-		"add": "Add",
-		"apply": "Apply",
-		"assignStaff": "Assign staff",
-		"ban": "Ban",
-		"bannerSpecs": "Accepts up to 20 JPEG, PNG, GIF or WEBM files with maximum dimensions of 300x100, maximum file size of 100 KB and no sound.",
-		"by": "By",
-		"cancel": "Cancel",
-		"captcha": "Captcha",
-		"captchaID": "Captcha ID",
-		"catalog": "Catalog",
-		"changePassword": "Change password",
-		"clear": "Clear",
-		"configureBoard": "Configure board",
-		"configureServer": "Configure server",
-		"createBoard": "Create board",
-		"deleteImage": "Delete image",
-		"deletePost": "Delete post",
-		"done": "Done",
-		"deleteBoard": "Delete board",
-		"expires": "Expires",
-		"global": "Global",
-		"loadCaptcha": "Click to load captcha",
-		"logout": "Logout",
-		"logoutAll": "Log out all devices",
-		"newThread": "New thread",
-		"notification": "Notification",
-		"options": "Options",
-		"ownNoBoards": "You don't own any boards",
-		"pointToCatalog": "Point to Catalog",
-		"post": "Post",
-		"posterID": "Poster ID",
-		"reply": "Reply",
-		"report": "Report",
-		"reason": "Reason",
-		"return": "Return",
-		"rules": "Show Rules",
-		"search": "Search",
-		"searchTooltip": "Filter threads by subject, body or board name encased in backslashes. Accepts Regular expressions.",
-		"setBanners": "Set banners",
-		"showNotice": "Notice",
-		"sortMode": "Sort threads by",
-		"spoilerImage": "Mark image as NSFW",
-		"subject": "Subject",
-		"submit": "Submit",
-		"sync": "Connection status",
-		"syncCount": "Unique connected IP count",
-		"text": "Text",
-		"time": "Time",
-		"type": "Type",
-		"unban": "Unban"
-	},
-	"sortModes": [
-		"Bump time",
-		"Last reply time",
-		"Creation time",
-		"Reply count",
-		"File count"
-	],
-	"tabs": [
-		"Options",
-		"Shortcuts"
-	],
-	"templates": {
-		"banPage": [
-			"You have been banned from /%s/ by %s for the following reason:",
-			"Your ban will expire on %s or in %s.",
-			"According to our server, your IP is %s."
-		]
-	}
+  "forms": {
+    "boardExpiry": [
+      "Board expiry time",
+      "Number of days without new posts before a board is deleted"
+    ],
+    "boardName": [
+      "Name",
+      "Name of the new board. Can contain up to 10 lowercase Latin letters or numbers."
+    ],
+    "boardTitle": [
+      "Title",
+      "Title of the new board, such as 'K-pop music'. Up to 100 characters long."
+    ],
+    "captcha": [
+      "Captcha",
+      "Ask users to complete a captcha for certain tasks like registration and thread creation"
+    ],
+    "defaultCSS": [
+      "Default theme",
+      "Theme to load by default, when none is set by the client"
+    ],
+    "defaultLang": [
+      "Default language",
+      "Language pack to load by default"
+    ],
+    "disableUserBoards": [
+      "Disable non-admin board creation",
+      "Prevents any account apart from the 'admin' account from creating new boards"
+    ],
+    "hideThumbs": [
+      "Hide thumbnails",
+      "Display a [Show] button in place of thumbnails"
+    ],
+    "id": [
+      "Login",
+      ""
+    ],
+    "imageHover": [
+      "Media hover expansion",
+      "Display media previews on hover"
+    ],
+    "imageRootOverride": [
+      "Image root override",
+      "If you wish to host images from a separate location like a CDN, enter the full root address here. Leave empty to use the default address. Example: 'https://images.meguca.org'"
+    ],
+    "janitors": [
+      "Janitors",
+      "Janitor account IDs. Janitors can only delete posts."
+    ],
+    "lang": [
+      "Language",
+      "Change interface language"
+    ],
+    "maxSize": [
+      "Image size limit",
+      "Maximum size of uploaded images in MB"
+    ],
+    "moderators": [
+      "Moderators",
+      "Moderator account IDs. Moderators can delete posts, ban posters and distinguish posters by their mnemonic IDs."
+    ],
+    "newPassword": [
+      "New password",
+      ""
+    ],
+    "newPost": [
+      "New Post",
+      "Open new post"
+    ],
+    "notice": [
+      "Notice",
+      "Short informational message displayed at the top of the page"
+    ],
+    "notification": [
+      "Desktop Notifications",
+      "Get desktop notifications when quoted"
+    ],
+    "oldPassword": [
+      "Old password",
+      ""
+    ],
+    "owners": [
+      "Owners",
+      "Owner account IDs. Board owners have full access to all board controls. Must contain at least one."
+    ],
+    "password": [
+      "Password",
+      ""
+    ],
+    "pruneBoards": [
+      "Prune boards",
+      "Delete boards that have not had any new posts for N days"
+    ],
+    "pruneThreads": [
+      "Prune threads",
+      "Delete threads that have not had any posts in N days"
+    ],
+    "register": [
+      "Register",
+      ""
+    ],
+    "relativeTime": [
+      "Relative Timestamps",
+      "Relative post timestamps. Ex.: '1 hour ago'"
+    ],
+    "repeat": [
+      "Repeat",
+      ""
+    ],
+    "rootURL": [
+      "Root URL",
+      "Root URL of the imageboard."
+    ],
+    "rules": [
+      "Rules",
+      "Board rules to display in the rule modal window"
+    ],
+    "spoiler": [
+      "NSFW",
+      "Mark image as NSFW"
+    ],
+    "spoilers": [
+      "Hide NSFW",
+      "Don't display NSFW images"
+    ],
+    "staffTitle": [
+      "Staff Title",
+      "Display your staff title in the post header"
+    ],
+    "theme": [
+      "Theme",
+      "Select CSS theme"
+    ],
+    "threadExpiryMax": [
+      "Maximal thread expiry time",
+      "Number of days without new posts before a thread is deleted"
+    ],
+    "threadExpiryMin": [
+      "Minimal thread expiry time",
+      "Number of days without new posts before a thread is deleted"
+    ],
+    "title": [
+      "Title",
+      "Short descriptive title of the board"
+    ],
+    "workMode": [
+      "Work mode",
+      "Hides images"
+    ],
+    "workModeToggle": [
+      "Work mode",
+      "Hides images"
+    ]
+  },
+  "options": {
+    "none": "none",
+    "width": "fit to width",
+    "screen": "fit to screen"
+  },
+  "ui": {
+    "aggregator": "Aggregator metaboard",
+    "FAQ": "Information",
+    "account": "Account",
+    "add": "Add",
+    "apply": "Apply",
+    "assignStaff": "Assign staff",
+    "ban": "Ban",
+    "bannerSpecs": "Accepts up to 20 JPEG, PNG, GIF or WEBM files with maximum dimensions of 300x100, maximum file size of 100 KB and no sound.",
+    "by": "By",
+    "cancel": "Cancel",
+    "captcha": "Captcha",
+    "captchaID": "Captcha ID",
+    "catalog": "Catalog",
+    "changePassword": "Change password",
+    "clear": "Clear",
+    "configureBoard": "Configure board",
+    "configureServer": "Configure server",
+    "createBoard": "Create board",
+    "deleteImage": "Delete image",
+    "deletePost": "Delete post",
+    "done": "Done",
+    "deleteBoard": "Delete board",
+    "expires": "Expires",
+    "global": "Global",
+    "loadCaptcha": "Click to load captcha",
+    "logout": "Logout",
+    "logoutAll": "Log out all devices",
+    "newThread": "New thread",
+    "notification": "Notification",
+    "options": "Options",
+    "ownNoBoards": "You don't own any boards",
+    "pointToCatalog": "Point to Catalog",
+    "post": "Post",
+    "posterID": "Poster ID",
+    "reply": "Reply",
+    "report": "Report",
+    "reason": "Reason",
+    "return": "Return",
+    "rules": "Show Rules",
+    "search": "Search",
+    "searchTooltip": "Filter threads by subject, body or board name encased in backslashes. Accepts Regular expressions.",
+    "setBanners": "Set banners",
+    "showNotice": "Notice",
+    "sortMode": "Sort threads by",
+    "spoilerImage": "Mark image as NSFW",
+    "subject": "Subject",
+    "submit": "Submit",
+    "sync": "Connection status",
+    "syncCount": "Unique connected IP count",
+    "text": "Text",
+    "time": "Time",
+    "type": "Type",
+    "unban": "Unban"
+  },
+  "sortModes": [
+    "Bump time",
+    "Last reply time",
+    "Creation time",
+    "Reply count",
+    "File count"
+  ],
+  "tabs": [
+    "Options",
+    "Shortcuts"
+  ],
+  "templates": {
+    "banPage": [
+      "You have been banned from /%s/ by %s for the following reason:",
+      "Your ban will expire on %s or in %s.",
+      "According to our server, your IP is %s."
+    ]
+  }
 }
