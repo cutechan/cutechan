@@ -4,6 +4,7 @@
 package config
 
 import (
+	"meguca/common"
 	"meguca/util"
 	"reflect"
 	"sort"
@@ -45,8 +46,8 @@ var (
 		BoardExpiry: 100,
 		Public: Public{
 			DisableUserBoards: true,
-			DefaultLang:       "ru_RU",
-			DefaultCSS:        "cute",
+			DefaultLang:       common.DefaultLang,
+			DefaultCSS:        common.DefaultCSS,
 			ThreadExpiryMin:   100,
 			ThreadExpiryMax:   100,
 		},

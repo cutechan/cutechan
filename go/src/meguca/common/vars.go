@@ -36,12 +36,14 @@ const (
 	MaxHeight = 12000
 	JPEGQuality = 90
 	SessionExpiry = 5 * 365  // Days
+	DefaultLang = "en"
+	DefaultCSS = "cute"
 )
 
 // Available language packs and themes. Change this, when adding any new ones.
 var (
 	Langs = []string{
-		"en_US", "ru_RU",
+		"en", "ru",
 	}
 	Themes = []string{
 		"cute",

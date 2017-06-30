@@ -4,8 +4,8 @@ package lang
 
 import (
 	"encoding/json"
+	"meguca/common"
 	"meguca/config"
-	"path/filepath"
 )
 
 // Currently used language pack
@@ -30,9 +30,14 @@ type Pack struct {
 // Loads and parses the selected JSON language pack
 func Load() (err error) {
 	lang := config.Get().DefaultLang
-	buf, err := Asset(filepath.Join(lang, "server.json"))
+	buf, err := Asset(lang + ".json")
 	if err != nil {
-		return
+		// In case if database value was corrupted/changed, let the server
+		// load with default locale.
+		buf, err = Asset(common.DefaultLang + ".json")
+		if err != nil {
+			return
+		}
 	}
 	err = json.Unmarshal(buf, &pack)
 	if err != nil {
