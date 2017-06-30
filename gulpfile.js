@@ -9,7 +9,6 @@ const uglifyes = require("uglify-es");
 const gulp = require("gulp");
 const gutil = require("gulp-util");
 const gulpif = require("gulp-if");
-const jsonminify = require("gulp-jsonminify");
 const less = require("gulp-less");
 const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
@@ -23,7 +22,6 @@ const DIST_DIR = "dist";
 const STATIC_DIR = path.join(DIST_DIR, "static");
 const JS_DIR = path.join(STATIC_DIR, "js");
 const CSS_DIR = path.join(STATIC_DIR, "css");
-const LANG_DIR = path.join(STATIC_DIR, "lang");
 const FONTS_DIR = path.join(STATIC_DIR, "fonts");
 
 // Keep script alive and rebuild on file changes.
@@ -143,14 +141,6 @@ createTask("css", ["less/*.less", "!less/*.mix.less"], src => {
     .pipe(sourcemaps.write("maps"))
     .pipe(gulp.dest(CSS_DIR))
 }, "less/*.less");
-
-// Language packs.
-createTask("lang", "lang/**/*.json", src =>
-  src
-    .pipe(jsonminify())
-    .on("error", handleError)
-    .pipe(gulp.dest(LANG_DIR))
-);
 
 // Static assets.
 createTask("assets", "assets/**/*", src =>
