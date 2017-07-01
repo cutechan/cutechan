@@ -109,7 +109,7 @@ License: GNU AGPL
     * libtheora
     * libx264
     * libmp3lame
-* GraphicsMagick shared library compiler with:
+* GraphicsMagick shared library compiled with:
     * zlib
     * libpng
     * libjpeg
