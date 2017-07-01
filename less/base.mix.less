@@ -812,6 +812,28 @@ header {
 }
 
 //////////////////////////////
+// POST COUNTER
+//////////////////////////////
+
+.thread {
+  counter-reset: p;
+  .post {
+    counter-increment: p;
+  }
+  .post_op, .deleted {
+    counter-increment: p 0 !important;
+  }
+  .post-id:after {
+    content: " ("counter(p)")";
+    color: #16a085;
+  }
+  .post_op .post-id:after {
+    content: " OP";
+    color: #cd5c5c;
+  }
+}
+
+//////////////////////////////
 // REPLY FORM
 //////////////////////////////
 
