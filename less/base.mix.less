@@ -601,7 +601,7 @@ a.referenced {
 
 .omit {
   margin-top: 2px;
-  margin-bottom: 10px;
+  margin-bottom: 8px;
   white-space: nowrap;
 }
 
@@ -635,14 +635,7 @@ article, .post {
   margin: 0 10px 6px 0;
   padding: 4px 10px;
   min-width: 250px;
-}
-
-.post_op {
-  margin-bottom: 0;
-  padding-left: 0;
-  padding-bottom: 0;
-  border: none;
-  background: none;
+  max-width: 1000px;
 }
 
 header {
@@ -671,7 +664,6 @@ header {
 
 .post-header {
   width: 100%;
-  margin-bottom: 4px;
 }
 
 .post-anchor {
@@ -681,10 +673,29 @@ header {
   visibility: hidden;
 }
 
+.post-board {
+  display: inline-block;
+  margin-right: 10px;
+  border-radius: 5px;
+  background-color: @link;
+  color: white;
+  &:hover {
+    background-color: darkblue;
+    color: white;
+  }
+}
+
+.post-subject {
+  padding-left: 10px;
+  color: black;
+}
+
 .post-name {
   font-weight: bold;
-  padding-left: 4px;
-  cursor: default;
+  padding-left: 10px;
+  &:empty {
+    display: none;
+  }
 }
 
 .post-name_staff {
@@ -695,6 +706,7 @@ header {
   float: right;
   font-style: italic;
   font-size: smaller;
+  padding-left: 10px;
   cursor: default;
   text-decoration: dotted underline;
 }
@@ -725,15 +737,21 @@ header {
 
 .post-body {
   width: 100%;
+  margin: 4px 0;
 }
 
 .post-media {
-  float: left;
-  margin: 0 15px 0 0;
+  margin: 0;
 }
 
 .post-media-link {
+  float: left;
+  margin: 0 15px 5px 0;
   outline: none;
+}
+
+.post-media-thumb {
+  display: block;
 }
 
 .embed {
@@ -768,11 +786,9 @@ header {
 }
 
 .backlinks {
-  margin-top: 4px;
 }
 
 .post-controls {
-  margin-top: 4px;
   width: 100%;
   user-select: none;
 }
@@ -789,10 +805,6 @@ header {
   padding-right: 0;
 }
 
-.post_op .post-control-reply {
-  float: none;
-}
-
 .popup-menu {
   display: table;
   position: relative;
@@ -806,6 +818,34 @@ header {
     list-style: none;
     margin: 0;
     padding: 3px 3px 3px 5px;
+  }
+}
+
+//////////////////////////////
+// OP POST
+//////////////////////////////
+
+.post_op {
+  margin-bottom: 0;
+  padding-left: 0;
+  padding-bottom: 0;
+  border: none;
+  background: none;
+
+  .post-header {
+    font-size: larger;
+  }
+
+  .post-time {
+    float: none;
+  }
+
+  .post-body {
+    margin: 10px 0;
+  }
+
+  .post-control-reply {
+    float: none;
   }
 }
 

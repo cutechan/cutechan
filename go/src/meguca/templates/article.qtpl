@@ -32,49 +32,41 @@
 					##{% space %}{%s ln.Common.Posts[p.Auth] %}{% space %}##
 				{% endif %}
 			</span>
-			{% if c.index %}
-				{%= last100Link(c.board, idStr) %}
-			{% endif %}
 			<time class="post-time">{%s formatTime(p.Time) %}</time>
+			{%= deletedToggle() %}
 		</header>
-
-		{% if p.Image != nil %}
-		{% code img := *p.Image %}
-		<figcaption class="post-info spaced">
-			<a class="image-toggle act" hidden></a>
-			<span class="fileinfo">
-				{% if img.Artist != "" %}<span class="media-artist">{%s img.Artist %}</span>{% endif %}
-				{% if img.Title != "" %}<span class="media-title">{%s img.Title %}</span>{% endif %}
-				{% if img.Audio %}<span class="has-audio">♫</span>{% endif %}
-				{% if img.Length != 0 %}<span class="media-length">
-					{% code l := img.Length %}
-					{% if l < 60 %}
-						{%s fmt.Sprintf("0:%02d", l) %}
-					{% else %}
-						{% code min := l / 60 %}
-						{%s fmt.Sprintf("%02d:%02d", min, l - min * 60) %}
-					{% endif %}
-					</span>
-				{% endif %}
-				{% if img.APNG %}
-					<span class="is-apng">APNG</span>
-				{% endif %}
-				<span class="filesize">{%s readableFileSize(img.Size) %}</span>
-				<span class="dims">
-					{%d int(img.Dims[0]) %}×{%d int(img.Dims[1]) %}
-				</span>
-			</span>
-		</figcaption>
-		{% endif %}
-
-		{%= deletedToggle() %}
 
 		<section class="post-body">
 			{% if p.Image != nil %}
 				{% code img := *p.Image %}
 				<figure class="post-media">
+					<figcaption class="post-info spaced">
+						<a class="image-toggle act" hidden></a>
+						<span class="fileinfo">
+							{% if img.Artist != "" %}<span class="media-artist">{%s img.Artist %}</span>{% endif %}
+							{% if img.Title != "" %}<span class="media-title">{%s img.Title %}</span>{% endif %}
+							{% if img.Audio %}<span class="has-audio">♫</span>{% endif %}
+							{% if img.Length != 0 %}<span class="media-length">
+								{% code l := img.Length %}
+								{% if l < 60 %}
+									{%s fmt.Sprintf("0:%02d", l) %}
+								{% else %}
+									{% code min := l / 60 %}
+									{%s fmt.Sprintf("%02d:%02d", min, l - min * 60) %}
+								{% endif %}
+								</span>
+							{% endif %}
+							{% if img.APNG %}
+								<span class="is-apng">APNG</span>
+							{% endif %}
+							<span class="filesize">{%s readableFileSize(img.Size) %}</span>
+							<span class="dims">
+								{%d int(img.Dims[0]) %}×{%d int(img.Dims[1]) %}
+							</span>
+						</span>
+					</figcaption>
 					<a class="post-media-link" target="_blank" href="{%s assets.SourcePath(img.FileType, img.SHA1) %}">
-						<img src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
+						<img class="post-media-thumb" src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
 					</a>
 				</figure>
 			{% endif %}
