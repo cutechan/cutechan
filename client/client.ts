@@ -91,10 +91,6 @@ export default () => {
 			m.insertImage(msg)
 		})
 
-	handlers[message.spoiler] = (id: number) =>
-		handle(id, m =>
-			m.spoilerImage())
-
 	handlers[message.append] = ([id, char]: [number, number]) =>
 		handle(id, m =>
 			m.append(char))

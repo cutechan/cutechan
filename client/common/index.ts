@@ -63,7 +63,6 @@ export interface ImageData {
 	apng: boolean
 	audio: boolean
 	video: boolean
-	spoiler: boolean
 	fileType: fileTypes
 	thumbType: fileTypes
 	length?: number

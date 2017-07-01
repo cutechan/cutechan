@@ -21,7 +21,6 @@ type SyncData = {
 // State of an open post
 type OpenPost = {
 	hasImage?: boolean
-	spoilered?: boolean
 	body: string
 }
 
@@ -53,7 +52,7 @@ export function synchronise() {
 // dispatcher
 async function syncOpenPost(
 	id: number,
-	{ hasImage, body, spoilered }: OpenPost,
+	{ hasImage, body }: OpenPost,
 ) {
 	let model = posts.get(id)
 
@@ -69,10 +68,6 @@ async function syncOpenPost(
 
 	if (hasImage && !model.image) {
 		model.image = (await fetchPost(id)).image
-		model.view.renderImage(false)
-	}
-	if (spoilered && !model.image.spoiler) {
-		model.image.spoiler = true
 		model.view.renderImage(false)
 	}
 	if (body) {

@@ -97,8 +97,6 @@ Renders a moderation log page
 						{%s ln["deletePost"] %}
 					{% case auth.DeleteImage %}
 						{%s ln["deleteImage"] %}
-					{% case auth.SpoilerImage %}
-						{%s ln["spoilerImage"] %}
 					{% endswitch %}
 				</td>
 				<td>{%s l.By %}</td>

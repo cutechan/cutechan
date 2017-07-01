@@ -32,11 +32,7 @@ export default function notifyAboutReply(post: Post) {
 	if (!options.workModeToggle) {
 		if (post.image) {
 			const { SHA1, thumbType } = post.image
-			if (post.image.spoiler) {
-				icon = '/static/img/spoiler.jpg'
-			} else {
-				icon = thumbPath(SHA1, thumbType)
-			}
+			icon = thumbPath(SHA1, thumbType)
 		} else {
 			icon = defaultIcon
 		}

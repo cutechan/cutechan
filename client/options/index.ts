@@ -10,7 +10,6 @@ interface Options extends ChangeEmitter {
 	theme: string
 	imageHover: boolean
 	relativeTime: boolean
-	spoilers: boolean
 	notification: boolean
 	workModeToggle: boolean
 	newPost: number

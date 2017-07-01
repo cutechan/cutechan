@@ -1,5 +1,5 @@
 import { Post } from "./model"
-import { fileTypes, thumbSize } from "../common"
+import { fileTypes } from "../common"
 import { View } from "../base"
 import { setAttrs, on, firstChild, importTemplate, pad } from "../util"
 import options from "../options"
@@ -57,17 +57,8 @@ export default class ImageHandler extends View<Post> {
 		const el = this.el.querySelector("figure a"),
 			data = this.model.image,
 			src = sourcePath(data.SHA1, data.fileType)
-		let thumb: string,
-			[, , thumbWidth, thumbHeight] = data.dims
-
-		if (data.spoiler && options.spoilers) {
-			// Spoilered and spoilers enabled
-			thumb = '/static/img/spoiler.jpg'
-			thumbHeight = thumbWidth = thumbSize
-		} else {
-			thumb = thumbPath(data.SHA1, data.thumbType)
-		}
-
+		const thumb = thumbPath(data.SHA1, data.thumbType)
+		let [, , thumbWidth, thumbHeight] = data.dims
 		el.setAttribute("href", src)
 		setAttrs(el.firstElementChild, {
 			src: thumb,

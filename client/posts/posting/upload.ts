@@ -14,7 +14,6 @@ for (let i = 0; i < 256; i++) {
 export type FileData = {
     token: string
     name: string
-    spoiler?: boolean
 }
 
 interface LoadProgress {
@@ -24,7 +23,6 @@ interface LoadProgress {
 
 // Mixin for handling file uploads
 export default class UploadForm extends View<Post> {
-    public spoiler: HTMLElement
     public status: HTMLElement
     public isUploading: boolean
     public input: HTMLInputElement
@@ -34,8 +32,6 @@ export default class UploadForm extends View<Post> {
         const el = parent.querySelector(".upload-container")
         el.hidden = false
         super({ el, model })
-        this.spoiler = el
-            .querySelector(`span[data-id="spoiler"]`) as HTMLInputElement
         this.status = el.querySelector(".upload-status")
         this.input = el.querySelector("input[name=image]") as HTMLInputElement
     }
@@ -91,12 +87,6 @@ export default class UploadForm extends View<Post> {
         const img: FileData = {
             token,
             name: file.name,
-        }
-        const spoiler = (this.el
-            .querySelector("input[name=spoiler]") as HTMLInputElement)
-            .checked
-        if (spoiler) {
-            img.spoiler = true
         }
         this.isUploading = false
         return img

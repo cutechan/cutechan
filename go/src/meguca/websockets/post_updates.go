@@ -282,7 +282,7 @@ func (c *Client) incrementSpamScore(score time.Duration) error {
 // 		return
 // 	}
 
-// 	img, err := getImage(req.Token, "", req.Spoiler)
+// 	img, err := getImage(req.Token, "", false)
 // 	if err != nil {
 // 		return
 // 	}

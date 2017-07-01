@@ -66,11 +66,6 @@ export default class ModPanel extends View<null> {
 					await this.postJSON("/api/delete-post", mapToIDs(models))
 				}
 				break
-			case "spoilerImage":
-				if (checked.length) {
-					await this.postJSON("/api/spoiler-image", mapToIDs(models))
-				}
-				break
 			case "deleteImage":
 				if (checked.length) {
 					await this.postJSON(

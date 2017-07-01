@@ -37,7 +37,6 @@ type ReplyCreationRequest struct {
 
 // ImageRequest contains data for allocating an image
 type ImageRequest struct {
-	Spoiler bool
 	Token   string
 }
 
@@ -75,7 +74,7 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 	hasImage := req.Image.Token != ""
 	if hasImage {
 		img := req.Image
-		post.Image, err = getImage(img.Token, "", img.Spoiler)
+		post.Image, err = getImage(img.Token, "", false)
 		if err != nil {
 			return
 		}
@@ -130,7 +129,7 @@ func CreatePost(
 
 	if hasImage {
 		img := req.Image
-		post.Image, err = getImage(img.Token, "", img.Spoiler)
+		post.Image, err = getImage(img.Token, "", false)
 		if err != nil {
 			return
 		}

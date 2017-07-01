@@ -11,7 +11,6 @@ import { Post } from "../posts"
 export default () => {
 	const handlers: { [key: string]: () => void } = {
 		workModeToggle: renderImages,
-		spoilers: toggleSpoilers,
 		relativeTime: renderTime,
 	}
 	for (let key in handlers) {
@@ -58,16 +57,6 @@ function renderImages() {
 				view.renderImage(false),
 		)
 	}
-}
-
-// Image thumbnail spoilers
-function toggleSpoilers() {
-	loopPosts(
-		({ image }) =>
-			!!image && image.spoiler,
-		({ view }) =>
-			view.renderImage(false),
-	)
 }
 
 // Rerender all timestamps on posts, if set to relative time

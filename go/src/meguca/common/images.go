@@ -37,9 +37,9 @@ var Extensions = map[uint8]string{
 
 // Image contains a post's image and thumbnail data
 type Image struct {
-	Spoiler bool `json:"spoiler,omitempty"`
+	Spoiler bool `json:"-"`
 	ImageCommon
-	Name string `json:"name"`
+	Name string `json:"-"`
 }
 
 // ImageCommon contains the common data shared between multiple post referencing

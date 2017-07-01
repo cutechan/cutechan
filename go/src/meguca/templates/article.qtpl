@@ -75,11 +75,7 @@
 				{% code img := *p.Image %}
 				<figure class="post-media">
 					<a class="post-media-link" target="_blank" href="{%s assets.SourcePath(img.FileType, img.SHA1) %}">
-						{% if img.Spoiler %}
-							<img src="/static/img/spoiler.jpg" width="200" height="200">
-						{% else %}
-							<img src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
-						{% endif %}
+						<img src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
 					</a>
 				</figure>
 			{% endif %}

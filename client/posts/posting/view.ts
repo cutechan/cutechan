@@ -4,7 +4,7 @@ import { Post } from "../model"
 import {
     setAttrs, importTemplate, atBottom, scrollToBottom, firstChild,
 } from "../../util"
-import { postSM, postEvent, postState } from "."
+import { postSM, postEvent } from "."
 import UploadForm from "./upload"
 import { CaptchaView } from "../../ui"
 import { message, send } from "../../connection"
@@ -273,34 +273,10 @@ export default class FormView extends PostView {
         this.showDone()
     }
 
-    // Toggle the spoiler input checkbox
-    public toggleSpoiler() {
-        if (this.model.image && postSM.state !== postState.halted) {
-            this.upload.spoiler.remove()
-            this.model.commitSpoiler()
-            return
-        }
-
-        const el = this
-            .upload
-            .spoiler
-            .querySelector("input") as HTMLInputElement
-        el.checked = !el.checked
-    }
-
     // Insert image into an open post
     public insertImage() {
         this.renderImage(false)
         this.resizeInput()
         this.removeUploadForm()
-
-        const { spoiler } = this.upload
-        if (this.model.image.spoiler) {
-            spoiler.remove()
-        } else {
-            spoiler.addEventListener("change", this.toggleSpoiler.bind(this), {
-                passive: true,
-            })
-        }
     }
 }

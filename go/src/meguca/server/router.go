@@ -123,7 +123,7 @@ func createRouter() http.Handler {
 	api.POST("/delete-board", deleteBoard)
 	api.POST("/delete-post", deletePost)
 	api.POST("/delete-image", deleteImage)
-	api.POST("/spoiler-image", modSpoilerImage)
+	// api.POST("/spoiler-image", modSpoilerImage)
 	api.POST("/ban", ban)
 	api.POST("/notification", sendNotification)
 	api.POST("/assign-staff", assignStaff)

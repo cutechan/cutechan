@@ -116,14 +116,6 @@
       "Rules",
       "Board rules to display in the rule modal window"
     ],
-    "spoiler": [
-      "NSFW",
-      "Mark image as NSFW"
-    ],
-    "spoilers": [
-      "Hide NSFW",
-      "Don't display NSFW images"
-    ],
     "staffTitle": [
       "Staff Title",
       "Display your staff title in the post header"
@@ -203,7 +195,6 @@
     "setBanners": "Set banners",
     "showNotice": "Notice",
     "sortMode": "Sort threads by",
-    "spoilerImage": "Mark image as NSFW",
     "subject": "Subject",
     "submit": "Submit",
     "sync": "Connection status",

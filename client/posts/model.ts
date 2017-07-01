@@ -150,12 +150,6 @@ export class Post extends Model implements PostData {
 		this.view.renderImage(false)
 	}
 
-	// Spoiler an already allocated imageThreadData
-	public spoilerImage() {
-		this.image.spoiler = true
-		this.view.renderImage(false)
-	}
-
 	// Close an open post and reparse its last line
 	public closePost() {
 		this.editing = false

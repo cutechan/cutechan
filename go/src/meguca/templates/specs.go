@@ -21,7 +21,6 @@ var (
 		Required:     true,
 		Autocomplete: "new-password",
 	}
-	spoilerSpec = inputSpec{ID: "spoiler", NoBR: true}
 	staffTitleSpec = inputSpec{ID: "staffTitle"}
 )
 
@@ -184,7 +183,6 @@ var optionSpecs = [...][]inputSpec{
 		},
 		{ID: "imageHover"},
 		{ID: "relativeTime"},
-		{ID: "spoilers"},
 		{ID: "notification"},
 		{ID: "workModeToggle"},
 	},

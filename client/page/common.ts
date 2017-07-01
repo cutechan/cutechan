@@ -71,7 +71,7 @@ export function extractPost(
 
 	const { image } = model
 	if (image) {
-		if (options.workModeToggle || (image.spoiler && !options.spoilers)) {
+		if (options.workModeToggle) {
 			view.renderImage(false)
 		}
 	}

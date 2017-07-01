@@ -40,10 +40,6 @@ export const specs: { [id: string]: OptionSpec } = {
 	imageHover: {
 		default: true,
 	},
-	// Enable thumbnail spoilers
-	spoilers: {
-		default: true,
-	},
 	// Desktop Notifications
 	notification: {
 		default: false,

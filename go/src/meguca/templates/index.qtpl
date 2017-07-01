@@ -96,9 +96,6 @@
 				<input name="done" type="button" value="{%s ln.UI["done"] %}" hidden>
 				<span class="upload-container" hidden>
 					<input type="file" name="image" accept="image/png, image/gif, image/jpeg, video/webm, video/ogg, audio/ogg, application/ogg, video/mp4, audio/mp4, audio/mp3, application/zip, application/x-7z-compressed, application/x-xz, application/x-gzip">
-					<span data-id="spoiler">
-						{%= input(spoilerSpec.wrap(), ln) %}
-					</span>
 					<strong class="upload-status"></strong>
 					{% if pos > auth.NotStaff %}
 						{%= input(staffTitleSpec.wrap(), ln) %}
@@ -267,7 +264,7 @@
 							{% endif %}
 							<input type="checkbox" name="showCheckboxes" title="Show mod checkboxes">
 							<select name="action">
-								{% code ids := append(make([]string, 0, 5), "deletePost", "deleteImage", "spoilerImage") %}
+								{% code ids := append(make([]string, 0, 5), "deletePost", "deleteImage") %}
 								{% if pos >= auth.Moderator %}
 									{% code ids = append(ids, "ban") %}
 								{% endif %}
