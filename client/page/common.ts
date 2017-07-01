@@ -160,8 +160,8 @@ function localizeOmitted() {
 				text += ` ${lang.posts["and"]} `
 					+ pluralize(images, lang.plurals["image"])
 			}
-			text += ` ${lang.posts["omitted"]} `
-			el.firstChild.replaceWith(text)
+			text += ` ${lang.posts["omitted"]}`
+			el.firstChild.textContent = text
 		}
 		el.querySelector("a").textContent = lang.posts["seeAll"]
 	}

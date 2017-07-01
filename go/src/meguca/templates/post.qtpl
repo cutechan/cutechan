@@ -12,8 +12,8 @@
 			<a class="post-anchor" name="{%s idStr %}"></a>
 			{%= renderSticky(c.sticky) %}
 			<nav class="post-nav">
-				{% if c.index %}
-					<a class="post-board" href="/{%s c.board %}/">/{%s c.board %}/</a>
+				{% if c.isOP && c.index %}
+					<a class="post-board" href="/{%s c.board %}/">{%s c.board %}</a>
 				{% endif %}
 				{% code url := "" %}
 				{% if !c.isOP %}
@@ -24,7 +24,7 @@
 				{% endif %}
 				<a class="post-id" href="{%s url %}">#{%s idStr %}</a>
 			</nav>
-			{% if c.subject != "" %}
+			{% if c.isOP %}
 				<h3 class="post-subject">{%s c.subject %}</h3>
 			{% endif %}
 			<span class="post-name{% if p.Auth != "" %}{% space %}post-name_staff{% endif %}">
