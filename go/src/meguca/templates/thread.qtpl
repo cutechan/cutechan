@@ -82,7 +82,7 @@ Common functionality between index board pages and threads pages
 		root: root,
 		backlinks: bls,
 	} %}
-	{%= renderArticle(t.Post, c) %}
+	{%= renderPost(t.Post, c) %}
 
 	{% if c.index %}
 		{% code omit, imageOmit := CalculateOmit(t) %}
@@ -94,7 +94,7 @@ Common functionality between index board pages and threads pages
 	{% code c.isOP = false %}
 	{% code c.subject = "" %}
 	{% for _, p := range t.Posts %}
-		{%= renderArticle(p, c) %}
+		{%= renderPost(p, c) %}
 	{% endfor %}
 {% endstripspace %}{% endfunc %}
 

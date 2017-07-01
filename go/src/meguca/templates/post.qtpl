@@ -4,7 +4,7 @@
 {% import "meguca/lang" %}
 {% import "meguca/imager/assets" %}
 
-{% func renderArticle(p common.Post, c articleContext) %}{% stripspace %}
+{% func renderPost(p common.Post, c articleContext) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	{% code idStr := strconv.FormatUint(p.ID, 10) %}
 	<article class="{%s postClass(p, c.isOP) %}" id="post{%s idStr %}">
