@@ -102,31 +102,31 @@ License: GNU AGPL
 
 ## Runtime dependencies
 * [PostgresSQL](https://www.postgresql.org/download/) >= 9.5
-
-## Building from source
-A reference list of commands can be found in `./docs/installation.md`
-
-### Build dependencies
-* [Go](https://golang.org/doc/install) >=1.8 (for building server)
-* [Node.js](https://nodejs.org) >=5.0 (for building client)
-* GCC or Clang
-* make
-* pkg-config
-* pthread
-* ffmpeg >= 3.0 libraries (libavcodec, libavutil, libavformat) compiled with:
+* ffmpeg >= 3.0 shared libraries (libavcodec, libavutil, libavformat) compiled with:
     * libvpx
     * libvorbis
     * libopus
     * libtheora
     * libx264
     * libmp3lame
-* GraphicsMagick compiler with:
+* GraphicsMagick shared library compiler with:
     * zlib
     * libpng
     * libjpeg
     * postscript
+
+## Building from source
+A reference list of commands can be found in `./docs/installation.md`
+
+### Build dependencies
+* [Go](https://golang.org/doc/install) >= 1.8 (for building server)
+* [Node.js](https://nodejs.org) >= 5.0 (for building client)
+* GCC or Clang
 * git
-* zip
+* make
+* pthread
+* pkg-config
+* ffmpeg and GraphicsMagick development files
 
 ### Linux and OSX
 * Run `make`

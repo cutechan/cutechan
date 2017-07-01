@@ -42,7 +42,7 @@ update-deps:
 	go list -f '{{.Deps}}' meguca |\
 		tr -d '[]' |\
 		xargs go list -e -f '{{if not .Standard}}{{.ImportPath}}{{end}}' |\
-		grep -v 'meguca' |\
+		grep -v meguca |\
 		xargs go get -u -v
 	npm update
 
