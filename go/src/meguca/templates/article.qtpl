@@ -4,15 +4,13 @@
 {% import "meguca/lang" %}
 {% import "meguca/imager/assets" %}
 
-TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 {% func renderArticle(p common.Post, c articleContext) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	{% code isOP := p.ID == c.op %}
 	{% code idStr := strconv.FormatUint(p.ID, 10) %}
 	<article class="{%s postClass(p, isOP) %}" id="post{%s idStr %}">
-
 		<header class="post-header">
-			<a class="anchor" name="{%s idStr %}"></a>
+			<a class="post-anchor" name="{%s idStr %}"></a>
 			{%= renderSticky(c.sticky) %}
 			<span class="post-name{% if p.Auth != "" %}{% space %}post-name_staff{% endif %}">
 				{% if p.Auth != "" %}
@@ -75,8 +73,8 @@ TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 		<section class="post-body">
 			{% if p.Image != nil %}
 				{% code img := *p.Image %}
-				<figure class="post-image">
-					<a class="post-image-link" target="_blank" href="{%s assets.SourcePath(img.FileType, img.SHA1) %}">
+				<figure class="post-media">
+					<a class="post-media-link" target="_blank" href="{%s assets.SourcePath(img.FileType, img.SHA1) %}">
 						{% if img.Spoiler %}
 							<img src="/static/img/spoiler.jpg" width="200" height="200">
 						{% else %}
@@ -116,7 +114,6 @@ TODO: Use %d for uint, see <https://github.com/valyala/quicktemplate/issues/30>
 					<i class="fa fa-reply"></i>
 				</a>
 			</div>
-		</footer>
 
 	</article>
 

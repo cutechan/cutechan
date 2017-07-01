@@ -11,7 +11,7 @@ export default class ImageHandler extends View<Post> {
 	// Render the figure and figcaption of a post. Set reveal to true, if in
 	// hidden thumbnail mode, to reveal the thumbnail.
 	public renderImage(reveal: boolean) {
-		this.el.classList.add("media")
+		this.el.classList.add("post_media")
 
 		let el = this.getFigure()
 		if (!el) {
@@ -41,7 +41,7 @@ export default class ImageHandler extends View<Post> {
 	}
 
 	public removeImage() {
-		this.el.classList.remove("media")
+		this.el.classList.remove("post_media")
 		let el = this.getFigure()
 		if (el) {
 			el.remove()

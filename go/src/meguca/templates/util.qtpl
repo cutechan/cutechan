@@ -52,9 +52,9 @@ Render the class attribute of a post
 {% func postClass(p common.Post, isOP bool) %}{% stripspace %}
 	post
 	{% if isOP %}{% space %}post_op{% endif %}
+	{% if p.Image != nil %}{% space %}post_media{% endif %}
 	{% if p.Editing %}{% space %}editing{% endif %}
 	{% if p.Deleted %}{% space %}deleted{% endif %}
-	{% if p.Image != nil %}{% space %}media{% endif %}
 {% endstripspace %}{% endfunc %}
 
 Renders a stylized deleted post display toggle
