@@ -8,7 +8,7 @@ import { postSM, postEvent } from "."
 import UploadForm from "./upload"
 import { CaptchaView } from "../../ui"
 import { message, send } from "../../connection"
-import { getAuth } from "../../mod";
+import { isStaff, getMyAuth } from "../../mod";
 
 // Element at the bottom of the thread to keep the fixed reply form from
 // overlapping any other posts, when scrolled till bottom
@@ -76,10 +76,16 @@ export default class FormView extends PostView {
                 this.input.focus())
         }
 
+        if (isStaff()) {
+          this.renderStaffControl()
+        }
+    }
+
+    private renderStaffControl() {
         const staffEl = this.el.querySelector("[name=staffTitle]") as HTMLInputElement
         const onStaffChange = () => {
             localStorage.setItem("staffTitle", staffEl.checked.toString())
-            this.model.auth = staffEl.checked ? getAuth() : ""
+            this.model.auth = staffEl.checked ? getMyAuth() : ""
             this.renderName()
         };
         staffEl.addEventListener("change", onStaffChange)
@@ -141,7 +147,6 @@ export default class FormView extends PostView {
         bottomSpacer = document.getElementById("bottom-spacer")
         this.el.classList.add("reply-form")
         this.el.querySelector("header").classList.add("temporary")
-        this.renderName()
 
         // Keep this post and bottomSpacer the same height
         this.observer = new MutationObserver(() =>

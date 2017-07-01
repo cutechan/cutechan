@@ -29,7 +29,11 @@ export const enum ModerationLevel {
 // Current staff position on this page
 export const position: ModerationLevel = (window as any).position
 
-export function getAuth(): string {
+export function isStaff(): boolean {
+	return position > ModerationLevel.notStaff
+}
+
+export function getMyAuth(): string {
 	switch (position) {
 	case ModerationLevel.admin:
 		return "admin"
