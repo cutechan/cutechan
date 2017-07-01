@@ -10,8 +10,7 @@ import (
 
 // Extra data passed, when rendering an article
 type articleContext struct {
-	index, sticky        bool
-	omit, imageOmit      int
+	index, sticky, isOP  bool
 	op                   uint64
 	board, subject, root string
 	backlinks            backlinks

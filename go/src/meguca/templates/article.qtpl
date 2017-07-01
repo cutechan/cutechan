@@ -6,23 +6,17 @@
 
 {% func renderArticle(p common.Post, c articleContext) %}{% stripspace %}
 	{% code ln := lang.Get() %}
-	{% code isOP := p.ID == c.op %}
 	{% code idStr := strconv.FormatUint(p.ID, 10) %}
-	<article class="{%s postClass(p, isOP) %}" id="post{%s idStr %}">
+	<article class="{%s postClass(p, c.isOP) %}" id="post{%s idStr %}">
 		<header class="post-header">
 			<a class="post-anchor" name="{%s idStr %}"></a>
 			{%= renderSticky(c.sticky) %}
-			<span class="post-name{% if p.Auth != "" %}{% space %}post-name_staff{% endif %}">
-				{% if p.Auth != "" %}
-					##{% space %}{%s ln.Common.Posts[p.Auth] %}{% space %}##
-				{% endif %}
-			</span>
 			<nav class="post-nav">
-				{% if isOP %}
+				{% if c.index %}
 					<a class="post-board" href="/{%s c.board %}/">/{%s c.board %}/</a>
 				{% endif %}
 				{% code url := "" %}
-				{% if !isOP %}
+				{% if !c.isOP %}
 					{% code url = "#" + idStr %}
 				{% endif %}
 				{% if c.index %}
@@ -30,11 +24,16 @@
 				{% endif %}
 				<a class="post-id" href="{%s url %}">#{%s idStr %}</a>
 			</nav>
-			<h3 class="post-subject">{%s c.subject %}</h3>
-			{% if c.index && c.subject != "" %}
-				<span>
-					{%= last100Link(c.board, idStr) %}
-				</span>
+			{% if c.subject != "" %}
+				<h3 class="post-subject">{%s c.subject %}</h3>
+			{% endif %}
+			<span class="post-name{% if p.Auth != "" %}{% space %}post-name_staff{% endif %}">
+				{% if p.Auth != "" %}
+					##{% space %}{%s ln.Common.Posts[p.Auth] %}{% space %}##
+				{% endif %}
+			</span>
+			{% if c.index %}
+				{%= last100Link(c.board, idStr) %}
 			{% endif %}
 			<time class="post-time">{%s formatTime(p.Time) %}</time>
 		</header>
@@ -91,16 +90,14 @@
 
 		<footer class="post-footer">
 			{% if bls := c.backlinks[p.ID]; bls != nil %}
-			<span class="post-pre-backlinks">
-				{%s ln.Common.UI["replies"] %}:{% space %}
-			</span>
-			<span class="backlinks spaced">
-				{% for id, op := range bls %}
-					<em>
-						{%= postLink(id, op != c.op, c.index) %}
-					</em>
-				{% endfor %}
-			</span>
+				<span class="post-pre-backlinks">
+					{%s ln.Common.UI["replies"] %}:{% space %}
+				</span>
+				<span class="backlinks spaced">
+					{% for id, op := range bls %}
+						<em>{%= postLink(id, op != c.op, c.index) %}</em>
+					{% endfor %}
+				</span>
 			{% endif %}
 			<div class="post-controls">
 				<a class="post-control">
@@ -110,20 +107,6 @@
 					<i class="fa fa-reply"></i>
 				</a>
 			</div>
-
+		</footer>
 	</article>
-
-	{% if c.omit != 0 %}
-	<div class="omit" data-omit="{%d c.omit %}" data-image-omit="{%d c.imageOmit %}">
-		{%d c.omit %}{% space %}post{% if c.omit > 1 %}s{% endif %}
-		{% space %}and{% space %}{%d c.imageOmit %}
-		{% space %}image{% if c.imageOmit > 1 %}s{% endif %}
-		{% space %}omitted{% space %}
-		<span class="act">
-			<a href="/{%s c.board %}/{%s strconv.FormatUint(c.op, 10) %}">
-				See All
-			</a>
-		</span>
-	</div>
-	{% endif %}
 {% endstripspace %}{% endfunc %}

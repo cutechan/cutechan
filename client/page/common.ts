@@ -154,14 +154,15 @@ function localizeOmitted() {
 
 		const posts = parseInt(el.getAttribute("data-omit")),
 			images = parseInt(el.getAttribute("data-image-omit"))
-		let text = pluralize(posts, lang.plurals["post"])
-		if (images) {
-			text += ` ${lang.posts["and"]} `
-				+ pluralize(images, lang.plurals["image"])
+		if (posts) {
+			let text = pluralize(posts, lang.plurals["post"])
+			if (images) {
+				text += ` ${lang.posts["and"]} `
+					+ pluralize(images, lang.plurals["image"])
+			}
+			text += ` ${lang.posts["omitted"]} `
+			el.firstChild.replaceWith(text)
 		}
-		text += ` ${lang.posts["omitted"]} `
-
-		el.firstChild.replaceWith(text)
 		el.querySelector("a").textContent = lang.posts["seeAll"]
 	}
 }

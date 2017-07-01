@@ -87,7 +87,7 @@ export default class FormView extends PostView {
             localStorage.setItem("staffTitle", staffEl.checked.toString())
             this.model.auth = staffEl.checked ? getMyAuth() : ""
             this.renderName()
-        };
+        }
         staffEl.addEventListener("change", onStaffChange)
         staffEl.checked = localStorage.getItem("staffTitle") === "true"
         if (staffEl.checked) {

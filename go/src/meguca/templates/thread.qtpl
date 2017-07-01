@@ -75,21 +75,44 @@ Common functionality between index board pages and threads pages
 	{% code c := articleContext{
 		index: index,
 		sticky: t.Sticky,
+		isOP: true,
 		op: t.ID,
 		board: t.Board,
 		subject: t.Subject,
 		root: root,
 		backlinks: bls,
 	} %}
-	{% code c.omit, c.imageOmit = CalculateOmit(t) %}
 	{%= renderArticle(t.Post, c) %}
 
+	{% if c.index %}
+		{% code omit, imageOmit := CalculateOmit(t) %}
+		{%= renderOmit(omit, imageOmit, c) %}
+	{% endif %}
+
+	{% code c.index = false %}
 	{% code c.sticky = false %}
-	{% code c.omit, c.imageOmit = 0, 0 %}
+	{% code c.isOP = false %}
 	{% code c.subject = "" %}
 	{% for _, p := range t.Posts %}
 		{%= renderArticle(p, c) %}
 	{% endfor %}
+{% endstripspace %}{% endfunc %}
+
+Omitted posts and images info
+{% func renderOmit(omit, imageOmit int, c articleContext) %}{% stripspace %}
+	<div class="omit" data-omit="{%d omit %}" data-image-omit="{%d imageOmit %}">
+		{% if omit != 0 %}
+			<span class="omit-info">
+				{%d omit %}{% space %}post{% if omit > 1 %}s{% endif %}
+				{% space %}and{% space %}{%d imageOmit %}
+				{% space %}image{% if imageOmit > 1 %}s{% endif %}
+				{% space %}omitted{% space %}
+			</span>
+		{% endif %}
+		<span class="omit-link">
+			<a href="/{%s c.board %}/{%s strconv.FormatUint(c.op, 10) %}">See All</a>
+		</span>
+	</div>
 {% endstripspace %}{% endfunc %}
 
 {% func encodeBacklinks(bls backlinks) %}{% stripspace %}
