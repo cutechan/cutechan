@@ -535,9 +535,17 @@ article, section {
   }
 }
 
+.tab-link {
+  cursor: pointer;
+}
+
 //////////////////////////////
 // FORMS
 //////////////////////////////
+
+.form-selection-link {
+  cursor: pointer;
+}
 
 #options {
   min-width: 210px;
@@ -545,6 +553,10 @@ article, section {
 
 label {
   padding: 0.2em;
+}
+
+.option-select {
+  cursor: pointer;
 }
 
 .option-checkbox {
@@ -800,7 +812,7 @@ header {
   padding-right: 10px;
 }
 
-.post-control-reply {
+.post-control_reply {
   color: #16a085;
   float: right;
   padding-right: 0;
@@ -845,7 +857,7 @@ header {
     margin: 10px 0;
   }
 
-  .post-control-reply {
+  .post-control_reply {
     float: none;
   }
 }
@@ -867,8 +879,7 @@ header {
     color: #16a085;
   }
   .post_op .post-id:after {
-    content: " OP";
-    color: #cd5c5c;
+    display: none;
   }
 }
 

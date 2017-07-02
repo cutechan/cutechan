@@ -95,8 +95,8 @@
 				<a class="post-control">
 					<i class="fa fa-minus-square-o"></i>
 				</a>
-				<a class="post-control post-control-reply">
-					<i class="fa fa-reply"></i>
+				<a class="post-control post-control_reply">
+					<i class="icon fa fa-reply"></i>
 				</a>
 			</div>
 		</footer>

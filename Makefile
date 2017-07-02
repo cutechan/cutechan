@@ -8,6 +8,8 @@ else
 	export GOPATH:=$(GOPATH):$(PWD)/go
 endif
 
+.PHONY: client tags
+
 all: client server
 
 client: client-deps client-build
@@ -57,6 +59,9 @@ test-custom:
 
 test-build:
 	go build -o /dev/null meguca
+
+tags:
+	ctags -R go/src/meguca client
 
 client-clean:
 	rm -rf dist node_modules package-lock.json

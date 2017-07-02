@@ -206,13 +206,13 @@
 								"configureBoard", "setBanners", "assignStaff",
 								"deleteBoard",
 							} %}
-								<a id="{%s l %}">
+								<a class="form-selection-link" id="{%s l %}">
 									{%s ln.UI[l] %}
 									<br>
 								</a>
 							{% endfor %}
 							{% if pos == auth.Admin %}
-								<a id="configureServer">
+								<a class="form-selection-link" id="configureServer">
 									{%s ln.UI["configureServer"] %}
 									<br>
 								</a>

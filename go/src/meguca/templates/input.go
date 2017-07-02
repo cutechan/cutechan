@@ -157,6 +157,7 @@ func (w *formWriter) tag(tag string, spec inputSpec) {
 // Write a select element to buffer
 func (w *formWriter) sel(spec inputSpec) {
 	w.tag("select", spec)
+	w.attr("class", "option-select")
 	w.N().S(`>`)
 
 	var val string

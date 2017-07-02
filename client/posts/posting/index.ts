@@ -61,10 +61,9 @@ export const postSM = new FSM<postState, postEvent>(postState.none)
 hook("getPostModel", () =>
 	postModel)
 
-// Find the post creation button and style it, if any
+// Find the post creation button(s) and style it, if any
 function stylePostControls(fn: (el: HTMLElement) => void) {
-	const el = document.querySelector(".posting")
-	if (el) {
+	for (const el of document.querySelectorAll(".posting")) {
 		fn(el)
 	}
 }
@@ -87,6 +86,7 @@ function quotePost(e: MouseEvent) {
 		return
 	}
 
+	e.preventDefault()
 	const target = e.target as HTMLAnchorElement
 
 	// Make sure the selection both starts and ends in the quoted post's
@@ -123,16 +123,6 @@ function quotePost(e: MouseEvent) {
 	}
 
 	const id = getID(post)
-
-	// On board pages, first navigate to the thread
-	if (!page.thread) {
-		location.href = target.href
-
-		// Store, so a reply is opened, when the page is loaded
-		localStorage.setItem("openQuote", `${id}:${sel}`)
-		return
-	}
-
 	postSM.feed(postEvent.open)
 	postModel.addReference(id, sel)
 }
@@ -317,7 +307,7 @@ export default () => {
 
 	// Handle clicks on post quoting links
 	on(document, "click", quotePost, {
-		selector: ".post-control-reply, .post-control-reply i",
+		selector: ".post-control_reply, .post-control_reply .icon",
 	})
 
 	// Store last selected range that is not a quote link
