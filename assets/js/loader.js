@@ -25,6 +25,7 @@
   function loadScript(path) {
     var script = document.createElement("script");
     script.src = "/static/js/" + path + ".js"
+    script.async = true;
     head.appendChild(script);
     return script;
   }
