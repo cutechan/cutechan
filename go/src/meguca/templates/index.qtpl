@@ -306,9 +306,8 @@
 		</div>
 
 		{% comment %}
-			Finally load the application.
+			Finally load vendor libs and application.
 		{% endcomment %}
-		<script src="/static/js/almond.js"></script>
-		<script src="/static/js/loader.js"></script>
+		<script src="/static/js/deps.js"></script>
 	</body>
 {% endstripspace %}{% endfunc %}

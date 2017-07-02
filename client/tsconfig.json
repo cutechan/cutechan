@@ -1,6 +1,4 @@
 {
-  "enableAutoDiscovery": true,
-  "compileOnSave": false,
   "compilerOptions": {
     "module": "amd",
     "moduleResolution": "node",

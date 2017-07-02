@@ -8,12 +8,14 @@ const cssnano = require("cssnano");
 const uglifyes = require("uglify-es");
 const gulp = require("gulp");
 const gutil = require("gulp-util");
+const concat = require("gulp-concat");
 const gulpif = require("gulp-if");
+const sourcemaps = require("gulp-sourcemaps");
+const ts = require("gulp-typescript");
+const rjsOptimize = require("gulp-requirejs-optimize");
 const less = require("gulp-less");
 const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
-const sourcemaps = require("gulp-sourcemaps");
-const ts = require("gulp-typescript");
 const composer = require("gulp-uglify/composer");
 const notify = require("gulp-notify");
 const runSequence = require("run-sequence");
@@ -116,9 +118,23 @@ gulp.task("clean", () => {
 buildES6();
 buildES5();
 
-// Third-party dependencies.
-createTask("vendor", [
-  "node_modules/almond/almond.js ",
+// Third-party dependencies and loader.
+createTask("deps", [
+  "node_modules/almond/almond.js",
+  "node_modules/mustache/mustache.js",
+  "client/loader.js",
+], src => {
+  const bare = ["almond.js", "loader.js"];
+  const rjsOpts = {optimize: "none"};
+  return src
+    .pipe(gulpif(f => !bare.includes(f.relative), rjsOptimize(rjsOpts)))
+    .pipe(concat("deps.js"))
+    .pipe(minify())
+    .pipe(gulp.dest(JS_DIR));
+});
+
+// Polyfills.
+createTask("polyfills", [
   "node_modules/core-js/client/core.min.js",
   "node_modules/proxy-polyfill/proxy.min.js",
   "node_modules/dom4/build/dom4.js",
@@ -129,8 +145,8 @@ createTask("vendor", [
 );
 
 // Compile Less to CSS.
-createTask("css", ["less/*.less", "!less/*.mix.less"], src => {
-  return src
+createTask("css", ["less/*.less", "!less/*.mix.less"], src =>
+  src
     .pipe(sourcemaps.init())
     .pipe(less())
     .on("error", handleError)
@@ -140,7 +156,7 @@ createTask("css", ["less/*.less", "!less/*.mix.less"], src => {
     ]))
     .pipe(sourcemaps.write("maps"))
     .pipe(gulp.dest(CSS_DIR))
-}, "less/*.less");
+, "less/*.less");
 
 // Static assets.
 createTask("assets", "assets/**/*", src =>
