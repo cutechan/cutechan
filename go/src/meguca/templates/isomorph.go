@@ -75,10 +75,10 @@ func (ctx PostContext) Render() string {
 
 func (ctx PostContext) PostClass() string {
 	classes := []string{"post"}
-	if (ctx.OP) {
+	if ctx.OP {
 		classes = append(classes, "post_op")
 	}
-	if (ctx.post.Image != nil) {
+	if ctx.post.Image != nil {
 		classes = append(classes, "post_media")
 	}
 	return strings.Join(classes, " ")
@@ -89,7 +89,7 @@ func (ctx PostContext) URL() (url string) {
 		url = fmt.Sprintf("#%d", ctx.ID)
 	}
 	if ctx.Index {
-		url = fmt.Sprintf("/%s/%d%s", ctx.Board, ctx.OP, url)
+		url = fmt.Sprintf("/%s/%d%s", ctx.Board, ctx.TID, url)
 	}
 	return
 }
@@ -128,6 +128,15 @@ func (ctx PostContext) Time() string {
 	return string(buf)
 }
 
+func duration(l uint32) string {
+	if l < 60 {
+		return fmt.Sprintf("0:%02d", l)
+	} else {
+		min := l / 60
+		return fmt.Sprintf("%02d:%02d", min, l - min * 60)
+	}
+}
+
 // Formats a human-readable representation of file size.
 func fileSize(s int) string {
 	format := func(n, end string) string {
@@ -144,15 +153,6 @@ func fileSize(s int) string {
 	default:
 		n := strconv.FormatFloat(float64(s)/(1<<20), 'f', 1, 32)
 		return format(n, "Mb")
-	}
-}
-
-func duration(l uint32) string {
-	if l < 60 {
-		return fmt.Sprintf("0:%02d", l)
-	} else {
-		min := l / 60
-		return fmt.Sprintf("%02d:%02d", min, l - min * 60)
 	}
 }
 

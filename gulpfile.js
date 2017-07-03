@@ -2,6 +2,7 @@
 
 const path = require("path");
 const del = require("del");
+const merge = require("merge-stream");
 const stripAnsi = require("strip-ansi");
 const autoprefixer = require("autoprefixer");
 const cssnano = require("cssnano");
@@ -10,6 +11,7 @@ const gulp = require("gulp");
 const gutil = require("gulp-util");
 const concat = require("gulp-concat");
 const gulpif = require("gulp-if");
+const tap = require("gulp-tap");
 const sourcemaps = require("gulp-sourcemaps");
 const ts = require("gulp-typescript");
 const rjsOptimize = require("gulp-requirejs-optimize");
@@ -19,6 +21,9 @@ const rename = require("gulp-rename");
 const composer = require("gulp-uglify/composer");
 const notify = require("gulp-notify");
 const runSequence = require("run-sequence");
+
+const TYPESCRIPT_GLOB = "client/**/*.ts";
+const TEMPLATES_GLOB = "go/src/meguca/templates/mustache/**/*.mustache";
 
 const DIST_DIR = "dist";
 const STATIC_DIR = path.join(DIST_DIR, "static");
@@ -69,12 +74,35 @@ function createTask(name, path, task, watchPath) {
   }
 }
 
-function buildClient(tsOpts) {
-  const tsProject = ts.createProject("client/tsconfig.json", tsOpts);
-  return gulp.src("client/**/*.ts")
+function templates() {
+  return gulp.src([TEMPLATES_GLOB])
     .pipe(sourcemaps.init())
-    .pipe(tsProject(ts.reporter.nullReporter()))
+    .pipe(tap(function(file) {
+      const name = JSON.stringify(path.basename(file.path, ".mustache"));
+      const template = JSON.stringify(file.contents.toString());
+      file.contents = new Buffer(`CUTE_TEMPLATES[${name}] = ${template};`);
+    }))
+    .pipe(concat("templates.js"))
+    .pipe(tap(function(file) {
+      file.contents = Buffer.concat([
+        new Buffer("var CUTE_TEMPLATES = {};\n"),
+        file.contents,
+      ]);
+    }));
+}
+
+function typescript(opts) {
+  const project = ts.createProject("client/tsconfig.json", opts);
+  return gulp.src([TYPESCRIPT_GLOB])
+    .pipe(sourcemaps.init())
+    .pipe(project(ts.reporter.nullReporter()))
     .on("error", handleError);
+}
+
+function buildClient(tsOpts) {
+  return merge(templates(), typescript(tsOpts))
+    .on("error", () => {})
+    .pipe(concat(tsOpts.outFile));
 }
 
 // Builds the client files of the appropriate ECMAScript version.
@@ -89,7 +117,7 @@ function buildES6() {
 
   // Recompile on source update, if running with the `-w` flag.
   if (watch) {
-    gulp.watch("client/**/*.ts", [name])
+    gulp.watch([TEMPLATES_GLOB, TYPESCRIPT_GLOB], [name])
   }
 }
 

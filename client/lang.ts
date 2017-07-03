@@ -12,8 +12,19 @@ type LanguagePack = {
 	sync: string[]
 }
 
-export default JSON.parse(
+const lang = JSON.parse(
 	document
 		.getElementById("lang-data")
 		.textContent
 ) as LanguagePack
+
+export default lang
+
+// Emulate lang.go to simplify template porting.
+// TODO(Kagami): Use everywhere?
+export const ln: any = {
+	Common: {
+		Posts: lang.posts,
+		UI: lang.ui,
+	},
+}

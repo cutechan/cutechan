@@ -3,9 +3,22 @@ import { extend } from '../util'
 import Collection from './collection'
 import PostView from './view'
 import { SpliceResponse } from '../client'
-import { mine, seenPosts, storeSeenPost, posts } from "../state"
+import { mine, seenPosts, storeSeenPost, posts, page } from "../state"
 import { notifyAboutReply } from "../ui"
 import { PostData, TextState, PostLink, Command, ImageData } from "../common"
+
+// FIXME(Kagami): Doesn't match common/posts.go type!
+export type Backlinks = { [id: number]: number }
+
+// Thread model, mirroring common.Thread.
+// Just a stub yet, for usage in isomorphic templates.
+export class Thread {
+	public id: number
+
+	constructor() {
+		this.id = page.thread
+	}
+}
 
 // Generic post model
 export class Post extends Model implements PostData {
@@ -28,7 +41,7 @@ export class Post extends Model implements PostData {
 	public board: string
 	public state: TextState
 	public commands: Command[]
-	public backlinks: { [id: number]: number }
+	public backlinks: Backlinks
 	public links: PostLink[]
 
 	constructor(attrs: PostData) {

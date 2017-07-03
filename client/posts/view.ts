@@ -1,8 +1,7 @@
-import { Post } from './model'
-import {
-	makeFrag, importTemplate, getID, escape, firstChild, pad
-} from '../util'
+import { Thread, Post } from './model'
+import { makeFrag, getID, firstChild, pad } from '../util'
 import { parseBody, relativeTime, renderPostLink } from './render'
+import { makePostContext } from "../templates"
 import ImageHandler from "./images"
 import { ViewAttrs } from "../base"
 import { findSyncwatches } from "./syncwatch"
@@ -14,47 +13,33 @@ import options from "../options"
 export default class PostView extends ImageHandler {
 	constructor(model: Post, el: HTMLElement | null) {
 		const attrs: ViewAttrs = { model }
-		if (el) {
-			attrs.el = el
-		} else {
-			attrs.class = 'post'
-			if (model.editing) {
-				attrs.class += ' editing'
-			}
-			if (model.deleted) {
-				attrs.class += " deleted"
-			}
-			attrs.tag = "article"
-			attrs.id = `post${model.id}`
-		}
+		const thread = new Thread()
+		// Currently we render only in-thread posts.
+		const index = false
+		attrs.el = el || makePostContext(thread, model, model.backlinks, index).renderNode()
 		super(attrs)
-
 		this.model.view = this
-		if (!el) {
-			this.el.append(importTemplate("article"))
-			this.render()
-		}
 	}
 
 	// Render the element contents, but don't insert it into the DOM
 	public render() {
-		if (this.model.subject) {
-			const el = this.el.querySelector("h3")
-			el.innerHTML = escape(this.model.subject)
-			el.hidden = false
-		}
+		// if (this.model.subject) {
+		// 	const el = this.el.querySelector("h3")
+		// 	el.innerHTML = escape(this.model.subject)
+		// 	el.hidden = false
+		// }
 
-		this.el.querySelector("blockquote").innerHTML = parseBody(this.model)
-		if (this.model.backlinks) {
-			this.renderBacklinks()
-		}
-		if (this.model.banned) {
-			this.renderBanned()
-		}
-		this.renderHeader()
-		if (this.model.image) {
-			this.renderImage(false)
-		}
+		// this.el.querySelector("blockquote").innerHTML = parseBody(this.model)
+		// if (this.model.backlinks) {
+		// 	this.renderBacklinks()
+		// }
+		// if (this.model.banned) {
+		// 	this.renderBanned()
+		// }
+		// this.renderHeader()
+		// if (this.model.image) {
+		// 	this.renderImage(false)
+		// }
 	}
 
 	// Get the current Element for text to be written to
@@ -181,16 +166,17 @@ export default class PostView extends ImageHandler {
 	}
 
 	// Render the name in the header
+	// TODO(Kagami): Remove everywhere.
 	public renderName() {
-		const el = this.el.querySelector(".post-name")
-		const { auth } = this.model
-		if (auth) {
-			el.classList.add("post-name_staff")
-			el.textContent = `## ${lang.posts[auth]} ##`
-		} else {
-			el.classList.remove("post-name_staff")
-			el.textContent = ""
-		}
+		// const el = this.el.querySelector(".post-name")
+		// const { auth } = this.model
+		// if (auth) {
+		// 	el.classList.add("post-name_staff")
+		// 	el.textContent = `## ${lang.posts[auth]} ##`
+		// } else {
+		// 	el.classList.remove("post-name_staff")
+		// 	el.textContent = ""
+		// }
 	}
 
 	// Render "USER WAS BANNED FOR THIS POST" message
@@ -223,16 +209,17 @@ export default class PostView extends ImageHandler {
 	}
 
 	// Render the sticky status of a thread OP
+	// TODO(Kagami): Implement (+ on server-side).
 	public renderSticky() {
-		const old = this.el.querySelector(".sticky")
-		if (old) {
-			old.remove()
-		}
-		if (this.model.sticky) {
-			this.el
-				.querySelector(".mod-checkbox")
-				.after(importTemplate("sticky"))
-		}
+		// const old = this.el.querySelector(".sticky")
+		// if (old) {
+		// 	old.remove()
+		// }
+		// if (this.model.sticky) {
+		// 	this.el
+		// 		.querySelector(".mod-checkbox")
+		// 		.after(importTemplate("sticky"))
+		// }
 	}
 
 	// Inserts PostView back into the thread ordered by id

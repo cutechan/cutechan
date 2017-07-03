@@ -6,6 +6,32 @@ import options from "../options"
 import { getModel, config } from "../state"
 import lang from "../lang"
 
+export function duration(len: number): string {
+	let s = ""
+	if (len < 60) {
+		s = `0:${pad(len)}`
+	} else {
+		const min = Math.floor(len / 60),
+			sec = len - min * 60
+		s = `${pad(min)}:${pad(sec)}`
+	}
+	return s
+}
+
+// TODO(Kagami): Localize.
+export function fileSize(size: number): string {
+	let s = ""
+	if (size < (1 << 10)) {
+		s = size + 'b'
+	} else if (size < (1 << 20)) {
+		s = Math.round(size / (1 << 10)) + 'Kb'
+	} else {
+		const text = Math.round(size / (1 << 20) * 10).toString()
+		s = `${text.slice(0, -1)}.${text.slice(-1)}Mb`
+	}
+	return s
+}
+
 // Mixin for image expansion and related functionality
 export default class ImageHandler extends View<Post> {
 	// Render the figure and figcaption of a post. Set reveal to true, if in
@@ -97,17 +123,8 @@ export default class ImageHandler extends View<Post> {
 					el.hidden = !data.audio
 					break
 				case "media-length":
-					const len = data.length
-					if (len) {
-						let s: string
-						if (len < 60) {
-							s = `0:${pad(len)}`
-						} else {
-							const min = Math.floor(len / 60),
-								sec = len - min * 60
-							s = `${pad(min)}:${pad(sec)}`
-						}
-						el.textContent = s
+					if (data.length) {
+						el.textContent = duration(data.length)
 					}
 					break
 				case "is-apng":
@@ -115,17 +132,7 @@ export default class ImageHandler extends View<Post> {
 					break
 				case "filesize":
 					const { size } = data
-					let s: string
-					if (size < (1 << 10)) {
-						s = size + ' B'
-					} else if (size < (1 << 20)) {
-						s = Math.round(size / (1 << 10)) + ' KB'
-					} else {
-						const text = Math.round(size / (1 << 20) * 10)
-							.toString()
-						s = `${text.slice(0, -1)}.${text.slice(-1)} MB`
-					}
-					el.textContent = s
+					el.textContent = fileSize(size)
 					break
 				case "dims":
 					el.textContent = `${data.dims[0]}x${data.dims[1]}`

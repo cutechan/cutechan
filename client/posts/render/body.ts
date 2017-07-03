@@ -15,7 +15,7 @@ const urlPrefixes = {
 }
 
 // Render the text body of a post
-export default function renderBody(data: PostData): string {
+export default function(data: PostData): string {
 	const state: TextState = data.state = {
 		spoiler: false,
 		quote: false,

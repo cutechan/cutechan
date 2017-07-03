@@ -53,7 +53,7 @@ type Post struct {
 	Body     string      `json:"body"`
 	Name     string      `json:"name,omitempty"`
 	Trip     string      `json:"trip,omitempty"`
-	Auth     string      `json:"auth,omitempty"`
+	Auth     string      `json:"auth"`
 	Links    [][2]uint64 `json:"links,omitempty"`
 	Commands []Command   `json:"commands,omitempty"`
 	Image    *Image      `json:"image,omitempty"`
