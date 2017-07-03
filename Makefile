@@ -63,12 +63,14 @@ test-build:
 tags:
 	ctags -R go/src/meguca client
 
+clean: client-clean server-clean test-clean
+
 client-clean:
-	rm -rf dist node_modules package-lock.json
+	rm -rf dist
 
 server-clean:
 	rm -rf cutechan \
-		go/src/github.com go/src/golang.org go/bin go/pkg \
+		go/src/meguca/**/bin_data.go \
 		go/src/meguca/common/*_easyjson.go \
 		go/src/meguca/config/*_easyjson.go \
 		go/src/meguca/templates/*.qtpl.go
@@ -80,7 +82,7 @@ test-clean:
 		go/src/meguca/imager/testdata/thumb_*.jpg \
 		go/src/meguca/imager/testdata/thumb_*.png
 
-clean: client-clean server-clean test-clean
-
 distclean: clean
 	rm -rf uploads
+	rm -rf node_modules package-lock.json
+	rm -rf go/src/github.com go/src/golang.org go/bin go/pkg

@@ -1,10 +1,37 @@
+//go:generate go-bindata -o bin_data.go --pkg templates --nometadata --prefix mustache mustache/...
+
 package templates
 
 import (
 	"html"
 	"meguca/common"
 	"time"
+	"github.com/hoisie/mustache"
 )
+
+// Extract reverse links to linked posts on a page
+func extractBacklinks(cap int, threads ...common.Thread) common.Backlinks {
+	bls := make(common.Backlinks, cap)
+	register := func(p common.Post, op uint64) {
+		for _, l := range p.Links {
+			m, ok := bls[l[0]]
+			if !ok {
+				m = make(map[uint64]uint64, 4)
+				bls[l[0]] = m
+			}
+			m[p.ID] = op
+		}
+	}
+
+	for _, t := range threads {
+		register(t.Post, t.ID)
+		for _, p := range t.Posts {
+			register(p, t.ID)
+		}
+	}
+
+	return bls
+}
 
 // CalculateOmit returns the omitted post and image counts for a thread
 func CalculateOmit(t common.Thread) (int, int) {
@@ -56,4 +83,14 @@ func correctTimeZone(t time.Time) time.Time {
 		0,
 		time.Local,
 	).UTC()
+}
+
+// TODO(Kagami): Partials?
+// FIXME(Kagami): Pre-parse, check for errors.
+func renderMustache(name string, ctx interface{}) string {
+	buf, err := Asset(name + ".mustache")
+	if err != nil {
+		return ""
+	}
+	return mustache.Render(string(buf), ctx)
 }

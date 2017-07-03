@@ -269,7 +269,7 @@ func (c *bodyContext) parsePostLink(m []string) {
 	if len(m[1]) != 0 { // Write extra quotes
 		c.escape(m[1])
 	}
-	streampostLink(&c.Writer, id, op != c.OP, c.index)
+	c.string(postLink(id, op != c.OP, c.index))
 }
 
 // Format and anchor link that opens in a new tab

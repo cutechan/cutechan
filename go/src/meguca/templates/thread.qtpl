@@ -59,7 +59,7 @@ caching of generated posts.
 {% func ThreadPosts(t common.Thread, json []byte) %}{% stripspace %}
 	<section class="thread" id="thread-container" data-id="{%s strconv.FormatUint(t.ID, 10) %}">
 		{% code bls := extractBacklinks(1<<10, t) %}
-		{%= renderThreadPosts(t, bls, config.Get().RootURL, false) %}
+		{%= renderThreadPosts(t, bls, false) %}
 		<script id="post-data" type="application/json">
 			{%z= json %}
 		</script>
@@ -71,32 +71,20 @@ caching of generated posts.
 {% endstripspace %}{% endfunc %}
 
 Common functionality between index board pages and threads pages
-{% func renderThreadPosts(t common.Thread, bls backlinks, root string, index bool) %}{% stripspace %}
-	{% code c := articleContext{
-		index: index,
-		sticky: t.Sticky,
-		isOP: true,
-		op: t.ID,
-		board: t.Board,
-		subject: t.Subject,
-		root: root,
-		backlinks: bls,
-	} %}
-	{%= renderPost(t.Post, c) %}
-
-	{% if c.index %}
-		{%= renderOmit(t, c) %}
+{% func renderThreadPosts(t common.Thread, bls common.Backlinks, index bool) %}{% stripspace %}
+	{%s= MakePostContext(t, t.Post, bls, index).Render() %}
+	{% if index %}
+		{%= renderOmit(t) %}
 	{% endif %}
-
-	{% code c.isOP = false %}
-	{% for _, p := range t.Posts %}
-		{%= renderPost(p, c) %}
+	{% for _, post := range t.Posts %}
+		{%s= MakePostContext(t, post, bls, index).Render() %}
 	{% endfor %}
 {% endstripspace %}{% endfunc %}
 
 Omitted posts and images info
-{% func renderOmit(t common.Thread, c articleContext) %}{% stripspace %}
+{% func renderOmit(t common.Thread) %}{% stripspace %}
 	{% code omit, imageOmit := CalculateOmit(t) %}
+	{% code idStr := strconv.FormatUint(t.ID, 10) %}
 	<div class="omit" data-omit="{%d omit %}" data-image-omit="{%d imageOmit %}">
 		{% if omit != 0 %}
 			<div class="omit-info">
@@ -107,16 +95,15 @@ Omitted posts and images info
 			</div>
 		{% endif %}
 		<span class="omit-link">
-			<a href="/{%s c.board %}/{%s strconv.FormatUint(c.op, 10) %}">See All</a>
+			<a href="/{%s t.Board %}/{%s idStr %}">See All</a>
 		</span>
 		{% if omit > 97 %}
-			{% code idStr := strconv.FormatUint(c.op, 10) %}
 			{% space %}{%= last100Link(t.Board, idStr) %}
 		{% endif %}
 	</div>
 {% endstripspace %}{% endfunc %}
 
-{% func encodeBacklinks(bls backlinks) %}{% stripspace %}
+{% func encodeBacklinks(bls common.Backlinks) %}{% stripspace %}
 	<script id="backlink-data" type="application/json">
 		{% code buf, _ := json.Marshal(bls) %}
 		{%z= buf %}

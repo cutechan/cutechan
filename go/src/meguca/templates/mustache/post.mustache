@@ -1,0 +1,47 @@
+<article class="{{ PostClass }}" id="post{{ ID }}">
+
+  <header class="post-header">
+    <a class="post-anchor" name="{{ ID }}"></a>
+    <nav class="post-nav">
+      {{#OP}}{{#Index}}
+        <a class="post-board" href="/{{ Board }}/">{{ Board }}</a>
+      {{/Index}}{{/OP}}
+      <a class="post-id" href="{{ URL }}">#{{ ID }}</a>
+    </nav>
+    {{#OP}}
+      <h3 class="post-subject">{{ Subject }}</h3>
+    {{/OP}}
+    {{#Staff}}
+      <span class="post-staff">## {{ Auth }} ##</span>
+    {{/Staff}}
+    <time class="post-time">{{ Time }}</time>
+  </header>
+
+  <section class="post-body">
+    {{{Media}}}
+    <blockquote class="post-message">
+      {{{Body}}}
+    </blockquote>
+    {{#Banned}}
+      <b class="admin banned">{{ LBanned }}</b>
+    {{/Banned}}
+  </section>
+
+  <footer class="post-footer">
+    {{#Backlinks}}
+      <span class="post-pre-backlinks">{{ LReplies }}:</span>
+      <span class="backlinks spaced">
+        <em>{{{.}}}</em>
+      </span>
+    {{/Backlinks}}
+    <div class="post-controls">
+      <a class="post-control">
+        <i class="fa fa-minus-square-o"></i>
+      </a>
+      <a class="post-control post-control_reply">
+        <i class="icon fa fa-reply"></i>
+      </a>
+    </div>
+  </footer>
+
+</article>

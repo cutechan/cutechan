@@ -67,3 +67,6 @@ type StandalonePost struct {
 	OP    uint64 `json:"op"`
 	Board string `json:"board"`
 }
+
+// Map of all backlinks on a page
+type Backlinks map[uint64]map[uint64]uint64

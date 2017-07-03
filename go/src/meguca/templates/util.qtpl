@@ -1,6 +1,3 @@
-{% import "strconv" %}
-{% import "meguca/common" %}
-
 Renders the tab selection butts in tabbed windows
 {% func tabButts(names []string) %}{% stripspace %}
 	<div class="tab-butts">
@@ -11,25 +8,6 @@ Renders the tab selection butts in tabbed windows
 		{% endfor %}
 	</div>
 	<hr>
-{% endstripspace %}{% endfunc %}
-
-Render a link to another post. Can optionally be cross-thread.
-{% func postLink(id uint64, cross, index bool) %}{% stripspace %}
-	{% code idBuf := strconv.AppendUint(make([]byte, 0, 16), id, 10) %}
-	{% code url := make([]byte, 0, 32) %}
-	{% if cross || index %}
-		{% code url = append(url, "/all/"...) %}
-		{% code url = strconv.AppendUint(url, id, 10) %}
-	{% endif %}
-	{% code url = append(url, "#"...) %}
-	{% code url = append(url, idBuf...) %}
-	<a class="post-link" data-id="{%z idBuf %}" href="{%z url %}">
-		&gt;&gt;
-		{%z idBuf %}
-		{% if cross %}
-			{% space %}➡
-		{% endif %}
-	</a>
 {% endstripspace %}{% endfunc %}
 
 {% func expandLink(board, id string) %}{% stripspace %}
@@ -46,15 +24,6 @@ Render a link to another post. Can optionally be cross-thread.
 			Last 100
 		</a>
 	</span>
-{% endstripspace %}{% endfunc %}
-
-Render the class attribute of a post
-{% func postClass(p common.Post, isOP bool) %}{% stripspace %}
-	post
-	{% if isOP %}{% space %}post_op{% endif %}
-	{% if p.Image != nil %}{% space %}post_media{% endif %}
-	{% if p.Editing %}{% space %}editing{% endif %}
-	{% if p.Deleted %}{% space %}deleted{% endif %}
 {% endstripspace %}{% endfunc %}
 
 Renders a stylized deleted post display toggle
