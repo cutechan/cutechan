@@ -147,19 +147,23 @@ buildES6();
 buildES5();
 
 // Third-party dependencies and loader.
-createTask("deps", [
-  "node_modules/almond/almond.js",
-  "node_modules/mustache/mustache.js",
-  "client/loader.js",
-], src => {
-  const bare = ["almond.js", "loader.js"];
-  const rjsOpts = {optimize: "none"};
-  return src
-    .pipe(gulpif(f => !bare.includes(f.relative), rjsOptimize(rjsOpts)))
-    .pipe(concat("deps.js"))
-    .pipe(minify())
-    .pipe(gulp.dest(JS_DIR));
-});
+createTask("deps", "client/loader.js", src =>
+  src
+    .pipe(rjsOptimize({
+      optimize: "none",
+      skipModuleInsertion: true,
+      paths: {
+        almond: "../node_modules/almond/almond",
+        mustache: "../node_modules/mustache/mustache",
+        react: "../node_modules/react/dist/react",
+        "react-dom": "../node_modules/react-dom/dist/react-dom",
+      },
+      deps: ["almond", "mustache", "react-dom"],
+      out: "deps.js",
+    }))
+    .pipe(gulpif(!watch, minify()))
+    .pipe(gulp.dest(JS_DIR))
+);
 
 // Polyfills.
 createTask("polyfills", [
