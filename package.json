@@ -20,15 +20,12 @@
     "font-awesome": "^4.7.0",
     "mustache": "^2.3.0",
     "normalize.css": "^7.0.0",
+    "preact": "^8.1.0",
     "proxy-polyfill": "^0.1.6",
-    "react": "^15.6.1",
-    "react-dom": "^15.6.1",
     "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {
     "@types/mustache": "^0.8.29",
-    "@types/react": "^15.0.34",
-    "@types/react-dom": "^15.5.1",
     "autoprefixer": "^7.1.1",
     "babel-preset-latest": "^6.16.0",
     "cssnano": "^3.10.0",

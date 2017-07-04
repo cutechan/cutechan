@@ -144,21 +144,24 @@ gulp.task("clean", () => {
 
 // Client JS files.
 buildES6();
-buildES5();
+if (!watch) buildES5();
 
 // Third-party dependencies and loader.
 createTask("deps", "client/loader.js", src =>
   src
     .pipe(rjsOptimize({
       optimize: "none",
-      skipModuleInsertion: true,
       paths: {
         almond: "../node_modules/almond/almond",
         mustache: "../node_modules/mustache/mustache",
-        react: "../node_modules/react/dist/react",
-        "react-dom": "../node_modules/react-dom/dist/react-dom",
+        preact: "../node_modules/preact/dist/preact",
       },
-      deps: ["almond", "mustache", "react-dom"],
+      shim: {
+        preact: {
+          exports: "preact",
+        },
+      },
+      deps: ["almond", "mustache", "preact"],
       out: "deps.js",
     }))
     .pipe(gulpif(!watch, minify()))
