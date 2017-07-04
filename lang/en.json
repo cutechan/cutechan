@@ -300,7 +300,16 @@
         "Sat"
       ]
     },
+    "sync": [
+      "disconnected",
+      "connecting…",
+      "syncing…",
+      "synced",
+      "desynced"
+    ],
     "ui": {
+      "send": "Send",
+      "attach": "Attach",
       "replies": "Replies",
       "reading": "reading",
       "mustMatch": "Passwords must match",
@@ -314,13 +323,6 @@
       "last": "Last",
       "finished": "Finished",
       "confirmDelete": "Delete all posts by this IP?"
-    },
-    "sync": [
-      "disconnected",
-      "connecting…",
-      "syncing…",
-      "synced",
-      "desynced"
-    ]
+    }
   }
 }

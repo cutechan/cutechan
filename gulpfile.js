@@ -20,6 +20,7 @@ const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
 const composer = require("gulp-uglify/composer");
 const notify = require("gulp-notify");
+const livereload = require("gulp-livereload");
 const runSequence = require("run-sequence");
 
 const TEMPLATES_GLOB = "go/src/meguca/templates/mustache/**/*.mustache";
@@ -189,8 +190,10 @@ createTask("css", ["less/*.less", "!less/*.mix.less"], src =>
       autoprefixer(),
       cssnano({discardComments: {removeAll: true}}),
     ]))
+    .on("error", handleError)
     .pipe(sourcemaps.write("maps"))
     .pipe(gulp.dest(CSS_DIR))
+    .pipe(gulpif("**/*.css", livereload()))
 , "less/*.less");
 
 // Static assets.
@@ -208,3 +211,7 @@ createTask("fonts", "node_modules/font-awesome/fonts/fontawesome-webfont.*",
 
 // Build everything.
 gulp.task("default", runSequence("clean", tasks));
+
+if (watch) {
+  livereload.listen({quiet: true})
+}
