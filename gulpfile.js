@@ -22,8 +22,8 @@ const composer = require("gulp-uglify/composer");
 const notify = require("gulp-notify");
 const runSequence = require("run-sequence");
 
-const TYPESCRIPT_GLOB = "client/**/*.ts";
 const TEMPLATES_GLOB = "go/src/meguca/templates/mustache/**/*.mustache";
+const TYPESCRIPT_GLOB = "client/**/*.ts?(x)";
 
 const DIST_DIR = "dist";
 const STATIC_DIR = path.join(DIST_DIR, "static");
@@ -75,7 +75,7 @@ function createTask(name, path, task, watchPath) {
 }
 
 function templates() {
-  return gulp.src([TEMPLATES_GLOB])
+  return gulp.src(TEMPLATES_GLOB)
     .pipe(sourcemaps.init())
     .pipe(tap(function(file) {
       const name = JSON.stringify(path.basename(file.path, ".mustache"));
@@ -93,7 +93,7 @@ function templates() {
 
 function typescript(opts) {
   const project = ts.createProject("client/tsconfig.json", opts);
-  return gulp.src([TYPESCRIPT_GLOB])
+  return gulp.src("client/main.ts")
     .pipe(sourcemaps.init())
     .pipe(project(ts.reporter.nullReporter()))
     .on("error", handleError);

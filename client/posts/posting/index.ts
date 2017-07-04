@@ -8,6 +8,7 @@ import lang from "../../lang"
 import { page } from "../../state"
 import initDrop from "./drop"
 import initThreads from "./threads"
+import { open as openReply } from "./reply-form"
 
 export { default as FormModel } from "./model"
 
@@ -137,19 +138,19 @@ function quotePost(e: MouseEvent) {
 // 	postModel.nonLive = !live
 // }
 
-async function openReply(e: MouseEvent) {
-	// Don't trigger, when user is trying to open in a new tab
-	if (e.which !== 1
-		|| !page.thread
-		|| e.ctrlKey
-		|| connSM.state !== connState.synced
-	) {
-		return
-	}
+// async function openReply(e: MouseEvent) {
+// 	// Don't trigger, when user is trying to open in a new tab
+// 	if (e.which !== 1
+// 		|| !page.thread
+// 		|| e.ctrlKey
+// 		|| connSM.state !== connState.synced
+// 	) {
+// 		return
+// 	}
 
-	e.preventDefault()
-	postSM.feed(postEvent.open)
-}
+// 	e.preventDefault()
+// 	postSM.feed(postEvent.open)
+// }
 
 export default () => {
 	// Synchronise with connection state machine
@@ -233,15 +234,15 @@ export default () => {
 	postSM.on(postState.alloc, bindNagging)
 
 	// Open a new post creation form, if none open
-	postSM.act(postState.ready, postEvent.open, () => {
-		postModel = new FormModel()
-		postModel.needCaptcha = needCaptcha
-		postForm = new FormView(postModel)
-		if (needCaptcha) {
-			return postState.needCaptcha
-		}
-		return postState.draft
-	})
+	// postSM.act(postState.ready, postEvent.open, () => {
+	// 	postModel = new FormModel()
+	// 	postModel.needCaptcha = needCaptcha
+	// 	postForm = new FormView(postModel)
+	// 	if (needCaptcha) {
+	// 		return postState.needCaptcha
+	// 	}
+	// 	return postState.draft
+	// })
 
 	// New captcha submitted
 	postSM.act(postState.needCaptcha, postEvent.captchaSolved, () => {

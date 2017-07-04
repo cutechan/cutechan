@@ -1,5 +1,7 @@
 // Client entry point
 
+/// <reference path="util/dom4.d.ts" />
+
 import { loadFromDB, page, storeMine, displayLoading } from './state'
 import { start as connect } from './connection'
 import { open } from './db'

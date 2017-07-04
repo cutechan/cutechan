@@ -2,6 +2,8 @@
   "compilerOptions": {
     "module": "amd",
     "moduleResolution": "node",
+    "jsx": "React",
+    "jsxFactory": "h",
     "newLine": "LF",
     "removeComments": true,
     "noImplicitAny": true,
