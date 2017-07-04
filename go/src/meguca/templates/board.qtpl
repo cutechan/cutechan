@@ -75,12 +75,12 @@
 			{% endif %}
 		</span>
 	</span>
-	<hr>
+	<hr class="separator">
 	{%z= threadHTML %}
 	<script id="board-configs" type="application/json">
 		{%z= conf.JSON %}
 	</script>
-	<hr>
+	<hr class="separator">
 	<span class="aside-container">
 		{%= catalogLink(catalog) %}
 		{% if !catalog %}
@@ -141,7 +141,7 @@ IndexThreads renders abbreviated threads for display on board index pages
 			<section class="index-thread{% if t.Deleted %}{% space %}deleted{% endif %}" data-id="{%s idStr %}">
 				{%= deletedToggle() %}
 				{%= renderThreadPosts(t, bls, true) %}
-				<hr>
+				<hr class="separator">
 			</section>
 		{% endfor %}
 		<script id="post-data" type="application/json">

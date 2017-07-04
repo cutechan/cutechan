@@ -139,7 +139,7 @@ class FormContainer extends Component<any, any> {
 		on(document, "click", () => {
 			this.setState({show: true})
 		}, {
-			selector: ".posting a",
+			selector: ".thread-navigation-reply",
 		})
 	}
 	handleHide = () => {

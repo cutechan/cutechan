@@ -5,9 +5,8 @@
 {% import "meguca/auth" %}
 {% import "encoding/json" %}
 
-{% func renderThread(postHTML []byte, id uint64, board string, abbrev bool, pos auth.ModerationLevel) %}{% stripspace %}
-	{% code conf := config.GetBoardConfigs(board) %}
-	{% code ln := lang.Get() %}
+TODO(Kagami): Fix markup and styles.
+{% func renderNoscriptReplyForm(id uint64, board string, pos auth.ModerationLevel) %}{% stripspace %}
 	<form id="new-reply-form" action="/api/create-reply" method="post" enctype="multipart/form-data" class="top-margin hidden">
 		<input name="board" type="text" value="{%s board %}" hidden>
 		<input name="op" type="text" value="{%s strconv.FormatUint(id, 10) %}" hidden>
@@ -16,42 +15,31 @@
 		{%= captcha() %}
 		{%= submit(true) %}
 	</form>
-	<span class="aside-container top-margin">
-		<span class="act">
-			<a href=".">
-				{%s ln.UI["return"] %}
-			</a>
-		</span>
-		<span class="act">
-			<a href="catalog">
-				{%s ln.UI["catalog"] %}
-			</a>
-		</span>
-		<span class="act posting">
-			<a>{%s ln.UI["reply"] %}</a>
-		</span>
-		{%= hoverReveal("span", conf.Notice, ln.UI["showNotice"]) %}
-		{%= hoverReveal("span", conf.Rules, ln.UI["rules"]) %}
-	</span>
-	<hr>
+{% endstripspace %}{% endfunc %}
+
+{% func renderThreadNavigation(top bool) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	{% code cls := "thread-navigation-top" %}
+	{% code if !top { cls = "thread-navigation-bottom" } %}
+	<div class="thread-navigation{% space %}{%s cls %}">
+		<a class="button thread-navigation-button thread-navigation-back" href=".">
+			{%s ln.UI["return"] %}
+		</a>
+		<a class="button thread-navigation-button thread-navigation-catalog" href="catalog">
+			{%s ln.UI["catalog"] %}
+		</a>
+		<a class="button thread-navigation-button thread-navigation-reply">
+			{%s ln.UI["reply"] %}
+		</a>
+	</div>
+{% endstripspace %}{% endfunc %}
+
+{% func renderThread(postHTML []byte, id uint64, board string, abbrev bool, pos auth.ModerationLevel) %}{% stripspace %}
+	{%= renderNoscriptReplyForm(id, board, pos) %}
+	{%= renderThreadNavigation(true) %}
 	{%z= postHTML %}
 	<div id="bottom-spacer"></div>
-	<hr>
-	<span class="aside-container">
-		<span class="act" id="bottom">
-			<a href=".">
-				{%s ln.UI["return"] %}
-			</a>
-		</span>
-		<span class="act">
-			<a href="catalog">
-				{%s ln.UI["catalog"] %}
-			</a>
-		</span>
-		<span class="act posting">
-			<a>{%s ln.UI["reply"] %}</a>
-		</span>
-	</span>
+	{%= renderThreadNavigation(false) %}
 {% endstripspace %}{% endfunc %}
 
 ThreadPosts renders the post content of a thread. Separate function to allow
