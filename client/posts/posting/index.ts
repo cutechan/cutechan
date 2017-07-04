@@ -8,7 +8,7 @@ import lang from "../../lang"
 import { page } from "../../state"
 import initDrop from "./drop"
 import initThreads from "./threads"
-import { open as openReply } from "./reply-form"
+import initReplyForm from "./reply-form"
 
 export { default as FormModel } from "./model"
 
@@ -301,11 +301,6 @@ export default () => {
 		return postState.ready
 	})
 
-	// Handle clicks on the [Reply] button
-	on(document, "click", openReply, {
-		selector: ".posting a",
-	})
-
 	// Handle clicks on post quoting links
 	on(document, "click", quotePost, {
 		selector: ".post-control_reply, .post-control_reply .icon",
@@ -330,4 +325,5 @@ export default () => {
 
 	initDrop()
 	initThreads()
+	initReplyForm()
 }

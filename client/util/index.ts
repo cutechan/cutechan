@@ -1,6 +1,7 @@
 // Various utility functions
 
 export { default as FSM } from "./fsm"
+export { default as ShowHide } from "./show-hide"
 export * from "./fetch"
 export * from "./hooks"
 export * from "./scroll"

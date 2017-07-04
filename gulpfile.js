@@ -94,7 +94,7 @@ function templates() {
 
 function typescript(opts) {
   const project = ts.createProject("client/tsconfig.json", opts);
-  return gulp.src("client/main.ts")
+  return gulp.src(TYPESCRIPT_GLOB)
     .pipe(sourcemaps.init())
     .pipe(project(ts.reporter.nullReporter()))
     .on("error", handleError);

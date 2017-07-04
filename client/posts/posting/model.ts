@@ -308,10 +308,10 @@ export default class FormModel extends Post {
 
 		this.isAllocated = true
 		extend(this, data)
-		this.view.renderAlloc()
-		if (data.image) {
-			this.insertImage(this.image)
-		}
+		// this.view.renderAlloc()
+		// if (data.image) {
+		// 	this.insertImage(this.image)
+		// }
 		if (this.nonLive) {
 			this.propagateLinks()
 			postSM.feed(postEvent.done)

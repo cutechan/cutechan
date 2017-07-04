@@ -1,5 +1,8 @@
 import lang from "../../lang"
 import { h, render, Component } from "preact"
+import { on, ShowHide } from "../../util"
+import { postSM, postEvent, postState } from "."
+import FormModel from "./model"
 
 function s(self: any, name: string) {
 	return function(el: Element) {
@@ -7,13 +10,37 @@ function s(self: any, name: string) {
 	}
 }
 
-class ReplyForm extends Component<any, any> {
+function sendPost(body: string): Promise<void> {
+	return new Promise<void>((resolve, reject) => {
+		postSM.act(postState.ready, postEvent.open, () => {
+			return postState.sendingNonLive
+		})
+		postSM.act(postState.sendingNonLive, postEvent.done, () => {
+			resolve()
+			return postState.ready
+		})
+
+		postSM.feed(postEvent.open)
+		const model = new FormModel()
+		model.parseInput(body)
+		model.commitNonLive()
+	})
+}
+
+class Form extends Component<any, any> {
+	private bodyEl: HTMLInputElement
 	private fileEl: HTMLInputElement
 	state = {
+		sending: false,
 		body: "",
 		files: [] as [File],
 	}
+	componentDidMount() {
+		this.bodyEl.focus()
+		this.bodyEl.scrollIntoView()
+	}
 	handleFormHide = () => {
+		this.props.onHide()
 	}
 	handleBodyChange = (e: any) => {
 		this.setState({body: e.target.value})
@@ -30,6 +57,14 @@ class ReplyForm extends Component<any, any> {
 		this.setState({files: [file]})
 	}
 	handleSend = () => {
+		this.setState({sending: true})
+		sendPost(this.state.body).then(() => {
+			this.handleFormHide()
+		}, () => {
+			// TODO(Kagami): Trigger notification.
+		}).then(() => {
+			this.setState({sending: false})
+		})
 	}
 	renderFilePreview() {
 		const { files } = this.state
@@ -48,7 +83,7 @@ class ReplyForm extends Component<any, any> {
 			</div>
 		);
 	}
-	render({}, {body}: any) {
+	render({}, {sending, body}: any) {
 		return (
 			<div class="reply-form">
 				<div class="reply-header">
@@ -61,17 +96,34 @@ class ReplyForm extends Component<any, any> {
 				{this.renderFilePreview()}
 				<textarea
 					class="reply-body"
+					ref={s(this, "bodyEl")}
 					value={body}
+					disabled={sending}
 					onChange={this.handleBodyChange}
 				/>
 				<div class="reply-buttons">
-					<a class="button reply-attach-button" onClick={this.handleAttach}>{lang.ui.attach}</a>
-					<a class="button reply-send-button" onClick={this.handleSend}>{lang.ui.send}</a>
+					<button
+						class="button reply-attach-button"
+						disabled={sending}
+						onClick={this.handleAttach}
+					>
+						{lang.ui.attach}
+					</button>
+					<button
+						class="button reply-send-button"
+						disabled={sending}
+						onClick={this.handleSend}
+					>
+						<ShowHide show={sending}>
+							<i class="spinner fa fa-spinner fa-pulse fa-fw" />
+						</ShowHide>
+						{lang.ui.send}
+					</button>
 				</div>
 				<input
+					class="reply-file-input"
 					ref={s(this, "fileEl")}
 					type="file"
-					class="reply-file-input"
 					onChange={this.handleFileLoad}
 				/>
 			</div>
@@ -79,7 +131,30 @@ class ReplyForm extends Component<any, any> {
 	}
 }
 
-export function open() {
+class FormContainer extends Component<any, any> {
+	state = {
+		show: false,
+	}
+	componentDidMount() {
+		on(document, "click", () => {
+			this.setState({show: true})
+		}, {
+			selector: ".posting a",
+		})
+	}
+	handleHide = () => {
+		this.setState({show: false})
+	}
+	render({}, {show}: any) {
+		return (
+			<ShowHide show={show}>
+				<Form onHide={this.handleHide} />
+			</ShowHide>
+		)
+	}
+}
+
+export default function() {
 	const container = document.getElementById("bottom-spacer")
-	render(<ReplyForm/>, container)
+	render(<FormContainer/>, container)
 }

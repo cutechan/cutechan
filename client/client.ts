@@ -43,7 +43,6 @@ export function insertPost(data: PostData) {
 			existing.onAllocation(data)
 			incrementPostCount(true, "image" in data)
 		}
-		return
 	}
 
 	const model = new Post(data)
