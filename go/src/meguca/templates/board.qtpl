@@ -45,6 +45,22 @@
 	{% endif %}
 {% endstripspace %}{% endfunc %}
 
+{% func renderBoardSearch(catalog bool) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<div class="board-search">
+		<input class="board-search-input" type="text" placeholder="{%s ln.UI["search"] %}">
+		{% if catalog %}
+			<select name="sortMode">
+				{% for i, s := range [...]string{"bump", "lastReply", "creation", "replyCount", "fileCount"} %}
+					<option value="{%s s %}">
+						{%s ln.SortModes[i] %}
+					</option>
+				{% endfor %}
+			</select>
+		{% endif %}
+	</div>
+{% endstripspace %}{% endfunc %}
+
 {% func renderBoard(threadHTML []byte, id, title string, conf config.BoardConfContainer, page, total int, pos auth.ModerationLevel, catalog bool) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	{%= renderBanner(conf) %}
@@ -61,20 +77,7 @@
 		{% if !catalog %}
 			{%= pagination(page, total) %}
 		{% endif %}
-		{%= hoverReveal("aside", conf.Notice, ln.UI["showNotice"]) %}
-		{%= hoverReveal("aside", conf.Rules, ln.UI["rules"]) %}
-		<span id="catalog-controls" class="margin-spaced">
-			<input type="text" name="search" placeholder="{%s ln.UI["search"] %}" title="{%s ln.UI["searchTooltip"] %}">
-			{% if catalog %}
-				<select name="sortMode">
-					{% for i, s := range [...]string{"bump", "lastReply", "creation", "replyCount", "fileCount"} %}
-						<option value="{%s s %}">
-							{%s ln.SortModes[i] %}
-						</option>
-					{% endfor %}
-				</select>
-			{% endif %}
-		</span>
+		{%= renderBoardSearch(catalog) %}
 	</nav>
 	<hr class="separator">
 	{%z= threadHTML %}
@@ -82,12 +85,12 @@
 		{%z= conf.JSON %}
 	</script>
 	<hr class="separator">
-	<div class="board-nav board-nav-bottom">
+	<nav class="board-nav board-nav-bottom">
 		{%= catalogLink(catalog) %}
 		{% if !catalog %}
 			{%= pagination(page, total) %}
 		{% endif %}
-	</div>
+	</nav>
 {% endstripspace %}{% endfunc %}
 
 CatalogThreads renders thread content for a catalog page. Separate function to
@@ -189,7 +192,7 @@ Link to catalog or board page
 
 Links to different pages og the board index
 {% func pagination(page, total int) %}{% stripspace %}
-	<aside class="pagination spaced">
+	<div class="board-pagination">
 		{% if page != 0 %}
 			{% if page-1 != 0 %}
 				{%= pageLink(0, "<<") %}
@@ -211,7 +214,7 @@ Links to different pages og the board index
 				{%= pageLink(total-1, ">>") %}
 			{% endif %}
 		{% endif %}
-	</aside>
+	</div>
 {% endstripspace %}{% endfunc %}
 
 Link to a different paginated board page

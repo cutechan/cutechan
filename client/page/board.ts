@@ -1,4 +1,4 @@
-import { BOARD_REFRESH_BUTTON_SEL } from "../vars"
+import { BOARD_REFRESH_BUTTON_SEL, BOARD_SEARCH_INPUT_SEL } from "../vars"
 import { on, fetchBoard } from '../util'
 import lang from '../lang'
 import { page, posts, loadFromDB } from '../state'
@@ -147,18 +147,18 @@ export function sortThreads(initial: boolean) {
 // Retrieves the thread container and the threads within depending on page type
 function getThreads(): [HTMLElement, HTMLElement[]] {
 	let contID: string,
-		threadTag: string
+		threadSel: string
 	if (page.catalog) {
 		contID = "catalog"
-		threadTag = "article"
+		threadSel = "article"
 	} else {
 		contID = "index-thread-container"
-		threadTag = "section"
+		threadSel = ".index-thread"
 	}
 	const cont = document.getElementById(contID)
 	return [
 		cont,
-		Array.from(cont.querySelectorAll(threadTag)),
+		Array.from(cont.querySelectorAll(threadSel)),
 	]
 }
 
@@ -236,7 +236,7 @@ on(threads, "input", onSortChange, {
 })
 on(threads, "input", onSearchChange, {
 	passive: true,
-	selector: "input[name=search]",
+	selector: BOARD_SEARCH_INPUT_SEL,
 })
 on(threads, "click", refreshBoard, {
 	passive: true,

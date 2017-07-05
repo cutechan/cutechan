@@ -1,5 +1,6 @@
 // Keyboard shortcuts and such
 
+import { BOARD_SEARCH_INPUT_SEL, POST_SEL } from "../vars"
 import options from "../options"
 import { postSM, postEvent } from "../posts"
 import { page } from "../state"
@@ -18,13 +19,14 @@ function handleShortcut(event: KeyboardEvent) {
 	if (!anyModifier && !inInput) {
 		caught = true
 		switch (event.key) {
-			case "w":
 			case "ArrowLeft":
 				navigatePost(true)
 				break
-			case "s":
 			case "ArrowRight":
 				navigatePost(false)
+				break
+			case "s":
+				navigateSearch()
 				break
 			default:
 				caught = false
@@ -78,12 +80,10 @@ function navigateUp() {
 	}
 }
 
-const postSelector = ".post"
-
 // Move focus to next or previous visible post in document order.
 // Starts with first post if none is selected via current url fragment.
 function navigatePost(reverse: boolean) {
-	const all = Array.from(document.querySelectorAll(postSelector))
+	const all = Array.from(document.querySelectorAll(POST_SEL))
 	const currentId = location.hash.slice(1)
 	let current = document.getElementById("post" + currentId) || all[0]
 	let currentIdx = all.indexOf(current)
@@ -98,5 +98,12 @@ function navigatePost(reverse: boolean) {
 
 	if (current) {
 		location.hash = "#" + getID(current)
+	}
+}
+
+function navigateSearch() {
+	const el = document.querySelector(BOARD_SEARCH_INPUT_SEL)
+	if (el) {
+		el.focus()
 	}
 }

@@ -131,7 +131,7 @@ body, #page-container {
 #threads {
   flex: 1;
   max-width: 100vw;
-  padding: @bannerHeight 1.4em 0 1.4em;
+  padding: @bannerHeight 1.4em;
 }
 
 aside {
@@ -228,10 +228,6 @@ table {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-}
-
-#catalog-controls {
-  margin-left: auto;
 }
 
 .captcha-container {
@@ -649,12 +645,45 @@ a.referenced {
 // THREAD NAVIGATION
 //////////////////////////////
 
-.thread-nav {
-  margin: 20px 0;
+.thread-nav-top {
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.thread-nav-bottom {
+  margin-top: 20px;
 }
 
 .thread-nav-item {
   margin-right: 5px;
+}
+
+//////////////////////////////
+// BOARD SEARCH
+//////////////////////////////
+
+.board-search {
+  float: right;
+}
+
+.board-search-input {
+  border-radius: 15px;
+  padding: 6px 14px;
+  border: 1px solid #ccc;
+  background: white;
+  outline: none;
+  &:focus {
+    border-color: rgba(82,168,236,.8);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(82,168,236,.6);
+  }
+}
+
+//////////////////////////////
+// BOARD PAGINATION
+//////////////////////////////
+
+.board-pagination {
+  display: inline-block;
 }
 
 //////////////////////////////

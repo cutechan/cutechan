@@ -25,7 +25,7 @@ TODO(Kagami): Fix markup and styles.
 		<a class="button thread-nav-item thread-nav-back" href="/all/">
 			{%s ln.UI["return"] %}
 		</a>
-		<a class="button thread-nav-item thread-nav-catalog" href="catalog">
+		<a class="button thread-nav-item thread-nav-catalog" href="/all/catalog">
 			{%s ln.UI["catalog"] %}
 		</a>
 		<a class="button thread-nav-item thread-nav-reply">
