@@ -40,8 +40,8 @@ TODO(Kagami): Fix markup and styles.
 	{%= renderThreadNavigation(true) %}
 	<hr class="separator">
 	{%z= postHTML %}
-	<hr class="separator">
 	<div id="bottom-spacer"></div>
+	<hr class="separator">
 	{%= renderThreadNavigation(false) %}
 {% endstripspace %}{% endfunc %}
 

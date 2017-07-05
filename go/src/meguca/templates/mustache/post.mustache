@@ -28,8 +28,10 @@
   </section>
 
   <footer class="post-footer">
-    {{#Backlinks}}
+    {{#HasBacklinks}}
       <span class="post-pre-backlinks">{{ LReplies }}:</span>
+    {{/HasBacklinks}}
+    {{#Backlinks}}
       <span class="backlinks spaced">
         <em>{{{.}}}</em>
       </span>

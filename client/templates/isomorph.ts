@@ -78,6 +78,7 @@ export function makePostContext(t: Thread, p: Post, bls: Backlinks, index: boole
 
 	// NOOP because we will need to update already rendered posts so avoid
 	// code duplication.
+	ctx.HasBacklinks = false
 	ctx.Backlinks = false
 
 	return new TemplateContext("post", ctx)

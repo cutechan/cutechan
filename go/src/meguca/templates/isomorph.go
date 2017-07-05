@@ -205,6 +205,10 @@ func postLink(id uint64, cross, index bool) string {
 	return renderMustache("post-link", ctx)
 }
 
+func (ctx PostContext) HasBacklinks() bool {
+	return ctx.backlinks[ctx.ID] != nil
+}
+
 func (ctx PostContext) Backlinks() (list []string) {
 	if links := ctx.backlinks[ctx.ID]; links != nil {
 		for id, op := range links {
