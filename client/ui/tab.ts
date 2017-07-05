@@ -140,7 +140,7 @@ function delayedDiscoRender() {
 
 export default () => {
 	// Needs to be available with no connectivity, so we download and cache it
-	fetch(urlBase + "disconnected.ico")
+	fetch(urlBase + "error.ico")
 		.then(res =>
 			res.blob())
 		.then(blob =>
