@@ -15,6 +15,7 @@
   ],
   "dependencies": {
     "almond": "^0.3.3",
+    "classnames": "^2.2.5",
     "core-js": "^2.4.1",
     "dom4": "^1.8.3",
     "font-awesome": "^4.7.0",
@@ -25,6 +26,7 @@
     "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {
+    "@types/classnames": "^2.2.0",
     "@types/mustache": "^0.8.29",
     "autoprefixer": "^7.1.1",
     "babel-preset-latest": "^6.16.0",

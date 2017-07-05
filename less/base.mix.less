@@ -226,10 +226,6 @@ table {
   align-items: flex-end;
 }
 
-.hidden {
-  display: none;
-}
-
 #catalog-controls {
   margin-left: auto;
 }
@@ -892,6 +888,7 @@ header {
 
 // TODO(Kagami): Merge with post-control and theme.
 .control {
+  display: inline-block;
   font-size: larger;
   cursor: pointer;
   color: #16a085;
@@ -937,27 +934,36 @@ header {
   flex-wrap: wrap;
   width: 700px;
   box-sizing: border-box;
-  border: 1px solid #ccc;
+  border: 3px solid #ccc;
   border-radius: 3px;
-  margin: 10px 0;
-  // background: #ddd;
+  margin-top: 20px;
+  padding: 5px;
 }
 
-.reply-header {
-  flex: 0 1 100%;
-  border-bottom: 1px solid #ccc;
-  padding: 2px 5px;
+.reply-controls {
   user-select: none;
-  cursor: default;
+  line-height: 28px;
 }
 
-.reply-hide-form-control {
+.reply-control {
   font-size: 22px;
-  float: right;
+}
+
+.reply-form-hide-control {
+  font-size: 28px;
+  display: block;
+  margin-top: -3px;
+}
+
+.reply-form-move-control {
+  width: 22px;
+  text-align: center;
+  cursor: move;
 }
 
 .reply-file-previews {
-  border-right: 1px solid #ccc;
+  flex: 0;
+  padding-right: 5px;
   user-select: none;
 }
 
@@ -973,32 +979,47 @@ header {
 
 .reply-remove-file-control {
   position: absolute;
-  top: 0;
-  right: 3px;
+  top: -3px;
+  right: 0px;
+}
+
+.reply-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+
+.reply-body-wrapper {
+  flex: 1;
+  display: flex;
 }
 
 .reply-body {
   flex: 1;
-  box-sizing: border-box;
   display: block;
-  width: 100%;
-  height: 200px;
-  resize: both;
-  border: 0;
+  box-sizing: border-box;
+  min-height: 120px;
+  margin-right: 3px;
+  padding: 0;
+  overflow: hidden;
+  resize: none;
+  border: none;
   outline: none;
-  padding: 5px;
+  background: none;
 }
 
-.reply-buttons {
-  border-top: 1px solid #ccc;
-  flex: 0 1 100%;
-  padding: 5px;
+.reply-side-controls {
+  flex: 0;
 }
 
-.reply-attach-button {
+.reply-footer-controls {
+  flex: 0;
+  margin-top: 3px;
+  margin-bottom: -6px;
 }
 
-.reply-send-button {
+.reply-send-control {
   float: right;
 }
 
@@ -1106,6 +1127,20 @@ header {
 // XXX(Kagami): Avoid accidental deletion. Make annoying confirm later.
 #deleteBoard {
   display: none;
+}
+
+//////////////////////////////
+// UTILS
+//////////////////////////////
+
+.hidden {
+  display: none;
+}
+
+.clearfix:after {
+  content: "";
+  display: table;
+  clear: both;
 }
 
 //////////////////////////////

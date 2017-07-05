@@ -156,13 +156,14 @@ createTask("deps", "client/loader.js", src =>
         almond: "../node_modules/almond/almond",
         mustache: "../node_modules/mustache/mustache",
         preact: "../node_modules/preact/dist/preact",
+        classnames: "../node_modules/classnames/index",
       },
       shim: {
         preact: {
           exports: "preact",
         },
       },
-      deps: ["almond", "mustache", "preact"],
+      deps: ["almond", "mustache", "preact", "classnames"],
       out: "deps.js",
     }))
     .pipe(gulpif(!watch, minify()))

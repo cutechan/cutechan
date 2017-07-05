@@ -1,4 +1,4 @@
-import lang from "../../lang"
+import * as cx from "classnames"
 import { h, render, Component } from "preact"
 import { on, ShowHide } from "../../util"
 import { postSM, postEvent, postState } from "."
@@ -42,6 +42,11 @@ class Form extends Component<any, any> {
 	handleFormHide = () => {
 		this.props.onHide()
 	}
+	handleBodyKeyUp = (e: any) => {
+		// See <https://stackoverflow.com/a/995374>.
+		this.bodyEl.style.height = "1px"
+		this.bodyEl.style.height = this.bodyEl.scrollHeight + "px"
+	}
 	handleBodyChange = (e: any) => {
 		this.setState({body: e.target.value})
 	}
@@ -62,7 +67,6 @@ class Form extends Component<any, any> {
 			this.handleFormHide()
 		}, () => {
 			// TODO(Kagami): Trigger notification.
-		}).then(() => {
 			this.setState({sending: false})
 		})
 	}
@@ -86,39 +90,37 @@ class Form extends Component<any, any> {
 	render({}, {sending, body}: any) {
 		return (
 			<div class="reply-form">
-				<div class="reply-header">
-					<div class="reply-header-controls">
-						<a class="control reply-hide-form-control" onClick={this.handleFormHide}>
-							<i class="fa fa-remove" />
+				{this.renderFilePreview()}
+				<div class="reply-content">
+					<div class="reply-body-wrapper">
+						<textarea
+							class="reply-body"
+							ref={s(this, "bodyEl")}
+							value={body}
+							disabled={sending}
+							onKeyUp={this.handleBodyKeyUp}
+							onChange={this.handleBodyChange}
+						/>
+						<div class="reply-side-controls reply-controls">
+							<a class="control reply-control reply-form-hide-control" onClick={this.handleFormHide}>
+								<i class="fa fa-remove" />
+							</a>
+							<a class="control reply-control reply-form-move-control">
+								<i class="fa fa-arrows-alt" />
+							</a>
+						</div>
+					</div>
+					<div class="reply-footer-controls reply-controls">
+						<a class="control reply-control reply-attach-control" onClick={this.handleAttach}>
+							<i class="fa fa-file-image-o" />
+						</a>
+						<a class="control reply-control reply-send-control" onClick={this.handleSend}>
+							<i class={cx("fa", {
+								"fa-check": !sending,
+								"fa-spinner fa-pulse fa-fw": sending,
+							})} />
 						</a>
 					</div>
-				</div>
-				{this.renderFilePreview()}
-				<textarea
-					class="reply-body"
-					ref={s(this, "bodyEl")}
-					value={body}
-					disabled={sending}
-					onChange={this.handleBodyChange}
-				/>
-				<div class="reply-buttons">
-					<button
-						class="button reply-attach-button"
-						disabled={sending}
-						onClick={this.handleAttach}
-					>
-						{lang.ui.attach}
-					</button>
-					<button
-						class="button reply-send-button"
-						disabled={sending}
-						onClick={this.handleSend}
-					>
-						<ShowHide show={sending}>
-							<i class="spinner fa fa-spinner fa-pulse fa-fw" />
-						</ShowHide>
-						{lang.ui.send}
-					</button>
 				</div>
 				<input
 					class="reply-file-input"
