@@ -44,14 +44,6 @@ b {
   color: @bold;
 }
 
-.bold {
-  font-weight: bold;
-}
-
-.mono {
-  font-family: monospace;
-}
-
 .sticky svg {
   fill: @admin;
 }
@@ -110,28 +102,6 @@ a {
     pointer-events: none;
     color: inherit;
   }
-}
-
-.control {
-  cursor: pointer;
-  user-select: none;
-}
-
-body, #page-container {
-  overflow-x: hidden;
-  margin: 0;
-  padding: 0;
-}
-
-#page-container {
-  display: flex;
-  width: 100%;
-}
-
-#threads {
-  flex: 1;
-  max-width: 100vw;
-  padding: @bannerHeight 1.4em;
 }
 
 aside {
@@ -320,10 +290,37 @@ article, section {
   }
 }
 
-.page-title {
-  font-size: 2em;
-  font-weight: bold;
-  margin: 15px 0;
+//////////////////////////////
+// CONTAINERS
+//////////////////////////////
+
+html, body {
+  height: 100%;
+}
+
+body, #page-container {
+  overflow-x: hidden;
+}
+
+#page-container {
+  width: 100%;
+  height: 100%;
+}
+
+#threads {
+  display: flex;
+  flex-direction: column;
+  box-sizing: border-box;
+  min-height: 100%;
+  max-width: 100vw;
+  padding: @bannerHeight 20px 20px;
+  section:last-child hr {
+    display: none;
+  }
+}
+
+#index-thread-container, #thread-container {
+  flex: 1;
 }
 
 //////////////////////////////
@@ -435,6 +432,7 @@ article, section {
 }
 
 #left-panel, #left-spacer {
+  display: none;
   left: 0;
   margin-left: 0;
 }
@@ -640,15 +638,6 @@ a.referenced {
 // THREAD NAVIGATION
 //////////////////////////////
 
-.thread-nav_top {
-  margin-top: 20px;
-  margin-bottom: 20px;
-}
-
-.thread-nav_bottom {
-  margin-top: 20px;
-}
-
 .thread-nav-item {
   margin-right: 5px;
 }
@@ -679,6 +668,16 @@ a.referenced {
 
 .board-pagination {
   display: inline-block;
+}
+
+//////////////////////////////
+// PAGE
+//////////////////////////////
+
+.page-title {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 15px 0;
 }
 
 //////////////////////////////
@@ -950,6 +949,7 @@ header {
   display: inline-block;
   font-size: larger;
   cursor: pointer;
+  user-select: none;
   color: #16a085;
   &:hover {
     color: #d17c43;
@@ -1127,15 +1127,6 @@ header {
   overflow-wrap: break-word;
   word-break: break-word;
   word-wrap: break-word;
-}
-
-#threads {
-  hr {
-    width: 100%;
-  }
-  section:last-child hr {
-    display: none;
-  }
 }
 
 #catalog {

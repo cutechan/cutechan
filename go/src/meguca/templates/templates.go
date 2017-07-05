@@ -60,7 +60,6 @@ func Board(
 		pos,
 		catalog,
 	)
-
 	if minimal {
 		return []byte(html)
 	}
@@ -76,7 +75,7 @@ func Thread(
 	postHTML []byte,
 ) []byte {
 	title = html.EscapeString(fmt.Sprintf("/%s/ — %s", board, title))
-	html := renderThread(postHTML, id, board, abbrev, pos)
+	html := renderThread(postHTML, id, board, title, abbrev, pos)
 	return execIndex(html, title, pos)
 }
 
@@ -85,7 +84,6 @@ func execIndex(html, title string, pos auth.ModerationLevel) []byte {
 	mu.RLock()
 	t := indexTemplates[pos]
 	mu.RUnlock()
-
 	return bytes.Join([][]byte{
 		t[0],
 		[]byte(title),

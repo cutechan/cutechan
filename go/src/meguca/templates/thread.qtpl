@@ -34,10 +34,13 @@ TODO(Kagami): Fix markup and styles.
 	</nav>
 {% endstripspace %}{% endfunc %}
 
-{% func renderThread(postHTML []byte, id uint64, board string, abbrev bool, pos auth.ModerationLevel) %}{% stripspace %}
+{% func renderThread(postHTML []byte, id uint64, board, title string, abbrev bool, pos auth.ModerationLevel) %}{% stripspace %}
+	<h1 class="page-title">{%s title %}</h1>
 	<noscript>{%= renderNoscriptReplyForm(id, board, pos) %}</noscript>
 	{%= renderThreadNavigation(true) %}
+	<hr class="separator">
 	{%z= postHTML %}
+	<hr class="separator">
 	<div id="bottom-spacer"></div>
 	{%= renderThreadNavigation(false) %}
 {% endstripspace %}{% endfunc %}
