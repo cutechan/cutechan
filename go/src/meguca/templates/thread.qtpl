@@ -19,8 +19,8 @@ TODO(Kagami): Fix markup and styles.
 
 {% func renderThreadNavigation(top bool) %}{% stripspace %}
 	{% code ln := lang.Get() %}
-	{% code cls := "thread-nav-top" %}
-	{% code if !top { cls = "thread-nav-bottom" } %}
+	{% code cls := "thread-nav_top" %}
+	{% code if !top { cls = "thread-nav_bottom" } %}
 	<nav class="thread-nav{% space %}{%s cls %}">
 		<a class="button thread-nav-item thread-nav-back" href="/all/">
 			{%s ln.UI["return"] %}

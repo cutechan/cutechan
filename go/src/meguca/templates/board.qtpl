@@ -65,7 +65,7 @@
 	{% code ln := lang.Get() %}
 	{%= renderBanner(conf) %}
 	<h1 class="page-title">{%s title %}</h1>
-	<nav class="board-nav board-nav-top">
+	<nav class="board-nav board-nav_top">
 		<aside id="thread-form-container">{%= renderThreadForm(id, conf, pos) %}</aside>
 		<a class="button board-nav-item board-nav-new-thread new-thread-button">
 			{%s ln.UI["newThread"] %}
@@ -85,7 +85,7 @@
 		{%z= conf.JSON %}
 	</script>
 	<hr class="separator">
-	<nav class="board-nav board-nav-bottom">
+	<nav class="board-nav board-nav_bottom">
 		{%= catalogLink(catalog) %}
 		{% if !catalog %}
 			{%= pagination(page, total) %}
