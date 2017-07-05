@@ -619,16 +619,30 @@ a.referenced {
   margin-left: 10px;
   font-weight: bold;
   font-size: larger;
-}
-
-.site-nav-item {
-  padding-right: 5px;
   &:before {
     content: "[ ";
   }
   &:after {
     content: " ]";
   }
+}
+
+.site-nav-item {
+  &:after {
+    color: black;
+    content: " / ";
+  }
+  &:last-child:after {
+    content: "";
+  }
+}
+
+//////////////////////////////
+// BOARD NAVIGATION
+//////////////////////////////
+
+.board-nav-item {
+  margin-right: 5px;
 }
 
 //////////////////////////////
@@ -1068,6 +1082,7 @@ header {
 }
 
 #new-thread-form, #new-reply-form {
+  display: none;
   input[type=text], textarea {
     width: 20em;
   }

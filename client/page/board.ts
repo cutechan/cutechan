@@ -1,3 +1,4 @@
+import { BOARD_REFRESH_BUTTON_SEL } from "../vars"
 import { on, fetchBoard } from '../util'
 import lang from '../lang'
 import { page, posts, loadFromDB } from '../state'
@@ -11,7 +12,6 @@ import { setPostCount } from "./thread"
 import { ThreadData } from "../common"
 import { renderSyncCount } from "../connection"
 
-
 type SortFunction = (a: Post, b: Post) => number
 
 // Thread sort functions
@@ -22,6 +22,7 @@ const sorts: { [name: string]: SortFunction } = {
 	replyCount: subtract("postCtr"),
 	fileCount: subtract("imageCtr"),
 }
+
 const threads = document.getElementById("threads")
 
 // Unix time of last board page render. Used for automatic refreshes.
@@ -95,7 +96,7 @@ export async function render() {
 		el.textContent = lang.posts["expand"]
 	}
 
-	renderRefreshButton(threads.querySelector("#refresh > a"))
+	renderRefreshButton()
 	if (!page.catalog) {
 		findSyncwatches(threads)
 	} else {
@@ -162,12 +163,12 @@ function getThreads(): [HTMLElement, HTMLElement[]] {
 }
 
 // Render the board refresh button text
-function renderRefreshButton(el: Element) {
+function renderRefreshButton() {
 	let text = relativeTime(lastFetchTime)
 	if (text === lang.posts["justNow"]) {
 		text = lang.ui["refresh"]
 	}
-	el.textContent = text
+	threads.querySelector(BOARD_REFRESH_BUTTON_SEL).textContent = text
 }
 
 // Persist thread sort order mode to localStorage and rerender threads
@@ -225,7 +226,7 @@ setInterval(() => {
 	if (document.hidden) {
 		refreshBoard()
 	} else {
-		renderRefreshButton(threads.querySelector("#refresh > a"))
+		renderRefreshButton()
 	}
 }, 600000)
 
@@ -239,5 +240,5 @@ on(threads, "input", onSearchChange, {
 })
 on(threads, "click", refreshBoard, {
 	passive: true,
-	selector: "#refresh > a",
+	selector: BOARD_REFRESH_BUTTON_SEL,
 })

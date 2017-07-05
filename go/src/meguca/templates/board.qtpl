@@ -7,8 +7,31 @@
 {% import "meguca/imager/assets" %}
 {% import banners "meguca/assets" %}
 
-{% func renderBoard(threadHTML []byte, id, title string, conf config.BoardConfContainer, page, total int, pos auth.ModerationLevel, catalog bool) %}{% stripspace %}
+{% func renderThreadForm(id string, conf config.BoardConfContainer, pos auth.ModerationLevel) %}{% stripspace %}
 	{% code ln := lang.Get() %}
+	<form id="new-thread-form" action="/api/create-thread" method="POST" enctype="multipart/form-data">
+		{% if id == "all" %}
+			<select name="board" required>
+				{% for _, b := range config.GetBoardTitles() %}
+					<option value="{%s b.ID %}">
+						{%= formatTitle(b.ID, b.Title) %}
+					</option>
+				{% endfor %}
+			</select>
+			<br>
+		{% else %}
+			<input type="text" name="board" value="{%s conf.ID %}" hidden>
+		{% endif %}
+		<input name="subject" placeholder="{%s ln.UI["subject"] %}" required type="text" maxlength="100">
+		<br>
+		{%= noscriptPostCreationFields(pos) %}
+		{%= uploadForm() %}
+		{%= captcha() %}
+		{%= submit(false) %}
+	</form>
+{% endstripspace %}{% endfunc %}
+
+{% func renderBanner(conf config.BoardConfContainer) %}{% stripspace %}
 	{% code bannerID, mime, ok := banners.Banners.Random(conf.ID) %}
 	{% if ok %}
 		<h1 class="image-banner">
@@ -20,42 +43,20 @@
 			{% endif %}
 		</h1>
 	{% endif %}
-	<h1 class="page-title">
-		{%s title %}
-	</h1>
-	<span class="aside-container">
-		<aside id="thread-form-container">
-			<span class="act">
-				<a class="new-thread-button">
-					{%s ln.UI["newThread"] %}
-				</a>
-			</span>
-			<form id="new-thread-form" action="/api/create-thread" method="post" enctype="multipart/form-data" class="hidden">
-				{% if id == "all" %}
-					<select name="board" required>
-						{% for _, b := range config.GetBoardTitles() %}
-							<option value="{%s b.ID %}">
-								{%= formatTitle(b.ID, b.Title) %}
-							</option>
-						{% endfor %}
-					</select>
-					<br>
-				{% else %}
-					<input type="text" name="board" value="{%s conf.ID %}" hidden>
-				{% endif %}
-				<input name="subject" placeholder="{%s ln.UI["subject"] %}" required type="text" maxlength="100">
-				<br>
-				{%= noscriptPostCreationFields(pos) %}
-				{%= uploadForm() %}
-				{%= captcha() %}
-				{%= submit(false) %}
-			</form>
-		</aside>
-		<aside id="refresh" class="act">
-			<a>
-				{%s ln.Common.UI["refresh"] %}
-			</a>
-		</aside>
+{% endstripspace %}{% endfunc %}
+
+{% func renderBoard(threadHTML []byte, id, title string, conf config.BoardConfContainer, page, total int, pos auth.ModerationLevel, catalog bool) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	{%= renderBanner(conf) %}
+	<h1 class="page-title">{%s title %}</h1>
+	<nav class="board-nav board-nav-top">
+		<aside id="thread-form-container">{%= renderThreadForm(id, conf, pos) %}</aside>
+		<a class="button board-nav-item board-nav-new-thread new-thread-button">
+			{%s ln.UI["newThread"] %}
+		</a>
+		<a class="button board-nav-item board-nav-refresh">
+			{%s ln.Common.UI["refresh"] %}
+		</a>
 		{%= catalogLink(catalog) %}
 		{% if !catalog %}
 			{%= pagination(page, total) %}
@@ -74,19 +75,19 @@
 				</select>
 			{% endif %}
 		</span>
-	</span>
+	</nav>
 	<hr class="separator">
 	{%z= threadHTML %}
 	<script id="board-configs" type="application/json">
 		{%z= conf.JSON %}
 	</script>
 	<hr class="separator">
-	<span class="aside-container">
+	<div class="board-nav board-nav-bottom">
 		{%= catalogLink(catalog) %}
 		{% if !catalog %}
 			{%= pagination(page, total) %}
 		{% endif %}
-	</span>
+	</div>
 {% endstripspace %}{% endfunc %}
 
 CatalogThreads renders thread content for a catalog page. Separate function to
@@ -175,17 +176,15 @@ Render image upload form
 Link to catalog or board page
 {% func catalogLink(catalog bool) %}{% stripspace %}
 	{% code ln := lang.Get().UI %}
-	<aside class="act">
-		{% if catalog %}
-			<a href=".">
-				{%s ln["return"] %}
-			</a>
-		{% else %}
-			<a href="catalog">
-				{%s ln["catalog"] %}
-			</a>
-		{% endif %}
-	</aside>
+	{% if catalog %}
+		<a class="button board-nav-item board-nav-back" href=".">
+			{%s ln["return"] %}
+		</a>
+	{% else %}
+		<a class="button board-nav-item board-nav-catalog" href="catalog">
+			{%s ln["catalog"] %}
+		</a>
+	{% endif %}
 {% endstripspace %}{% endfunc %}
 
 Links to different pages og the board index

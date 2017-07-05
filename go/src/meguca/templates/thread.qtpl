@@ -22,7 +22,7 @@ TODO(Kagami): Fix markup and styles.
 	{% code cls := "thread-nav-top" %}
 	{% code if !top { cls = "thread-nav-bottom" } %}
 	<nav class="thread-nav{% space %}{%s cls %}">
-		<a class="button thread-nav-item thread-nav-back" href=".">
+		<a class="button thread-nav-item thread-nav-back" href="/all/">
 			{%s ln.UI["return"] %}
 		</a>
 		<a class="button thread-nav-item thread-nav-catalog" href="catalog">
@@ -35,7 +35,7 @@ TODO(Kagami): Fix markup and styles.
 {% endstripspace %}{% endfunc %}
 
 {% func renderThread(postHTML []byte, id uint64, board string, abbrev bool, pos auth.ModerationLevel) %}{% stripspace %}
-	{%= renderNoscriptReplyForm(id, board, pos) %}
+	<noscript>{%= renderNoscriptReplyForm(id, board, pos) %}</noscript>
 	{%= renderThreadNavigation(true) %}
 	{%z= postHTML %}
 	<div id="bottom-spacer"></div>

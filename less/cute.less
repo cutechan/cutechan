@@ -26,11 +26,6 @@ a:hover {
   color: #d17c43;
 }
 
-article, aside {
-  background-color: @postBG;
-  border: @border;
-}
-
 article {
   article {
     border: @border;
@@ -46,6 +41,11 @@ article {
       border: solid 1px #dbd1aa
     }
   }
+}
+
+.post:not(.post_op) {
+  background-color: @postBG;
+  border: @border;
 }
 
 .post-id {

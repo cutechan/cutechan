@@ -1,5 +1,6 @@
 import * as cx from "classnames"
 import { h, render, Component } from "preact"
+import { THREAD_REPLY_BUTTON_SEL } from "../../vars"
 import { on, ShowHide } from "../../util"
 import { postSM, postEvent, postState } from "."
 import FormModel from "./model"
@@ -141,7 +142,7 @@ class FormContainer extends Component<any, any> {
 		on(document, "click", () => {
 			this.setState({show: true})
 		}, {
-			selector: ".thread-nav-reply",
+			selector: THREAD_REPLY_BUTTON_SEL,
 		})
 	}
 	handleHide = () => {

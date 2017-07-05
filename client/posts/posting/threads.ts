@@ -2,8 +2,8 @@ import { on } from '../../util'
 import { CaptchaView } from "../../ui"
 
 function expand(e: Event) {
-	const el = (e.target as HTMLElement).closest("aside")
-	el.classList.add("expanded")
+	const el = document.getElementById("new-thread-form") as HTMLElement
+	el.style.display = "block"
 	const c = el.querySelector(".captcha-container")
 	if (c) {
 		new CaptchaView(c)
