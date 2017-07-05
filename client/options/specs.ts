@@ -34,7 +34,6 @@ export const specs: { [id: string]: OptionSpec } = {
 	workModeToggle: {
 		type: optionType.checkbox,
 		default: false,
-		exec: toggleHeadStyle("work-mode", ".image-banner{display: none;}"),
 	},
 	// Image hover expansion
 	imageHover: {
@@ -84,7 +83,7 @@ export const specs: { [id: string]: OptionSpec } = {
 }
 
 // Toggle an optional style element in the head
-function toggleHeadStyle(
+export function toggleHeadStyle(
 	name: string,
 	css: string,
 ): (toggle: boolean) => void {

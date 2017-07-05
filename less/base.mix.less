@@ -1,3 +1,7 @@
+//////////////////////////////
+// ANY THEME TEMPLATE
+//////////////////////////////
+
 @import (inline) "node_modules/normalize.css/normalize.css";
 @import (inline) "node_modules/font-awesome/css/font-awesome.css";
 
@@ -409,10 +413,6 @@ article, section {
   display: inline-block;
 }
 
-.navigation {
-  float: left;
-}
-
 //////////////////////////////
 // PANELS
 //////////////////////////////
@@ -611,14 +611,35 @@ a.referenced {
 }
 
 //////////////////////////////
+// SITE NAVIGATION
+//////////////////////////////
+
+.site-nav {
+  float: left;
+  margin-left: 10px;
+  font-weight: bold;
+  font-size: larger;
+}
+
+.site-nav-item {
+  padding-right: 5px;
+  &:before {
+    content: "[ ";
+  }
+  &:after {
+    content: " ]";
+  }
+}
+
+//////////////////////////////
 // THREAD NAVIGATION
 //////////////////////////////
 
-.thread-navigation {
+.thread-nav {
   margin: 20px 0;
 }
 
-.thread-navigation-button {
+.thread-nav-item {
   margin-right: 5px;
 }
 

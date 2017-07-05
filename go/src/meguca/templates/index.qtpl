@@ -103,16 +103,11 @@
 				Top banner.
 			{% endcomment %}
 			<div class="banner">
-				<nav class="navigation">
-					<noscript>
-						[
-						<a class="banner-item" href="/all/">all</a>
-						{% for _, b := range boards %}
-							{% space %}/{% space %}
-							<a class="banner-item" href="/{%s b %}/">{%s b %}</a>
-						{% endfor %}
-						]
-					</noscript>
+				<nav class="site-nav">
+					<a class="site-nav-item" href="/all/">all</a>
+					{% for _, b := range boards %}
+						<a class="site-nav-item" href="/{%s b %}/">{%s b %}</a>
+					{% endfor %}
 				</nav>
 				<a id="banner-options" class="banner-item banner-icon" title="{%s ln.UI["options"] %}">
 					<i class="fa fa-gear"></i>

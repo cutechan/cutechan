@@ -19,19 +19,19 @@ TODO(Kagami): Fix markup and styles.
 
 {% func renderThreadNavigation(top bool) %}{% stripspace %}
 	{% code ln := lang.Get() %}
-	{% code cls := "thread-navigation-top" %}
-	{% code if !top { cls = "thread-navigation-bottom" } %}
-	<div class="thread-navigation{% space %}{%s cls %}">
-		<a class="button thread-navigation-button thread-navigation-back" href=".">
+	{% code cls := "thread-nav-top" %}
+	{% code if !top { cls = "thread-nav-bottom" } %}
+	<nav class="thread-nav{% space %}{%s cls %}">
+		<a class="button thread-nav-item thread-nav-back" href=".">
 			{%s ln.UI["return"] %}
 		</a>
-		<a class="button thread-navigation-button thread-navigation-catalog" href="catalog">
+		<a class="button thread-nav-item thread-nav-catalog" href="catalog">
 			{%s ln.UI["catalog"] %}
 		</a>
-		<a class="button thread-navigation-button thread-navigation-reply">
+		<a class="button thread-nav-item thread-nav-reply">
 			{%s ln.UI["reply"] %}
 		</a>
-	</div>
+	</nav>
 {% endstripspace %}{% endfunc %}
 
 {% func renderThread(postHTML []byte, id uint64, board string, abbrev bool, pos auth.ModerationLevel) %}{% stripspace %}
