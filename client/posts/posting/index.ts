@@ -1,5 +1,6 @@
 // Contains the FSM and core API for accessing the post authoring system
 
+import { POST_REPLY_CONTROL_SEL } from "../../vars"
 import FormModel from "./model"
 import FormView from "./view"
 import { connState, connSM, handlers, message } from "../../connection"
@@ -303,7 +304,7 @@ export default () => {
 
 	// Handle clicks on post quoting links
 	on(document, "click", quotePost, {
-		selector: ".post-control_reply, .post-control_reply .icon",
+		selector: POST_REPLY_CONTROL_SEL,
 	})
 
 	// Store last selected range that is not a quote link
@@ -314,7 +315,7 @@ export default () => {
 			return
 		}
 		const el = start.parentElement
-		if (el && !el.classList.contains("post-control-reply")) {
+		if (el && !el.classList.contains("post-reply-control")) {
 			lastSelection = {
 				start: sel.anchorNode,
 				end: sel.focusNode,
