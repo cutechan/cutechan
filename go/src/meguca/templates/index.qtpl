@@ -4,6 +4,25 @@
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
 
+{% func renderFAQ() %}{% stripspace %}
+	<div id="FAQ" class="modal">
+		cutechan is licensed under the{% space %}
+		<a href="https://www.gnu.org/licenses/agpl.html" target="_blank">
+			GNU Affero General Public License
+		</a>
+		<br>
+		source code repository:{% space %}
+		<a href="https://github.com/cutechan/cutechan" target="_blank">
+			github.com/cutechan/cutechan
+		</a>
+		<br>
+		original project:{% space %}
+		<a href="https://github.com/bakape/meguca" target="_blank">
+			github.com/bakape/meguca
+		</a>
+	</div>
+{% endstripspace %}{% endfunc %}
+
 {% func renderIndex(pos auth.ModerationLevel) %}{% stripspace %}
 	{% code conf := config.Get() %}
 	{% code ln := lang.Get() %}
@@ -39,30 +58,6 @@
 			{% code buf, _ := json.Marshal(ln.Common) %}
 			{%z= buf %}
 		</script>
-		{% comment %}
-			Client-side templates for various views
-		{% endcomment %}
-		<template name="figcaption">
-			<figcaption class="spaced">
-				<a class="image-toggle act" hidden></a>
-				<span class="fileinfo">
-					<span class="media-artist"></span>
-					<span class="media-title"></span>
-					<span hidden class="has-audio">♫</span>
-					<span class="media-length"></span>
-					<span hidden class="is-apng">APNG</span>
-					<span class="filesize"></span>
-					<span class="dims"></span>
-				</span>
-			</figcaption>
-		</template>
-		<template name="figure">
-			<figure>
-				<a target="_blank">
-					<img>
-				</a>
-			</figure>
-		</template>
 		<template name="post-controls">
 			<form class="antispam-captcha">
 				{%= captcha() %}
@@ -121,7 +116,6 @@
 				<span id="sync-counter" class="banner-item banner-status" title="{%s ln.UI["syncCount"] %}"></span>
 				<span id="sync-status" class="banner-item banner-status" title="{%s ln.UI["sync"] %}"></span>
 			</div>
-
 			{% comment %}
 				For modal windows.
 			{% endcomment %}
@@ -129,22 +123,7 @@
 				{% comment %}
 					Information panel
 				{% endcomment %}
-				<div id="FAQ" class="modal">
-					cutechan is licensed under the{% space %}
-					<a href="https://www.gnu.org/licenses/agpl.html" target="_blank">
-						GNU Affero General Public License
-					</a>
-					<br>
-					source code repository:{% space %}
-					<a href="https://github.com/cutechan/cutechan" target="_blank">
-						github.com/cutechan/cutechan
-					</a>
-					<br>
-					original project:{% space %}
-					<a href="https://github.com/bakape/meguca" target="_blank">
-						github.com/bakape/meguca
-					</a>
-				</div>
+				{%= renderFAQ() %}
 				{% comment %}
 					Account login and registration.
 				{% endcomment %}
@@ -205,7 +184,6 @@
 						{% endfor %}
 					</div>
 				</div>
-
 				{% comment %}
 					For mods.
 				{% endcomment %}
@@ -273,8 +251,6 @@
 				Injected on the second parse of this template.
 			{% endcomment %}
 			<section id="threads">$$$</section>
-			<section id="right-panel" class="side-panel"></section>
-			<div id="right-spacer" class="side-spacer"></div>
 		</div>
 
 		{% comment %}
