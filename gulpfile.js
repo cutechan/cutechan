@@ -77,7 +77,6 @@ function createTask(name, path, task, watchPath) {
 
 function templates() {
   return gulp.src(TEMPLATES_GLOB)
-    .pipe(sourcemaps.init())
     .pipe(tap(function(file) {
       const name = JSON.stringify(path.basename(file.path, ".mustache"));
       const template = JSON.stringify(file.contents.toString());
@@ -94,8 +93,7 @@ function templates() {
 
 function typescript(opts) {
   const project = ts.createProject("client/tsconfig.json", opts);
-  return gulp.src(TYPESCRIPT_GLOB)
-    .pipe(sourcemaps.init())
+  return gulp.src("client/main.ts")
     .pipe(project(ts.reporter.nullReporter()))
     .on("error", handleError);
 }
@@ -103,6 +101,7 @@ function typescript(opts) {
 function buildClient(tsOpts) {
   return merge(templates(), typescript(tsOpts))
     .on("error", () => {})
+    .pipe(sourcemaps.init())
     .pipe(concat(tsOpts.outFile));
 }
 
