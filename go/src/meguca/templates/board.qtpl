@@ -192,34 +192,38 @@ Link to catalog or board page
 
 Links to different pages og the board index
 {% func pagination(page, total int) %}{% stripspace %}
+	{% if total < 2 %}
+		{% return %}
+	{% endif %}
 	<div class="board-pagination">
 		{% if page != 0 %}
 			{% if page-1 != 0 %}
-				{%= pageLink(0, "<<") %}
+				{%= pageLink(0, "<<", "first") %}
 			{% endif %}
-			{%= pageLink(page-1, "<") %}
+			{%= pageLink(page-1, "<", "prev") %}
 		{% endif %}
 		{% for i := 0; i < total; i++ %}
-			{% if i != page %}
-				{%= pageLink(i, strconv.Itoa(i)) %}
-			{% else %}
-				<b>
+			{% if i == page %}
+				<span class="board-pagination-page board-pagination-page_current">
 					{%d i %}
-				</b>
+				</span>
+			{% else %}
+				{%= pageLink(i, strconv.Itoa(i), "") %}
 			{% endif %}
 		{% endfor %}
 		{% if page != total-1 %}
-			{%= pageLink(page+1, ">") %}
+			{%= pageLink(page+1, ">", "next") %}
 			{% if page+1 != total-1 %}
-				{%= pageLink(total-1, ">>") %}
+				{%= pageLink(total-1, ">>", "last") %}
 			{% endif %}
 		{% endif %}
 	</div>
 {% endstripspace %}{% endfunc %}
 
 Link to a different paginated board page
-{% func pageLink(i int, text string) %}{% stripspace %}
-	<a href="?page={%d i %}">
+{% func pageLink(i int, text, cls string) %}{% stripspace %}
+	{% code if cls != "" { cls = " board-pagination-page_" + cls } %}
+	<a class="board-pagination-page{%s cls %}" href="?page={%d i %}">
 		{%s text %}
 	</a>
 {% endstripspace %}{% endfunc %}

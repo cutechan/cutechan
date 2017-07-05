@@ -668,6 +668,23 @@ a.referenced {
 
 .board-pagination {
   display: inline-block;
+  user-select: none;
+  cursor: default;
+}
+
+.board-pagination-page {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-right: 3px;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  &:not(.board-pagination-page_current):hover {
+    background: #ddd;
+  }
+}
+
+.board-pagination-page_current {
+  border: none;
 }
 
 //////////////////////////////
