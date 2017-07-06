@@ -23,7 +23,7 @@ const notify = require("gulp-notify");
 const livereload = require("gulp-livereload");
 const runSequence = require("run-sequence");
 
-const TEMPLATES_GLOB = "go/src/meguca/templates/mustache/**/*.mustache";
+const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
 const TYPESCRIPT_GLOB = "client/**/*.ts?(x)";
 
 const DIST_DIR = "dist";

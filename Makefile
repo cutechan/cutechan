@@ -1,4 +1,6 @@
-export GULP=$(PWD)/node_modules/.bin/gulp
+export NODE_BIN=$(PWD)/node_modules/.bin
+export HTMLMIN=$(NODE_BIN)/html-minifier
+export GULP=$(NODE_BIN)/gulp
 ifeq ($(GOPATH),)
 	export PATH:=$(PATH):$(PWD)/go/bin
 	export GOPATH=$(PWD)/go
@@ -17,24 +19,28 @@ client: client-deps client-build
 client-deps:
 	npm install --progress=false
 
-client-build:
+client-build: templates
 	$(GULP)
 
-watch:
+watch: templates
 	$(GULP) -w
 
 server: server-deps server-build
 
-server-deps:
+server-deps: client-deps
 	go get -v \
 		github.com/valyala/quicktemplate/qtc \
 		github.com/jteeuwen/go-bindata/... \
 		github.com/mailru/easyjson/...
 	go list -f '{{.Deps}}' meguca | tr -d '[]' | xargs go get -v
 
-server-build:
+server-build: templates
 	go generate meguca/...
 	go build -v -o cutechan meguca
+
+templates:
+	$(HTMLMIN) --collapse-whitespace --collapse-inline-tag-whitespace \
+		--input-dir mustache --output-dir mustache-pp
 
 update-deps:
 	go get -u -v \
@@ -63,7 +69,7 @@ test-build:
 tags:
 	ctags -R go/src/meguca client
 
-clean: client-clean server-clean test-clean
+clean: client-clean server-clean templates-clean test-clean
 
 client-clean:
 	rm -rf dist
@@ -74,6 +80,9 @@ server-clean:
 		go/src/meguca/common/*_easyjson.go \
 		go/src/meguca/config/*_easyjson.go \
 		go/src/meguca/templates/*.qtpl.go
+
+templates-clean:
+	rm -rf mustache-pp
 
 test-clean:
 	rm -rf go/multipart-* \

@@ -10,8 +10,7 @@
     </nav>
     {{#OP}}
       <h3 class="post-subject">{{ Subject }}</h3>
-    {{/OP}}
-    {{#Staff}}
+    {{/OP}}{{#Staff}}
       <span class="post-staff">## {{ Auth }} ##</span>
     {{/Staff}}
     <time class="post-time">{{ Time }}</time>
@@ -30,8 +29,7 @@
   <footer class="post-footer">
     {{#HasBacklinks}}
       <span class="post-pre-backlinks">{{ LReplies }}:</span>
-    {{/HasBacklinks}}
-    {{#Backlinks}}
+    {{/HasBacklinks}}{{#Backlinks}}
       <span class="backlinks spaced">
         <em>{{{.}}}</em>
       </span>

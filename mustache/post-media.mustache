@@ -1,16 +1,13 @@
 <figure class="post-media">
-  <figcaption class="post-info spaced">
+  <figcaption class="post-info">
     <span class="fileinfo">
       {{#HasArtist}}
         <span class="media-artist">{{ Artist }}</span>
-      {{/HasArtist}}
-      {{#HasTitle}}
+      {{/HasArtist}}{{#HasTitle}}
         <span class="media-title">{{ Title }}</span>
-      {{/HasTitle}}
-      {{#HasAudio}}
+      {{/HasTitle}}{{#HasAudio}}
         <span class="has-audio">♫</span>
-      {{/HasAudio}}
-      {{#HasLength}}
+      {{/HasAudio}}{{#HasLength}}
         <span class="media-length">{{ Length }}</span>
       {{/HasLength}}
       <span class="filesize">{{ Size }}</span>
