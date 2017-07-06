@@ -35,7 +35,7 @@ export function makePostContext(t: Thread, p: Post, bls: Backlinks, index: boole
 			classes.push("post_op")
 		}
 		if (ctx.post.image) {
-			classes.push("post_media")
+			classes.push("post_file")
 		}
 		return classes.join(" ")
 	}
@@ -54,10 +54,10 @@ export function makePostContext(t: Thread, p: Post, bls: Backlinks, index: boole
 	// NOOP because we need to re-render based on relativeTime setting.
 	ctx.Time = ""
 
-	ctx.Media = () => {
+	ctx.File = () => {
 		if (!ctx.post.image) return ""
 		const img = ctx.post.image
-		return new TemplateContext("post-media", {
+		return new TemplateContext("post-file", {
 			HasArtist: !!img.artist,
 			Artist: img.artist,
 			HasTitle: !!img.title,

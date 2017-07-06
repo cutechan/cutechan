@@ -32,7 +32,7 @@ type PostContext struct {
 	post common.Post
 }
 
-type MediaContext struct {
+type FileContext struct {
 	HasArtist bool
 	Artist string
 	HasTitle bool
@@ -79,7 +79,7 @@ func (ctx PostContext) PostClass() string {
 		classes = append(classes, "post_op")
 	}
 	if ctx.post.Image != nil {
-		classes = append(classes, "post_media")
+		classes = append(classes, "post_file")
 	}
 	return strings.Join(classes, " ")
 }
@@ -156,12 +156,12 @@ func fileSize(s int) string {
 	}
 }
 
-func (ctx PostContext) Media() string {
+func (ctx PostContext) File() string {
 	if ctx.post.Image == nil {
 		return ""
 	} else {
 		img := ctx.post.Image
-		ctx := MediaContext{
+		ctx := FileContext{
 			HasArtist: img.Artist != "",
 			Artist: img.Artist,
 			HasTitle: img.Title != "",
@@ -177,7 +177,7 @@ func (ctx PostContext) Media() string {
 			SourcePath: assets.SourcePath(img.FileType, img.SHA1),
 			ThumbPath: assets.ThumbPath(img.ThumbType, img.SHA1),
 		}
-		return renderMustache("post-media", ctx)
+		return renderMustache("post-file", ctx)
 	}
 }
 

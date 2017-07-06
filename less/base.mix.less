@@ -792,7 +792,10 @@ header {
   text-decoration: dotted underline;
 }
 
-.fileinfo {
+.post-file-info {
+  font-size: smaller;
+  font-style: italic;
+  color: #999;
   &:before {
     content: "(";
   }
@@ -805,15 +808,9 @@ header {
   & > span:not(:empty):not([hidden]) ~ span::before {
     content: ", ";
   }
-  &  > span.media-artist:not(:empty) + span.media-title::before {
+  & > span.post-file-artist:not(:empty) + span.post-file-title::before {
     content: "\00a0-\00a0";
   }
-}
-
-.post-info {
-  font-size: smaller;
-  font-style: italic;
-  color: #999;
 }
 
 .post-body {
@@ -821,17 +818,17 @@ header {
   margin: 4px 0;
 }
 
-.post-media {
+.post-file {
   margin: 0;
 }
 
-.post-media-link {
+.post-file-link {
   float: left;
   margin: 0 15px 5px 0;
   outline: none;
 }
 
-.post-media-thumb {
+.post-file-thumb {
   display: block;
 }
 
