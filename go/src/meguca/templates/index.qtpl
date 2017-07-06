@@ -44,19 +44,16 @@
 		<noscript>
 			<link rel="stylesheet" href="/static/css/noscript.css">
 		</noscript>
-		{% comment %}
-			Configuration injection.
-		{% endcomment %}
 		<script>
+			{% comment %}
+				Configuration injection.
+			{% endcomment %}
 			{% code boardJSON, _ := json.Marshal(boards) %}
 			var config={%z= confJSON %},boards={%z= boardJSON %},position={%d int(pos) %};
+
 			if (localStorage.theme !== config.DefaultCSS) {
 				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
 			}
-		</script>
-		<script type="application/json" id="lang-data">
-			{% code buf, _ := json.Marshal(ln.Common) %}
-			{%z= buf %}
 		</script>
 		<template name="post-controls">
 			<form class="antispam-captcha">

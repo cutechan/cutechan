@@ -23,6 +23,7 @@ const notify = require("gulp-notify");
 const livereload = require("gulp-livereload");
 const runSequence = require("run-sequence");
 
+const TRANSLATIONS_GLOB = "lang/*.json";
 const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
 const TYPESCRIPT_GLOB = "client/**/*.ts?(x)";
 
@@ -75,6 +76,23 @@ function createTask(name, path, task, watchPath) {
   }
 }
 
+function translations() {
+  return gulp.src(TRANSLATIONS_GLOB)
+    .pipe(tap(function(file) {
+      const name = JSON.stringify(path.basename(file.path, ".json"));
+      // Save only translations shared between client and server.
+      const lang = JSON.stringify(JSON.parse(file.contents.toString()).common);
+      file.contents = new Buffer(`CUTE_LANGS[${name}] = ${lang};`);
+    }))
+    .pipe(concat("langs.js"))
+    .pipe(tap(function(file) {
+      file.contents = Buffer.concat([
+        new Buffer("var CUTE_LANGS = {};\n"),
+        file.contents,
+      ]);
+    }));
+}
+
 function templates() {
   return gulp.src(TEMPLATES_GLOB)
     .pipe(tap(function(file) {
@@ -99,7 +117,7 @@ function typescript(opts) {
 }
 
 function buildClient(tsOpts) {
-  return merge(templates(), typescript(tsOpts))
+  return merge(translations(), templates(), typescript(tsOpts))
     .on("error", () => {})
     .pipe(sourcemaps.init())
     .pipe(concat(tsOpts.outFile));
@@ -117,7 +135,7 @@ function buildES6() {
 
   // Recompile on source update, if running with the `-w` flag.
   if (watch) {
-    gulp.watch([TEMPLATES_GLOB, TYPESCRIPT_GLOB], [name])
+    gulp.watch([TRANSLATIONS_GLOB, TEMPLATES_GLOB, TYPESCRIPT_GLOB], [name])
   }
 }
 
