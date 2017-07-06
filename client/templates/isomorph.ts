@@ -3,6 +3,7 @@
 // TODO(Kagami): Move helper function here?
 
 import { ln } from "../lang"
+import { config } from "../state"
 import {
 	Thread, Post, Backlinks,
 	thumbPath, sourcePath, duration, fileSize,
@@ -82,4 +83,15 @@ export function makePostContext(t: Thread, p: Post, bls: Backlinks, index: boole
 	ctx.Backlinks = false
 
 	return new TemplateContext("post", ctx)
+}
+
+const PLURAL_FORMS: { [key: string]: (n: number) => number } = {
+	default: n => n == 1 ? 0 : 1,
+	ru: n => n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2,
+}
+
+// Return pluralize form for various languages.
+export function pluralize(num: number, plurals: [string]): string {
+	const getForm = PLURAL_FORMS[config.defaultLang] || PLURAL_FORMS.default
+	return plurals[getForm(num)]
 }

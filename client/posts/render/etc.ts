@@ -2,7 +2,8 @@
 
 import { page, mine } from '../../state'
 import lang from '../../lang'
-import { makeAttrs, pluralize } from "../../util"
+import { pluralize } from "../../templates"
+import { makeAttrs } from "../../util"
 
 // Render a link to other posts
 export function renderPostLink(id: number, op: number): string {
@@ -62,10 +63,9 @@ export function relativeTime(then: number): string {
 }
 
 // Renders "56 minutes ago" or "in 56 minutes" like relative time text
-function ago(time: number, units: [string, string], isFuture: boolean): string {
-	const count = pluralize(time, units)
-	if (isFuture) {
-		return `${lang.posts["in"]} ${count}`
-	}
-	return `${count} ${lang.posts["ago"]}`
+function ago(time: number, units: [string], isFuture: boolean): string {
+	const count = `${time} ${pluralize(time, units)}`
+	return isFuture
+		? `${lang.posts["in"]} ${count}`
+		: `${count} ${lang.posts["ago"]}`
 }

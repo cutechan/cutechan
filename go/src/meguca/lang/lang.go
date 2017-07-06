@@ -20,7 +20,7 @@ type Pack struct {
 	Templates       map[string][]string
 	Common          struct {
 		Posts   map[string]string    `json:"posts"`
-		Plurals map[string][2]string `json:"plurals"`
+		Plurals map[string][]string  `json:"plurals"`
 		Time    map[string][]string  `json:"time"`
 		UI      map[string]string    `json:"ui"`
 		Sync    []string             `json:"sync"`

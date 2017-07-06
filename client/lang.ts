@@ -7,7 +7,7 @@ type LanguagePack = {
 type CommonLanguagePack = {
 	Posts: { [key: string]: string }
 	posts: { [key: string]: string }
-	plurals: { [key: string]: [string, string] }
+	plurals: { [key: string]: [string] }
 	time: {
 		calendar: string[]
 		week: string[]

@@ -138,12 +138,6 @@ export function escape(str: string): string {
 		escapeMap[char])
 }
 
-// Return either the singular or plural form of a translation, depending on
-// number
-export function pluralize(num: number, word: [string, string]): string {
-	return `${num} ${word[num === 1 || num === -1 ? 0 : 1]}`
-}
-
 // Find the first child of an element, that matches a check function, if any
 export function firstChild(
 	el: Element,
