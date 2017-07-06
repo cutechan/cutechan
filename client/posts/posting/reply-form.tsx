@@ -40,10 +40,13 @@ class Form extends Component<any, any> {
 		this.bodyEl.focus()
 		this.bodyEl.scrollIntoView()
 	}
+	componentDidUpdate() {
+		this.recalcTextareaHeight()
+	}
 	handleFormHide = () => {
 		this.props.onHide()
 	}
-	handleBodyKeyUp = (e: any) => {
+	recalcTextareaHeight = () => {
 		// See <https://stackoverflow.com/a/995374>.
 		this.bodyEl.style.height = "1px"
 		this.bodyEl.style.height = this.bodyEl.scrollHeight + "px"
@@ -78,7 +81,7 @@ class Form extends Component<any, any> {
 		const file = files[0]
 		const previewUrl = URL.createObjectURL(file)
 		return (
-			<div class="reply-file-previews">
+			<div class="reply-file-previews" key="files">
 				<div class="reply-file-preview">
 					<img class="reply-file-thumb" src={previewUrl} />
 					<a class="control reply-remove-file-control" onClick={this.handleAttachRemove}>
@@ -93,23 +96,21 @@ class Form extends Component<any, any> {
 			<div class="reply-form">
 				{this.renderFilePreview()}
 				<div class="reply-content">
-					<div class="reply-body-wrapper">
-						<textarea
-							class="reply-body"
-							ref={s(this, "bodyEl")}
-							value={body}
-							disabled={sending}
-							onKeyUp={this.handleBodyKeyUp}
-							onChange={this.handleBodyChange}
-						/>
-						<div class="reply-side-controls reply-controls">
-							<a class="control reply-control reply-form-hide-control" onClick={this.handleFormHide}>
-								<i class="fa fa-remove" />
-							</a>
-							<a class="control reply-control reply-form-move-control">
-								<i class="fa fa-arrows-alt" />
-							</a>
-						</div>
+					<textarea
+						class="reply-body"
+						ref={s(this, "bodyEl")}
+						value={body}
+						disabled={sending}
+						onInput={this.recalcTextareaHeight}
+						onChange={this.handleBodyChange}
+					/>
+					<div class="reply-side-controls reply-controls">
+						<a class="control reply-control reply-form-hide-control" onClick={this.handleFormHide}>
+							<i class="fa fa-remove" />
+						</a>
+						<a class="control reply-control reply-form-move-control">
+							<i class="fa fa-arrows-alt" />
+						</a>
 					</div>
 					<div class="reply-footer-controls reply-controls">
 						<a class="control reply-control reply-attach-control" onClick={this.handleAttach}>

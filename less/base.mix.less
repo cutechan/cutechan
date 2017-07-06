@@ -1011,27 +1011,6 @@ header {
   padding: 5px;
 }
 
-.reply-controls {
-  user-select: none;
-  line-height: 28px;
-}
-
-.reply-control {
-  font-size: 22px;
-}
-
-.reply-form-hide-control {
-  font-size: 28px;
-  display: block;
-  margin-top: -3px;
-}
-
-.reply-form-move-control {
-  width: 22px;
-  text-align: center;
-  cursor: move;
-}
-
 .reply-file-previews {
   flex: 0;
   padding-right: 5px;
@@ -1048,6 +1027,15 @@ header {
   max-height: 200px;
 }
 
+.reply-controls {
+  user-select: none;
+  line-height: 28px;
+}
+
+.reply-control {
+  font-size: 22px;
+}
+
 .reply-remove-file-control {
   position: absolute;
   top: -3px;
@@ -1057,20 +1045,14 @@ header {
 .reply-content {
   flex: 1;
   display: flex;
-  flex-direction: column;
-  width: 100%;
-}
-
-.reply-body-wrapper {
-  flex: 1;
-  display: flex;
+  flex-wrap: wrap;
 }
 
 .reply-body {
   flex: 1;
   display: block;
   box-sizing: border-box;
-  min-height: 120px;
+  min-height: 172px;
   margin-right: 3px;
   padding: 0;
   overflow: hidden;
@@ -1084,8 +1066,20 @@ header {
   flex: 0;
 }
 
+.reply-form-hide-control {
+  font-size: 28px;
+  display: block;
+  margin-top: -3px;
+}
+
+.reply-form-move-control {
+  width: 22px;
+  text-align: center;
+  cursor: move;
+}
+
 .reply-footer-controls {
-  flex: 0;
+  flex: 1 100%;
   margin-top: 3px;
   margin-bottom: -6px;
 }
