@@ -128,6 +128,7 @@ class Form extends Component<any, any> {
 					class="reply-file-input"
 					ref={s(this, "fileEl")}
 					type="file"
+					accept="image/*,video/*"
 					onChange={this.handleFileLoad}
 				/>
 			</div>
