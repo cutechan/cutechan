@@ -1,8 +1,7 @@
 import { ThreadData } from "../common"
 import { findSyncwatches } from "../posts"
 import {
-	extractConfigs, isBanned, extractPost, localizeThreads, reparseOpenPosts,
-	extractPageData,
+	extractConfigs, isBanned, extractPost, reparseOpenPosts, extractPageData,
 } from "./common"
 
 const threads = document.getElementById("threads")
@@ -29,7 +28,6 @@ export default function () {
 	for (let post of posts) {
 		extractPost(post, data.id, data.board, backlinks)
 	}
-	localizeThreads()
 	reparseOpenPosts()
 	findSyncwatches(threads)
 }

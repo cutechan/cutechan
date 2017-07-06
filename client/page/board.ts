@@ -5,8 +5,7 @@ import { page, posts, loadFromDB } from '../state'
 import options from '../options'
 import { relativeTime, Post, findSyncwatches } from "../posts"
 import {
-	extractConfigs, isBanned, localizeThreads, extractPost, reparseOpenPosts,
-	extractPageData,
+	extractConfigs, isBanned, extractPost, reparseOpenPosts, extractPageData,
 } from "./common"
 import { setPostCount } from "./thread"
 import { ThreadData } from "../common"
@@ -72,7 +71,6 @@ async function extractThreads() {
 			extractPost(post, thread.id, thread.board, backlinks)
 		}
 	}
-	localizeThreads()
 	reparseOpenPosts()
 }
 
@@ -83,17 +81,6 @@ export async function render() {
 		await extractCatalogModels()
 	} else {
 		await extractThreads()
-	}
-
-	// Add extra localizations
-	for (let el of threads.querySelectorAll(".counters")) {
-		el.setAttribute("title", lang.ui["postsImages"])
-	}
-	for (let el of threads.querySelectorAll(".lastN-link")) {
-		el.textContent = `${lang.ui["last"]} 100`
-	}
-	for (let el of threads.querySelectorAll(".expand-link")) {
-		el.textContent = lang.posts["expand"]
 	}
 
 	renderRefreshButton()
@@ -217,7 +204,7 @@ async function refreshBoard() {
 	}
 }
 
-// Update refresh timer or refresh board, if document hidden, each minute
+// Update refresh timer or refresh board, if document hidden
 // TODO: Replace with SSE
 setInterval(() => {
 	if (page.thread || isBanned()) {

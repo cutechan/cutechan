@@ -1,3 +1,5 @@
+{% import "meguca/lang" %}
+
 Renders the tab selection butts in tabbed windows
 {% func tabButts(names []string) %}{% stripspace %}
 	<div class="tab-butts">
@@ -11,19 +13,17 @@ Renders the tab selection butts in tabbed windows
 {% endstripspace %}{% endfunc %}
 
 {% func expandLink(board, id string) %}{% stripspace %}
-	<span class="act">
-		<a class="expand-link" href="/{%s board %}/{%s id %}">
-			Expand
-		</a>
-	</span>
+	{% code ln := lang.Get() %}
+	<a class="thread-link expand-link" href="/{%s board %}/{%s id %}">
+		{%s ln.Common.UI["expand"] %}
+	</a>
 {% endstripspace %}{% endfunc %}
 
 {% func last100Link(board, id string) %}{% stripspace %}
-	<span class="act">
-		<a class="lastN-link" href="/{%s board %}/{%s id %}?last=100">
-			Last 100
-		</a>
-	</span>
+	{% code ln := lang.Get() %}
+	<a class="thread-link lastN-link" href="/{%s board %}/{%s id %}?last=100">
+		{%s ln.Common.UI["last"] %} 100
+	</a>
 {% endstripspace %}{% endfunc %}
 
 Renders a stylized deleted post display toggle

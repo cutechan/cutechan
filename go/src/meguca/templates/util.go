@@ -85,6 +85,16 @@ func correctTimeZone(t time.Time) time.Time {
 	).UTC()
 }
 
+// Return either the singular or plural form of a translation, depending on
+// number
+func pluralize(num int, plurals [2]string) string {
+	if num > 1 {
+		return plurals[1]
+	} else {
+		return plurals[0]
+	}
+}
+
 // TODO(Kagami): Partials?
 // FIXME(Kagami): Pre-parse, check for errors.
 func renderMustache(name string, ctx interface{}) string {

@@ -1,12 +1,10 @@
-import { setBoardConfig, hidden, mine, posts, page, config } from "../state"
+import { setBoardConfig, hidden, mine, posts, page } from "../state"
 import options from "../options"
 import { PostData } from "../common"
 import { Post, PostView } from "../posts"
 import lang from "../lang"
 import { postAdded, notifyAboutReply } from "../ui"
-import { pluralize, extractJSON } from "../util"
-
-const threads = document.getElementById("threads")
+import { extractJSON } from "../util"
 
 // Find board configurations in the HTML and apply them
 export function extractConfigs() {
@@ -56,14 +54,8 @@ export function extractPost(
 
 	// Apply client-specific formatting to a post rendered server-side
 
-	// Render time-zone correction or relative time. Will do unneeded work,
-	// if client is on UTC. Meh.
+	// Render time-zone correction or relative time.
 	view.renderTime()
-
-	// Localize staff titles
-	if (post.auth && options.lang !== config.defaultLang) {
-		view.renderName()
-	}
 
 	localizeLinks(model)
 	localizeBacklinks(model)
@@ -77,6 +69,12 @@ export function extractPost(
 	}
 
 	return false
+}
+
+function addYous(id: number, el: HTMLElement) {
+	for (let a of el.querySelectorAll(`a[data-id="${id}"]`)) {
+		a.textContent += " " + lang.posts["you"]
+	}
 }
 
 // Add (You) to posts linking to the user's posts. Appends to array of posts,
@@ -104,12 +102,6 @@ function localizeLinks(post: Post) {
 	}
 }
 
-function addYous(id: number, el: HTMLElement) {
-	for (let a of el.querySelectorAll(`a[data-id="${id}"]`)) {
-		a.textContent += " " + lang.posts["you"]
-	}
-}
-
 // Add (You) to backlinks user's posts
 function localizeBacklinks(post: Post) {
 	if (!post.backlinks) {
@@ -121,49 +113,11 @@ function localizeBacklinks(post: Post) {
 		if (!mine.has(id)) {
 			continue
 		}
-
 		// Don't query DOM, until we know we need it
 		if (!el) {
 			el = post.view.el.querySelector(".backlinks")
 		}
 		addYous(id, el)
-	}
-}
-
-// Apply extra client-side localizations. Not done server-side for
-// better cacheability.
-export function localizeThreads() {
-	localizeOmitted()
-	if (options.lang !== config.defaultLang) {
-		// Localize banned post notices
-		for (let el of threads.querySelectorAll(".banned")) {
-			el.innerText = lang.posts["banned"]
-		}
-	}
-}
-
-// Localize omitted post and image span
-function localizeOmitted() {
-	if (options.lang === config.defaultLang) {
-		return
-	}
-	for (let el of threads.querySelectorAll(".omit")) {
-		if (!el) {
-			continue
-		}
-
-		const posts = parseInt(el.getAttribute("data-omit")),
-			images = parseInt(el.getAttribute("data-image-omit"))
-		if (posts) {
-			let text = pluralize(posts, lang.plurals["post"])
-			if (images) {
-				text += ` ${lang.posts["and"]} `
-					+ pluralize(images, lang.plurals["image"])
-			}
-			text += ` ${lang.posts["omitted"]}`
-			el.firstChild.textContent = text
-		}
-		el.querySelector("a").textContent = lang.posts["seeAll"]
 	}
 }
 
