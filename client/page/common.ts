@@ -57,8 +57,8 @@ export function extractPost(
 	// Render time-zone correction or relative time.
 	view.renderTime()
 
-	localizeLinks(model)
-	localizeBacklinks(model)
+	personalizeLinks(model)
+	personalizeBacklinks(model)
 	postAdded(model)
 
 	const { image } = model
@@ -79,7 +79,7 @@ function addYous(id: number, el: HTMLElement) {
 
 // Add (You) to posts linking to the user's posts. Appends to array of posts,
 // that might need to register a new reply to one of the user's posts.
-function localizeLinks(post: Post) {
+function personalizeLinks(post: Post) {
 	if (!post.links) {
 		return
 	}
@@ -103,7 +103,7 @@ function localizeLinks(post: Post) {
 }
 
 // Add (You) to backlinks user's posts
-function localizeBacklinks(post: Post) {
+function personalizeBacklinks(post: Post) {
 	if (!post.backlinks) {
 		return
 	}
