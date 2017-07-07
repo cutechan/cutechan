@@ -1,9 +1,13 @@
 import * as cx from "classnames"
 import { h, render, Component } from "preact"
-import { THREAD_REPLY_BUTTON_SEL } from "../../vars"
-import { on, ShowHide } from "../../util"
+import { ShowHide, on, scrollToTop } from "../../util"
 import { postSM, postEvent, postState } from "."
 import FormModel from "./model"
+import {
+	REPLY_CONTAINER_SEL,
+	BOARD_NEW_THREAD_BUTTON_SEL,
+	THREAD_REPLY_BUTTON_SEL
+} from "../../vars"
 
 function s(self: any, name: string) {
 	return function(el: Element) {
@@ -28,7 +32,7 @@ function sendPost(body: string): Promise<void> {
 	})
 }
 
-class Form extends Component<any, any> {
+class Reply extends Component<any, any> {
 	private bodyEl: HTMLInputElement
 	private fileEl: HTMLInputElement
 	state = {
@@ -38,7 +42,11 @@ class Form extends Component<any, any> {
 	}
 	componentDidMount() {
 		this.bodyEl.focus()
-		this.bodyEl.scrollIntoView()
+		if (this.props.thread) {
+			this.bodyEl.scrollIntoView()
+		} else {
+			scrollToTop()
+		}
 	}
 	componentDidUpdate() {
 		this.recalcTextareaHeight()
@@ -136,13 +144,19 @@ class Form extends Component<any, any> {
 	}
 }
 
-class FormContainer extends Component<any, any> {
+class ReplyContainer extends Component<any, any> {
 	state = {
 		show: false,
+		thread: false,
 	}
 	componentDidMount() {
 		on(document, "click", () => {
-			this.setState({show: true})
+			this.setState({show: true, thread: false})
+		}, {
+			selector: BOARD_NEW_THREAD_BUTTON_SEL,
+		})
+		on(document, "click", () => {
+			this.setState({show: true, thread: true})
 		}, {
 			selector: THREAD_REPLY_BUTTON_SEL,
 		})
@@ -150,16 +164,18 @@ class FormContainer extends Component<any, any> {
 	handleHide = () => {
 		this.setState({show: false})
 	}
-	render({}, {show}: any) {
+	render({}, {show, thread}: any) {
 		return (
 			<ShowHide show={show}>
-				<Form onHide={this.handleHide} />
+				<Reply thread={thread} onHide={this.handleHide} />
 			</ShowHide>
 		)
 	}
 }
 
 export default function() {
-	const container = document.getElementById("bottom-spacer")
-	render(<FormContainer/>, container)
+	const container = document.querySelector(REPLY_CONTAINER_SEL)
+	if (container) {
+		render(<ReplyContainer/>, container)
+	}
 }

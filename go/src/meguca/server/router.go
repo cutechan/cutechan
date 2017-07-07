@@ -108,7 +108,7 @@ func createRouter() http.Handler {
 	api.GET("/socket", websockets.Handler)
 	api.POST("/upload", imager.NewImageUpload)
 	api.POST("/upload-hash", imager.UploadImageHash)
-	api.POST("/create-thread", createThread)
+	api.POST("/thread", createThread)
 	api.POST("/create-reply", createReply)
 	api.POST("/register", register)
 	api.POST("/login", login)

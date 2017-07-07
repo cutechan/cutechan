@@ -317,6 +317,19 @@ html, body {
   flex: 1;
 }
 
+.new-thread-container {
+  margin: 0 auto;
+  margin-bottom: 20px;
+
+  .reply-form {
+    width: 1000px;
+  }
+}
+
+.new-post-container {
+  margin-top: 20px;
+}
+
 //////////////////////////////
 // OVERLAY
 //////////////////////////////
@@ -863,9 +876,6 @@ header {
   color: #333;
 }
 
-.backlinks {
-}
-
 .post-controls {
   width: 100%;
   user-select: none;
@@ -1004,7 +1014,6 @@ header {
   box-sizing: border-box;
   border: 3px solid #ccc;
   border-radius: 3px;
-  margin-top: 20px;
   padding: 5px;
 }
 
@@ -1095,23 +1104,6 @@ header {
 
 .upload-container label {
   padding: 0;
-}
-
-#thread-form-container.expanded {
-  padding: 0.7em;
-  & > span.act {
-    display: none;
-  }
-  & > form {
-    display: block;
-  }
-}
-
-#new-thread-form, #new-reply-form {
-  display: none;
-  input[type=text], textarea {
-    width: 20em;
-  }
 }
 
 #text-input {

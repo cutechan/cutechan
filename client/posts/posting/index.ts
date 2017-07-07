@@ -8,7 +8,6 @@ import { on, FSM, hook, getID } from "../../util"
 import lang from "../../lang"
 import { page } from "../../state"
 import initDrop from "./drop"
-import initThreads from "./threads"
 import initReplyForm from "./reply-form"
 
 export { default as FormModel } from "./model"
@@ -325,6 +324,5 @@ export default () => {
 	})
 
 	initDrop()
-	initThreads()
 	initReplyForm()
 }

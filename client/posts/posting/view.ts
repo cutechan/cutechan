@@ -1,9 +1,7 @@
 import PostView from "../view"
 import FormModel from "./model"
 import { Post } from "../model"
-import {
-	setAttrs, importTemplate, atBottom, scrollToBottom, firstChild,
-} from "../../util"
+import { setAttrs, importTemplate, firstChild } from "../../util"
 import { postSM, postEvent } from "."
 import UploadForm from "./upload"
 import { CaptchaView } from "../../ui"
@@ -245,9 +243,9 @@ export default class FormView extends PostView {
 		}
 		if (bottomSpacer) {
 			bottomSpacer.style.height = ""
-			if (atBottom) {
-				scrollToBottom()
-			}
+			// if (atBottom) {
+			// 	scrollToBottom()
+			// }
 		}
 		if (this.observer) {
 			this.observer.disconnect()

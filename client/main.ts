@@ -9,7 +9,7 @@ import { initOptions } from "./options"
 import initPosts from "./posts"
 import { renderBoard, extractConfigs, renderThread } from './page'
 import initUI from "./ui"
-import { checkBottom, getCookie, deleteCookie } from "./util"
+import { getCookie, deleteCookie } from "./util"
 import assignHandlers from "./client"
 import initModeration from "./mod"
 
@@ -35,7 +35,7 @@ async function start() {
 	if (page.thread) {
 		renderThread()
 		connect()
-		checkBottom()
+		// checkBottom()
 		assignHandlers()
 	} else {
 		await renderBoard()

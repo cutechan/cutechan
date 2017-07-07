@@ -7,9 +7,9 @@
 {% import "meguca/imager/assets" %}
 {% import banners "meguca/assets" %}
 
-{% func renderThreadForm(id string, conf config.BoardConfContainer, pos auth.ModerationLevel) %}{% stripspace %}
+{% func renderNoscriptThreadForm(id string, conf config.BoardConfContainer, pos auth.ModerationLevel) %}{% stripspace %}
 	{% code ln := lang.Get() %}
-	<form id="new-thread-form" action="/api/create-thread" method="POST" enctype="multipart/form-data">
+	<form id="new-thread-form" action="/api/thread" method="POST" enctype="multipart/form-data">
 		{% if id == "all" %}
 			<select name="board" required>
 				{% for _, b := range config.GetBoardTitles() %}
@@ -65,9 +65,10 @@
 	{% code ln := lang.Get() %}
 	{%= renderBanner(conf) %}
 	<h1 class="page-title">{%s title %}</h1>
+	<aside class="reply-container new-thread-container"></aside>
 	<nav class="board-nav board-nav_top">
-		<aside id="thread-form-container">{%= renderThreadForm(id, conf, pos) %}</aside>
-		<a class="button board-nav-item board-nav-new-thread new-thread-button">
+		<noscript>{%= renderNoscriptThreadForm(id, conf, pos) %}</noscript>
+		<a class="button board-nav-item board-nav-new-thread">
 			{%s ln.UI["newThread"] %}
 		</a>
 		<a class="button board-nav-item board-nav-refresh">

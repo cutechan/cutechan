@@ -10,6 +10,7 @@ import (
 	"strings"
 	"strconv"
 	"meguca/common"
+	"meguca/config"
 	"meguca/imager/assets"
 	"meguca/lang"
 
@@ -216,4 +217,30 @@ func (ctx PostContext) Backlinks() (list []string) {
 		}
 	}
 	return
+}
+
+func getPluralFormIndex(langCode string, n int) int {
+	switch langCode {
+	case "ru":
+		if n%10==1 && n%100!=11 {
+			return 0
+		} else if n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) {
+			return 1
+		} else {
+			return 2
+		}
+	default:
+		if n == 1 {
+			return 0
+		} else {
+			return 1
+		}
+	}
+}
+
+// Return either the singular or plural form of a translation, depending on
+// number
+func pluralize(num int, plurals []string) string {
+	langCode := config.Get().DefaultLang
+	return plurals[getPluralFormIndex(langCode, num)]
 }

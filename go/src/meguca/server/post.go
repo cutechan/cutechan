@@ -35,14 +35,13 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 	}
 	post, err := websockets.CreateThread(req, ip)
 	if err != nil {
-
 		// TODO: Not all codes are actually 400. Need to differentiate.
-
 		text400(w, err)
 		return
 	}
 
 	// Let the JS add the ID of the post to "mine"
+	// FIXME(Kagami): Do this on client-side.
 	http.SetCookie(w, &http.Cookie{
 		Name:  "addMine",
 		Value: strconv.FormatUint(post.ID, 10),
