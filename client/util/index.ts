@@ -8,11 +8,6 @@ export * from "./scroll"
 export * from "./render"
 export * from "./changes"
 
-// Options for the on() addEventListener() wrapper
-export interface OnOptions extends EventListenerOptions {
-	selector?: string
-}
-
 // Any object with an event-based interface for passing to load()
 interface Loader {
 	onload: EventListener
@@ -42,8 +37,12 @@ export function makeFrag(DOMString: string): DocumentFragment {
 	return el.content
 }
 
-// Add an event listener that optionally filters targets according to a CSS
-// selector.
+export interface OnOptions extends EventListenerOptions {
+	selector?: string | [string]
+}
+
+// Add an event listener that optionally filters targets according to a
+// CSS selector.
 export function on(
 	el: EventTarget,
 	type: string,
@@ -51,11 +50,14 @@ export function on(
 	opts?: OnOptions
 ) {
 	if (opts && opts.selector) {
-		const oldFn = fn
+		const origFn = fn
+		const selector = Array.isArray(opts.selector)
+			? opts.selector.join(",")
+			: opts.selector
 		fn = event => {
 			const t = event.target
-			if (t instanceof Element && t.matches(opts.selector)) {
-				oldFn(event)
+			if (t instanceof Element && t.matches(selector)) {
+				origFn(event)
 			}
 		}
 	}

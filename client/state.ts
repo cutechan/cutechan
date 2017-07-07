@@ -68,6 +68,7 @@ export let hidden: Set<number>
 export let debug: boolean = /[\?&]debug=true/.test(location.href)
 
 // Read page state by parsing a URL
+// TODO(Kagami): Pass this from server-side.
 export function read(href: string): PageState {
 	const u = new URL(href, location.origin),
 		thread = u.pathname.match(/^\/\w+\/(\d+)/),

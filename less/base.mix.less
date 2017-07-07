@@ -15,11 +15,14 @@
 // MAIN
 //////////////////////////////
 
-body {
-  background-color: @bodyBG;
+body, textarea {
   font-family: @font;
   font-size: @fontSize;
-  line-height: 1.42857;
+}
+
+body {
+  background-color: @bodyBG;
+  line-height: @lineHeight;
 }
 
 body, article, code.code-tag {
@@ -320,10 +323,6 @@ html, body {
 .new-thread-container {
   margin: 0 auto;
   margin-bottom: 20px;
-
-  .reply-form {
-    width: 1000px;
-  }
 }
 
 .new-post-container {
@@ -382,12 +381,13 @@ html, body {
   text-align: center;
   background: fade(@postBG, 80%);
   border-bottom: 1px solid #aaa;
+  font-weight: bold;
+  font-size: larger;
   cursor: default;
   user-select: none;
 }
 
 .banner-item {
-  font-weight: bold;
 }
 
 .banner-status {
@@ -409,7 +409,6 @@ html, body {
   float: right;
   cursor: pointer;
   width: 22px;
-  font-size: 18px;
   display: inline-block;
 }
 
@@ -613,8 +612,6 @@ a.referenced {
 .site-nav {
   float: left;
   margin-left: 10px;
-  font-weight: bold;
-  font-size: larger;
   &:before {
     content: "[ ";
   }
@@ -1017,9 +1014,41 @@ header {
   padding: 5px;
 }
 
+.reply-header {
+  display: flex;
+  margin-bottom: 5px;
+}
+
+.new-thread-container {
+  .reply-form {
+    width: 1000px;
+  }
+  .reply-body {
+    min-height: 144px;
+  }
+}
+
+.reply-board {
+  flex: 0;
+  font-size: larger;
+  background: none;
+  outline: none;
+  border: none;
+  margin-right: 10px;
+  cursor: pointer;
+}
+
+.reply-subject {
+  flex: 1;
+  font-size: larger;
+  background: none;
+  outline: none;
+  border: none;
+}
+
 .reply-file-previews {
   flex: 0;
-  padding-right: 5px;
+  margin-right: 10px;
   user-select: none;
 }
 
@@ -1051,7 +1080,7 @@ header {
 .reply-content {
   flex: 1;
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
 }
 
 .reply-body {
@@ -1070,6 +1099,8 @@ header {
 
 .reply-side-controls {
   flex: 0;
+  display: flex;
+  flex-direction: column;
 }
 
 .reply-form-hide-control {
@@ -1079,19 +1110,19 @@ header {
 }
 
 .reply-form-move-control {
+  flex: 1;
   width: 22px;
   text-align: center;
   cursor: move;
 }
 
-.reply-footer-controls {
-  flex: 1 100%;
-  margin-top: 3px;
-  margin-bottom: -6px;
+.reply-send-control {
+  margin-bottom: -4px;
 }
 
-.reply-send-control {
-  float: right;
+.reply-footer-controls {
+  margin-top: 3px;
+  margin-bottom: -6px;
 }
 
 .reply-file-input {

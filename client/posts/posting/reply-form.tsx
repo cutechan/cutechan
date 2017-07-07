@@ -1,5 +1,7 @@
 import * as cx from "classnames"
 import { h, render, Component } from "preact"
+import { ln } from "../../lang"
+import { page, boards } from "../../state"
 import { ShowHide, on, scrollToTop } from "../../util"
 import { postSM, postEvent, postState } from "."
 import FormModel from "./model"
@@ -42,7 +44,7 @@ class Reply extends Component<any, any> {
 	}
 	componentDidMount() {
 		this.bodyEl.focus()
-		if (this.props.thread) {
+		if (page.thread) {
 			this.bodyEl.scrollIntoView()
 		} else {
 			scrollToTop()
@@ -82,6 +84,30 @@ class Reply extends Component<any, any> {
 			this.setState({sending: false})
 		})
 	}
+	renderBoards() {
+		if (page.board !== "all") return null;
+		return (
+			<select
+				class="reply-board"
+			>
+				{boards.map(b =>
+				<option class="reply-board-item">{b}</option>
+				)}
+			</select>
+		)
+	}
+	renderHeader() {
+		if (page.thread) return null;
+		return (
+			<div class="reply-header" key="header">
+				{this.renderBoards()}
+				<input
+					class="reply-subject"
+					placeholder={ln.UI.subject + "∗"}
+				/>
+			</div>
+		);
+	}
 	renderFilePreview() {
 		const { files } = this.state
 		if (!files.length) return null
@@ -104,6 +130,7 @@ class Reply extends Component<any, any> {
 			<div class="reply-form">
 				{this.renderFilePreview()}
 				<div class="reply-content">
+					{this.renderHeader()}
 					<textarea
 						class="reply-body"
 						ref={s(this, "bodyEl")}
@@ -112,25 +139,25 @@ class Reply extends Component<any, any> {
 						onInput={this.recalcTextareaHeight}
 						onChange={this.handleBodyChange}
 					/>
-					<div class="reply-side-controls reply-controls">
-						<a class="control reply-control reply-form-hide-control" onClick={this.handleFormHide}>
-							<i class="fa fa-remove" />
-						</a>
-						<a class="control reply-control reply-form-move-control">
-							<i class="fa fa-arrows-alt" />
-						</a>
-					</div>
 					<div class="reply-footer-controls reply-controls">
 						<a class="control reply-control reply-attach-control" onClick={this.handleAttach}>
 							<i class="fa fa-file-image-o" />
 						</a>
-						<a class="control reply-control reply-send-control" onClick={this.handleSend}>
-							<i class={cx("fa", {
-								"fa-check": !sending,
-								"fa-spinner fa-pulse fa-fw": sending,
-							})} />
-						</a>
 					</div>
+				</div>
+				<div class="reply-side-controls reply-controls">
+					<a class="control reply-control reply-form-hide-control" onClick={this.handleFormHide}>
+						<i class="fa fa-remove" />
+					</a>
+					<a class="control reply-control reply-form-move-control">
+						<i class="fa fa-arrows-alt" />
+					</a>
+					<a class="control reply-control reply-send-control" onClick={this.handleSend}>
+						<i class={cx("fa", {
+							"fa-check": !sending,
+							"fa-spinner fa-pulse fa-fw": sending,
+						})} />
+					</a>
 				</div>
 				<input
 					class="reply-file-input"
@@ -147,18 +174,12 @@ class Reply extends Component<any, any> {
 class ReplyContainer extends Component<any, any> {
 	state = {
 		show: false,
-		thread: false,
 	}
 	componentDidMount() {
 		on(document, "click", () => {
-			this.setState({show: true, thread: false})
+			this.setState({show: true})
 		}, {
-			selector: BOARD_NEW_THREAD_BUTTON_SEL,
-		})
-		on(document, "click", () => {
-			this.setState({show: true, thread: true})
-		}, {
-			selector: THREAD_REPLY_BUTTON_SEL,
+			selector: [BOARD_NEW_THREAD_BUTTON_SEL, THREAD_REPLY_BUTTON_SEL],
 		})
 	}
 	handleHide = () => {
@@ -167,7 +188,7 @@ class ReplyContainer extends Component<any, any> {
 	render({}, {show, thread}: any) {
 		return (
 			<ShowHide show={show}>
-				<Reply thread={thread} onHide={this.handleHide} />
+				<Reply onHide={this.handleHide} />
 			</ShowHide>
 		)
 	}

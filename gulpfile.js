@@ -80,8 +80,7 @@ function translations() {
   return gulp.src(TRANSLATIONS_GLOB)
     .pipe(tap(function(file) {
       const name = JSON.stringify(path.basename(file.path, ".json"));
-      // Save only translations shared between client and server.
-      const lang = JSON.stringify(JSON.parse(file.contents.toString()).common);
+      const lang = JSON.stringify(JSON.parse(file.contents.toString()));
       file.contents = new Buffer(`CUTE_LANGS[${name}] = ${lang};`);
     }))
     .pipe(concat("langs.js"))

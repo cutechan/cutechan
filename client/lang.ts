@@ -1,7 +1,10 @@
 // Follows lang.go structures.
 
 type LanguagePack = {
+	UI: { [key: string]: string }
+	ui: { [key: string]: string }
 	Common: CommonLanguagePack
+	common: CommonLanguagePack
 }
 
 type CommonLanguagePack = {
@@ -20,10 +23,13 @@ type CommonLanguagePack = {
 // TODO(Kagami): Add support for per-user site language.
 const current: string = (window as any).config.defaultLang
 
-const lang: CommonLanguagePack = (window as any).CUTE_LANGS[current]
-lang.Posts = lang.posts
-lang.UI = lang.ui
+// TODO(Kagami): Use `ln` everywhere.
+export const ln: LanguagePack = (window as any).CUTE_LANGS[current]
+export const lang: CommonLanguagePack = ln.common
 export default lang
 
 // Emulate lang.go to simplify template porting.
-export const ln: LanguagePack = {Common: lang}
+ln.UI = ln.ui
+ln.Common = ln.common
+lang.Posts = lang.posts
+lang.UI = lang.ui
