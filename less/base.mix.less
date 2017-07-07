@@ -322,11 +322,15 @@ html, body {
 
 .new-thread-container {
   margin: 0 auto;
-  margin-bottom: 20px;
+  .reply-form {
+    margin-bottom: 20px;
+  }
 }
 
 .new-post-container {
-  margin-top: 20px;
+  .reply-form {
+    margin-top: 20px;
+  }
 }
 
 //////////////////////////////
@@ -699,7 +703,7 @@ a.referenced {
 .page-title {
   font-size: 2em;
   font-weight: bold;
-  margin: 15px 0;
+  margin: 20px 0;
 }
 
 //////////////////////////////
@@ -965,6 +969,7 @@ header {
   display: inline-block;
   font-size: larger;
   padding: 0;
+  text-align: center;
   background: none;
   border: none;
   color: #16a085;
@@ -1022,6 +1027,7 @@ header {
   border: 3px solid #ccc;
   border-radius: 3px;
   padding: 5px;
+  background: #eee;
 }
 
 .reply-header {
@@ -1127,6 +1133,7 @@ header {
 }
 
 .reply-send-control {
+  margin-top: auto;
   margin-bottom: -4px;
 }
 
@@ -1222,6 +1229,10 @@ header {
 
 .hidden {
   display: none;
+}
+
+.invisible {
+  visibility: hidden;
 }
 
 .clearfix:after {

@@ -29,9 +29,18 @@ class Thumb extends Component<any, any> {
 }
 
 class Reply extends Component<any, any> {
-	private bodyEl: HTMLInputElement
-	private fileEl: HTMLInputElement
+	private mainEl: HTMLElement = null
+	private bodyEl: HTMLInputElement = null
+	private fileEl: HTMLInputElement = null
+	private moving = false
+	private baseX = 0
+	private baseY = 0
+	private startX = 0
+	private startY = 0
 	state = {
+		float: false,
+		left: 0,
+		top: 0,
 		sending: false,
 		board: page.board === "all" ? boards[0] : page.board,
 		subject: "",
@@ -39,12 +48,34 @@ class Reply extends Component<any, any> {
 		files: [] as [File],
 	}
 	componentDidMount() {
+		document.addEventListener(
+			"mousemove",
+			this.handleGlobalMove,
+			{passive: true}
+		)
+		document.addEventListener(
+			"mouseup",
+			this.handleGlobalUp,
+			{passive: true}
+		)
 		this.bodyEl.focus()
 		if (page.thread) {
 			this.bodyEl.scrollIntoView()
 		} else {
 			scrollToTop()
 		}
+	}
+	componentWillUnmount() {
+		document.removeEventListener(
+			"mousemove",
+			this.handleGlobalMove,
+			{passive: true}
+		)
+		document.removeEventListener(
+			"mouseup",
+			this.handleGlobalUp,
+			{passive: true}
+		)
 	}
 	componentDidUpdate() {
 		this.recalcTextareaHeight()
@@ -53,6 +84,33 @@ class Reply extends Component<any, any> {
 		// See <https://stackoverflow.com/a/995374>.
 		this.bodyEl.style.height = "1px"
 		this.bodyEl.style.height = this.bodyEl.scrollHeight + "px"
+	}
+	getMainStyle() {
+		const { float, left, top } = this.state
+		return float ? {position: "fixed", left, top} : null
+	}
+	handleMoveDown = (e: MouseEvent) => {
+		this.moving = true
+		this.baseX = e.clientX
+		this.baseY = e.clientY
+		const rect = this.mainEl.getBoundingClientRect()
+		this.startX = rect.left
+		this.startY = rect.top
+	}
+	handleGlobalMove = (e: MouseEvent) => {
+		if (this.moving) {
+			this.setState({
+				float: true,
+				left: this.startX + e.clientX - this.baseX,
+				top: this.startY + e.clientY - this.baseY,
+			})
+		}
+	}
+	handleGlobalUp = () => {
+		this.moving = false
+	}
+	handleFormPin = () => {
+		this.setState({float: false}, scrollToBottom)
 	}
 	handleFormHide = () => {
 		this.props.onHide()
@@ -84,7 +142,7 @@ class Reply extends Component<any, any> {
 		const { board, subject, body, files } = this.state
 		const fn = page.thread ? API.post.createWS : API.thread.create
 		this.setState({sending: true})
-		fn({ board, subject, body, files }).then((res: Dict) => {
+		fn({board, subject, body, files}).then((res: Dict) => {
 			if (page.thread) {
 				this.handleFormHide()
 				scrollToBottom()
@@ -154,9 +212,9 @@ class Reply extends Component<any, any> {
 			</div>
 		);
 	}
-	render({}, { sending, body }: any) {
+	render({}, { float, sending, body }: any) {
 		return (
-			<div class="reply-form">
+			<div class="reply-form" ref={s(this, "mainEl")} style={this.getMainStyle()}>
 				{this.renderFilePreview()}
 				<div class="reply-content">
 					{this.renderHeader()}
@@ -177,9 +235,14 @@ class Reply extends Component<any, any> {
 					<a class="control reply-control reply-form-hide-control" onClick={this.handleFormHide}>
 						<i class="fa fa-remove" />
 					</a>
-					<a class="control reply-control reply-form-move-control">
+					<a class="control reply-control reply-form-move-control" onMouseDown={this.handleMoveDown}>
 						<i class="fa fa-arrows-alt" />
 					</a>
+					<ShowHide show={float}>
+						<a class="control reply-control reply-form-pin-control" onClick={this.handleFormPin}>
+							<i class="fa fa-thumb-tack" />
+						</a>
+					</ShowHide>
 					<button
 						class="control reply-control reply-send-control"
 						disabled={this.disabled}
