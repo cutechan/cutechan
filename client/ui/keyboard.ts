@@ -1,10 +1,9 @@
 // Keyboard shortcuts and such
 
-import { BOARD_SEARCH_INPUT_SEL, POST_SEL } from "../vars"
+import { POST_SEL, BOARD_SEARCH_INPUT_SEL } from "../vars"
 import options from "../options"
-import { postSM, postEvent } from "../posts"
 import { page } from "../state"
-import { scrollToElement, getID } from "../util"
+import { getID, trigger, HOOKS } from "../util"
 
 // Bind keyboard event listener to the document
 export default () =>
@@ -35,19 +34,9 @@ function handleShortcut(event: KeyboardEvent) {
 
 	if (event.altKey) {
 		caught = true
-
 		switch (event.which) {
 			case options.newPost:
-				if (page.thread) {
-					postSM.feed(postEvent.open)
-					break
-				}
-				const tf = document
-					.querySelector("aside:not(.expanded) .new-thread-button")
-				if (tf) {
-					tf.click()
-					scrollToElement(tf)
-				}
+				trigger(HOOKS.openReply)
 				break
 			case options.workMode:
 				options.workModeToggle = !options.workModeToggle
@@ -58,7 +47,6 @@ function handleShortcut(event: KeyboardEvent) {
 			default:
 				caught = false
 		}
-
 	}
 
 	if (caught) {

@@ -28,7 +28,7 @@ TODO(Kagami): Fix markup and styles.
 		<a class="button thread-nav-item thread-nav-catalog" href="/all/catalog">
 			{%s ln.UI["catalog"] %}
 		</a>
-		<a class="button thread-nav-item thread-nav-reply">
+		<a class="button thread-nav-item thread-nav-reply trigger-open-reply">
 			{%s ln.UI["reply"] %}
 		</a>
 	</nav>

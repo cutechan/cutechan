@@ -163,18 +163,15 @@ createTask("deps", "client/loader.js", src =>
   src
     .pipe(rjsOptimize({
       optimize: "none",
+      cjsTranslate: true,
       paths: {
         almond: "../node_modules/almond/almond",
         mustache: "../node_modules/mustache/mustache",
         preact: "../node_modules/preact/dist/preact",
         classnames: "../node_modules/classnames/index",
+        events: "../node_modules/events/events",
       },
-      shim: {
-        preact: {
-          exports: "preact",
-        },
-      },
-      deps: ["almond", "mustache", "preact", "classnames"],
+      deps: ["almond", "mustache", "preact", "classnames", "events"],
       out: "deps.js",
     }))
     .pipe(gulpif(!watch, minify()))

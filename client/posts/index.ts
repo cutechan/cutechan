@@ -1,6 +1,6 @@
 export { Thread, Post, Backlinks } from "./model"
 export { default as PostView } from "./view"
-export { postEvent, postSM, postState, FormModel } from "./posting"
+export { getPostModel, postEvent, postSM, postState, FormModel } from "./posting"
 export {
 	default as ImageHandler,
 	duration, fileSize, thumbPath, sourcePath,

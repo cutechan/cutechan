@@ -4,7 +4,7 @@ import { POST_REPLY_CONTROL_SEL } from "../../vars"
 import FormModel from "./model"
 import FormView from "./view"
 import { connState, connSM, handlers, message } from "../../connection"
-import { on, FSM, hook, getID } from "../../util"
+import { on, FSM, getID } from "../../util"
 import lang from "../../lang"
 import { page } from "../../state"
 import initDrop from "./drop"
@@ -59,8 +59,9 @@ export const enum postEvent {
 }
 export const postSM = new FSM<postState, postEvent>(postState.none)
 
-hook("getPostModel", () =>
-	postModel)
+export function getPostModel(): FormModel {
+	return postModel
+}
 
 // Find the post creation button(s) and style it, if any
 function stylePostControls(fn: (el: HTMLElement) => void) {

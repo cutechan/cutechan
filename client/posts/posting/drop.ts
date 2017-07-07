@@ -1,9 +1,7 @@
 // File upload via drag and drop
 
-import { postSM, postEvent } from "."
-import { trigger } from "../../util"
+import { getPostModel, postSM, postEvent } from "."
 import { page } from "../../state"
-import FormModel from "./model"
 
 // Handle file drop
 function onDrop(e: DragEvent) {
@@ -21,7 +19,7 @@ function onDrop(e: DragEvent) {
 	postSM.feed(postEvent.open)
 
 	// Neither disconnected, errored or already has image
-	const m = trigger("getPostModel") as FormModel
+	const m = getPostModel()
 	if (m && !m.image) {
 		m.uploadFile(files[0])
 	}

@@ -2,13 +2,12 @@ import * as cx from "classnames"
 import { h, render, Component } from "preact"
 import { ln } from "../../lang"
 import { page, boards } from "../../state"
-import { Dict, ShowHide, on, scrollToTop } from "../../util"
 import API from "../../api"
+import { REPLY_CONTAINER_SEL, OPEN_REPLY_SEL } from "../../vars"
 import {
-	REPLY_CONTAINER_SEL,
-	BOARD_NEW_THREAD_BUTTON_SEL,
-	THREAD_REPLY_BUTTON_SEL
-} from "../../vars"
+	Dict, ShowHide, on, scrollToTop, scrollToBottom,
+	hook, HOOKS,
+} from "../../util"
 
 function s(self: any, name: string) {
 	return function(el: Element) {
@@ -81,12 +80,14 @@ class Reply extends Component<any, any> {
 		this.setState({files: [file]})
 	}
 	handleSend = () => {
+		if (this.disabled) return
 		const { board, subject, body, files } = this.state
 		const fn = page.thread ? API.post.createWS : API.thread.create
 		this.setState({sending: true})
 		fn({ board, subject, body, files }).then((res: Dict) => {
 			if (page.thread) {
 				this.handleFormHide()
+				scrollToBottom()
 			} else {
 				location.href = `/${board}/${res.id}`
 			}
@@ -98,7 +99,12 @@ class Reply extends Component<any, any> {
 	}
 	get invalid() {
 		const { subject, body, files } = this.state
-		return !subject || (!body && !files.length)
+		const hasSubject = !!subject || !!page.thread
+		return !hasSubject || (!body && !files.length)
+	}
+	get disabled() {
+		const { sending } = this.state
+		return sending || this.invalid
 	}
 	renderBoards() {
 		if (page.board !== "all") return null;
@@ -176,7 +182,7 @@ class Reply extends Component<any, any> {
 					</a>
 					<button
 						class="control reply-control reply-send-control"
-						disabled={sending || this.invalid}
+						disabled={this.disabled}
 						onClick={this.handleSend}
 					>
 						<i class={cx("fa", {
@@ -203,11 +209,12 @@ class ReplyContainer extends Component<any, any> {
 		show: false,
 	}
 	componentDidMount() {
+		hook(HOOKS.openReply, () => {
+			this.setState({show: true})
+		})
 		on(document, "click", () => {
 			this.setState({show: true})
-		}, {
-			selector: [BOARD_NEW_THREAD_BUTTON_SEL, THREAD_REPLY_BUTTON_SEL],
-		})
+		}, {selector: OPEN_REPLY_SEL})
 	}
 	handleHide = () => {
 		this.setState({show: false})

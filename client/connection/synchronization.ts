@@ -1,10 +1,10 @@
 import { handlers, message } from "./messages"
 import { connSM, connEvent, send } from "./state"
 import {
-	postSM, postEvent, postState, FormModel, Post
+	getPostModel, postSM, postEvent, postState, FormModel, Post
 } from "../posts"
 import { page, posts, displayLoading } from "../state"
-import { trigger, uncachedGET, extend } from "../util"
+import { uncachedGET, extend } from "../util"
 import { PostData } from "../common"
 import { insertPost } from "../client"
 
@@ -36,7 +36,7 @@ export function synchronise() {
 	// browser tab, etc.
 	if (page.thread && postSM.state === postState.halted) {
 		// No older than 15 minutes
-		const m = trigger("getPostModel") as FormModel
+		const m = getPostModel()
 		if (m.time > (Date.now() / 1000 - 15 * 60)) {
 			send(message.reclaim, {
 				id: m.id,

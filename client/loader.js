@@ -182,7 +182,7 @@
 
   function loadClient() {
     loadScript("app" + (window.legacy ? ".es5" : "")).onload = function () {
-      require("main");
+      requirejs("main");
     }
 
     if ("serviceWorker" in navigator) {
