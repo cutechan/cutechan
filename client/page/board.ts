@@ -1,15 +1,11 @@
-import { BOARD_REFRESH_BUTTON_SEL, BOARD_SEARCH_INPUT_SEL } from "../vars"
-import { on, fetchBoard } from '../util'
-import lang from '../lang'
+import { BOARD_SEARCH_INPUT_SEL } from "../vars"
+import { on } from '../util'
 import { page, posts, loadFromDB } from '../state'
 import options from '../options'
-import { relativeTime, Post, findSyncwatches } from "../posts"
-import {
-	extractConfigs, isBanned, extractPost, reparseOpenPosts, extractPageData,
-} from "./common"
+import { Post, findSyncwatches } from "../posts"
+import { extractPost, reparseOpenPosts, extractPageData } from "./common"
 import { setPostCount } from "./thread"
 import { ThreadData } from "../common"
-import { renderSyncCount } from "../connection"
 
 type SortFunction = (a: Post, b: Post) => number
 
@@ -24,25 +20,10 @@ const sorts: { [name: string]: SortFunction } = {
 
 const threads = document.getElementById("threads")
 
-// Unix time of last board page render. Used for automatic refreshes.
-let lastFetchTime = Date.now() / 1000
-
 // Sort threads by embedded data
 function subtract(attr: string): (a: Post, b: Post) => number {
 	return (a, b) =>
 		b[attr] - a[attr]
-}
-
-// Render a board fresh board page
-export function renderFresh(html: string) {
-	lastFetchTime = Math.floor(Date.now() / 1000)
-	threads.innerHTML = html
-	if (isBanned()) {
-		return
-	}
-	extractConfigs()
-	renderSyncCount(0) // Board pages do not have any sync logic or counters
-	render()
 }
 
 async function extractCatalogModels() {
@@ -82,8 +63,6 @@ export async function render() {
 	} else {
 		await extractThreads()
 	}
-
-	renderRefreshButton()
 	if (!page.catalog) {
 		findSyncwatches(threads)
 	} else {
@@ -149,15 +128,6 @@ function getThreads(): [HTMLElement, HTMLElement[]] {
 	]
 }
 
-// Render the board refresh button text
-function renderRefreshButton() {
-	let text = relativeTime(lastFetchTime)
-	if (text === lang.posts["justNow"]) {
-		text = lang.ui["refresh"]
-	}
-	threads.querySelector(BOARD_REFRESH_BUTTON_SEL).textContent = text
-}
-
 // Persist thread sort order mode to localStorage and rerender threads
 function onSortChange(e: Event) {
 	localStorage.setItem("catalogSort", (e.target as HTMLInputElement).value)
@@ -189,34 +159,6 @@ function filterThreads(filter: string) {
 	}
 }
 
-// Fetch and rerender board contents
-async function refreshBoard() {
-	const res = await fetchBoard(page.board, page.page, page.catalog),
-		t = await res.text()
-	switch (res.status) {
-		case 200:
-		case 403:
-			posts.clear()
-			renderFresh(t)
-			break
-		default:
-			throw t
-	}
-}
-
-// Update refresh timer or refresh board, if document hidden
-// TODO: Replace with SSE
-setInterval(() => {
-	if (page.thread || isBanned()) {
-		return
-	}
-	if (document.hidden) {
-		refreshBoard()
-	} else {
-		renderRefreshButton()
-	}
-}, 600000)
-
 on(threads, "input", onSortChange, {
 	passive: true,
 	selector: "select[name=sortMode]",
@@ -224,8 +166,4 @@ on(threads, "input", onSortChange, {
 on(threads, "input", onSearchChange, {
 	passive: true,
 	selector: BOARD_SEARCH_INPUT_SEL,
-})
-on(threads, "click", refreshBoard, {
-	passive: true,
-	selector: BOARD_REFRESH_BUTTON_SEL,
 })

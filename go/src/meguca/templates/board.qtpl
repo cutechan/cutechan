@@ -68,12 +68,11 @@
 	<aside class="reply-container new-thread-container"></aside>
 	<nav class="board-nav board-nav_top">
 		<noscript>{%= renderNoscriptThreadForm(id, conf, pos) %}</noscript>
-		<a class="button board-nav-item board-nav-new-thread">
-			{%s ln.UI["newThread"] %}
-		</a>
-		<a class="button board-nav-item board-nav-refresh">
-			{%s ln.Common.UI["refresh"] %}
-		</a>
+		{% if !catalog %}
+			<a class="button board-nav-item board-nav-new-thread">
+				{%s ln.UI["newThread"] %}
+			</a>
+		{% endif %}
 		{%= catalogLink(catalog) %}
 		{% if !catalog %}
 			{%= pagination(page, total) %}
