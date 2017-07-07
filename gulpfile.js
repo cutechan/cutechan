@@ -25,7 +25,7 @@ const runSequence = require("run-sequence");
 
 const TRANSLATIONS_GLOB = "lang/*.json";
 const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
-const TYPESCRIPT_GLOB = "client/**/*.ts?(x)";
+const TYPESCRIPT_GLOB = "{main,client/**/*}.ts?(x)";
 
 const DIST_DIR = "dist";
 const STATIC_DIR = path.join(DIST_DIR, "static");
@@ -109,8 +109,8 @@ function templates() {
 }
 
 function typescript(opts) {
-  const project = ts.createProject("client/tsconfig.json", opts);
-  return gulp.src("client/main.ts")
+  const project = ts.createProject("tsconfig.json", opts);
+  return gulp.src("main.ts")
     .pipe(project(ts.reporter.nullReporter()))
     .on("error", handleError);
 }
@@ -159,17 +159,17 @@ buildES6();
 if (!watch) buildES5();
 
 // Third-party dependencies and loader.
-createTask("deps", "client/loader.js", src =>
+createTask("deps", "loader.js", src =>
   src
     .pipe(rjsOptimize({
       optimize: "none",
       cjsTranslate: true,
       paths: {
-        almond: "../node_modules/almond/almond",
-        mustache: "../node_modules/mustache/mustache",
-        preact: "../node_modules/preact/dist/preact",
-        classnames: "../node_modules/classnames/index",
-        events: "../node_modules/events/events",
+        almond: "node_modules/almond/almond",
+        mustache: "node_modules/mustache/mustache",
+        preact: "node_modules/preact/dist/preact",
+        classnames: "node_modules/classnames/index",
+        events: "node_modules/events/events",
       },
       deps: ["almond", "mustache", "preact", "classnames", "events"],
       out: "deps.js",

@@ -1,17 +1,19 @@
-// Client entry point
+/**
+ * Client entry point.
+ */
 
-/// <reference path="util/dom4.d.ts" />
+/// <reference path="client/util/dom4.d.ts" />
 
-import { loadFromDB, page, storeMine, displayLoading } from './state'
-import { start as connect } from './connection'
-import { open } from './db'
-import { initOptions } from "./options"
-import initPosts from "./posts"
-import { renderBoard, extractConfigs, renderThread } from './page'
-import initUI from "./ui"
-import { getCookie, deleteCookie } from "./util"
-import assignHandlers from "./client"
-import initModeration from "./mod"
+import { loadFromDB, page, storeMine, displayLoading } from "./client/state"
+import { start as connect } from "./client/connection"
+import { open } from "./client/db"
+import { initOptions } from "./client/options"
+import initPosts from "./client/posts"
+import { renderBoard, extractConfigs, renderThread } from "./client/page"
+import initUI from "./client/ui"
+import { getCookie, deleteCookie } from "./client/util"
+import assignHandlers from "./client/client"
+import initModeration from "./client/mod"
 
 // Load all stateful modules in dependency order
 async function start() {
