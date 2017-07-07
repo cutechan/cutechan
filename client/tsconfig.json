@@ -1,5 +1,7 @@
 {
   "compilerOptions": {
+    "lib": ["DOM", "ES6", "DOM.Iterable", "ScriptHost", "ES2017.object"],
+    "downlevelIteration": true,
     "module": "amd",
     "moduleResolution": "node",
     "jsx": "React",

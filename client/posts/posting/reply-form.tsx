@@ -2,9 +2,8 @@ import * as cx from "classnames"
 import { h, render, Component } from "preact"
 import { ln } from "../../lang"
 import { page, boards } from "../../state"
-import { ShowHide, on, scrollToTop } from "../../util"
-import { postSM, postEvent, postState } from "."
-import FormModel from "./model"
+import { Dict, ShowHide, on, scrollToTop } from "../../util"
+import API from "../../api"
 import {
 	REPLY_CONTAINER_SEL,
 	BOARD_NEW_THREAD_BUTTON_SEL,
@@ -17,21 +16,17 @@ function s(self: any, name: string) {
 	}
 }
 
-function sendPost(body: string): Promise<void> {
-	return new Promise<void>((resolve, reject) => {
-		postSM.act(postState.ready, postEvent.open, () => {
-			return postState.sendingNonLive
-		})
-		postSM.act(postState.sendingNonLive, postEvent.done, () => {
-			resolve()
-			return postState.ready
-		})
-
-		postSM.feed(postEvent.open)
-		const model = new FormModel()
-		model.parseInput(body)
-		model.commitNonLive()
-	})
+class Thumb extends Component<any, any> {
+	shouldComponentUpdate({ file }: any, {}) {
+		// Prevents image flashing.
+		return this.props.file !== file
+	}
+	render({ file }: any, {}) {
+		const previewURL = URL.createObjectURL(file)
+		return (
+			<img class="reply-file-thumb" src={previewURL} />
+		)
+	}
 }
 
 class Reply extends Component<any, any> {
@@ -39,6 +34,8 @@ class Reply extends Component<any, any> {
 	private fileEl: HTMLInputElement
 	state = {
 		sending: false,
+		board: page.board === "all" ? boards[0] : page.board,
+		subject: "",
 		body: "",
 		files: [] as [File],
 	}
@@ -53,15 +50,22 @@ class Reply extends Component<any, any> {
 	componentDidUpdate() {
 		this.recalcTextareaHeight()
 	}
-	handleFormHide = () => {
-		this.props.onHide()
-	}
-	recalcTextareaHeight = () => {
+	recalcTextareaHeight() {
 		// See <https://stackoverflow.com/a/995374>.
 		this.bodyEl.style.height = "1px"
 		this.bodyEl.style.height = this.bodyEl.scrollHeight + "px"
 	}
+	handleFormHide = () => {
+		this.props.onHide()
+	}
+	handleSubjectChange = (e: any) => {
+		this.setState({subject: e.target.value})
+	}
+	handleBoardChange = (e: any) => {
+		this.setState({board: e.target.value})
+	}
 	handleBodyChange = (e: any) => {
+		this.recalcTextareaHeight()
 		this.setState({body: e.target.value})
 	}
 	handleAttach = () => {
@@ -72,38 +76,58 @@ class Reply extends Component<any, any> {
 	}
 	handleFileLoad = () => {
 		const file = this.fileEl.files[0]
+		// Allow to select same file again.
 		this.fileEl.value = null
 		this.setState({files: [file]})
 	}
 	handleSend = () => {
+		const { board, subject, body, files } = this.state
+		const fn = page.thread ? API.post.createWS : API.thread.create
 		this.setState({sending: true})
-		sendPost(this.state.body).then(() => {
-			this.handleFormHide()
+		fn({ board, subject, body, files }).then((res: Dict) => {
+			if (page.thread) {
+				this.handleFormHide()
+			} else {
+				location.href = `/${board}/${res.id}`
+			}
 		}, () => {
-			// TODO(Kagami): Trigger notification.
+			// FIXME(Kagami): Trigger notification.
+		}).then(() => {
 			this.setState({sending: false})
 		})
 	}
+	get invalid() {
+		const { subject, body, files } = this.state
+		return !subject || (!body && !files.length)
+	}
 	renderBoards() {
 		if (page.board !== "all") return null;
+		const { sending, board } = this.state
 		return (
 			<select
 				class="reply-board"
+				value={board}
+				disabled={sending}
+				onInput={this.handleBoardChange}
 			>
 				{boards.map(b =>
-				<option class="reply-board-item">{b}</option>
+				<option class="reply-board-item" key={b} value={b}>{b}</option>
 				)}
 			</select>
 		)
 	}
 	renderHeader() {
 		if (page.thread) return null;
+		const { sending, subject } = this.state
 		return (
 			<div class="reply-header" key="header">
 				{this.renderBoards()}
 				<input
 					class="reply-subject"
 					placeholder={ln.UI.subject + "∗"}
+					value={subject}
+					disabled={sending}
+					onInput={this.handleSubjectChange}
 				/>
 			</div>
 		);
@@ -113,11 +137,10 @@ class Reply extends Component<any, any> {
 		if (!files.length) return null
 		// Only single file is supported at the moment.
 		const file = files[0]
-		const previewUrl = URL.createObjectURL(file)
 		return (
 			<div class="reply-file-previews" key="files">
 				<div class="reply-file-preview">
-					<img class="reply-file-thumb" src={previewUrl} />
+					<Thumb file={file} />
 					<a class="control reply-remove-file-control" onClick={this.handleAttachRemove}>
 						<i class="fa fa-remove" />
 					</a>
@@ -125,7 +148,7 @@ class Reply extends Component<any, any> {
 			</div>
 		);
 	}
-	render({}, {sending, body}: any) {
+	render({}, { sending, body }: any) {
 		return (
 			<div class="reply-form">
 				{this.renderFilePreview()}
@@ -136,8 +159,7 @@ class Reply extends Component<any, any> {
 						ref={s(this, "bodyEl")}
 						value={body}
 						disabled={sending}
-						onInput={this.recalcTextareaHeight}
-						onChange={this.handleBodyChange}
+						onInput={this.handleBodyChange}
 					/>
 					<div class="reply-footer-controls reply-controls">
 						<a class="control reply-control reply-attach-control" onClick={this.handleAttach}>
@@ -152,12 +174,17 @@ class Reply extends Component<any, any> {
 					<a class="control reply-control reply-form-move-control">
 						<i class="fa fa-arrows-alt" />
 					</a>
-					<a class="control reply-control reply-send-control" onClick={this.handleSend}>
+					<button
+						class="control reply-control reply-send-control"
+						disabled={sending || this.invalid}
+						onClick={this.handleSend}
+					>
 						<i class={cx("fa", {
 							"fa-check": !sending,
 							"fa-spinner fa-pulse fa-fw": sending,
+							"hidden": this.invalid,
 						})} />
-					</a>
+					</button>
 				</div>
 				<input
 					class="reply-file-input"
@@ -185,7 +212,7 @@ class ReplyContainer extends Component<any, any> {
 	handleHide = () => {
 		this.setState({show: false})
 	}
-	render({}, {show, thread}: any) {
+	render({}, { show, thread }: any) {
 		return (
 			<ShowHide show={show}>
 				<Reply onHide={this.handleHide} />

@@ -8,6 +8,9 @@ export * from "./scroll"
 export * from "./render"
 export * from "./changes"
 
+// Useful helper.
+export type Dict = { [key: string]: any }
+
 // Any object with an event-based interface for passing to load()
 interface Loader {
 	onload: EventListener

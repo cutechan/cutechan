@@ -9,7 +9,7 @@
 
 {% func renderNoscriptThreadForm(id string, conf config.BoardConfContainer, pos auth.ModerationLevel) %}{% stripspace %}
 	{% code ln := lang.Get() %}
-	<form id="new-thread-form" action="/api/thread" method="POST" enctype="multipart/form-data">
+	<form id="new-thread-form" action="/html/thread" method="POST" enctype="multipart/form-data">
 		{% if id == "all" %}
 			<select name="board" required>
 				{% for _, b := range config.GetBoardTitles() %}

@@ -10,12 +10,36 @@ export async function fetchJSON<T>(url: string): Promise<[T, string]> {
 	return [await res.json(), ""]
 }
 
-// Send a POST request with a JSON body to the server
-export async function postJSON(url: string, body: any): Promise<Response> {
-	return await fetch(url, {
+type Dict = { [key: string]: any }
+
+function toFormData(data: Dict): FormData {
+	const form = new FormData()
+	for (let [k, v] of Object.entries(data)) {
+		if (Array.isArray(v)) {
+			k += "[]"
+			v.forEach(item => form.append(k, item))
+		} else {
+			form.append(k, v)
+		}
+	}
+	return form
+}
+
+// Send a POST request with a JSON body to the server.
+export function postJSON(url: string, data: Dict): Promise<Response> {
+	return fetch(url, {
 		method: "POST",
-		credentials: 'include',
-		body: JSON.stringify(body),
+		credentials: "include",
+		body: JSON.stringify(data),
+	})
+}
+
+// Send a POST multipart/form-data request to the server.
+export function postForm(url: string, data: any): Promise<Response> {
+	return fetch(url, {
+		method: "POST",
+		credentials: "include",
+		body: toFormData(data),
 	})
 }
 

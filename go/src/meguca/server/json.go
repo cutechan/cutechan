@@ -31,6 +31,7 @@ func serveJSON(
 ) {
 	buf, err := json.Marshal(data)
 	if err != nil {
+		// FIXME(Kagami): Don't send Go errors to client!
 		text500(w, r, err)
 		return
 	}

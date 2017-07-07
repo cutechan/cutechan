@@ -143,12 +143,7 @@ function buildES5() {
   const name = "es5";
   tasks.push(name);
   gulp.task(name, () =>
-    buildClient({
-      target: "ES5",
-      lib: ["DOM", "ES6", "DOM.Iterable", "ScriptHost"],
-      downlevelIteration: true,
-      outFile: "app.es5.js"
-    })
+    buildClient({target: "ES5", outFile: "app.es5.js"})
       .pipe(minify())
       .pipe(sourcemaps.write("maps"))
       .pipe(gulp.dest(JS_DIR))

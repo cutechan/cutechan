@@ -35,7 +35,7 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 	}
 	post, err := websockets.CreateThread(req, ip)
 	if err != nil {
-		// TODO: Not all codes are actually 400. Need to differentiate.
+		// TODO(Kagami): Write JSON errors instead.
 		text400(w, err)
 		return
 	}
@@ -48,7 +48,8 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 		Path:  "/",
 	})
 
-	http.Redirect(w, r, fmt.Sprintf(`/%s/%d`, req.Board, post.ID), 303)
+	res := websockets.ThreadCreationResponse{ID: post.ID}
+	serveJSON(w, r, "", res)
 }
 
 // ok = false, if failed and caller should return
@@ -65,7 +66,7 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 
 	// Handle image, if any, and extract file name
 	var token string
-	_, _, err = r.FormFile("image")
+	_, _, err = r.FormFile("files[]")
 	switch err {
 	case nil:
 		var code int

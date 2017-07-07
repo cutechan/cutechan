@@ -125,7 +125,7 @@ func ParseUpload(req *http.Request) (int, string, error) {
 		return 400, "", err
 	}
 
-	file, _, err := req.FormFile("image")
+	file, _, err := req.FormFile("files[]")
 	if err != nil {
 		return 400, "", err
 	}

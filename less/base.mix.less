@@ -382,12 +382,12 @@ html, body {
   background: fade(@postBG, 80%);
   border-bottom: 1px solid #aaa;
   font-weight: bold;
-  font-size: larger;
   cursor: default;
   user-select: none;
 }
 
-.banner-item {
+.site-nav {
+  font-size: larger;
 }
 
 .banner-status {
@@ -407,9 +407,10 @@ html, body {
 
 .banner-icon {
   float: right;
-  cursor: pointer;
-  width: 22px;
   display: inline-block;
+  font-size: larger;
+  width: 22px;
+  cursor: pointer;
 }
 
 //////////////////////////////
@@ -745,17 +746,17 @@ header {
     font-family: inherit;
     font-weight: normal;
   }
-  .control {
-    // Widen click area
-    width: 1em;
-    height: 1em;
-    margin-left: 0.5em;
-    float: right;
-    svg {
-      width: 0.7em;
-      height: 0.7em;
-    }
-  }
+  // .control {
+  //   // Widen click area
+  //   width: 1em;
+  //   height: 1em;
+  //   margin-left: 0.5em;
+  //   float: right;
+  //   svg {
+  //     width: 0.7em;
+  //     height: 0.7em;
+  //   }
+  // }
 }
 
 .post-header {
@@ -963,11 +964,17 @@ header {
 .control {
   display: inline-block;
   font-size: larger;
+  padding: 0;
+  background: none;
+  border: none;
+  color: #16a085;
   cursor: pointer;
   user-select: none;
-  color: #16a085;
-  &:hover {
+  &:not(:disabled):hover {
     color: #d17c43;
+  }
+  &:disabled {
+    cursor: default;
   }
 }
 
@@ -980,8 +987,11 @@ header {
   cursor: pointer;
   outline: none;
   user-select: none;
-  &:hover {
+  &:not(:disabled):hover {
     background: #ddd;
+  }
+  &:disabled {
+    cursor: default;
   }
 }
 
@@ -1107,13 +1117,11 @@ header {
 
 .reply-form-hide-control {
   font-size: 28px;
-  display: block;
   margin-top: -3px;
 }
 
 .reply-form-move-control {
   flex: 1;
-  width: 22px;
   text-align: center;
   cursor: move;
 }
