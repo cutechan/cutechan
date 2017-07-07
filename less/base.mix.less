@@ -658,7 +658,7 @@ a.referenced {
   border-radius: 15px;
   padding: 6px 14px;
   border: 1px solid #ccc;
-  background: white;
+  background: none;
   outline: none;
   &:focus {
     border-color: rgba(82,168,236,.8);
@@ -1029,13 +1029,15 @@ header {
 }
 
 .reply-board {
-  flex: 0;
   font-size: larger;
   background: none;
   outline: none;
   border: none;
-  margin-right: 10px;
+  margin-right: 5px;
   cursor: pointer;
+  // XXX(Kagami): Try to fix inner padding of select. Might looks bad in
+  // some browsers. Might try to rewrite with `appearance: none` later.
+  margin-left: -4px;
 }
 
 .reply-subject {
