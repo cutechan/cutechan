@@ -4,7 +4,45 @@
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
 
-{% func renderFAQ() %}{% stripspace %}
+TODO(Kagami): Remove.
+{% func renderTemplates(pos auth.ModerationLevel) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<template name="post-controls">
+		<form class="antispam-captcha">
+			{%= captcha() %}
+			{%= submit(true) %}
+		</form>
+		<div class="post-controls">
+			{%= cancel() %}
+			<input name="done" type="button" value="{%s ln.UI["done"] %}" hidden>
+			<span class="upload-container" hidden>
+				<input type="file" name="image" accept="image/png, image/gif, image/jpeg, video/webm, video/ogg, audio/ogg, application/ogg, video/mp4, audio/mp4, audio/mp3, application/zip, application/x-7z-compressed, application/x-xz, application/x-gzip">
+				<strong class="upload-status"></strong>
+				{% if pos > auth.NotStaff %}
+					{%= input(staffTitleSpec.wrap(), ln) %}
+				{% endif %}
+			</span>
+		</div>
+	</template>
+	<template name="notification">
+		<div class="notification modal">
+			<b class="admin"><b>
+		</div>
+	</template>
+	<template name="sticky">
+		{%= renderSticky(true) %}
+	</template>
+	{% if pos > auth.NotLoggedIn %}
+		<template name="keyValue">
+			{%= keyValueForm("", "") %}
+		</template>
+		<template name="arrayItem">
+			{%= arrayItemForm("") %}
+		</template>
+	{% endif %}
+{% endstripspace %}{% endfunc %}
+
+{% func faqModal() %}{% stripspace %}
 	<div id="FAQ" class="modal">
 		cutechan is licensed under the{% space %}
 		<a href="https://www.gnu.org/licenses/agpl.html" target="_blank">
@@ -23,12 +61,122 @@
 	</div>
 {% endstripspace %}{% endfunc %}
 
+{% func accountModal(pos auth.ModerationLevel) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<div id="account-panel" class="modal">
+		{% if pos == auth.NotLoggedIn %}
+			<div id="login-forms">
+				{% code f := ln.Forms %}
+				{%= tabButts([]string{f["id"][0], f["register"][0]}) %}
+				<div class="tab-cont">
+					<div class="tab-sel" data-id="0">
+						<form id="login-form">
+							{%= table(specs["login"]) %}
+							{%= captcha() %}
+							{%= submit(false) %}
+						</form>
+					</div>
+					<div data-id="1">
+						<form id="registration-form">
+							{%= table(specs["register"]) %}
+							{%= captcha() %}
+							{%= submit(false) %}
+						</form>
+					</div>
+				</div>
+			</div>
+		{% else %}
+			<div id="form-selection">
+				{% for _, l := range [...]string{
+					"logout", "logoutAll", "changePassword",
+					"createBoard",
+					"configureBoard", "setBanners", "assignStaff",
+					"deleteBoard",
+				} %}
+					<a class="form-selection-link" id="{%s l %}">
+						{%s ln.UI[l] %}
+						<br>
+					</a>
+				{% endfor %}
+				{% if pos == auth.Admin %}
+					<a class="form-selection-link" id="configureServer">
+						{%s ln.UI["configureServer"] %}
+						<br>
+					</a>
+				{% endif %}
+			</div>
+		{% endif %}
+	</div>
+{% endstripspace %}{% endfunc %}
+
+{% func optionsModal() %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<div id="options" class="modal">
+		{%= tabButts(ln.Tabs) %}
+		<div class="tab-cont">
+			{% for i, sp := range optionSpecs %}
+				<div data-id="{%d i %}"{% if i == 0 %}{% space %}class="tab-sel"{% endif %}>
+					{%= options(sp, ln) %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endstripspace %}{% endfunc %}
+
+{% func modModal(pos auth.ModerationLevel) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<div id="moderation-panel" class="modal">
+		<form>
+			{% if pos >= auth.Moderator %}
+				<div id="ban-form" class="hidden">
+					{% for _, id  := range [...]string{"day", "hour", "minute"} %}
+						<input type="number" name="{%s id %}" min="0" placeholder="{%s strings.Title(ln.Common.Plurals[id][1]) %}">
+					{% endfor %}
+					<br>
+					<input type="text" name="reason" required class="full-width" placeholder="{%s ln.UI["reason"] %}" disabled>
+					<br>
+					{% if pos == auth.Admin %}
+						<label>
+							<input type="checkbox" name="global">
+							{%s ln.UI["global"] %}
+						</label>
+					{% endif %}
+				</div>
+			{% endif %}
+			{% if pos == auth.Admin %}
+				<div id="notification-form" class="hidden">
+					<input type="text" name="notification" required class="full-width" placeholder="{%s ln.UI["text"] %}" style="min-width: 20em;" disabled>
+					<br>
+				</div>
+			{% endif %}
+			<input type="checkbox" name="showCheckboxes" title="Show mod checkboxes">
+			<select name="action">
+				{% code ids := append(make([]string, 0, 5), "deletePost", "deleteImage") %}
+				{% if pos >= auth.Moderator %}
+					{% code ids = append(ids, "ban") %}
+				{% endif %}
+				{% if pos == auth.Admin %}
+					{% code ids = append(ids, "notification") %}
+				{% endif %}
+				{% for _, id := range ids %}
+					<option value="{%s id %}">
+						{%s ln.UI[id] %}
+					</option>
+				{% endfor %}
+			</select>
+			<input type="button" value="{%s ln.UI["clear"] %}" name="clear">
+			{%= submit(false) %}
+		</form>
+	</div>
+{% endstripspace %}{% endfunc %}
+
 {% func renderIndex(pos auth.ModerationLevel) %}{% stripspace %}
 	{% code conf := config.Get() %}
 	{% code ln := lang.Get() %}
 	{% code confJSON, _ := config.GetClient() %}
 	{% code boards := config.GetBoards() %}
 	<!DOCTYPE html>
+	<html>
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
@@ -38,62 +186,18 @@
 		<link rel="icon" href="/static/favicons/default.ico" id="favicon">
 		<link rel="manifest" href="/static/mobile/manifest.json">
 		<link rel="stylesheet" href="/static/css/{%s conf.DefaultCSS %}.css" id="theme-css">
-		{% comment %}
-			Hide various elements that are dysfunctional without JS.
-		{% endcomment %}
-		<noscript>
-			<link rel="stylesheet" href="/static/css/noscript.css">
-		</noscript>
+		<noscript><link rel="stylesheet" href="/static/css/noscript.css"></noscript>
 		<script>
-			{% comment %}
-				Configuration injection.
-			{% endcomment %}
 			{% code boardJSON, _ := json.Marshal(boards) %}
 			var config={%z= confJSON %},boards={%z= boardJSON %},position={%d int(pos) %};
-
 			if (localStorage.theme !== config.DefaultCSS) {
 				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
 			}
 		</script>
-		<template name="post-controls">
-			<form class="antispam-captcha">
-				{%= captcha() %}
-				{%= submit(true) %}
-			</form>
-			<div class="post-controls">
-				{%= cancel() %}
-				<input name="done" type="button" value="{%s ln.UI["done"] %}" hidden>
-				<span class="upload-container" hidden>
-					<input type="file" name="image" accept="image/png, image/gif, image/jpeg, video/webm, video/ogg, audio/ogg, application/ogg, video/mp4, audio/mp4, audio/mp3, application/zip, application/x-7z-compressed, application/x-xz, application/x-gzip">
-					<strong class="upload-status"></strong>
-					{% if pos > auth.NotStaff %}
-						{%= input(staffTitleSpec.wrap(), ln) %}
-					{% endif %}
-				</span>
-			</div>
-		</template>
-		<template name="notification">
-			<div class="notification modal">
-				<b class="admin"><b>
-			</div>
-		</template>
-		<template name="sticky">
-			{%= renderSticky(true) %}
-		</template>
-		{% if pos > auth.NotLoggedIn %}
-			<template name="keyValue">
-				{%= keyValueForm("", "") %}
-			</template>
-			<template name="arrayItem">
-				{%= arrayItemForm("") %}
-			</template>
-		{% endif %}
+		{%= renderTemplates(pos) %}
 	</head>
 	<body>
 		<div class="overlay-container">
-			{% comment %}
-				Top banner.
-			{% endcomment %}
 			<div class="banner">
 				<nav class="site-nav">
 					<a class="site-nav-item" href="/all/">all</a>
@@ -113,133 +217,20 @@
 				<span id="sync-counter" class="banner-item banner-status" title="{%s ln.UI["syncCount"] %}"></span>
 				<span id="sync-status" class="banner-item banner-status" title="{%s ln.UI["sync"] %}"></span>
 			</div>
-			{% comment %}
-				For modal windows.
-			{% endcomment %}
 			<div id="modal-overlay" class="overlay">
-				{% comment %}
-					Information panel
-				{% endcomment %}
-				{%= renderFAQ() %}
-				{% comment %}
-					Account login and registration.
-				{% endcomment %}
-				<div id="account-panel" class="modal">
-					{% if pos == auth.NotLoggedIn %}
-						<div id="login-forms">
-							{% code f := ln.Forms %}
-							{%= tabButts([]string{f["id"][0], f["register"][0]}) %}
-							<div class="tab-cont">
-								<div class="tab-sel" data-id="0">
-									<form id="login-form">
-										{%= table(specs["login"]) %}
-										{%= captcha() %}
-										{%= submit(false) %}
-									</form>
-								</div>
-								<div data-id="1">
-									<form id="registration-form">
-										{%= table(specs["register"]) %}
-										{%= captcha() %}
-										{%= submit(false) %}
-									</form>
-								</div>
-							</div>
-						</div>
-					{% else %}
-						<div id="form-selection">
-							{% for _, l := range [...]string{
-								"logout", "logoutAll", "changePassword",
-								"createBoard",
-								"configureBoard", "setBanners", "assignStaff",
-								"deleteBoard",
-							} %}
-								<a class="form-selection-link" id="{%s l %}">
-									{%s ln.UI[l] %}
-									<br>
-								</a>
-							{% endfor %}
-							{% if pos == auth.Admin %}
-								<a class="form-selection-link" id="configureServer">
-									{%s ln.UI["configureServer"] %}
-									<br>
-								</a>
-							{% endif %}
-						</div>
-					{% endif %}
-				</div>
-				{% comment %}
-					Options panel.
-				{% endcomment %}
-				<div id="options" class="modal">
-					{%= tabButts(ln.Tabs) %}
-					<div class="tab-cont">
-						{% for i, sp := range optionSpecs %}
-							<div data-id="{%d i %}"{% if i == 0 %}{% space %}class="tab-sel"{% endif %}>
-								{%= options(sp, ln) %}
-							</div>
-						{% endfor %}
-					</div>
-				</div>
-				{% comment %}
-					For mods.
-				{% endcomment %}
+				{%= faqModal() %}
+				{%= accountModal(pos) %}
+				{%= optionsModal() %}
 				{% if pos > auth.NotStaff %}
-					<div id="moderation-panel" class="modal">
-						<form>
-							{% if pos >= auth.Moderator %}
-								<div id="ban-form" class="hidden">
-									{% for _, id  := range [...]string{"day", "hour", "minute"} %}
-										<input type="number" name="{%s id %}" min="0" placeholder="{%s strings.Title(ln.Common.Plurals[id][1]) %}">
-									{% endfor %}
-									<br>
-									<input type="text" name="reason" required class="full-width" placeholder="{%s ln.UI["reason"] %}" disabled>
-									<br>
-									{% if pos == auth.Admin %}
-										<label>
-											<input type="checkbox" name="global">
-											{%s ln.UI["global"] %}
-										</label>
-									{% endif %}
-								</div>
-							{% endif %}
-							{% if pos == auth.Admin %}
-								<div id="notification-form" class="hidden">
-									<input type="text" name="notification" required class="full-width" placeholder="{%s ln.UI["text"] %}" style="min-width: 20em;" disabled>
-									<br>
-								</div>
-							{% endif %}
-							<input type="checkbox" name="showCheckboxes" title="Show mod checkboxes">
-							<select name="action">
-								{% code ids := append(make([]string, 0, 5), "deletePost", "deleteImage") %}
-								{% if pos >= auth.Moderator %}
-									{% code ids = append(ids, "ban") %}
-								{% endif %}
-								{% if pos == auth.Admin %}
-									{% code ids = append(ids, "notification") %}
-								{% endif %}
-								{% for _, id := range ids %}
-									<option value="{%s id %}">
-										{%s ln.UI[id] %}
-									</option>
-								{% endfor %}
-							</select>
-							<input type="button" value="{%s ln.UI["clear"] %}" name="clear">
-							{%= submit(false) %}
-						</form>
-					</div>
+					{%= modModal(pos) %}
 				{% endif %}
 			</div>
 		</div>
 
-		{% comment %}
-			For hover previews.
-		{% endcomment %}
 		<div id="hover-overlay" class="overlay"></div>
 
-		{% comment %}
-			Main page content.
-		{% endcomment %}
+		<div class="alerts-container"></div>
+
 		<div id="page-container">
 			<section id="left-panel" class="side-panel"></section>
 			<div id="left-spacer" class="side-spacer"></div>
@@ -255,4 +246,5 @@
 		{% endcomment %}
 		<script src="/static/js/deps.js"></script>
 	</body>
+	</html>
 {% endstripspace %}{% endfunc %}
