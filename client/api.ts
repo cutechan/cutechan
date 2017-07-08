@@ -3,14 +3,32 @@
  */
 // TODO(Kagami): Port everything to the use of this module.
 
+import { ln } from "./lang"
 import { FormModel, postSM, postEvent, postState } from "./posts"
 import { Dict, postForm } from "./util"
+
+function handleErr(res: Response): Promise<Dict> {
+	const typ = res.headers.get("Content-Type")
+	if (typ === "application/json") {
+		return res.json().then(data => {
+			throw new Error(data.message || ln.UI.unknownErr)
+		})
+	} else {
+		return res.text().then(data => {
+			// XXX(Kagami): Might be quite huge HTML dump (e.g. 500). Maybe do
+			// it more elegantly...
+			throw new Error(data.slice(0, 200))
+		})
+	}
+}
 
 function req(method: string, url: string) {
 	url = `/api/${url}`
 	return function(data: Dict): Promise<Dict> {
-		// FIXME(Kagami): Process errors.
-		return postForm(url, data).then(res => res.json())
+		return postForm(url, data).then(res => {
+			if (!res.ok) return handleErr(res)
+			return res.json().catch(() => { throw new Error(ln.UI.unknownErr) })
+		})
 	}
 }
 
