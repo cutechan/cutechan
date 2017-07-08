@@ -1,4 +1,6 @@
-// Keyboard shortcuts and such
+/**
+ * Keyboard shortcuts handling.
+ */
 
 import { POST_SEL, BOARD_SEARCH_INPUT_SEL } from "../vars"
 import options from "../options"
@@ -12,23 +14,32 @@ export default () =>
 function handleShortcut(event: KeyboardEvent) {
 	let caught = false
 
-	let anyModifier = event.altKey || event.metaKey || event.ctrlKey || event.shiftKey;
-	let inInput = 'selectionStart' in event.target
+	const anyModifier = event.altKey || event.metaKey || event.ctrlKey || event.shiftKey
+	const inInput = "selectionStart" in event.target
 
-	if (!anyModifier && !inInput) {
-		switch (event.key) {
-		case "ArrowLeft":
-			caught = true
-			navigatePost(true)
-			break
-		case "ArrowRight":
-			caught = true
-			navigatePost(false)
-			break
-		case "s":
-			caught = true
-			navigateSearch()
-			break
+	if (!anyModifier) {
+		if (inInput) {
+			switch (event.key) {
+			case "Escape":
+				caught = true
+				;(event.target as HTMLElement).blur()
+				break
+			}
+		} else {
+			switch (event.key) {
+			case "ArrowLeft":
+				caught = true
+				navigatePost(true)
+				break
+			case "ArrowRight":
+				caught = true
+				navigatePost(false)
+				break
+			case "s":
+				caught = true
+				navigateSearch()
+				break
+			}
 		}
 	} else if (event.altKey) {
 		switch (event.which) {
