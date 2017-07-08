@@ -16,14 +16,14 @@ type Pack struct {
 	ID              string
 	Tabs, SortModes []string
 	Forms           map[string][2]string
-	UI, Options     map[string]string
+	UI              map[string]string
 	Templates       map[string][]string
 	Common          struct {
-		Posts   map[string]string    `json:"posts"`
-		Plurals map[string][]string  `json:"plurals"`
-		Time    map[string][]string  `json:"time"`
-		UI      map[string]string    `json:"ui"`
-		Sync    []string             `json:"sync"`
+		Posts   map[string]string
+		Plurals map[string][]string
+		Time    map[string][]string
+		UI      map[string]string
+		Sync    []string
 	}
 }
 

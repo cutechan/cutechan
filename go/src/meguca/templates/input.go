@@ -172,13 +172,7 @@ func (w *formWriter) sel(spec inputSpec) {
 			w.attr("selected", "selected")
 		}
 		w.N().S(`>`)
-
-		label, ok := w.lang.Options[spec.ID]
-		if !ok {
-			label = o
-		}
-		w.N().S(label)
-
+		w.N().S(o)
 		w.N().S("</option>")
 	}
 

@@ -145,11 +145,6 @@
       "Hides images"
     ]
   },
-  "options": {
-    "none": "none",
-    "width": "fit to width",
-    "screen": "fit to screen"
-  },
   "ui": {
     "sendErr": "Send error",
     "aggregator": "Aggregator metaboard",
