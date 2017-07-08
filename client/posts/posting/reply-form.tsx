@@ -5,6 +5,7 @@ import { page, boards } from "../../state"
 import API from "../../api"
 import {
 	POST_SEL,
+	POST_BODY_SEL,
 	REPLY_CONTAINER_SEL,
 	TRIGGER_OPEN_REPLY_SEL,
 	TRIGGER_QUOTE_POST_SEL,
@@ -19,6 +20,14 @@ function s(self: any, name: string) {
 	return function(el: Element) {
 		self[name] = el
 	}
+}
+
+function quoteText(text: string): string {
+  return text.trim().split(/\n/).filter(function(line) {
+    return line.length > 0;
+  }).map(function(line) {
+    return ">" + line;
+  }).join("\n") + "\n";
 }
 
 class Thumb extends Component<any, any> {
@@ -117,6 +126,7 @@ class Reply extends Component<any, any> {
 	}
 	quote(e: MouseEvent) {
 		const post = (e.target as Element).closest(POST_SEL)
+		const postBody = post.querySelector(POST_BODY_SEL)
 		const postID = getID(post)
 		let { body } = this.state
 		let start = 0
@@ -126,6 +136,14 @@ class Reply extends Component<any, any> {
 			end = this.bodyEl.selectionEnd
 		}
 		let cited = `>>${postID}\n`
+
+		const sel = window.getSelection()
+		if (!sel.isCollapsed
+				&& postBody.contains(sel.anchorNode)
+				&& postBody.contains(sel.focusNode)) {
+			cited += quoteText(sel.toString())
+		}
+
 		const caret = start + cited.length
 		if (end < body.length) {
 			cited += "\n"
