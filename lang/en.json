@@ -146,6 +146,7 @@
     ]
   },
   "ui": {
+    "initErr": "Site load error",
     "sendErr": "Send error",
     "aggregator": "Aggregator metaboard",
     "FAQ": "Information",

@@ -5,7 +5,7 @@
 /// <reference path="client/util/dom4.d.ts" />
 
 import { init as initDB } from "./client/db"
-import { init as initAlerts } from "./client/alerts"
+import { init as initAlerts, show as showAlert } from "./client/alerts"
 import { init as initOptions } from "./client/options"
 import { init as initConnection } from "./client/connection"
 import { init as initHandlers } from "./client/client"
@@ -15,6 +15,7 @@ import { init as initModeration } from "./client/mod"
 import { renderBoard, extractConfigs, renderThread } from "./client/page"
 import { loadFromDB, page, storeMine } from "./client/state"
 import { getCookie, deleteCookie } from "./client/util"
+import { ln } from "./client/lang"
 
 // Load all stateful modules in dependency order.
 async function init() {
@@ -48,7 +49,10 @@ async function init() {
 	initModeration()
 }
 
-init().catch(err => {
-	alert(err.message)
-	throw err
+init().catch(({ message }) => {
+	showAlert({
+		message,
+		title: ln.UI.initErr,
+		sticky: true,
+	})
 })

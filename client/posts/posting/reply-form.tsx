@@ -234,8 +234,8 @@ class Reply extends Component<any, any> {
 			} else {
 				location.href = `/${board}/${res.id}`
 			}
-		}, (err: Dict) => {
-			showAlert({title: ln.UI.sendErr, message: err.toString()})
+		}, ({ message }: Error) => {
+			showAlert({title: ln.UI.sendErr, message})
 		}).then(() => {
 			this.setState({sending: false})
 		})

@@ -11,6 +11,7 @@ interface Alert {
 	id?: number
 	title?: string
 	message: string
+	sticky?: boolean
 }
 
 const HIDE_TIMEOUT_SECS = 5
@@ -30,7 +31,9 @@ class Alerts extends Component<any, any> {
 		a = Object.assign({}, a, {id: this.id++})
 		const alerts = [a].concat(this.state.alerts)
 		this.setState({alerts})
-		setTimeout(this.Hide(a.id), HIDE_TIMEOUT_SECS * 1000)
+		if (!a.sticky) {
+			setTimeout(this.Hide(a.id), HIDE_TIMEOUT_SECS * 1000)
+		}
 	}
 	Hide(id: number) {
 		return () => {
