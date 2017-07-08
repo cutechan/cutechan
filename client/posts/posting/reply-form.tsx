@@ -6,7 +6,7 @@ import API from "../../api"
 import { REPLY_CONTAINER_SEL, OPEN_REPLY_SEL } from "../../vars"
 import {
 	Dict, ShowHide, on, scrollToTop, scrollToBottom,
-	hook, HOOKS,
+	HOOKS, hook, unhook,
 } from "../../util"
 
 function s(self: any, name: string) {
@@ -48,6 +48,7 @@ class Reply extends Component<any, any> {
 		files: [] as [File],
 	}
 	componentDidMount() {
+		hook(HOOKS.sendReply, this.handleSend)
 		document.addEventListener(
 			"mousemove",
 			this.handleGlobalMove,
@@ -58,27 +59,32 @@ class Reply extends Component<any, any> {
 			this.handleGlobalUp,
 			{passive: true}
 		)
+		this.focus()
+	}
+	componentWillUnmount() {
+		unhook(HOOKS.sendReply, this.handleSend)
+		document.removeEventListener(
+			"mousemove",
+			this.handleGlobalMove,
+			{passive: true}
+		)
+		document.removeEventListener(
+			"mouseup",
+			this.handleGlobalUp,
+			{passive: true}
+		)
+
+	}
+	componentDidUpdate() {
+		this.recalcTextareaHeight()
+	}
+	focus() {
 		this.bodyEl.focus()
 		if (page.thread) {
 			this.bodyEl.scrollIntoView()
 		} else {
 			scrollToTop()
 		}
-	}
-	componentWillUnmount() {
-		document.removeEventListener(
-			"mousemove",
-			this.handleGlobalMove,
-			{passive: true}
-		)
-		document.removeEventListener(
-			"mouseup",
-			this.handleGlobalUp,
-			{passive: true}
-		)
-	}
-	componentDidUpdate() {
-		this.recalcTextareaHeight()
 	}
 	recalcTextareaHeight() {
 		// See <https://stackoverflow.com/a/995374>.

@@ -7,13 +7,19 @@ import { EventEmitter } from "events"
 
 export const enum HOOKS {
 	openReply,
+	sendReply,
 }
 
 const hooks = new EventEmitter()
 
 /** Assigns a handler to execute on a hook name. */
 export function hook(name: string | HOOKS, fn: (...args: any[]) => void) {
-	hooks.on(name.toString(), fn)
+	hooks.addListener(name.toString(), fn)
+}
+
+/** Remove hook. */
+export function unhook(name: string | HOOKS, fn: (...args: any[]) => void) {
+	hooks.removeListener(name.toString(), fn)
 }
 
 /** Execute handler for a hook. */

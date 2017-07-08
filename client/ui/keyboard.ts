@@ -16,36 +16,41 @@ function handleShortcut(event: KeyboardEvent) {
 	let inInput = 'selectionStart' in event.target
 
 	if (!anyModifier && !inInput) {
-		caught = true
 		switch (event.key) {
-			case "ArrowLeft":
-				navigatePost(true)
-				break
-			case "ArrowRight":
-				navigatePost(false)
-				break
-			case "s":
-				navigateSearch()
-				break
-			default:
-				caught = false
+		case "ArrowLeft":
+			caught = true
+			navigatePost(true)
+			break
+		case "ArrowRight":
+			caught = true
+			navigatePost(false)
+			break
+		case "s":
+			caught = true
+			navigateSearch()
+			break
 		}
-	}
-
-	if (event.altKey) {
-		caught = true
+	} else if (event.altKey) {
 		switch (event.which) {
-			case options.newPost:
-				trigger(HOOKS.openReply)
-				break
-			case options.workMode:
-				options.workModeToggle = !options.workModeToggle
-				break
-			case 38:
-				navigateUp()
-				break
-			default:
-				caught = false
+		case options.newPost:
+			caught = true
+			trigger(HOOKS.openReply)
+			break
+		case options.workMode:
+			caught = true
+			options.workModeToggle = !options.workModeToggle
+			break
+		case 38:
+			caught = true
+			navigateUp()
+			break
+		}
+	} else if (event.ctrlKey) {
+		switch (event.key) {
+		case "Enter":
+			caught = true
+			trigger(HOOKS.sendReply)
+			break
 		}
 	}
 
