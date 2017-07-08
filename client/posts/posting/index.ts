@@ -1,13 +1,10 @@
 // Contains the FSM and core API for accessing the post authoring system
 
-import { POST_REPLY_CONTROL_SEL } from "../../vars"
 import FormModel from "./model"
 import FormView from "./view"
 import { connState, connSM, handlers, message } from "../../connection"
-import { on, FSM, getID } from "../../util"
+import { FSM } from "../../util"
 import lang from "../../lang"
-import { page } from "../../state"
-import initDrop from "./drop"
 import initReplyForm from "./reply-form"
 
 export { default as FormModel } from "./model"
@@ -18,18 +15,18 @@ export type FormMessage = {
 	view: FormView,
 }
 
-type Selection = {
-	start: Node
-	end: Node
-	text: string
-}
+// type Selection = {
+// 	start: Node
+// 	end: Node
+// 	text: string
+// }
 
 // Current post form view and model instances
 let postForm: FormView,
 	postModel: FormModel,
 	// Store last selected range, so we can access it after a mouse click on
 	// quote links, which cause that link to become selected
-	lastSelection: Selection,
+	// lastSelection: Selection,
 	// Specifies, if a captcha solved is needed to allocate a post
 	needCaptcha = false
 
@@ -79,55 +76,55 @@ function bindNagging() {
 
 // Insert target post's number as a link into the text body. If text in the
 // post is selected, quote it.
-function quotePost(e: MouseEvent) {
-	// Don't trigger, when user is trying to open in a new tab
-	const bypass = e.which !== 1
-		|| e.ctrlKey
-		|| (page.thread && connSM.state !== connState.synced)
-	if (bypass) {
-		return
-	}
+// function quotePost(e: MouseEvent) {
+// 	// Don't trigger, when user is trying to open in a new tab
+// 	const bypass = e.which !== 1
+// 		|| e.ctrlKey
+// 		|| (page.thread && connSM.state !== connState.synced)
+// 	if (bypass) {
+// 		return
+// 	}
 
-	e.preventDefault()
-	const target = e.target as HTMLAnchorElement
+// 	e.preventDefault()
+// 	const target = e.target as HTMLAnchorElement
 
-	// Make sure the selection both starts and ends in the quoted post's
-	// blockquote
-	const post = target.closest("article")
-	const isInside = (prop: string): boolean => {
-		const node = lastSelection[prop] as Node
-		if (!node) {
-			return false
-		}
-		const el = node.nodeType === Node.TEXT_NODE
-			? node.parentElement
-			: node as Element
-		if (!el) { // No idea why, but el sometimes is null
-			return false
-		}
+// 	// Make sure the selection both starts and ends in the quoted post's
+// 	// blockquote
+// 	const post = target.closest("article")
+// 	const isInside = (prop: string): boolean => {
+// 		const node = lastSelection[prop] as Node
+// 		if (!node) {
+// 			return false
+// 		}
+// 		const el = node.nodeType === Node.TEXT_NODE
+// 			? node.parentElement
+// 			: node as Element
+// 		if (!el) { // No idea why, but el sometimes is null
+// 			return false
+// 		}
 
-		// Selection bound is mid-post
-		if (el.closest("blockquote") && el.closest("article") === post) {
-			return true
-		}
-		switch (prop) {
-			// Selection start at blockquote start
-			case "start":
-				return el === post
-			// Selection end is at blockquote end
-			case "end":
-				return el.closest("article") === post.nextSibling
-		}
-	}
-	let sel = ""
-	if (lastSelection && isInside("start") && isInside("end")) {
-		sel = lastSelection.text
-	}
+// 		// Selection bound is mid-post
+// 		if (el.closest("blockquote") && el.closest("article") === post) {
+// 			return true
+// 		}
+// 		switch (prop) {
+// 			// Selection start at blockquote start
+// 			case "start":
+// 				return el === post
+// 			// Selection end is at blockquote end
+// 			case "end":
+// 				return el.closest("article") === post.nextSibling
+// 		}
+// 	}
+// 	let sel = ""
+// 	if (lastSelection && isInside("start") && isInside("end")) {
+// 		sel = lastSelection.text
+// 	}
 
-	const id = getID(post)
-	postSM.feed(postEvent.open)
-	postModel.addReference(id, sel)
-}
+// 	const id = getID(post)
+// 	postSM.feed(postEvent.open)
+// 	postModel.addReference(id, sel)
+// }
 
 // Toggle live update committing on the input form, if any
 // function toggleLive(live: boolean) {
@@ -302,28 +299,23 @@ export default () => {
 		return postState.ready
 	})
 
-	// Handle clicks on post quoting links
-	on(document, "click", quotePost, {
-		selector: POST_REPLY_CONTROL_SEL,
-	})
-
 	// Store last selected range that is not a quote link
-	document.addEventListener("selectionchange", () => {
-		const sel = getSelection(),
-			start = sel.anchorNode
-		if (!start) {
-			return
-		}
-		const el = start.parentElement
-		if (el && !el.classList.contains("post-reply-control")) {
-			lastSelection = {
-				start: sel.anchorNode,
-				end: sel.focusNode,
-				text: sel.toString(),
-			}
-		}
-	})
+	// document.addEventListener("selectionchange", () => {
+	// 	const sel = getSelection(),
+	// 		start = sel.anchorNode
+	// 	if (!start) {
+	// 		return
+	// 	}
+	// 	const el = start.parentElement
+	// 	if (el && !el.classList.contains("post-reply-control")) {
+	// 		lastSelection = {
+	// 			start: sel.anchorNode,
+	// 			end: sel.focusNode,
+	// 			text: sel.toString(),
+	// 		}
+	// 	}
+	// })
 
-	initDrop()
+	// initDrop()
 	initReplyForm()
 }

@@ -3,7 +3,11 @@ import { h, render, Component } from "preact"
 import { ln } from "../../lang"
 import { page, boards } from "../../state"
 import API from "../../api"
-import { REPLY_CONTAINER_SEL, OPEN_REPLY_SEL } from "../../vars"
+import {
+	REPLY_CONTAINER_SEL,
+	TRIGGER_OPEN_REPLY_SEL,
+	TRIGGER_QUOTE_POST_SEL,
+} from "../../vars"
 import {
 	Dict, ShowHide, on, scrollToTop, scrollToBottom,
 	HOOKS, hook, unhook,
@@ -283,7 +287,10 @@ class ReplyContainer extends Component<any, any> {
 		})
 		on(document, "click", () => {
 			this.setState({show: true})
-		}, {selector: OPEN_REPLY_SEL})
+		}, {selector: TRIGGER_OPEN_REPLY_SEL})
+		on(document, "click", () => {
+			this.setState({show: true})
+		}, {selector: TRIGGER_QUOTE_POST_SEL})
 	}
 	handleHide = () => {
 		this.setState({show: false})
