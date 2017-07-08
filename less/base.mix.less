@@ -320,10 +320,23 @@ html, body {
   flex: 1;
 }
 
+#index-thread-container {
+  .post-quote-control {
+    display: none;
+  }
+}
+
 .new-thread-container {
   margin: 0 auto;
   .reply-form {
+    width: 1000px;
     margin-bottom: 20px;
+  }
+  .reply-body {
+    min-height: 144px;
+  }
+  .reply-form-move-control {
+    display: none;
   }
 }
 
@@ -1033,15 +1046,6 @@ header {
 .reply-header {
   display: flex;
   margin-bottom: 5px;
-}
-
-.new-thread-container {
-  .reply-form {
-    width: 1000px;
-  }
-  .reply-body {
-    min-height: 144px;
-  }
 }
 
 .reply-board {
