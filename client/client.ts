@@ -7,6 +7,7 @@ import { PostLink, Command, PostData, ImageData } from "./common"
 import { postAdded } from "./ui"
 import { incrementPostCount } from "./page"
 import { OverlayNotification } from "./ui"
+import { showAlert } from "./alerts"
 
 // Message for splicing the contents of the current line
 export type SpliceResponse = {
@@ -71,12 +72,9 @@ export function insertPost(data: PostData) {
 
 export function init() {
 	handlers[message.invalid] = (msg: string) => {
-
-		// TODO: More user-friendly critical error reporting
-
-		alert(msg)
+		showAlert(msg)
 		connSM.feed(connEvent.error)
-		throw msg
+		throw new Error(msg)
 	}
 
 	handlers[message.insertPost] = insertPost

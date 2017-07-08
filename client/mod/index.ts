@@ -3,6 +3,7 @@
 import { postJSON, deleteCookie } from '../util'
 import { FormView } from "../ui"
 import { TabbedModal } from "../base"
+import { showAlert } from "../alerts"
 import { validatePasswordMatch } from "./common"
 import ModPanel from "./panel"
 import {
@@ -129,7 +130,7 @@ async function logout(url: string) {
 			location.reload(true)
 			break
 		default:
-			alert(await res.text())
+			showAlert(await res.text())
 	}
 }
 

@@ -7,6 +7,7 @@ import { page, posts, displayLoading } from "../state"
 import { uncachedGET, extend } from "../util"
 import { PostData } from "../common"
 import { insertPost } from "../client"
+import { showAlert } from "../alerts"
 
 // Passed from the server to allow the client to synchronise state, before
 // consuming any incoming update messages.
@@ -174,7 +175,7 @@ handlers[message.synchronise] = async (data: SyncData) => {
 		}
 
 		await Promise.all(proms).catch(e => {
-			alert(e)
+			showAlert(e.message)
 			throw e
 		})
 	}

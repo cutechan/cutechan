@@ -67,9 +67,14 @@ class Alerts extends Component<any, any> {
 	}
 }
 
-export function show(a: Alert) {
+function show(a: Alert | string) {
+	if (typeof a === "string") {
+		a = {message: a}
+	}
 	trigger(HOOKS.showAlert, a)
 }
+export { show }
+export { show as showAlert }
 
 export function init() {
 	const container = document.querySelector(ALERTS_CONTAINER_SEL)

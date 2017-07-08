@@ -3,7 +3,7 @@ import { h, render, Component } from "preact"
 import { ln } from "../../lang"
 import { page, boards } from "../../state"
 import API from "../../api"
-import { show as showAlert } from "../../alerts"
+import { showAlert } from "../../alerts"
 import {
 	POST_SEL,
 	POST_BODY_SEL,

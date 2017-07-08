@@ -8,6 +8,7 @@ import { position, ModerationLevel } from "../mod"
 import { postJSON } from "../util"
 import CollectionView from "./collectionView"
 import { PostData } from "../common"
+import { showAlert } from "../alerts"
 
 interface ControlButton extends Element {
 	_popup_menu: MenuView
@@ -50,7 +51,7 @@ const actions: { [key: string]: ItemSpec } = {
 			const res = await postJSON("/api/delete-post", posts.map(m =>
 				m.id))
 			if (res.status !== 200) {
-				alert(await res.text())
+				showAlert(await res.text())
 			}
 		},
 	},
@@ -66,7 +67,7 @@ const actions: { [key: string]: ItemSpec } = {
 				id: m.id,
 			})
 			if (res.status !== 200) {
-				return alert(await res.text())
+				return showAlert(await res.text())
 			}
 			m.sticky = !m.sticky
 			m.view.renderSticky()
@@ -146,7 +147,7 @@ function openMenu(e: Event) {
 async function getSameIPPosts(m: Post): Promise<PostData[]> {
 	const res = await postJSON(`/api/same-IP/${m.id}`, null)
 	if (res.status !== 200) {
-		alert(await res.text())
+		showAlert(await res.text())
 		return
 	}
 	return await res.json()

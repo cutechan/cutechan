@@ -1,5 +1,6 @@
 import { View } from '../base'
 import { uncachedGET } from "../util"
+import { showAlert } from "../alerts"
 
 // Wrapper around Solve Media's captcha service AJAX API
 export default class CaptchaView extends View<null> {
@@ -21,7 +22,7 @@ export default class CaptchaView extends View<null> {
 			.querySelector(`input[name="captcha"]`) as HTMLInputElement
 
 		this.render().catch(e => {
-			alert(e)
+			showAlert(e.message)
 			throw e
 		})
 	}

@@ -3,6 +3,7 @@ import { reset } from ".."
 import { FormView } from "../../ui"
 import { accountPanel } from ".."
 import { postJSON, makeFrag, uncachedGET } from "../../util"
+import { showAlert } from "../../alerts"
 
 // Generic input form that is embedded into AccountPanel
 export abstract class AccountForm extends FormView {
@@ -117,6 +118,6 @@ export abstract class AccountForm extends FormView {
 	public handle403() {
 		this.remove()
 		reset()
-		alert(lang.ui["sessionExpired"])
+		showAlert(lang.ui["sessionExpired"])
 	}
 }
