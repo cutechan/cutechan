@@ -8,7 +8,7 @@ import initKeyboard from "./keyboard"
 import initTab from "./tab"
 import OptionPanel from "./options"
 
-export default () => {
+export function init() {
 	initKeyboard()
 	initTab()
 	new OptionPanel()

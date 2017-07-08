@@ -4,26 +4,25 @@
 
 /// <reference path="client/util/dom4.d.ts" />
 
-import { loadFromDB, page, storeMine, displayLoading } from "./client/state"
-import { start as connect } from "./client/connection"
-import { open } from "./client/db"
-import { initOptions } from "./client/options"
-import initPosts from "./client/posts"
+import { init as initDB } from "./client/db"
+import { init as initOptions } from "./client/options"
+import { init as initConnection } from "./client/connection"
+import { init as initHandlers } from "./client/client"
+import { init as initPosts } from "./client/posts"
+import { init as initUI } from "./client/ui"
+import { init as initModeration } from "./client/mod"
 import { renderBoard, extractConfigs, renderThread } from "./client/page"
-import initUI from "./client/ui"
+import { loadFromDB, page, storeMine } from "./client/state"
 import { getCookie, deleteCookie } from "./client/util"
-import assignHandlers from "./client/client"
-import initModeration from "./client/mod"
 
-// Load all stateful modules in dependency order
-async function start() {
+// Load all stateful modules in dependency order.
+async function init() {
 	extractConfigs()
 
-	await open()
+	await initDB()
 	if (page.thread) {
 		await loadFromDB(page.thread)
-
-		// Add a stored thread OP, made by the client to "mine"
+		// Add a stored thread OP, made by the client to "mine".
 		const addMine = getCookie("addMine")
 		if (addMine) {
 			const id = parseInt(addMine)
@@ -36,12 +35,10 @@ async function start() {
 
 	if (page.thread) {
 		renderThread()
-		connect()
-		// checkBottom()
-		assignHandlers()
+		initConnection()
+		initHandlers()
 	} else {
 		await renderBoard()
-		displayLoading(false)
 	}
 
 	initPosts()
@@ -49,7 +46,7 @@ async function start() {
 	initModeration()
 }
 
-start().catch(err => {
+init().catch(err => {
 	alert(err.message)
 	throw err
 })

@@ -154,7 +154,7 @@ function resetAttempts() {
 	attempts = 0
 }
 
-export function start() {
+export function init() {
 	connSM.feed(connEvent.start)
 }
 

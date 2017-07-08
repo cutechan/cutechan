@@ -14,7 +14,7 @@ import initPosting from "./posting"
 import initMenu from "./menu"
 import initHover from "./hover"
 
-export default () => {
+export function init() {
 	initEtc()
 	initPosting()
 	initMenu()

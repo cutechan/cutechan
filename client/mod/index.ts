@@ -163,8 +163,8 @@ class LoginForm extends FormView {
 	}
 }
 
-// Init module
-export default () => {
+// Init module.
+export function init() {
 	accountPanel = new AccountPanel()
 	if (position === ModerationLevel.notLoggedIn) {
 		loginForm = new LoginForm("login-form", "login")

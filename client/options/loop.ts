@@ -8,7 +8,7 @@ import { Post } from "../posts"
 
 // Listen for changes on the options object and call appropriate handlers on
 // all applicable posts
-export default () => {
+export function init() {
 	const handlers: { [key: string]: () => void } = {
 		workModeToggle: renderImages,
 		relativeTime: renderTime,

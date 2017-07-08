@@ -69,7 +69,7 @@ export function insertPost(data: PostData) {
 	incrementPostCount(true, "image" in data)
 }
 
-export default () => {
+export function init() {
 	handlers[message.invalid] = (msg: string) => {
 
 		// TODO: More user-friendly critical error reporting

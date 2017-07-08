@@ -371,7 +371,7 @@ class ReplyContainer extends Component<any, any> {
 	}
 }
 
-export default function() {
+export function init() {
 	const container = document.querySelector(REPLY_CONTAINER_SEL)
 	if (container) {
 		render(<ReplyContainer/>, container)

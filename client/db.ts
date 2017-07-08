@@ -19,7 +19,7 @@ const postStores = [
 ]
 
 // Open a connection to the IndexedDB database
-export function open(): Promise<void> {
+export function init(): Promise<void> {
 	return new Promise<void>((resolve, reject) => {
 		const r = indexedDB.open('meguca', dbVersion)
 

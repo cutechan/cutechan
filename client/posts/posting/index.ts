@@ -5,7 +5,7 @@ import FormView from "./view"
 import { connState, connSM, handlers, message } from "../../connection"
 import { FSM } from "../../util"
 import lang from "../../lang"
-import initReplyForm from "./reply-form"
+import { init as initReplyForm } from "./reply-form"
 
 export { default as FormModel } from "./model"
 

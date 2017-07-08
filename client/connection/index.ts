@@ -1,4 +1,6 @@
-// Handles Websocket connectivity and messaging
+/**
+ * Handles Websocket connectivity and messaging.
+ */
 
 export * from "./state"
 export * from "./messages"

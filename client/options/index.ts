@@ -1,7 +1,7 @@
 // User-set settings storage and change handling
 
 import { OptionSpec, specs, optionType } from './specs'
-import initLoops from "./loop"
+import { init as initLoops } from "./loop"
 import { trigger, emitChanges, ChangeEmitter, hook } from "../util"
 
 export * from "./specs"
@@ -114,7 +114,7 @@ class OptionModel {
 	}
 }
 
-export function initOptions() {
+export function init() {
 	// Populate option model collection and central model
 	for (let id in specs) {
 		new OptionModel(id, specs[id])
