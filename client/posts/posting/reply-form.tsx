@@ -4,6 +4,7 @@ import { ln } from "../../lang"
 import { page, boards } from "../../state"
 import API from "../../api"
 import {
+	POST_SEL,
 	REPLY_CONTAINER_SEL,
 	TRIGGER_OPEN_REPLY_SEL,
 	TRIGGER_QUOTE_POST_SEL,
@@ -11,6 +12,7 @@ import {
 import {
 	Dict, ShowHide, on, scrollToTop, scrollToBottom,
 	HOOKS, hook, unhook,
+	getID,
 } from "../../util"
 
 function s(self: any, name: string) {
@@ -20,11 +22,11 @@ function s(self: any, name: string) {
 }
 
 class Thumb extends Component<any, any> {
-	shouldComponentUpdate({ file }: any, {}) {
+	shouldComponentUpdate({ file }: any) {
 		// Prevents image flashing.
 		return this.props.file !== file
 	}
-	render({ file }: any, {}) {
+	render({ file }: any) {
 		const previewURL = URL.createObjectURL(file)
 		return (
 			<img class="reply-file-thumb" src={previewURL} />
@@ -50,6 +52,13 @@ class Reply extends Component<any, any> {
 		subject: "",
 		body: "",
 		files: [] as [File],
+	}
+	componentWillMount() {
+		const { quoted } = this.props
+		if (quoted) {
+			this.quote(quoted)
+			this.setFloat(quoted)
+		}
 	}
 	componentDidMount() {
 		hook(HOOKS.sendReply, this.handleSend)
@@ -77,27 +86,73 @@ class Reply extends Component<any, any> {
 			this.handleGlobalUp,
 			{passive: true}
 		)
-
 	}
-	componentDidUpdate() {
-		this.recalcTextareaHeight()
+	componentWillReceiveProps({ quoted }: any) {
+		if (quoted !== this.props.quoted) {
+			if (quoted) {
+				this.quote(quoted)
+			} else {
+				this.handleFormPin()
+			}
+		}
 	}
-	focus() {
+	get style() {
+		const { float, left, top } = this.state
+		return float ? {position: "fixed", left, top} : null
+	}
+	get bodyHeight() {
+		// See <https://stackoverflow.com/a/995374>.
+		if (!this.bodyEl) return "auto"
+		this.bodyEl.style.height = "1px"
+		return this.bodyEl.scrollHeight + "px"
+	}
+	get invalid() {
+		const { subject, body, files } = this.state
+		const hasSubject = !!subject || !!page.thread
+		return !hasSubject || (!body && !files.length)
+	}
+	get disabled() {
+		const { sending } = this.state
+		return sending || this.invalid
+	}
+	quote(e: MouseEvent) {
+		const post = (e.target as Element).closest(POST_SEL)
+		const postID = getID(post)
+		let { body } = this.state
+		let start = 0
+		let end = 0
+		if (this.bodyEl) {
+			start = this.bodyEl.selectionStart
+			end = this.bodyEl.selectionEnd
+		}
+		let cited = `>>${postID}\n`
+		const caret = start + cited.length
+		if (end < body.length) {
+			cited += "\n"
+		}
+		body = body.slice(0, start) + cited + body.slice(end)
+		this.setState({body}, () => {
+			if (this.bodyEl) {
+				this.focus()
+				this.bodyEl.setSelectionRange(caret, caret)
+			}
+		})
+	}
+	setFloat(e: MouseEvent) {
+		const float = true
+		const left = 300
+		const top = 300
+		this.setState({float, left, top})
+	}
+	focus = () => {
 		this.bodyEl.focus()
 		if (page.thread) {
-			this.bodyEl.scrollIntoView()
+			if (!this.state.float) {
+				this.bodyEl.scrollIntoView()
+			}
 		} else {
 			scrollToTop()
 		}
-	}
-	recalcTextareaHeight() {
-		// See <https://stackoverflow.com/a/995374>.
-		this.bodyEl.style.height = "1px"
-		this.bodyEl.style.height = this.bodyEl.scrollHeight + "px"
-	}
-	getMainStyle() {
-		const { float, left, top } = this.state
-		return float ? {position: "fixed", left, top} : null
 	}
 	handleMoveDown = (e: MouseEvent) => {
 		this.moving = true
@@ -120,7 +175,7 @@ class Reply extends Component<any, any> {
 		this.moving = false
 	}
 	handleFormPin = () => {
-		this.setState({float: false}, scrollToBottom)
+		this.setState({float: false}, this.focus)
 	}
 	handleFormHide = () => {
 		this.props.onHide()
@@ -132,8 +187,9 @@ class Reply extends Component<any, any> {
 		this.setState({board: e.target.value})
 	}
 	handleBodyChange = (e: any) => {
-		this.recalcTextareaHeight()
 		this.setState({body: e.target.value})
+		// XXX(Kagami): Prevents flickering if set early.
+		this.bodyEl.style.height = this.bodyHeight
 	}
 	handleAttach = () => {
 		this.fileEl.click()
@@ -164,15 +220,6 @@ class Reply extends Component<any, any> {
 		}).then(() => {
 			this.setState({sending: false})
 		})
-	}
-	get invalid() {
-		const { subject, body, files } = this.state
-		const hasSubject = !!subject || !!page.thread
-		return !hasSubject || (!body && !files.length)
-	}
-	get disabled() {
-		const { sending } = this.state
-		return sending || this.invalid
 	}
 	renderBoards() {
 		if (page.board !== "all") return null;
@@ -224,12 +271,13 @@ class Reply extends Component<any, any> {
 	}
 	render({}, { float, sending, body }: any) {
 		return (
-			<div class="reply-form" ref={s(this, "mainEl")} style={this.getMainStyle()}>
+			<div class="reply-form" ref={s(this, "mainEl")} style={this.style}>
 				{this.renderFilePreview()}
 				<div class="reply-content">
 					{this.renderHeader()}
 					<textarea
 						class="reply-body"
+						style={{height: this.bodyHeight}}
 						ref={s(this, "bodyEl")}
 						value={body}
 						disabled={sending}
@@ -280,25 +328,26 @@ class Reply extends Component<any, any> {
 class ReplyContainer extends Component<any, any> {
 	state = {
 		show: false,
+		quoted: null as Element,
 	}
 	componentDidMount() {
 		hook(HOOKS.openReply, () => {
 			this.setState({show: true})
 		})
 		on(document, "click", () => {
-			this.setState({show: true})
+			this.setState({show: true, quoted: null})
 		}, {selector: TRIGGER_OPEN_REPLY_SEL})
-		on(document, "click", () => {
-			this.setState({show: true})
+		on(document, "click", e => {
+			this.setState({show: true, quoted: e})
 		}, {selector: TRIGGER_QUOTE_POST_SEL})
 	}
 	handleHide = () => {
 		this.setState({show: false})
 	}
-	render({}, { show, thread }: any) {
+	render({}, { show, quoted }: any) {
 		return (
 			<ShowHide show={show}>
-				<Reply onHide={this.handleHide} />
+				<Reply quoted={quoted} onHide={this.handleHide} />
 			</ShowHide>
 		)
 	}

@@ -1,3 +1,8 @@
+/**
+ * Shared constants, should be used everywhere.
+ */
+// Don't import here anything.
+
 // Selectors, must be kept in sync with markup and styles!
 export const REPLY_CONTAINER_SEL = ".reply-container"
 export const BOARD_SEARCH_INPUT_SEL = ".board-search-input"

@@ -1,4 +1,8 @@
-// Various utility functions
+/**
+ * Various utility functions.
+ */
+
+import { POST_SEL } from "../vars"
 
 export { default as FSM } from "./fsm"
 export { default as ShowHide } from "./show-hide"
@@ -17,20 +21,14 @@ interface Loader {
 	onerror: EventListener
 }
 
-// Retrieve post id of post element
+// Retrieve post id of post element.
 export function getID(el: Element): number {
-	if (!el) {
-		return 0
-	}
-	return parseInt(el.id.slice(4), 10)
+	return el ? +el.getAttribute("data-id") : 0
 }
 
-// Retrieve post number of closest parent post element
+// Retrieve post number of closest parent post element.
 export function getClosestID(el: Element): number {
-	if (!el) {
-		return 0
-	}
-	return getID(el.closest('article'))
+	return el ? getID(el.closest(POST_SEL)) : 0
 }
 
 // Parse HTML string to node array
