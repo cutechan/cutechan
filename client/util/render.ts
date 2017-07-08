@@ -1,8 +1,7 @@
 // Utility functions for reducing layout thrashing, by batching DOM writes and
 // reads. Basically a stripped down version of FastDOM.
 // Also contains utilities for HTML template tags.
-
-import * as Mustache from "mustache"
+// TODO(Kagami): Move to `../templates`.
 
 // Holds cached references to all out HTML template tags' contents
 const templates: { [name: string]: DocumentFragment } = {}
@@ -40,25 +39,4 @@ export function makeEl(DOMString: string): HTMLElement {
 	const el = document.createElement('div')
 	el.innerHTML = DOMString
 	return el.firstChild as HTMLElement
-}
-
-// FIXME(Kagami): This naming sucks.
-export type Ctx = { [key: string]: any }
-
-export class TemplateContext {
-	private template: string
-	private ctx: Ctx
-
-	constructor(name: string, ctx: Ctx) {
-		this.template = (window as any).CUTE_TEMPLATES[name]
-		this.ctx = ctx
-	}
-
-	render(): string {
-		return Mustache.render(this.template, this.ctx)
-	}
-
-	renderNode(): HTMLElement {
-		return makeEl(this.render())
-	}
 }

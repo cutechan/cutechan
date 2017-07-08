@@ -23,7 +23,7 @@ const notify = require("gulp-notify");
 const livereload = require("gulp-livereload");
 const runSequence = require("run-sequence");
 
-const TRANSLATIONS_GLOB = "lang/*.json";
+const LANGS_GLOB = "lang/*.json";
 const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
 const TYPESCRIPT_GLOB = "{main,client/**/*}.ts?(x)";
 
@@ -76,18 +76,21 @@ function createTask(name, path, task, watchPath) {
   }
 }
 
-function translations() {
-  return gulp.src(TRANSLATIONS_GLOB)
+function langs() {
+  return gulp.src(LANGS_GLOB)
     .pipe(tap(function(file) {
       const name = JSON.stringify(path.basename(file.path, ".json"));
       const lang = JSON.stringify(JSON.parse(file.contents.toString()));
-      file.contents = new Buffer(`CUTE_LANGS[${name}] = ${lang};`);
+      file.contents = new Buffer(`langs[${name}] = ${lang};`);
     }))
     .pipe(concat("langs.js"))
     .pipe(tap(function(file) {
       file.contents = Buffer.concat([
-        new Buffer("var CUTE_LANGS = {};\n"),
+        new Buffer('define("langs", ["exports"], function(exports) {\n'),
+        new Buffer("var langs = {};\n"),
         file.contents,
+        new Buffer("\nexports.default = langs;\n"),
+        new Buffer("});\n"),
       ]);
     }));
 }
@@ -97,13 +100,16 @@ function templates() {
     .pipe(tap(function(file) {
       const name = JSON.stringify(path.basename(file.path, ".mustache"));
       const template = JSON.stringify(file.contents.toString());
-      file.contents = new Buffer(`CUTE_TEMPLATES[${name}] = ${template};`);
+      file.contents = new Buffer(`templates[${name}] = ${template};`);
     }))
     .pipe(concat("templates.js"))
     .pipe(tap(function(file) {
       file.contents = Buffer.concat([
-        new Buffer("var CUTE_TEMPLATES = {};\n"),
+        new Buffer('define("templates", ["exports"], function(exports) {\n'),
+        new Buffer("var templates = {};\n"),
         file.contents,
+        new Buffer("\nexports.default = templates;\n"),
+        new Buffer("});\n"),
       ]);
     }));
 }
@@ -116,7 +122,7 @@ function typescript(opts) {
 }
 
 function buildClient(tsOpts) {
-  return merge(translations(), templates(), typescript(tsOpts))
+  return merge(langs(), templates(), typescript(tsOpts))
     .on("error", () => {})
     .pipe(sourcemaps.init())
     .pipe(concat(tsOpts.outFile));
@@ -134,7 +140,7 @@ function buildES6() {
 
   // Recompile on source update, if running with the `-w` flag.
   if (watch) {
-    gulp.watch([TRANSLATIONS_GLOB, TEMPLATES_GLOB, TYPESCRIPT_GLOB], [name])
+    gulp.watch([LANGS_GLOB, TEMPLATES_GLOB, TYPESCRIPT_GLOB], [name])
   }
 }
 

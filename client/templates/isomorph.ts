@@ -9,7 +9,7 @@ import {
 	thumbPath, sourcePath, duration, fileSize,
 	parseBody,
 } from "../posts"
-import { TemplateContext, Ctx } from "../util"
+import { TemplateContext, Ctx } from "./render"
 
 // TODO(Kagami): Capitalize model keys for better compatibility?
 export function makePostContext(t: Thread, p: Post, bls: Backlinks, index: boolean): TemplateContext {

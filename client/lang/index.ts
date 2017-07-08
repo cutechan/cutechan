@@ -1,4 +1,10 @@
-// Follows lang.go structures.
+/**
+ * Follows lang.go structures.
+ */
+
+/// <reference path="./index.d.ts" />
+
+import langs from "langs"
 
 type LanguagePack = {
 	UI: { [key: string]: string }
@@ -24,7 +30,7 @@ type CommonLanguagePack = {
 const current: string = (window as any).config.defaultLang
 
 // TODO(Kagami): Use `ln` everywhere.
-export const ln: LanguagePack = (window as any).CUTE_LANGS[current]
+export const ln: LanguagePack = langs[current]
 export const lang: CommonLanguagePack = ln.common
 export default lang
 
