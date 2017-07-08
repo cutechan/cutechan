@@ -5,6 +5,7 @@
 /// <reference path="client/util/dom4.d.ts" />
 
 import { init as initDB } from "./client/db"
+import { init as initAlerts } from "./client/alerts"
 import { init as initOptions } from "./client/options"
 import { init as initConnection } from "./client/connection"
 import { init as initHandlers } from "./client/client"
@@ -31,6 +32,7 @@ async function init() {
 		}
 	}
 
+	initAlerts()
 	initOptions()
 
 	if (page.thread) {

@@ -3,6 +3,7 @@ import { h, render, Component } from "preact"
 import { ln } from "../../lang"
 import { page, boards } from "../../state"
 import API from "../../api"
+import { show as showAlert } from "../../alerts"
 import {
 	POST_SEL,
 	POST_BODY_SEL,
@@ -233,8 +234,8 @@ class Reply extends Component<any, any> {
 			} else {
 				location.href = `/${board}/${res.id}`
 			}
-		}, () => {
-			// FIXME(Kagami): Trigger notification.
+		}, (err: Dict) => {
+			showAlert({title: ln.UI.sendErr, message: err.toString()})
 		}).then(() => {
 			this.setState({sending: false})
 		})

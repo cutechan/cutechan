@@ -9,6 +9,7 @@ import { Dict, postForm } from "./util"
 function req(method: string, url: string) {
 	url = `/api/${url}`
 	return function(data: Dict): Promise<Dict> {
+		// FIXME(Kagami): Process errors.
 		return postForm(url, data).then(res => res.json())
 	}
 }
