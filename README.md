@@ -153,9 +153,9 @@ the password "password"
 * `make server` and `make client` build the server and client separately
 * `make watch` watches the file system for changes and incrementally rebuilds
 the client
-* `make update_deps` updates all dependencies
+* `make update-deps` updates all dependencies
 * `make clean` removes files from the previous compilation
-* `make dist_clean` in addition to the above removes uploaded files and their
+* `make distclean` in addition to the above removes uploaded files and their
 thumbnails
 * To enable using Go tools in the project add the absolute path of `./go` to
 your `$GOPATH` environment variable
