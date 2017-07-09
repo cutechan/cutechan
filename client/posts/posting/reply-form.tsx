@@ -2,6 +2,7 @@ import * as cx from "classnames"
 import { h, render, Component } from "preact"
 import { ln } from "../../lang"
 import { page, boards } from "../../state"
+import { fileSize, duration } from "../../posts"
 import API from "../../api"
 import { showAlert } from "../../alerts"
 import {
@@ -31,15 +32,103 @@ function quoteText(text: string): string {
   }).join("\n") + "\n";
 }
 
-class Thumb extends Component<any, any> {
-	shouldComponentUpdate({ file }: any) {
-		// Prevents image flashing.
-		return this.props.file !== file
+class FilePreview extends Component<any, any> {
+	state = {
+		width: 0,
+		height: 0,
+		dur: 0,  // TODO(Kagami): Fix naming
+		url: null as string,
 	}
-	render({ file }: any) {
-		const previewURL = URL.createObjectURL(file)
+	componentWillMount() {
+		this.setFileInfo(this.props.file)
+	}
+	componentWillReceiveProps({ file }: any) {
+		if (file !== this.props.file) {
+			this.setFileInfo(file)
+		}
+	}
+	getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
+		return new Promise((resolve, reject) => {
+			let url = URL.createObjectURL(file)
+			const img = new Image();
+			img.onload = () => {
+				const { width, height } = img
+				if (skipCopy) {
+					resolve({ width, height, url })
+					return
+				}
+				const c = document.createElement("canvas")
+				const ctx = c.getContext("2d")
+				c.width = width
+				c.height = height
+				ctx.drawImage(img, 0, 0, width, height)
+				url = c.toDataURL()
+				resolve({ width, height, url })
+			}
+			img.onerror = reject
+			img.src = url
+		})
+	}
+	getVideoInfo(file: File): Promise<Dict> {
+		return new Promise((resolve, reject) => {
+			const vid = document.createElement("video");
+			vid.muted = true;
+			vid.onloadeddata = () => {
+				const { videoWidth: width, videoHeight: height, duration: dur } = vid
+				const c = document.createElement("canvas")
+				const ctx = c.getContext("2d")
+				c.width = width
+				c.height = height
+				ctx.drawImage(vid, 0, 0, width, height)
+				const url = c.toDataURL()
+				resolve({ width, height, dur, url })
+			}
+			vid.onerror = reject
+			vid.src = URL.createObjectURL(file)
+		})
+	}
+	setFileInfo(file: File) {
+		let fn = null
+		let skipCopy = false
+		if (file.type.startsWith("video/")) {
+			fn = this.getVideoInfo
+		} else {
+			fn = this.getImageInfo
+			// TODO(Kagami): Dump first frame of APNG and animated WebP.
+			if (file.type !== "image/gif") {
+				skipCopy = true
+			}
+		}
+		fn(file, skipCopy).then((info: Dict) => {
+			this.setState(info)
+		}, () => {
+			showAlert(ln.UI.unsupFile)
+			// A bit stupid but simpler than check in parent component.
+			this.handleRemove()
+		})
+	}
+	handleRemove = () => {
+		this.props.onRemove()
+	}
+	get info(): string {
+		const { type, size } = this.props.file
+		const { width, height, dur } = this.state
+		let s = `${width}×${height}, ${fileSize(size)}`
+		if (type.startsWith("video/")) {
+			s += `, ${duration(dur)}`
+		}
+		return s
+	}
+	render({}, { url }: any) {
+		if (!url) return null
 		return (
-			<img class="reply-file-thumb" src={previewURL} />
+			<div class="reply-file-preview">
+				<a class="control reply-remove-file-control" onClick={this.handleRemove}>
+					<i class="fa fa-remove" />
+				</a>
+				<img class="reply-file-thumb" src={url} />
+				<div class="reply-file-info">{this.info}</div>
+			</div>
 		)
 	}
 }
@@ -273,26 +362,21 @@ class Reply extends Component<any, any> {
 			</div>
 		);
 	}
-	renderFilePreview() {
+	renderPreviews() {
 		const { files } = this.state
 		if (!files.length) return null
 		// Only single file is supported at the moment.
 		const file = files[0]
 		return (
 			<div class="reply-file-previews" key="files">
-				<div class="reply-file-preview">
-					<Thumb file={file} />
-					<a class="control reply-remove-file-control" onClick={this.handleAttachRemove}>
-						<i class="fa fa-remove" />
-					</a>
-				</div>
+				<FilePreview file={file} onRemove={this.handleAttachRemove} />
 			</div>
 		);
 	}
 	render({}, { float, sending, body }: any) {
 		return (
 			<div class="reply-form" ref={s(this, "mainEl")} style={this.style}>
-				{this.renderFilePreview()}
+				{this.renderPreviews()}
 				<div class="reply-content">
 					{this.renderHeader()}
 					<textarea

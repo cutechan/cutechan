@@ -146,6 +146,7 @@
     ]
   },
   "ui": {
+    "unsupFile": "Unsupported file type",
     "unknownErr": "Unknown error",
     "initErr": "Site load error",
     "sendErr": "Send error",

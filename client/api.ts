@@ -8,8 +8,8 @@ import { FormModel, postSM, postEvent, postState } from "./posts"
 import { Dict, postForm } from "./util"
 
 function handleErr(res: Response): Promise<Dict> {
-	const typ = res.headers.get("Content-Type")
-	if (typ === "application/json") {
+	const type = res.headers.get("Content-Type")
+	if (type === "application/json") {
 		return res.json().then(data => {
 			throw new Error(data.message || ln.UI.unknownErr)
 		})
