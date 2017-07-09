@@ -788,11 +788,15 @@ article, .post {
 .post {
   margin: 0 10px 6px 0;
   padding: 4px 10px;
-  min-width: 250px;
+  min-width: 200px;
   max-width: 1000px;
   &:last-of-type {
     margin-bottom: 0;
   }
+}
+
+.post_file {
+  min-width: 400px;
 }
 
 header {
@@ -879,6 +883,15 @@ header {
   & > span.post-file-artist:not(:empty) + span.post-file-title::before {
     content: "\00a0-\00a0";
   }
+}
+
+.post-file-title {
+  display: inline-block;
+  max-width: 200px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  vertical-align: top;
 }
 
 .post-body {
