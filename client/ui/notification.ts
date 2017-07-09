@@ -31,8 +31,8 @@ export default function notifyAboutReply(post: Post) {
 	let icon: string
 	if (!options.workModeToggle) {
 		if (post.image) {
-			const { SHA1, thumbType } = post.image
-			icon = thumbPath(SHA1, thumbType)
+			const { thumbType, SHA1 } = post.image
+			icon = thumbPath(thumbType, SHA1)
 		} else {
 			icon = defaultIcon
 		}

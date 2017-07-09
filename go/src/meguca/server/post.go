@@ -39,7 +39,6 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 		text400(w, err)
 		return
 	}
-
 	// Let the JS add the ID of the post to "mine"
 	// FIXME(Kagami): Do this on client-side.
 	http.SetCookie(w, &http.Cookie{
@@ -49,6 +48,46 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 	})
 
 	res := websockets.ThreadCreationResponse{ID: post.ID}
+	serveJSON(w, r, "", res)
+}
+
+// Create a closed reply post
+func createReply(w http.ResponseWriter, r *http.Request) {
+	req, ok := parsePostCreationForm(w, r)
+	if !ok {
+		return
+	}
+
+	// Validate thread
+	op, err := strconv.ParseUint(r.Form.Get("thread"), 10, 64)
+	if err != nil {
+		text400(w, err)
+		return
+	}
+	board := r.Form.Get("board")
+	ok, err = db.ValidateOP(op, board)
+	switch {
+	case err != nil:
+		text500(w, r, err)
+		return
+	case !ok:
+		text400(w, fmt.Errorf("invalid thread: /%s/%d", board, op))
+		return
+	}
+
+	ip, err := auth.GetIP(r)
+	if err != nil {
+		text400(w, err)
+		return
+	}
+	post, msg, err := websockets.CreatePost(op, board, ip, true, req)
+	if err != nil {
+		text400(w, err)
+		return
+	}
+	feeds.InsertPostInto(post.StandalonePost, msg)
+
+	res := websockets.PostCreationResponse{ID: post.ID}
 	serveJSON(w, r, "", res)
 }
 
@@ -101,47 +140,4 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 
 	ok = true
 	return
-}
-
-// Create a closed reply post
-func createReply(w http.ResponseWriter, r *http.Request) {
-	req, ok := parsePostCreationForm(w, r)
-	if !ok {
-		return
-	}
-
-	// Validate thread
-	op, err := strconv.ParseUint(r.Form.Get("op"), 10, 64)
-	if err != nil {
-		text400(w, err)
-		return
-	}
-	board := r.Form.Get("board")
-	ok, err = db.ValidateOP(op, board)
-	switch {
-	case err != nil:
-		text500(w, r, err)
-		return
-	case !ok:
-		text400(w, fmt.Errorf("invalid thread: /%s/%d", board, op))
-		return
-	}
-
-	ip, err := auth.GetIP(r)
-	if err != nil {
-		text400(w, err)
-		return
-	}
-	post, msg, err := websockets.CreatePost(op, board, ip, true, req)
-	if err != nil {
-
-		// TODO: Not all codes are actually 400. Need to differentiate.
-
-		text400(w, err)
-		return
-	}
-
-	feeds.InsertPostInto(post.StandalonePost, msg)
-	url := fmt.Sprintf(`/%s/%d?last=100#bottom`, board, op)
-	http.Redirect(w, r, url, 303)
 }

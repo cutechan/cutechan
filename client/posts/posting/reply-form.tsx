@@ -59,6 +59,7 @@ class Reply extends Component<any, any> {
 		top: 0,
 		sending: false,
 		board: page.board === "all" ? boards[0] : page.board,
+		thread: page.thread,
 		subject: "",
 		body: "",
 		files: [] as [File],
@@ -224,10 +225,10 @@ class Reply extends Component<any, any> {
 	}
 	handleSend = () => {
 		if (this.disabled) return
-		const { board, subject, body, files } = this.state
-		const fn = page.thread ? API.post.createWS : API.thread.create
+		const { board, thread, subject, body, files } = this.state
+		const fn = page.thread ? API.post.create : API.thread.create
 		this.setState({sending: true})
-		fn({board, subject, body, files}).then((res: Dict) => {
+		fn({board, thread, subject, body, files}).then((res: Dict) => {
 			if (page.thread) {
 				this.handleFormHide()
 				scrollToBottom()

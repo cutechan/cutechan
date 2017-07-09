@@ -82,8 +82,8 @@ export default class ImageHandler extends View<Post> {
 	private renderThumbnail() {
 		const el = this.el.querySelector("figure a"),
 			data = this.model.image,
-			src = sourcePath(data.SHA1, data.fileType)
-		const thumb = thumbPath(data.SHA1, data.thumbType)
+			src = sourcePath(data.fileType, data.SHA1)
+		const thumb = thumbPath(data.thumbType, data.SHA1)
 		let [, , thumbWidth, thumbHeight] = data.dims
 		el.setAttribute("href", src)
 		setAttrs(el.firstElementChild, {
@@ -150,12 +150,12 @@ function imageRoot(): string {
 
 // Get the thumbnail path of an image, accounting for not thumbnail of specific
 // type being present
-export function thumbPath(SHA1: string, thumbType: fileTypes): string {
+export function thumbPath(thumbType: fileTypes, SHA1: string): string {
 	return `${imageRoot()}/thumb/${SHA1.slice(0, 2)}/${SHA1.slice(2)}.${fileTypes[thumbType]}`
 }
 
 // Resolve the path to the source file of an upload
-export function sourcePath(SHA1: string, fileType: fileTypes): string {
+export function sourcePath(fileType: fileTypes, SHA1: string): string {
 	return `${imageRoot()}/src/${SHA1.slice(0, 2)}/${SHA1.slice(2)}.${fileTypes[fileType]}`
 }
 

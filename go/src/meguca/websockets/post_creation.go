@@ -29,6 +29,10 @@ type ThreadCreationResponse struct {
 	ID uint64 `json:"id"`
 }
 
+type PostCreationResponse struct {
+	ID uint64 `json:"id"`
+}
+
 // ReplyCreationRequest contains common fields for both thread and reply
 // creation
 type ReplyCreationRequest struct {

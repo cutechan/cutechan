@@ -74,6 +74,7 @@ func createRouter() http.Handler {
 	r.GET("/:board/:thread", threadHTML)
 	r.GET("/all/:id", crossRedirect)
 
+	// TODO(Kagami): Remove.
 	html := r.NewGroup("/html")
 	html.GET("/board-navigation", boardNavigation)
 	html.GET("/owned-boards/:userID", ownedBoardSelection)
@@ -88,6 +89,7 @@ func createRouter() http.Handler {
 	html.GET("/mod-log/:board", modLog)
 
 	// JSON API
+	// TODO(Kagami): Move to /api.
 	json := r.NewGroup("/json")
 	boards := json.NewGroup("/boards")
 	boards.GET("/:board/", func(w http.ResponseWriter, r *http.Request) {
@@ -106,10 +108,14 @@ func createRouter() http.Handler {
 	// Internal API
 	api := r.NewGroup("/api")
 	api.GET("/socket", websockets.Handler)
-	api.POST("/upload", imager.NewImageUpload)
-	api.POST("/upload-hash", imager.UploadImageHash)
+	// TODO(Kagami): Use single route?
 	api.POST("/thread", createThread)
 	api.POST("/post", createReply)
+	// TODO(Kagami): Remove.
+	api.POST("/upload", imager.NewImageUpload)
+	api.POST("/upload-hash", imager.UploadImageHash)
+	// api.POST("/spoiler-image", modSpoilerImage)
+	// TODO(Kagami): RESTify.
 	api.POST("/register", register)
 	api.POST("/login", login)
 	api.POST("/logout", logout)
@@ -123,7 +129,6 @@ func createRouter() http.Handler {
 	api.POST("/delete-board", deleteBoard)
 	api.POST("/delete-post", deletePost)
 	api.POST("/delete-image", deleteImage)
-	// api.POST("/spoiler-image", modSpoilerImage)
 	api.POST("/ban", ban)
 	api.POST("/notification", sendNotification)
 	api.POST("/assign-staff", assignStaff)
@@ -131,12 +136,10 @@ func createRouter() http.Handler {
 	api.POST("/sticky", setThreadSticky)
 	api.POST("/unban/:board", unban)
 	api.POST("/set-banners", setBanners)
-
 	// Captcha API
 	captcha := api.NewGroup("/captcha")
 	captcha.GET("/new", auth.NewCaptchaID)
 	captcha.GET("/image/*path", auth.ServeCaptcha)
-
 	// Noscript captcha API
 	NSCaptcha := captcha.NewGroup("/noscript")
 	NSCaptcha.GET("/load", noscriptCaptchaLink)

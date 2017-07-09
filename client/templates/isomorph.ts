@@ -2,6 +2,8 @@
 // Template structs, helper routines and context providers.
 // TODO(Kagami): Move helper function here?
 
+import * as Mustache from "mustache"
+import templates from "templates"
 import { ln } from "../lang"
 import { config } from "../state"
 import {
@@ -9,11 +11,29 @@ import {
 	thumbPath, sourcePath, duration, fileSize,
 	parseBody,
 } from "../posts"
-import { TemplateContext, Ctx } from "./render"
+import { Dict, makeEl } from "../util"
+
+class TemplateContext {
+	private template: string
+	private ctx: Dict
+
+	constructor(name: string, ctx: Dict) {
+		this.template = templates[name]
+		this.ctx = ctx
+	}
+
+	render(): string {
+		return Mustache.render(this.template, this.ctx)
+	}
+
+	renderNode(): HTMLElement {
+		return makeEl(this.render())
+	}
+}
 
 // TODO(Kagami): Capitalize model keys for better compatibility?
 export function makePostContext(t: Thread, p: Post, bls: Backlinks, index: boolean): TemplateContext {
-	const ctx: Ctx = {
+	const ctx: Dict = {
 		ID: p.id,
 		TID: t.id,
 		Index: index,
@@ -55,8 +75,8 @@ export function makePostContext(t: Thread, p: Post, bls: Backlinks, index: boole
 	ctx.Time = ""
 
 	ctx.File = () => {
-		if (!ctx.post.image) return ""
-		const img = ctx.post.image
+		const img = p.image
+		if (!img) return ""
 		return new TemplateContext("post-file", {
 			HasArtist: !!img.artist,
 			Artist: img.artist,
@@ -75,7 +95,7 @@ export function makePostContext(t: Thread, p: Post, bls: Backlinks, index: boole
 		}).render()
 	}
 
-	ctx.Body = parseBody(ctx.post)
+	ctx.Body = parseBody(p)
 
 	// NOOP because we will need to update already rendered posts so avoid
 	// code duplication.
