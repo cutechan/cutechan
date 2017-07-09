@@ -84,7 +84,7 @@ export default class FormView extends PostView {
 		const onStaffChange = () => {
 			localStorage.setItem("staffTitle", staffEl.checked.toString())
 			this.model.auth = staffEl.checked ? getMyAuth() : ""
-			this.renderName()
+			// this.renderName()
 		}
 		staffEl.addEventListener("change", onStaffChange)
 		staffEl.checked = localStorage.getItem("staffTitle") === "true"
@@ -158,7 +158,7 @@ export default class FormView extends PostView {
 
 		document.getElementById("thread-container").append(this.el)
 		this.resizeSpacer()
-		this.setEditing(false)
+		// this.setEditing(false)
 	}
 
 	// Resize bottomSpacer to the same top position as this post
@@ -272,7 +272,7 @@ export default class FormView extends PostView {
 	public renderAlloc() {
 		this.id = this.el.id = `post${this.model.id}`
 		this.el.querySelector("header").classList.remove("temporary")
-		this.renderHeader()
+		// this.renderHeader()
 		this.showDone()
 	}
 

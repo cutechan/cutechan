@@ -86,7 +86,7 @@ export class Post extends Model implements PostData {
 		if (needReparse) {
 			this.view.reparseBody()
 		} else {
-			this.view.appendString(char)
+			// this.view.appendString(char)
 		}
 	}
 
@@ -100,7 +100,7 @@ export class Post extends Model implements PostData {
 		if (needReparse) {
 			this.view.reparseBody()
 		} else {
-			this.view.backspace()
+			// this.view.backspace()
 		}
 	}
 
@@ -166,7 +166,7 @@ export class Post extends Model implements PostData {
 	// Close an open post and reparse its last line
 	public closePost() {
 		this.editing = false
-		this.view.closePost()
+		// this.view.closePost()
 	}
 
 	// Set post as banned

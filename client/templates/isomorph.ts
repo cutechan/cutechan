@@ -4,14 +4,14 @@
 
 import * as Mustache from "mustache"
 import templates from "templates"
-import { ln } from "../lang"
+import { ln, lang } from "../lang"
 import { config } from "../state"
 import {
 	Thread, Post, Backlinks,
 	thumbPath, sourcePath, duration, fileSize,
 	parseBody,
 } from "../posts"
-import { Dict, makeEl } from "../util"
+import { Dict, makeEl, pad } from "../util"
 
 export class TemplateContext {
 	private template: string
@@ -112,4 +112,12 @@ const PLURAL_FORMS: { [key: string]: (n: number) => number } = {
 export function pluralize(num: number, plurals: [string]): string {
 	const getForm = PLURAL_FORMS[config.defaultLang] || PLURAL_FORMS.default
 	return plurals[getForm(num)]
+}
+
+// Renders classic absolute timestamp.
+export function readableTime(time: number): string {
+	const d = new Date(time * 1000)
+	return `${pad(d.getDate())} ${lang.time.calendar[d.getMonth()]} `
+		+ `${d.getFullYear()} (${lang.time.week[d.getDay()]}) `
+		+ `${pad(d.getHours())}:${pad(d.getMinutes())}`
 }

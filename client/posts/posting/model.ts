@@ -281,7 +281,7 @@ export default class FormModel extends Post {
 	private requestAlloc(body: string | null, image: FileData | null) {
 		const req = this.newAllocRequest()
 
-		this.view.setEditing(true)
+		// this.view.setEditing(true)
 		this.nonLive = false
 		this.sentAllocRequest = true
 
