@@ -14,35 +14,25 @@ import { POST_BACKLINKS_SEL } from "../vars"
 export default class PostView extends ImageHandler {
 	constructor(model: Post, el: HTMLElement | null) {
 		const attrs: ViewAttrs = { model }
+
 		const thread = new Thread()
 		// Not used.
 		const bls = null as Backlinks
 		// Currently we render only in-thread posts.
 		const index = false
 		attrs.el = el || makePostContext(thread, model, bls, index).renderNode()
+
 		super(attrs)
+
 		this.model.view = this
+		if (!el) {
+			this.afterRender()
+		}
 	}
 
-	// Render the element contents, but don't insert it into the DOM
-	public render() {
-		// if (this.model.subject) {
-		// 	const el = this.el.querySelector("h3")
-		// 	el.innerHTML = escape(this.model.subject)
-		// 	el.hidden = false
-		// }
-
-		// this.el.querySelector("blockquote").innerHTML = parseBody(this.model)
-		// if (this.model.backlinks) {
-		// 	this.renderBacklinks()
-		// }
-		// if (this.model.banned) {
-		// 	this.renderBanned()
-		// }
-		// this.renderHeader()
-		// if (this.model.image) {
-		// 	this.renderImage(false)
-		// }
+	// Additional client-side appearance changes.
+	public afterRender() {
+		this.renderTime()
 	}
 
 	// Get the current Element for text to be written to
@@ -136,7 +126,8 @@ export default class PostView extends ImageHandler {
 		el.textContent = text
 	}
 
-	// Renders classic absolute timestamp
+	// Renders classic absolute timestamp.
+	// TODO(Kagami): Move to isomorph.
 	private readableTime(): string {
 		const d = new Date(this.model.time * 1000)
 		return `${pad(d.getDate())} ${lang.time.calendar[d.getMonth()]} `
