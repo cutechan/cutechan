@@ -12,6 +12,7 @@ import (
 	"meguca/websockets/feeds"
 	"net/http"
 	"strconv"
+	"strings"
 )
 
 // Create a thread with a closed OP
@@ -122,8 +123,16 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	}
 
 	f := r.Form
+
+	// NOTE(Kagami): Browsers use CRLF newlines in form-data requests,
+	// see: <https://stackoverflow.com/a/6964163>.
+	// This in particular breaks links formatting, also we need to be
+	// consistent with WebSocket requests and store normalized data in DB.
+	body := f.Get("body")
+	body = strings.Replace(body, "\r\n", "\n", -1)
+
 	req = websockets.ReplyCreationRequest{
-		Body: f.Get("body"),
+		Body: body,
 		Captcha: auth.Captcha{
 			CaptchaID: f.Get("captchaID"),
 			Solution:  f.Get("captcha"),
