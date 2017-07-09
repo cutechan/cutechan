@@ -938,10 +938,22 @@ header {
   width: 100%;
 }
 
-.post-pre-backlinks {
+.post-backlinks {
   font-size: smaller;
+}
+
+.post-backlink-pre {
   font-style: italic;
   color: #333;
+  &:before {
+    content: " "
+  }
+}
+
+.post-backlink {
+  &:before {
+    content: " "
+  }
 }
 
 .post-controls {

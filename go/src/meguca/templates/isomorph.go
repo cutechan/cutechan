@@ -28,9 +28,8 @@ type PostContext struct {
 	Auth string
 	Banned bool
 	LBanned string
-	LReplies string
-	backlinks common.Backlinks
 	post common.Post
+	backlinks common.Backlinks
 }
 
 type FileContext struct {
@@ -50,6 +49,11 @@ type FileContext struct {
 	ThumbPath string
 }
 
+type BacklinksContext struct {
+	LReplies string
+	Backlinks []string
+}
+
 // FIXME(Kagami): Return pointer, don't create context for each post?
 func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index bool) PostContext {
 	ln := lang.Get()
@@ -64,9 +68,8 @@ func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index
 		Auth: ln.Common.Posts[p.Auth],
 		Banned: p.Banned,
 		LBanned: ln.Common.Posts["banned"],
-		LReplies: ln.Common.UI["replies"],
-		backlinks: bls,
 		post: p,
+		backlinks: bls,
 	}
 }
 
@@ -206,17 +209,21 @@ func postLink(id uint64, cross, index bool) string {
 	return renderMustache("post-link", ctx)
 }
 
-func (ctx PostContext) HasBacklinks() bool {
-	return ctx.backlinks[ctx.ID] != nil
-}
-
-func (ctx PostContext) Backlinks() (list []string) {
+func (ctx PostContext) Backlinks() string {
 	if links := ctx.backlinks[ctx.ID]; links != nil {
+		var list []string
 		for id, op := range links {
 			list = append(list, postLink(id, op != ctx.TID, ctx.Index))
 		}
+		ln := lang.Get()
+		ctx := BacklinksContext{
+			LReplies: ln.Common.UI["replies"],
+			Backlinks: list,
+		}
+		return renderMustache("post-backlinks", ctx)
+	} else {
+		return ""
 	}
-	return
 }
 
 func getPluralFormIndex(langCode string, n int) int {

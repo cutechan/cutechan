@@ -1,13 +1,14 @@
 import { Thread, Post, Backlinks } from './model'
 import { makeFrag, getID, firstChild, pad } from '../util'
 import { parseBody, relativeTime, renderPostLink } from './render'
-import { makePostContext } from "../templates"
+import { TemplateContext, makePostContext } from "../templates"
 import ImageHandler from "./images"
 import { ViewAttrs } from "../base"
 import { findSyncwatches } from "./syncwatch"
-import lang from "../lang"
+import { ln, lang } from "../lang"
 import { page } from "../state"
 import options from "../options"
+import { POST_BACKLINKS_SEL } from "../vars"
 
 // Base post view class
 export default class PostView extends ImageHandler {
@@ -88,38 +89,20 @@ export default class PostView extends ImageHandler {
 		buf.innerHTML = buf.innerHTML.slice(0, -1)
 	}
 
-	// Render links to posts linking to this post
+	// Render links to posts linking to this post.
 	public renderBacklinks() {
-		// Find backlink span or create one
-		let el = firstChild(this.el, ch =>
-			ch.classList.contains("backlinks"))
-		if (!el) {
-			el = document.createElement("span")
-			el.classList.add("spaced", "backlinks")
-			this.el.append(el)
-		}
+		const links = Object.entries(this.model.backlinks).map(([id, op]) =>
+			renderPostLink(+id, op as number)
+		)
+		if (!links.length) return
 
-		// Get already rendered backlink IDs
-		const rendered = new Set<number>()
-		for (let em of Array.from(el.children)) {
-			const id = (em.firstChild as HTMLElement).getAttribute("data-id")
-			rendered.add(parseInt(id))
-		}
+		const html = new TemplateContext("post-backlinks", {
+			LReplies: ln.Common.UI["replies"],
+			Backlinks: links,
+		}).render()
 
-		let html = ""
-		for (let idStr in this.model.backlinks) {
-			const id = parseInt(idStr)
-			// Confirm link not already rendered
-			if (rendered.has(id)) {
-				continue
-			}
-			rendered.add(id)
-			html += "<em>"
-				+ renderPostLink(id, this.model.backlinks[id])
-				+ "</em>"
-		}
-
-		el.append(makeFrag(html))
+		const container = this.el.querySelector(POST_BACKLINKS_SEL)
+		container.innerHTML = html
 	}
 
 	// Render the header on top of the post

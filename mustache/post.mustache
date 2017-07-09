@@ -27,13 +27,7 @@
   </section>
 
   <footer class="post-footer">
-    {{#HasBacklinks}}
-      <span class="post-pre-backlinks">{{ LReplies }}:</span>
-    {{/HasBacklinks}}{{#Backlinks}}
-      <span class="backlinks spaced">
-        <em>{{{.}}}</em>
-      </span>
-    {{/Backlinks}}
+    <div class="post-backlinks">{{{Backlinks}}}</div>
     <div class="post-controls">
       <a class="post-control post-quote-control trigger-quote-post">
         <i class="fa fa-reply trigger-quote-post"></i>

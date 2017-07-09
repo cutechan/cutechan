@@ -6,6 +6,7 @@ import { pluralize } from "../../templates"
 import { makeAttrs } from "../../util"
 
 // Render a link to other posts
+// FIXME(Kagmai): Use post-link.mustache.
 export function renderPostLink(id: number, op: number): string {
 	const cross = op !== page.thread,
 		index = !page.thread && !page.catalog,

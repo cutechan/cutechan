@@ -13,7 +13,7 @@ import {
 } from "../posts"
 import { Dict, makeEl } from "../util"
 
-class TemplateContext {
+export class TemplateContext {
 	private template: string
 	private ctx: Dict
 
@@ -44,7 +44,6 @@ export function makePostContext(t: Thread, p: Post, bls: Backlinks, index: boole
 		Auth: ln.Common.Posts[p.auth],
 		Banned: p.banned,
 		LBanned: ln.Common.Posts["banned"],
-		LReplies: ln.Common.UI["replies"],
 		backlinks: bls,
 		post: p,
 	}
@@ -99,8 +98,7 @@ export function makePostContext(t: Thread, p: Post, bls: Backlinks, index: boole
 
 	// NOOP because we will need to update already rendered posts so avoid
 	// code duplication.
-	ctx.HasBacklinks = false
-	ctx.Backlinks = false
+	ctx.Backlinks = ""
 
 	return new TemplateContext("post", ctx)
 }

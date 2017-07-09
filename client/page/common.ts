@@ -5,6 +5,7 @@ import { Post, PostView } from "../posts"
 import lang from "../lang"
 import { postAdded, notifyAboutReply } from "../ui"
 import { extractJSON } from "../util"
+import { POST_BACKLINKS_SEL } from "../vars"
 
 // Find board configurations in the HTML and apply them
 export function extractConfigs() {
@@ -73,7 +74,7 @@ export function extractPost(
 
 function addYous(id: number, el: HTMLElement) {
 	for (let a of el.querySelectorAll(`a[data-id="${id}"]`)) {
-		a.textContent += " " + lang.posts["you"]
+		a.textContent += ` ${lang.posts.you}`
 	}
 }
 
@@ -115,7 +116,7 @@ function personalizeBacklinks(post: Post) {
 		}
 		// Don't query DOM, until we know we need it
 		if (!el) {
-			el = post.view.el.querySelector(".backlinks")
+			el = post.view.el.querySelector(POST_BACKLINKS_SEL)
 		}
 		addYous(id, el)
 	}
