@@ -1,8 +1,7 @@
 import { ThreadData } from "../common"
 import { findSyncwatches } from "../posts"
-import {
-	extractConfigs, isBanned, extractPost, reparseOpenPosts, extractPageData,
-} from "./common"
+import { page, loadFromDB } from "../state"
+import { isBanned, extractPost, reparseOpenPosts, extractPageData } from "./common"
 
 const threads = document.getElementById("threads")
 // const counters = document.getElementById("thread-post-counters")
@@ -11,11 +10,12 @@ const threads = document.getElementById("threads")
 // let bumpTime = 0
 
 // Render the HTML of a thread page
-export default function () {
+export async function render() {
 	if (isBanned()) {
 		return
 	}
-	extractConfigs()
+
+	await loadFromDB(page.thread)
 
 	const { threads: data, backlinks } = extractPageData<ThreadData>(),
 		{ posts } = data

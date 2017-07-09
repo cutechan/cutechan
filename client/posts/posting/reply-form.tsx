@@ -1,7 +1,7 @@
 import * as cx from "classnames"
 import { h, render, Component } from "preact"
 import { ln } from "../../lang"
-import { page, boards } from "../../state"
+import { page, boards, storeMine } from "../../state"
 import { fileSize, duration } from "../../posts"
 import API from "../../api"
 import { showAlert } from "../../alerts"
@@ -319,9 +319,11 @@ class Reply extends Component<any, any> {
 		this.setState({sending: true})
 		fn({board, thread, subject, body, files}).then((res: Dict) => {
 			if (page.thread) {
+				storeMine(res.id, page.thread)
 				this.handleFormHide()
 				scrollToBottom()
 			} else {
+				storeMine(res.id, res.id)
 				location.href = `/${board}/${res.id}`
 			}
 		}, ({ message }: Error) => {
