@@ -10,10 +10,12 @@ import initEtc from "./etc"
 import initPosting from "./posting"
 import initMenu from "./menu"
 import initHover from "./hover"
+import initPopup from "./popup"
 
 export function init() {
 	initEtc()
 	initPosting()
 	initMenu()
 	initHover()
+	initPopup()
 }

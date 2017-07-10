@@ -74,9 +74,6 @@ export interface ImageData {
 	MD5: string
 	SHA1: string
 	name: string
-
-	// Added client-side
-	revealed: boolean  // Revealing a hidden image with [Show]
 }
 
 // Possible file types of a post image

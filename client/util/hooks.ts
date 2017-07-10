@@ -9,6 +9,7 @@ export const enum HOOKS {
 	openReply,
 	sendReply,
 	showAlert,
+	openPostPopup,
 }
 
 const hooks = new EventEmitter()

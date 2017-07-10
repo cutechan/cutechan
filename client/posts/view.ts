@@ -8,7 +8,9 @@ import { ln } from "../lang"
 import options from "../options"
 import { POST_BACKLINKS_SEL } from "../vars"
 
-// Base post view class
+/**
+ * Base post view class
+ */
 export default class PostView extends View<Post> {
 	constructor(model: Post, el: HTMLElement | null) {
 		const attrs: ViewAttrs = { model }

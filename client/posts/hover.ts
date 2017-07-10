@@ -3,12 +3,14 @@
 import { posts } from "../state"
 import options from "../options"
 import {
-	setAttrs, getClosestID, fetchJSON, emitChanges, ChangeEmitter
+	setAttrs, getClosestID, fetchJSON, emitChanges, ChangeEmitter,
+	HOOKS, hook,
 } from "../util"
 import { Post } from "./model"
 import PostView from "./view"
 import { View } from "../base"
 import { PostData } from "../common"
+import * as popup from "./popup"
 
 interface MouseMove extends ChangeEmitter {
 	event: MouseEvent
@@ -165,6 +167,9 @@ function renderImagePreview(event: MouseEvent) {
 	if (!options.imageHover) {
 		return
 	}
+	if (popup.isOpen()) {
+		return
+	}
 	const target = event.target as HTMLElement
 	const bypass = target.tagName !== "IMG"
 		|| target.classList.contains("expanded")
@@ -247,4 +252,8 @@ export default () => {
 	})
 	mouseMove.onChange("event", renderPostPreview)
 	mouseMove.onChange("event", renderImagePreview)
+
+	hook(HOOKS.openPostPopup, () => {
+		clear()
+	})
 }
