@@ -1,6 +1,6 @@
 {
-    "name": "meguca.org",
-    "short_name": "meguca.org",
+    "name": "cutechan",
+    "short_name": "cutechan",
     "icons": [
         {
             "src": "/static/mobile/icon48.png",
@@ -31,6 +31,6 @@
     "start_url": "/",
     "display": "fullscreen",
     "orientation": "any",
-    "theme_color": "#1d1f21",
-    "background_color": "#1d1f21"
+    "theme_color": "#c3b4cc",
+    "background_color": "#f4eef8"
 }
