@@ -278,7 +278,7 @@ export default class FormView extends PostView {
 
 	// Insert image into an open post
 	public insertImage() {
-		this.renderImage(false)
+		// this.renderImage(false)
 		this.resizeInput()
 		this.removeUploadForm()
 	}

@@ -160,7 +160,7 @@ export class Post extends Model implements PostData {
 	// Insert an image into an existing post
 	public insertImage(img: ImageData) {
 		this.image = img
-		this.view.renderImage(false)
+		// this.view.renderImage(false)
 	}
 
 	// Close an open post and reparse its last line
@@ -186,7 +186,7 @@ export class Post extends Model implements PostData {
 
 	public removeImage() {
 		this.image = null
-		this.view.removeImage()
+		// this.view.removeImage()
 	}
 
 	// Returns, if this post has been seen already

@@ -6,8 +6,8 @@ import {
 	setAttrs, getClosestID, fetchJSON, emitChanges, ChangeEmitter
 } from "../util"
 import { Post } from "./model"
-import ImageHandler from "./images"
 import PostView from "./view"
+import { View } from "../base"
 import { PostData } from "../common"
 
 interface MouseMove extends ChangeEmitter {
@@ -28,7 +28,7 @@ const mouseMove = emitChanges<MouseMove>({
 } as MouseMove)
 
 // Post hover preview view
-class PostPreview extends ImageHandler {
+class PostPreview extends View<Post> {
 	public el: HTMLElement
 	private clickHandler: EventListener
 	private observer: MutationObserver

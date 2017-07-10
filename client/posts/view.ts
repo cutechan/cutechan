@@ -2,15 +2,14 @@ import { Thread, Post, Backlinks } from './model'
 import { makeFrag, getID } from '../util'
 import { parseBody, relativeTime, renderPostLink } from './render'
 import { TemplateContext, makePostContext, readableTime } from "../templates"
-import ImageHandler from "./images"
-import { ViewAttrs } from "../base"
+import { View, ViewAttrs } from "../base"
 import { findSyncwatches } from "./syncwatch"
 import { ln } from "../lang"
 import options from "../options"
 import { POST_BACKLINKS_SEL } from "../vars"
 
 // Base post view class
-export default class PostView extends ImageHandler {
+export default class PostView extends View<Post> {
 	constructor(model: Post, el: HTMLElement | null) {
 		const attrs: ViewAttrs = { model }
 
@@ -29,7 +28,7 @@ export default class PostView extends ImageHandler {
 		}
 	}
 
-	// Additional client-side appearance changes.
+	// Apply client-specific formatting to a post rendered server-side.
 	public afterRender() {
 		this.renderTime()
 	}

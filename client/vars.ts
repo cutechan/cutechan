@@ -12,3 +12,6 @@ export const TRIGGER_QUOTE_POST_SEL = ".trigger-quote-post"
 export const POST_SEL = ".post"
 export const POST_BODY_SEL = ".post-body"
 export const POST_BACKLINKS_SEL = ".post-backlinks"
+
+export const ALERT_HIDE_TIMEOUT_SECS = 5
+export const RELATIVE_TIME_PERIOD_SECS = 60

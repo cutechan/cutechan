@@ -1,8 +1,11 @@
-// User-set settings storage and change handling
+/**
+ * User-set settings storage and change handling.
+ */
 
-import { OptionSpec, specs, optionType } from './specs'
-import { init as initLoops } from "./loop"
-import { trigger, emitChanges, ChangeEmitter, hook } from "../util"
+import { RELATIVE_TIME_PERIOD_SECS } from "../vars"
+import { OptionSpec, specs, optionType } from "./specs"
+import { page, posts } from "../state"
+import { trigger, emitChanges, ChangeEmitter } from "../util"
 
 export * from "./specs"
 
@@ -25,11 +28,6 @@ for (let k in specs) {
 	options[k] = undefined
 }
 export default options = emitChanges({} as Options)
-
-// Provide workaround path to access options. Some core modules would cause
-// circular imports otherwise.
-hook("getOptions", () =>
-	options)
 
 // All loaded option models
 export const models: { [key: string]: OptionModel } = {}
@@ -114,10 +112,23 @@ class OptionModel {
 	}
 }
 
+// Rerender all timestamps on posts, if set to relative time.
+function renderTime() {
+	for (const { view } of posts) {
+		view.renderTime()
+	}
+}
+
 export function init() {
 	// Populate option model collection and central model
 	for (let id in specs) {
 		new OptionModel(id, specs[id])
 	}
-	initLoops()
+
+	options.onChange("relativeTime", renderTime)
+	setInterval(() => {
+		if (options.relativeTime && !page.catalog) {
+			renderTime()
+		}
+	}, RELATIVE_TIME_PERIOD_SECS * 1000)
 }

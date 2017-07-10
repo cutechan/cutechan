@@ -1,10 +1,6 @@
-import { Post } from "./model"
 import { fileTypes } from "../common"
-import { View } from "../base"
-import { setAttrs, on, firstChild, importTemplate, pad } from "../util"
-import options from "../options"
-import { getModel, config } from "../state"
-import lang from "../lang"
+import { pad } from "../util"
+import { config } from "../state"
 
 export function duration(len: number): string {
 	let s = ""
@@ -32,118 +28,6 @@ export function fileSize(size: number): string {
 	return s
 }
 
-// Mixin for image expansion and related functionality
-export default class ImageHandler extends View<Post> {
-	// Render the figure and figcaption of a post. Set reveal to true, if in
-	// hidden thumbnail mode, to reveal the thumbnail.
-	public renderImage(reveal: boolean) {
-		this.el.classList.add("post_media")
-
-		let el = this.getFigure()
-		if (!el) {
-			el = importTemplate("figure").firstChild as HTMLElement
-			this.el.querySelector(".post-container").prepend(el)
-		}
-
-		const showThumb = !options.workModeToggle || reveal
-		el.hidden = !showThumb
-		if (showThumb) {
-			(el.firstElementChild as HTMLElement).hidden = false
-			this.renderThumbnail()
-		}
-		this.renderFigcaption(reveal)
-	}
-
-	// Need to find direct descendant, otherwise inlined posts might match
-	private getFigure(): HTMLElement {
-		return firstChild(this.el.querySelector(".post-container"), ch =>
-			ch.tagName === "FIGURE")
-	}
-
-	// Need to find direct descendant, otherwise inlined posts might match
-	private getFigcaption(): HTMLElement {
-		return firstChild(this.el, ch =>
-			ch.tagName === "FIGCAPTION")
-	}
-
-	public removeImage() {
-		this.el.classList.remove("post_media")
-		let el = this.getFigure()
-		if (el) {
-			el.remove()
-		}
-		el = this.getFigcaption()
-		if (el) {
-			el.remove()
-		}
-	}
-
-	// Render the actual thumbnail image
-	private renderThumbnail() {
-		const el = this.el.querySelector("figure a"),
-			data = this.model.image,
-			src = sourcePath(data.fileType, data.SHA1)
-		const thumb = thumbPath(data.thumbType, data.SHA1)
-		let [, , thumbWidth, thumbHeight] = data.dims
-		el.setAttribute("href", src)
-		setAttrs(el.firstElementChild, {
-			src: thumb,
-			width: thumbWidth.toString(),
-			height: thumbHeight.toString(),
-			class: "", // Remove any existing classes
-		})
-	}
-
-	// Render the information caption above the image
-	private renderFigcaption(reveal: boolean) {
-		let el = this.getFigcaption()
-		if (!el) {
-			el = importTemplate("figcaption").firstChild as HTMLElement
-			this.el.querySelector("header").after(el)
-		}
-
-		const [hToggle, info] = Array.from(el.children) as HTMLElement[]
-		if (!options.workModeToggle) {
-			hToggle.hidden = true
-		} else {
-			hToggle.hidden = false
-			hToggle.textContent = lang.posts[reveal ? 'hide' : 'show']
-		}
-
-		const data = this.model.image
-		for (let el of Array.from(info.children) as HTMLElement[]) {
-			switch (el.className) {
-				case "media-title":
-					el.textContent = data.title
-					break;
-				case "media-artist":
-					el.textContent = data.artist
-					break
-				case "has-audio":
-					el.hidden = !data.audio
-					break
-				case "media-length":
-					if (data.length) {
-						el.textContent = duration(data.length)
-					}
-					break
-				case "is-apng":
-					el.hidden = !data.apng
-					break
-				case "filesize":
-					const { size } = data
-					el.textContent = fileSize(size)
-					break
-				case "dims":
-					el.textContent = `${data.dims[0]}x${data.dims[1]}`
-					break
-			}
-		}
-
-		el.hidden = false
-	}
-}
-
 function imageRoot(): string {
 	return config.imageRootOverride || "/uploads"
 }
@@ -158,19 +42,3 @@ export function thumbPath(thumbType: fileTypes, SHA1: string): string {
 export function sourcePath(fileType: fileTypes, SHA1: string): string {
 	return `${imageRoot()}/src/${SHA1.slice(0, 2)}/${SHA1.slice(2)}.${fileTypes[fileType]}`
 }
-
-// Reveal/hide thumbnail by clicking [Show]/[Hide] in hidden thumbnail mode
-function toggleHiddenThumbnail(event: Event) {
-	const model = getModel(event.target as Element)
-	if (!model) {
-		return
-	}
-	const { revealed } = model.image
-	model.view.renderImage(!revealed)
-	model.image.revealed = !revealed
-}
-
-on(document, "click", toggleHiddenThumbnail, {
-	passive: true,
-	selector: ".image-toggle",
-})

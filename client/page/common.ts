@@ -1,5 +1,4 @@
 import { setBoardConfig, hidden, mine, posts, page } from "../state"
-import options from "../options"
 import { PostData } from "../common"
 import { Post, PostView } from "../posts"
 import lang from "../lang"
@@ -44,30 +43,20 @@ export function extractPost(
 	post.op = op
 	post.board = board
 
-	const model = new Post(post),
-		view = new PostView(model, el)
+	const model = new Post(post)
+	const view = new PostView(model, el)
 	posts.add(model)
 
 	if (page.catalog) {
 		return false
 	}
+
 	model.backlinks = backlinks[post.id]
 
-	// Apply client-specific formatting to a post rendered server-side
-
-	// Render time-zone correction or relative time.
-	view.renderTime()
-
+	view.afterRender()
 	personalizeLinks(model)
 	personalizeBacklinks(model)
 	postAdded(model)
-
-	const { image } = model
-	if (image) {
-		if (options.workModeToggle) {
-			view.renderImage(false)
-		}
-	}
 
 	return false
 }

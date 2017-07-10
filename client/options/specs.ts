@@ -1,7 +1,6 @@
 // Specs for individual option models
 
 import { config } from '../state'
-import { makeEl } from "../util"
 
 // Types of option models
 export const enum optionType {
@@ -34,6 +33,9 @@ export const specs: { [id: string]: OptionSpec } = {
 	workModeToggle: {
 		type: optionType.checkbox,
 		default: false,
+		exec: (on) => {
+			document.documentElement.classList.toggle("work-mode", on)
+		},
 	},
 	// Image hover expansion
 	imageHover: {
@@ -82,20 +84,19 @@ export const specs: { [id: string]: OptionSpec } = {
 	},
 }
 
-// Toggle an optional style element in the head
-export function toggleHeadStyle(
-	name: string,
-	css: string,
-): (toggle: boolean) => void {
-	return toggle => {
-		const id = name + "-toggle"
-		if (!document.getElementById(id)) {
-			const html = `<style id="${id}">${css}</style>`
-			document.head.append(makeEl(html))
-		}
-
-		// The disabled property only exists on elements in the DOM, so we do
-		// another query
-		(document.getElementById(id) as HTMLStyleElement).disabled = !toggle
-	}
-}
+// Toggle an optional style element in the head.
+// function toggleHeadStyle(
+// 	name: string,
+// 	css: string,
+// ): (toggle: boolean) => void {
+// 	return toggle => {
+// 		const id = name + "-toggle"
+// 		if (!document.getElementById(id)) {
+// 			const html = `<style id="${id}">${css}</style>`
+// 			document.head.append(makeEl(html))
+// 		}
+// 		// The disabled property only exists on elements in the DOM, so we
+// 		// do another query.
+// 		(document.getElementById(id) as HTMLStyleElement).disabled = !toggle
+// 	}
+// }

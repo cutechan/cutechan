@@ -67,10 +67,10 @@ async function syncOpenPost(
 		return
 	}
 
-	if (hasImage && !model.image) {
-		model.image = (await fetchPost(id)).image
-		model.view.renderImage(false)
-	}
+	// if (hasImage && !model.image) {
+	// 	model.image = (await fetchPost(id)).image
+	// 	model.view.renderImage(false)
+	// }
 	if (body) {
 		model.body = body
 	}

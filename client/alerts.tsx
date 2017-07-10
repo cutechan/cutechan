@@ -4,7 +4,7 @@
  */
 
 import { h, render, Component } from "preact"
-import { ALERTS_CONTAINER_SEL } from "./vars"
+import { ALERTS_CONTAINER_SEL, ALERT_HIDE_TIMEOUT_SECS } from "./vars"
 import { HOOKS, hook, unhook, trigger } from "./util"
 
 interface Alert {
@@ -13,8 +13,6 @@ interface Alert {
 	message: string
 	sticky?: boolean
 }
-
-const HIDE_TIMEOUT_SECS = 5
 
 class Alerts extends Component<any, any> {
 	private id = 0
@@ -32,7 +30,7 @@ class Alerts extends Component<any, any> {
 		const alerts = [a].concat(this.state.alerts)
 		this.setState({alerts})
 		if (!a.sticky) {
-			setTimeout(this.Hide(a.id), HIDE_TIMEOUT_SECS * 1000)
+			setTimeout(this.Hide(a.id), ALERT_HIDE_TIMEOUT_SECS * 1000)
 		}
 	}
 	Hide(id: number) {
