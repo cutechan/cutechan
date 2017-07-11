@@ -2,8 +2,6 @@
 // CUTE THEME
 //////////////////////////////
 
-@import "base.mix.less";
-
 @font: "Trebuchet MS", sans-serif;
 @fontSize: 15px;
 @lineHeight: 1.4;
@@ -18,80 +16,7 @@
 @admin: #d60000;
 @mod: #7800b3;
 @orange: #f60;
+@bannerHeight: 25px;
 
-blockquote a {
-  color: #54578c;
-}
-
-a:hover {
-  color: #d17c43;
-}
-
-article {
-  article {
-    border: @border;
-  }
-  &.highlight:not(.editing) {
-    background-color: #bbb;
-    border-color: #999;
-  }
-  &.editing {
-    background-color: #f0e5ba;
-    border-color: #dbd1aa;
-    article {
-      border: solid 1px #dbd1aa
-    }
-  }
-}
-
-.post:not(.post_op) {
-  background-color: @postBG;
-  border: @border;
-}
-
-.post-id {
-  color: @orange;
-}
-
-.post-time {
-  color: #333;
-}
-
-h1 {
-  color: #b32407;
-  font-size: 30px;
-  letter-spacing: 1px;
-}
-
-h2 {
-  color: #b32407;
-  text-shadow: #8e3523 1px 1px 0px;
-}
-
-h3 {
-  color: #2f4d0c;
-}
-
-hr {
-  border-top: 1px solid #bac9b7;
-}
-
-.popup-menu li:hover {
-  background-color: #f9fcf7;
-}
-
-.modal, .popup-menu, .side-panel {
-  background-color: #eee;
-}
-
-a.tab-sel {
-  color: #ba8d7a;
-}
-
-.omit {
-  color: #73806c;
-}
-
-.page-title {
-  color: @orange;
-}
+// TODO(Kagami): Extract all color/appearance styles from base.
+@import "base.mix.less";

@@ -1,15 +1,9 @@
 //////////////////////////////
-// ANY THEME TEMPLATE
+// THIRD-PARTY
 //////////////////////////////
 
 @import (inline) "node_modules/normalize.css/normalize.css";
 @import (inline) "node_modules/font-awesome/css/font-awesome.css";
-
-//////////////////////////////
-// VARS
-//////////////////////////////
-
-@bannerHeight: 25px;
 
 //////////////////////////////
 // MAIN
@@ -107,6 +101,14 @@ a {
   }
 }
 
+a:hover {
+  color: #d17c43;
+}
+
+blockquote a {
+  color: #54578c;
+}
+
 aside {
   display: table;
   &.disabled a {
@@ -135,11 +137,24 @@ h3 {
   display: inline;
   font-size: inherit;
   margin: 0;
+  color: #2f4d0c;
+}
+
+h1 {
+  color: #b32407;
+  font-size: 30px;
+  letter-spacing: 1px;
+}
+
+h2 {
+  color: #b32407;
+  text-shadow: #8e3523 1px 1px 0px;
 }
 
 hr {
   border: none;
   clear: both;
+  border-top: 1px solid #bac9b7;
 }
 
 .separator {
@@ -291,7 +306,7 @@ html, body {
   z-index: 100;
 }
 
-// Bootstrap-style.
+// Bootstrap alike.
 .alert {
   box-sizing: border-box;
   min-width: 250px;
@@ -358,21 +373,6 @@ html, body {
 
 .modal, .banner {
   pointer-events: all;
-}
-
-//////////////////////////////
-// POST POPUP
-//////////////////////////////
-
-.post-popup {
-  position: fixed;
-  z-index: 1000;
-}
-
-.post-popup-item {
-  display: block;
-  outline: none;
-  user-select: none;
 }
 
 //////////////////////////////
@@ -530,6 +530,10 @@ html, body {
   }
 }
 
+a.tab-sel {
+  color: #ba8d7a;
+}
+
 .tab-link {
   cursor: pointer;
 }
@@ -610,6 +614,35 @@ a.referenced {
   margin-top: 2px;
   margin-bottom: 8px;
   white-space: nowrap;
+  color: #73806c;
+}
+
+//////////////////////////////
+// POPUP MENU
+//////////////////////////////
+
+.popup-menu {
+  display: table;
+  position: relative;
+  padding: 5px;
+  margin-top: 0.1em;
+  z-index: 15;
+  white-space: nowrap;
+  border: @border;
+  user-select: none;
+  li {
+    list-style: none;
+    margin: 0;
+    padding: 3px 3px 3px 5px;
+  }
+}
+
+.popup-menu li:hover {
+  background-color: #f9fcf7;
+}
+
+.modal, .popup-menu, .side-panel {
+  background-color: #eee;
 }
 
 //////////////////////////////
@@ -706,6 +739,7 @@ a.referenced {
   font-size: 2em;
   font-weight: bold;
   margin: 20px 0;
+  color: @orange;
 }
 
 //////////////////////////////
@@ -734,11 +768,30 @@ article, .post {
   }
 }
 
+article {
+  article {
+    border: @border;
+  }
+  &.highlight:not(.editing) {
+    background-color: #bbb;
+    border-color: #999;
+  }
+  &.editing {
+    background-color: #f0e5ba;
+    border-color: #dbd1aa;
+    article {
+      border: solid 1px #dbd1aa
+    }
+  }
+}
+
 .post {
   margin: 0 10px 6px 0;
   padding: 4px 10px;
   min-width: 200px;
   max-width: 1000px;
+  background-color: @postBG;
+  border: @border;
   &:last-of-type {
     margin-bottom: 0;
   }
@@ -793,6 +846,10 @@ header {
   }
 }
 
+.post-id {
+  color: @orange;
+}
+
 .post-subject {
   padding-left: 10px;
   color: black;
@@ -811,6 +868,7 @@ header {
   padding-left: 10px;
   cursor: default;
   text-decoration: dotted underline;
+  color: #333;
 }
 
 .post-file-info {
@@ -931,22 +989,6 @@ html.work-mode {
   margin-right: 0;
 }
 
-.popup-menu {
-  display: table;
-  position: relative;
-  padding: 5px;
-  margin-top: 0.1em;
-  z-index: 15;
-  white-space: nowrap;
-  border: @border;
-  user-select: none;
-  li {
-    list-style: none;
-    margin: 0;
-    padding: 3px 3px 3px 5px;
-  }
-}
-
 //////////////////////////////
 // POST MOD CONTROLS
 //////////////////////////////
@@ -1005,6 +1047,21 @@ html.pos-notstaff {
   .post_op .post-id:after {
     display: none;
   }
+}
+
+//////////////////////////////
+// POST POPUP
+//////////////////////////////
+
+.post-popup {
+  position: fixed;
+  z-index: 1000;
+}
+
+.post-popup-item {
+  display: block;
+  outline: none;
+  user-select: none;
 }
 
 //////////////////////////////
@@ -1267,7 +1324,8 @@ html.pos-notstaff {
   height: 1em;
 }
 
-// XXX(Kagami): Avoid accidental deletion. Make annoying confirm later.
+// TODO(Kagami): To avoid accidental deletion. Use annoying confirm
+// instead.
 #deleteBoard {
   display: none;
 }
