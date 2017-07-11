@@ -8,14 +8,14 @@ export { findSyncwatches } from "./syncwatch"
 
 import initEtc from "./etc"
 import initPosting from "./posting"
-import initMenu from "./menu"
+// import initMenu from "./menu"
 import initHover from "./hover"
 import initPopup from "./popup"
 
 export function init() {
 	initEtc()
 	initPosting()
-	initMenu()
+	// initMenu()
 	initHover()
 	initPopup()
 }

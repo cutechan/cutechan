@@ -369,6 +369,19 @@ html, body {
     display: block;
     object-fit: contain;
   }
+  .post-controls {
+    display: none;
+  }
+}
+
+.preview {
+  padding: 4px 10px;
+  position: fixed;
+  pointer-events: none;
+  z-index: 320;
+  .control {
+    display: none;
+  }
 }
 
 .modal, .banner {
@@ -574,23 +587,9 @@ input[type=number], input[type=text], input[type=password], textarea {
   }
 }
 
-.preview {
-  padding: 4px 10px;
-  position: fixed;
-  pointer-events: none;
-  z-index: 320;
-  .control {
-    display: none;
-  }
-}
-
 .shortcut {
   border: none;
   width: 2em;
-}
-
-.post-collection {
-  white-space: initial;
 }
 
 a.referenced {
@@ -746,45 +745,6 @@ a.referenced {
 // POST
 //////////////////////////////
 
-article, .post {
-  word-break: break-word;
-  word-wrap: break-word;
-  max-width: 95vw;
-  .backlinks {
-    & > em > a {
-      font-size: smaller;
-    }
-  }
-  audio {
-    width: 300px;
-    height: 3em;
-    &::-webkit-media-controls-panel {
-      background: none;
-    }
-  }
-  ul {
-    word-wrap: normal;
-    word-break: normal;
-  }
-}
-
-article {
-  article {
-    border: @border;
-  }
-  &.highlight:not(.editing) {
-    background-color: #bbb;
-    border-color: #999;
-  }
-  &.editing {
-    background-color: #f0e5ba;
-    border-color: #dbd1aa;
-    article {
-      border: solid 1px #dbd1aa
-    }
-  }
-}
-
 .post {
   margin: 0 10px 6px 0;
   padding: 4px 10px;
@@ -792,6 +752,12 @@ article {
   max-width: 1000px;
   background-color: @postBG;
   border: @border;
+  word-wrap: break-word;
+  word-break: break-word;
+  ul {
+    word-wrap: normal;
+    word-break: normal;
+  }
   &:last-of-type {
     margin-bottom: 0;
   }
