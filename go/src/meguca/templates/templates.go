@@ -6,7 +6,7 @@ package templates
 import (
 	"bytes"
 	"fmt"
-	"html"
+	h "html"
 	"meguca/auth"
 	"meguca/config"
 	"meguca/lang"
@@ -51,7 +51,7 @@ func Board(
 	if b == "all" {
 		bTitle = lang.Get().UI["aggregator"]
 	}
-	title := html.EscapeString(fmt.Sprintf("/%s/ — %s", b, bTitle))
+	title := fmt.Sprintf("/%s/ — %s", b, bTitle)
 	html := renderBoard(
 		threadHTML,
 		b, title,
@@ -74,13 +74,14 @@ func Thread(
 	pos auth.ModerationLevel,
 	postHTML []byte,
 ) []byte {
-	title = html.EscapeString(fmt.Sprintf("/%s/ — %s", board, title))
+	title = fmt.Sprintf("/%s/ — %s", board, title)
 	html := renderThread(postHTML, id, board, title, abbrev, pos)
 	return execIndex(html, title, pos)
 }
 
 // Execute and index template in the second pass
 func execIndex(html, title string, pos auth.ModerationLevel) []byte {
+	title = h.EscapeString(title)
 	mu.RLock()
 	t := indexTemplates[pos]
 	mu.RUnlock()
