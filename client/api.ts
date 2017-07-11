@@ -66,7 +66,7 @@ export const API = {
 		create: send.POST.Form("thread"),
 	},
 	post: {
-		create: send.POST.Form("thread"),
+		create: send.POST.Form("post"),
 		createWS: createPostWS,
 		delete: send.POST.JSON("delete-post"),
 	},
