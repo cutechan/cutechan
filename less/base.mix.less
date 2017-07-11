@@ -221,77 +221,10 @@ table {
   font-weight: bold;
 }
 
-#moderation-panel {
-  #modal-overlay > & {
-    display: inline-block;
-  }
-  align-self: flex-end;
-  margin-top: auto;
-  &:not(.keep-visible) {
-    transform: translateX(100%);
-    opacity: 0.5;
-    transition-duration: 0.3s;
-    transition-delay: 0.1s;
-    transition-property: all;
-    &:hover {
-      transform: translateX(0);
-      opacity: 1;
-      form {
-        max-height: 85vh;
-        max-width: 85vw;
-      }
-    }
-    &:not(:hover) {
-      border-left: 1em solid;
-      border-top-left-radius: 1em;
-      border-bottom-left-radius: 1em;
-    }
-    form {
-      max-width: 1em;
-      max-height: 1em;
-      overflow: hidden;
-      transition-duration: 0.3s;
-      transition-delay: 0.1s;
-      transition-property: max-width, max-height;
-    }
-  }
-}
-
-.banned {
-  font-size: 110%;
-}
-
 .ban-page {
   margin-top: 2em;
   padding: 1em;
   text-align: center;
-}
-
-.deleted-toggle {
-  appearance: none;
-  outline: none;
-  cursor: pointer;
-  margin: 0;
-  // background-image: url(/static/img/deleted.svg);
-  width: 1.1em;
-  height: 1.1em;
-  background-repeat: no-repeat;
-  background-size: contain;
-}
-
-.deleted > .deleted-toggle {
-  & > header:before, .thread-links:before {
-    display: inline-block;
-  }
-  &:not(:checked) ~ *:not(hr) {
-    display: none;
-  }
-}
-
-article, section {
-  &:not(.deleted) .deleted-toggle {
-    display: none;
-  }
 }
 
 //////////////////////////////
@@ -642,7 +575,7 @@ input[type=number], input[type=text], input[type=password], textarea {
   position: fixed;
   pointer-events: none;
   z-index: 320;
-  .control, .mod-checkbox {
+  .control {
     display: none;
   }
 }
@@ -1062,7 +995,7 @@ html.pos-notstaff {
   .post {
     counter-increment: p;
   }
-  .post_op, .deleted {
+  .post_op {
     counter-increment: p 0 !important;
   }
   .post-id:after {
@@ -1309,10 +1242,6 @@ html.pos-notstaff {
       min-width: initial;
       margin: 0;
       padding: 0;
-    }
-    &.deleted .deleted-toggle:checked ~ .thread-links {
-      clear: none;
-      display: inline-block;
     }
   }
   figure {

@@ -26,11 +26,6 @@ Renders the tab selection butts in tabbed windows
 	</a>
 {% endstripspace %}{% endfunc %}
 
-Renders a stylized deleted post display toggle
-{% func deletedToggle() %}{% stripspace %}
-	<input type="checkbox" class="deleted-toggle">
-{% endstripspace %}{% endfunc %}
-
 Notice widget, that reveals text on hover
 {% func hoverReveal(tag, text, label string) %}{% stripspace %}
 	{% if text == "" %}
