@@ -1,6 +1,7 @@
 // Login/logout/registration facilities for the account system
 
 import { TRIGGER_DELETE_POST_SEL, TRIGGER_BAN_BY_POST_SEL } from "../vars"
+import { ln } from "../lang"
 import { postJSON, deleteCookie, on } from '../util'
 import { FormView } from "../ui"
 import { TabbedModal } from "../base"
@@ -167,15 +168,18 @@ class LoginForm extends FormView {
 	}
 }
 
+
 function getModelByEvent(e: Event): Post {
 	return getModel(e.target as Element)
 }
 
 function deletePost(post: Post) {
+	if (!confirm(ln.UI.sure)) return
 	API.post.delete([post.id]).catch(showAlert)
 }
 
 function banUser(post: Post) {
+	if (!confirm(ln.UI.sure)) return
 	const YEAR = 365 * 24 * 60
 	API.user.banByPost({
 		ids: [post.id],
