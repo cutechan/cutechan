@@ -41,7 +41,7 @@ var (
 
 	// Defaults contains the default server configuration values
 	Defaults = Configs{
-		MaxSize:     40,
+		MaxSize:     20,
 		RootURL:     "http://localhost",
 		BoardExpiry: 100,
 		Public: Public{
