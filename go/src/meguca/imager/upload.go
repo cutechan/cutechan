@@ -46,15 +46,15 @@ var (
 		"image/jpeg":      true,
 		"image/png":       true,
 		"image/gif":       true,
-		"application/pdf": true,
 		"video/webm":      true,
-		"application/ogg": true,
 		"video/mp4":       true,
-		"audio/mpeg":      true,
-		mimeZip:           true,
-		mime7Zip:          true,
-		mimeTarGZ:         true,
-		mimeTarXZ:         true,
+		// "application/pdf": true,
+		// "application/ogg": true,
+		// "audio/mpeg":      true,
+		// mimeZip:           true,
+		// mime7Zip:          true,
+		// mimeTarGZ:         true,
+		// mimeTarXZ:         true,
 	}
 
 	errTooLarge = errors.New("file too large")
