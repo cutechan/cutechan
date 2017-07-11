@@ -719,14 +719,13 @@ a.referenced {
   display: inline-block;
   padding: 5px 10px;
   margin-right: 3px;
+  background: #ddd;
   border: 1px solid #ccc;
   border-radius: 3px;
-  &:not(.board-pagination-page_current):hover {
-    background: #ddd;
-  }
 }
 
 .board-pagination-page_current {
+  background: none;
   border: none;
 }
 
@@ -750,7 +749,7 @@ a.referenced {
   padding: 4px 10px;
   min-width: 200px;
   max-width: 1000px;
-  background-color: @postBG;
+  background: @postBG;
   border: @border;
   word-wrap: break-word;
   word-break: break-word;
@@ -972,10 +971,12 @@ html.pos-notstaff {
 //////////////////////////////
 
 .post_op {
-  margin-bottom: 0;
-  padding-left: 0;
-  border: none;
-  background: none;
+  &:not(.preview) {
+    margin-bottom: 0;
+    padding-left: 0;
+    background: none;
+    border: none;
+  }
 
   .post-header {
     font-size: larger;

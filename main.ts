@@ -32,7 +32,10 @@ async function init() {
 		await renderBoard()
 	}
 
-	initPosts()
+	if (!page.catalog) {
+		initPosts()
+	}
+
 	initUI()
 	initModeration()
 }

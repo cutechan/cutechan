@@ -159,7 +159,6 @@ function clonePost(el: HTMLElement): HTMLElement {
 	const preview = el.cloneNode(true) as HTMLElement
 	preview.removeAttribute("id")
 	preview.classList.add("preview")
-	preview.classList.remove("post_op")
 	return preview
 }
 
