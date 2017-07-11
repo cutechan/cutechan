@@ -1,16 +1,12 @@
 <figure class="post-file">
   <figcaption class="post-file-info">
-    {{#HasArtist}}
-      <span class="post-file-artist">{{ Artist }}</span>
-    {{/HasArtist}}{{#HasTitle}}
-      <span class="post-file-title">{{ Title }}</span>
-    {{/HasTitle}}{{#HasAudio}}
-      <span class="post-file-has-audio">♫</span>
-    {{/HasAudio}}{{#HasLength}}
-      <span class="post-file-length">{{ Length }}</span>
-    {{/HasLength}}
-    <span class="post-file-size">{{ Size }}</span>
-    <span class="post-file-dims">{{ TWidth }}×{{ THeight }}</span>
+    <span class="post-file-info-item post-file-dims">{{ TWidth }}×{{ THeight }}</span>
+    <span class="post-file-info-item post-file-size">{{ Size }}</span>
+    {{#HasLength}}
+      <span class="post-file-info-item post-file-length">{{ Length }}</span>
+    {{/HasLength}}{{#HasTitle}}
+      <span class="post-file-info-item post-file-title" title="{{ Title }}">{{ Title }}</span>
+    {{/HasTitle}}
   </figcaption>
   <a class="post-file-link" href="{{ SourcePath }}" target="_blank">
     <img class="post-file-thumb" src="{{ ThumbPath }}" width="{{ Width }}" height="{{ Height }}">

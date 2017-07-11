@@ -1,17 +1,13 @@
 import { fileTypes } from "../common"
-import { pad } from "../util"
 import { config } from "../state"
 
+function pad(n: number): string {
+	n |= 0
+	return (n < 10 ? "0" : "") + n
+}
+
 export function duration(len: number): string {
-	let s = ""
-	if (len < 60) {
-		s = `0:${pad(len)}`
-	} else {
-		const min = Math.floor(len / 60),
-			sec = len - min * 60
-		s = `${pad(min)}:${pad(sec)}`
-	}
-	return s
+  return pad(len / 60) + ":" + pad(len % 60)
 }
 
 // TODO(Kagami): Localize.

@@ -840,21 +840,10 @@ header {
   font-size: smaller;
   font-style: italic;
   color: #999;
-  &:before {
-    content: "(";
-  }
-  &:after {
-    content: ")";
-  }
-  & > span::empty {
-    display: none;
-  }
-  & > span:not(:empty):not([hidden]) ~ span::before {
-    content: ", ";
-  }
-  & > span.post-file-artist:not(:empty) + span.post-file-title::before {
-    content: "\00a0-\00a0";
-  }
+}
+
+.post-file-info-item ~ .post-file-info-item:before {
+  content: ", ";
 }
 
 .post-file-title {

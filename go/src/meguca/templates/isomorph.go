@@ -133,12 +133,7 @@ func (ctx PostContext) Time() string {
 }
 
 func duration(l uint32) string {
-	if l < 60 {
-		return fmt.Sprintf("0:%02d", l)
-	} else {
-		min := l / 60
-		return fmt.Sprintf("%02d:%02d", min, l - min * 60)
-	}
+	return fmt.Sprintf("%02d:%02d", l / 60, l % 60)
 }
 
 // Formats a human-readable representation of file size.
