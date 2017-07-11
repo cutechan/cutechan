@@ -58,6 +58,8 @@ var (
 	}
 
 	errTooLarge = errors.New("file too large")
+	errNoVideo = errors.New("no video track")
+
 	isTest      bool
 )
 
@@ -186,6 +188,9 @@ func newThumbnail(data []byte, img common.ImageCommon) (int, string, error) {
 		},
 		AcceptedMimeTypes: allowedMimeTypes,
 	})
+	if err == errNoVideo {
+		return 400, "", err
+	}
 	switch err.(type) {
 	case nil:
 	case thumbnailer.UnsupportedMIMEError:
@@ -216,6 +221,10 @@ func processFile(
 		return nil, img, err
 	}
 
+	if (src.HasAudio && !src.HasVideo) || thumb.Data == nil {
+		return nil, img, errNoVideo
+	}
+
 	img.Audio = src.HasAudio
 	img.Video = src.HasVideo
 
@@ -235,18 +244,18 @@ func processFile(
 	img.Title = src.Title
 
 	// MP3, OGG and MP4 might only contain audio and need a fallback thumbnail
-	if thumb.Data == nil {
-		img.ThumbType = common.PNG
-		img.Dims = [4]uint16{150, 150, 150, 150}
-		thumb.Data = MustAsset("audio.png")
-	} else {
+	// if thumb.Data == nil {
+	// 	img.ThumbType = common.PNG
+	// 	img.Dims = [4]uint16{150, 150, 150, 150}
+	// 	thumb.Data = MustAsset("audio.png")
+	// } else {
 		img.Dims = [4]uint16{
 			uint16(src.Width),
 			uint16(src.Height),
 			uint16(thumb.Width),
 			uint16(thumb.Height),
 		}
-	}
+	// }
 
 	sum := md5.Sum(data)
 	img.MD5 = base64.RawURLEncoding.EncodeToString(sum[:])

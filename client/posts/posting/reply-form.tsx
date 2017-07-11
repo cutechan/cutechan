@@ -75,6 +75,10 @@ class FilePreview extends Component<any, any> {
 			vid.muted = true;
 			vid.onloadeddata = () => {
 				const { videoWidth: width, videoHeight: height, duration: dur } = vid
+				if (!width || !height) {
+					reject(new Error())
+					return
+				}
 				const c = document.createElement("canvas")
 				const ctx = c.getContext("2d")
 				c.width = width
