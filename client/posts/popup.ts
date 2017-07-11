@@ -54,7 +54,7 @@ class Popup {
 			this.itemEl = document.createElement("video") as any
 			this.itemEl.loop = true
 			this.itemEl.autoplay = true
-			this.itemEl.controls = true
+			this.itemEl.controls = !post.transparentImage
 			// media.volume = Settings.get("volume")
 			// media.addEventListener("volumechange", function() {
 			//	 Settings.set("volume", media.volume)
@@ -70,16 +70,12 @@ class Popup {
 		this.attach()
 	}
 	isControlsClick = (e: MouseEvent) => {
-		if (this.post.image.video) {
-			// <https://stackoverflow.com/a/22928167>.
-			const ctrlHeight = 50
-			const rect = this.itemEl.getBoundingClientRect()
-			const relY = e.clientY - rect.top
-			if (relY > rect.height - ctrlHeight) {
-				return true
-			}
-		}
-		return false
+		if (!this.post.image.video || this.post.transparentImage) return false
+		// <https://stackoverflow.com/a/22928167>.
+		const ctrlHeight = 50
+		const rect = this.itemEl.getBoundingClientRect()
+		const relY = e.clientY - rect.top
+		return relY > rect.height - ctrlHeight
 	}
 	handleClick = (e: MouseEvent) => {
 		// if (!Settings.get("popupBackdrop")) return
