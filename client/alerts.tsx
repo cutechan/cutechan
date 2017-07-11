@@ -65,9 +65,11 @@ class Alerts extends Component<any, any> {
 	}
 }
 
-function show(a: Alert | string) {
+function show(a: Alert | Error | string) {
 	if (typeof a === "string") {
 		a = {message: a}
+	} else if (a instanceof Error) {
+		a = {message: a.message}
 	}
 	trigger(HOOKS.showAlert, a)
 }

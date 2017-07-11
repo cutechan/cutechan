@@ -374,6 +374,7 @@ html, body {
 .alert-close-control {
   float: right;
   margin-left: 5px;
+  margin-top: -3px;
 }
 
 .alert-title {
@@ -928,7 +929,7 @@ header {
   display: block;
 }
 
-.work-mode {
+html.work-mode {
   .post-file-link {
     display: none;
   }
@@ -988,13 +989,13 @@ header {
 .post-control {
   cursor: pointer;
   color: #ccc;
-  padding-right: 10px;
+  margin-right: 20px;
 }
 
 .post-quote-control {
   color: #16a085;
   float: right;
-  padding-right: 0;
+  margin-right: 0;
 }
 
 .popup-menu {
@@ -1014,13 +1015,24 @@ header {
 }
 
 //////////////////////////////
+// POST MOD CONTROLS
+//////////////////////////////
+
+html.pos-notstaff {
+  .post-delete-control,
+  .post-ban-control,
+  {
+    display: none;
+  }
+}
+
+//////////////////////////////
 // OP POST
 //////////////////////////////
 
 .post_op {
   margin-bottom: 0;
   padding-left: 0;
-  padding-bottom: 0;
   border: none;
   background: none;
 

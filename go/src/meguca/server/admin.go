@@ -391,6 +391,7 @@ func moderatePosts(
 			return
 		}
 	}
+	serveEmptyJSON(w, r)
 }
 
 // Permanently delete an image from a post
@@ -478,6 +479,8 @@ func ban(w http.ResponseWriter, r *http.Request) {
 			}
 		}
 	}
+
+	serveEmptyJSON(w, r)
 }
 
 // Send a textual message to all connected clients

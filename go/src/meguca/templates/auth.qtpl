@@ -34,7 +34,7 @@ BanPage renders a ban page for a banned user
 	<form method="post" action="/api/unban/{%s board %}">
 		<table>
 			<tr>
-				{% for _, id := range [...]string{"reason", "by", "post", "posterID", "expires"} %}
+				{% for _, id := range [...]string{"reason", "by", "post", "expires"} %}
 					<th>{%s ln[id] %}</th>
 				{% endfor %}
 				{% if canUnban %}

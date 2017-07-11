@@ -22,6 +22,13 @@ type spoilerRequest struct {
 	Password string
 }
 
+// Helper for API functions. Server should always return valid JSON to
+// the clients.
+func serveEmptyJSON(w http.ResponseWriter, r *http.Request) {
+	res := map[string]int{}
+	serveJSON(w, r, "", res)
+}
+
 // Marshal input data to JSON an write to client
 func serveJSON(
 	w http.ResponseWriter,

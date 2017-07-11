@@ -5,7 +5,7 @@
 
 import { ln } from "./lang"
 import { FormModel, postSM, postEvent, postState } from "./posts"
-import { Dict, postForm } from "./util"
+import { Dict, postJSON, postForm } from "./util"
 
 function handleErr(res: Response): Promise<Dict> {
 	const type = res.headers.get("Content-Type")
@@ -22,17 +22,25 @@ function handleErr(res: Response): Promise<Dict> {
 	}
 }
 
-function req(method: string, url: string) {
+type ReqFn = (url: string, data: Dict) => Promise<Response>
+
+function req(reqFn: ReqFn, method: string, url: string) {
 	url = `/api/${url}`
 	return function(data: Dict): Promise<Dict> {
-		return postForm(url, data).then(res => {
+		return reqFn(url, data).then(res => {
 			if (!res.ok) return handleErr(res)
 			return res.json().catch(() => { throw new Error(ln.UI.unknownErr) })
 		})
 	}
 }
 
-const post = req.bind(null, "POST")
+// Convenient helper.
+const send = {
+	POST: {
+		JSON: req.bind(null, postJSON, "POST"),
+		Form: req.bind(null, postForm, "POST"),
+	},
+}
 
 // Create post via WebSocket because it's already opened when we are in
 // thread and it's a bit faster than sending HTTP request. So why not?
@@ -55,11 +63,15 @@ function createPostWS({ body }: Dict): Promise<Dict> {
 
 export const API = {
 	thread: {
-		create: post("thread"),
+		create: send.POST.Form("thread"),
 	},
 	post: {
-		create: post("post"),
+		create: send.POST.Form("thread"),
 		createWS: createPostWS,
+		delete: send.POST.JSON("delete-post"),
+	},
+	user: {
+		banByPost: send.POST.JSON("ban"),
 	},
 }
 

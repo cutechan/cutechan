@@ -4,8 +4,9 @@ package templates
 
 import (
 	"html"
-	"meguca/common"
 	"time"
+	"meguca/common"
+	"meguca/auth"
 	"github.com/hoisie/mustache"
 )
 
@@ -83,6 +84,14 @@ func correctTimeZone(t time.Time) time.Time {
 		0,
 		time.Local,
 	).UTC()
+}
+
+func posClass(pos auth.ModerationLevel) string {
+	posStr := pos.String()
+	if posStr == "" {
+		posStr = "notstaff"
+	}
+	return "pos-" + posStr
 }
 
 // TODO(Kagami): Partials?

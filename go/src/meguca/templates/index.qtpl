@@ -123,6 +123,7 @@ TODO(Kagami): Remove.
 	</div>
 {% endstripspace %}{% endfunc %}
 
+TODO(Kagami): Remove.
 {% func modModal(pos auth.ModerationLevel) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	<div id="moderation-panel" class="modal">
@@ -176,7 +177,7 @@ TODO(Kagami): Remove.
 	{% code confJSON, _ := config.GetClient() %}
 	{% code boards := config.GetBoards() %}
 	<!DOCTYPE html>
-	<html>
+	<html class="{%s posClass(pos) %}">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
@@ -221,9 +222,6 @@ TODO(Kagami): Remove.
 				{%= faqModal() %}
 				{%= accountModal(pos) %}
 				{%= optionsModal() %}
-				{% if pos > auth.NotStaff %}
-					{%= modModal(pos) %}
-				{% endif %}
 			</div>
 		</div>
 
