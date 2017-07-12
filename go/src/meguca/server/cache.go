@@ -30,7 +30,7 @@ var threadCache = cache.FrontEnd{
 		return db.GetThread(k.ID, int(k.LastN))
 	},
 
-	RenderHTML: func(data interface{}, json []byte) []byte {
+	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
 		return []byte(templates.ThreadPosts(data.(common.Thread), json))
 	},
 }
@@ -50,7 +50,7 @@ var catalogCache = cache.FrontEnd{
 		return db.GetBoardCatalog(k.Board)
 	},
 
-	RenderHTML: func(data interface{}, json []byte) []byte {
+	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
 		return []byte(templates.CatalogThreads(data.(common.Board), json))
 	},
 }
@@ -168,12 +168,13 @@ var boardPageCache = cache.FrontEnd{
 		return data.(pageStore).json, nil
 	},
 
-	RenderHTML: func(data interface{}, json []byte) []byte {
-		return []byte(templates.IndexThreads(data.(pageStore).data, json))
+	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
+		all := k.Board == "all"
+		return []byte(templates.IndexThreads(data.(pageStore).data, json, all))
 	},
 
 	Size: func(_ interface{}, _, html []byte) int {
-		// Only the HTML is owned byt this store. All other data is just
+		// Only the HTML is owned by this store. All other data is just
 		// borrowed from boardCache.
 		return len(html)
 	},

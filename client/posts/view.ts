@@ -1,4 +1,4 @@
-import { Thread, Post, Backlinks } from './model'
+import { Thread, Post } from './model'
 import { makeFrag, getID } from '../util'
 import { parseBody, relativeTime, renderPostLink } from './render'
 import { TemplateContext, makePostContext, readableTime } from "../templates"
@@ -16,11 +16,7 @@ export default class PostView extends View<Post> {
 		const attrs: ViewAttrs = { model }
 
 		const thread = new Thread()
-		// Not used.
-		const bls = null as Backlinks
-		// Currently we render only in-thread posts.
-		const index = false
-		attrs.el = el || makePostContext(thread, model, bls, index).renderNode()
+		attrs.el = el || makePostContext(thread, model).renderNode()
 
 		super(attrs)
 

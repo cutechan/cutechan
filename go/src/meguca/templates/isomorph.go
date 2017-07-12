@@ -22,6 +22,7 @@ type PostContext struct {
 	TID uint64
 	Index bool
 	OP bool
+	Badge bool
 	Board string
 	Subject string
 	Staff bool
@@ -61,13 +62,14 @@ type BacklinksContext struct {
 }
 
 // FIXME(Kagami): Return pointer, don't create context for each post?
-func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index bool) PostContext {
+func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index bool, all bool) PostContext {
 	ln := lang.Get()
 	return PostContext{
 		ID: p.ID,
 		TID: t.ID,
 		Index: index,
 		OP: t.ID == p.ID,
+		Badge: t.ID == p.ID && index && all,
 		Board: t.Board,
 		Subject: t.Subject,
 		Staff: p.Auth != "",

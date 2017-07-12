@@ -5,7 +5,7 @@ import * as Mustache from "mustache"
 import templates from "templates"
 import { ln, lang } from "../lang"
 import { config } from "../state"
-import { Thread, Post, Backlinks, thumbPath, sourcePath, parseBody } from "../posts"
+import { Thread, Post, thumbPath, sourcePath, parseBody } from "../posts"
 import { Dict, makeEl, pad } from "../util"
 
 export class TemplateContext {
@@ -27,19 +27,20 @@ export class TemplateContext {
 }
 
 // TODO(Kagami): Capitalize model keys for better compatibility?
-export function makePostContext(t: Thread, p: Post, bls: Backlinks, index: boolean): TemplateContext {
+export function makePostContext(t: Thread, p: Post): TemplateContext {
 	const ctx: Dict = {
 		ID: p.id,
 		TID: t.id,
-		Index: index,
+		Index: false,  // Currently we render only in-thread posts on the client
 		OP: t.id == p.id,
+		Badge: false,
 		Board: p.board,
 		Subject: p.subject,
 		Staff: p.auth != "",
 		Auth: ln.Common.Posts[p.auth],
 		Banned: p.banned,
 		LBanned: ln.Common.Posts["banned"],
-		backlinks: bls,
+		backlinks: null,
 		post: p,
 	}
 

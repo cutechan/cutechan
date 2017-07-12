@@ -50,7 +50,7 @@ caching of generated posts.
 {% func ThreadPosts(t common.Thread, json []byte) %}{% stripspace %}
 	<section class="thread" id="thread-container" data-id="{%s strconv.FormatUint(t.ID, 10) %}">
 		{% code bls := extractBacklinks(1<<10, t) %}
-		{%= renderThreadPosts(t, bls, false) %}
+		{%= renderThreadPosts(t, bls, false, false) %}
 		<script id="post-data" type="application/json">
 			{%z= json %}
 		</script>
@@ -62,13 +62,13 @@ caching of generated posts.
 {% endstripspace %}{% endfunc %}
 
 Common functionality between index board pages and threads pages
-{% func renderThreadPosts(t common.Thread, bls common.Backlinks, index bool) %}{% stripspace %}
-	{%s= MakePostContext(t, t.Post, bls, index).Render() %}
+{% func renderThreadPosts(t common.Thread, bls common.Backlinks, index bool, all bool) %}{% stripspace %}
+	{%s= MakePostContext(t, t.Post, bls, index, all).Render() %}
 	{% if index %}
 		{%= renderOmit(t) %}
 	{% endif %}
 	{% for _, post := range t.Posts %}
-		{%s= MakePostContext(t, post, bls, index).Render() %}
+		{%s= MakePostContext(t, post, bls, index, all).Render() %}
 	{% endfor %}
 {% endstripspace %}{% endfunc %}
 

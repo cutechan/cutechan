@@ -19,7 +19,7 @@ type FrontEnd struct {
 	EncodeJSON func(data interface{}) ([]byte, error)
 
 	// RenderHTML produces HTML from the passed in data and JSON
-	RenderHTML func(interface{}, []byte) []byte
+	RenderHTML func(interface{}, []byte, Key) []byte
 
 	// Calculates the size taken by the store.
 	// If nil, the default function is used.
@@ -103,7 +103,7 @@ func GetHTML(k Key, f FrontEnd) ([]byte, interface{}, uint64, error) {
 
 	var html []byte
 	genHTML := func() {
-		html = []byte(f.RenderHTML(data, json))
+		html = []byte(f.RenderHTML(data, json, k))
 		s.update(data, json, html, f)
 	}
 	if !fresh {

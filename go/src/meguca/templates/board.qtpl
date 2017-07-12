@@ -136,13 +136,13 @@ allow caching of generated posts.
 {% endstripspace %}{% endfunc %}
 
 IndexThreads renders abbreviated threads for display on board index pages
-{% func IndexThreads(threads []common.Thread, json []byte) %}{% stripspace %}
+{% func IndexThreads(threads []common.Thread, json []byte, all bool) %}{% stripspace %}
 	{% code bls := extractBacklinks(15*6, threads...) %}
 	<div id="index-thread-container">
 		{% for _, t := range threads %}
 			{% code idStr := strconv.FormatUint(t.ID, 10) %}
 			<section class="index-thread{% if t.Deleted %}{% space %}deleted{% endif %}" data-id="{%s idStr %}">
-				{%= renderThreadPosts(t, bls, true) %}
+				{%= renderThreadPosts(t, bls, true, all) %}
 				<hr class="separator">
 			</section>
 		{% endfor %}
