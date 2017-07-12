@@ -4,24 +4,24 @@ package config
 
 // Configs stores the global server configuration
 type Configs struct {
+	Pyu     bool `json:"pyu"`
+	RootURL string `json:"rootURL"`
 	Public
-	PruneBoards   bool `json:"pruneBoards"`
-	Pyu           bool `json:"pyu"`
-	BoardExpiry   uint   `json:"boardExpiry"`
-	MaxSize       uint   `json:"maxSize"`
-	RootURL       string `json:"rootURL"`
 }
 
 // Public contains configurations exposeable through public availability APIs
 type Public struct {
-	Captcha           bool              `json:"captcha"`
-	DisableUserBoards bool              `json:"disableUserBoards"`
-	PruneThreads      bool              `json:"pruneThreads"`
-	ThreadExpiryMin   uint              `json:"threadExpiryMin"`
-	ThreadExpiryMax   uint              `json:"threadExpiryMax"`
-	DefaultLang       string            `json:"defaultLang"`
-	DefaultCSS        string            `json:"defaultCSS"`
-	ImageRootOverride string            `json:"imageRootOverride"`
+	Captcha           bool   `json:"captcha"`
+	DisableUserBoards bool   `json:"disableUserBoards"`
+	PruneBoards       bool   `json:"pruneBoards"`
+	BoardExpiry       uint   `json:"boardExpiry"`
+	PruneThreads      bool   `json:"pruneThreads"`
+	ThreadExpiryMin   uint   `json:"threadExpiryMin"`
+	ThreadExpiryMax   uint   `json:"threadExpiryMax"`
+	MaxSize           uint   `json:"maxSize"`
+	DefaultLang       string `json:"defaultLang"`
+	DefaultCSS        string `json:"defaultCSS"`
+	ImageRootOverride string `json:"imageRootOverride"`
 }
 
 // BoardConfigs stores board-specific configuration

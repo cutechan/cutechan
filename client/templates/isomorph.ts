@@ -124,14 +124,11 @@ export function duration(l: number): string {
 // Formats a human-readable representation of file size.
 export function fileSize(size: number): string {
 	const sizes = ln.Common.Sizes
-	let s = ""
-	if (size < (1 << 10)) {
-		s = size + sizes["b"]
-	} else if (size < (1 << 20)) {
-		s = Math.round(size / (1 << 10)) + sizes["kb"]
+	if (size < 1024) {
+		return size + sizes["b"]
+	} else if (size < 1024 * 1024) {
+		return (size / 1024).toFixed(2) + sizes["kb"]
 	} else {
-		const text = Math.round(size / (1 << 20) * 10).toString()
-		s = `${text.slice(0, -1)}.${text.slice(-1)}${sizes["mb"]}`
+		return (size / 1024 / 1024).toFixed(2) + sizes["mb"]
 	}
-	return s
 }

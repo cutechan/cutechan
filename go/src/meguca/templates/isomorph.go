@@ -143,22 +143,15 @@ func duration(l uint32) string {
 }
 
 // Formats a human-readable representation of file size.
-func fileSize(s int) string {
+func fileSize(size int) string {
 	sizes := lang.Get().Common.Sizes
-	format := func(n, end string) string {
-		l := len(n)
-		buf := make([]byte, l, l+len(end))
-		copy(buf, n)
-		return string(append(buf, end...))
-	}
 	switch {
-	case s < (1 << 10):
-		return format(strconv.Itoa(s), sizes["b"])
-	case s < (1 << 20):
-		return format(strconv.Itoa(s/(1<<10)), sizes["kb"])
+	case size < 1024:
+		return fmt.Sprintf("%d%s", size, sizes["b"])
+	case size < 1024 * 1024:
+		return fmt.Sprintf("%.2f%s", float32(size) / 1024, sizes["kb"])
 	default:
-		n := strconv.FormatFloat(float64(s)/(1<<20), 'f', 1, 32)
-		return format(n, sizes["mb"])
+		return fmt.Sprintf("%.2f%s", float32(size) / 1024 / 1024, sizes["mb"])
 	}
 }
 

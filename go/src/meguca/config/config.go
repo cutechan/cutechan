@@ -41,13 +41,13 @@ var (
 
 	// Defaults contains the default server configuration values
 	Defaults = Configs{
-		MaxSize:     20,
 		RootURL:     "http://localhost",
-		BoardExpiry: 100,
 		Public: Public{
 			DisableUserBoards: true,
+			MaxSize:           common.DefaultMaxSize,
 			DefaultLang:       common.DefaultLang,
 			DefaultCSS:        common.DefaultCSS,
+			BoardExpiry:       100,
 			ThreadExpiryMin:   100,
 			ThreadExpiryMax:   100,
 		},

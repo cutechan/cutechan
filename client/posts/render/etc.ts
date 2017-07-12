@@ -1,4 +1,6 @@
-// Miscellaneous post component rendering functions
+/**
+ * Miscellaneous post component rendering functions.
+ */
 
 import { ln } from "../../lang"
 import { page, mine } from '../../state'

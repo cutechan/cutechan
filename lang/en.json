@@ -146,6 +146,8 @@
     ]
   },
   "ui": {
+    "attach": "Attach file (%s max)",
+    "tooBig": "Too big file",
     "sure": "Are you sure?",
     "unsupFile": "Unsupported file type",
     "unknownErr": "Unknown error",

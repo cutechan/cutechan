@@ -36,6 +36,7 @@ const (
 	MaxHeight = 12000
 	JPEGQuality = 90
 	SessionExpiry = 5 * 365  // Days
+	DefaultMaxSize = 20  // Megabytes
 	DefaultLang = "en"
 	DefaultCSS = "cute"
 )

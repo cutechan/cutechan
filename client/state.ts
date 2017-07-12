@@ -6,9 +6,10 @@ import { readIDs, storeID } from './db'
 import { send } from './connection'
 
 // Server-wide global configurations
-interface Configs {
+interface Config {
 	captcha: boolean
 	disableUserBoards: boolean
+	maxSize: number
 	pruneThreads: boolean
 	threadExpiryMin: number
 	threadExpiryMax: number
@@ -18,7 +19,7 @@ interface Configs {
 }
 
 // Board-specific configurations
-export interface BoardConfigs {
+export interface BoardConfig {
 	title: string
 	notice: string
 	rules: string
@@ -39,12 +40,12 @@ const YEAR = 365 * 24 * 60 * 60 * 1000
 
 // Configuration passed from the server. Some values can be changed during
 // runtime.
-export const config: Configs = (window as any).config
+export const config: Config = (window as any).config
 
 // Currently existing boards
 export let boards: string[] = (window as any).boards
 
-export let boardConfig: BoardConfigs
+export let boardConfig: BoardConfig = null
 
 // Load initial page state
 export const page = read(location.href)
@@ -121,7 +122,7 @@ function store(set: Set<number>, key: string, id: number, op: number) {
 	storeID(key, id, op, YEAR)
 }
 
-export function setBoardConfig(c: BoardConfigs) {
+export function setBoardConfig(c: BoardConfig) {
 	boardConfig = c
 }
 

@@ -45,3 +45,8 @@ export const lang: CommonLanguagePack = {
 }
 export const ln: LanguagePack = { UI: pack.ui, Common: lang }
 export default lang
+
+// Very simple implementation.
+export function printf(s: string, ...args: any[]): string {
+	return s.replace(/%s/, () => args.shift())
+}

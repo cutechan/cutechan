@@ -1,7 +1,7 @@
 import * as cx from "classnames"
 import { h, render, Component } from "preact"
-import { ln } from "../../lang"
-import { page, boards, storeMine } from "../../state"
+import { ln, printf } from "../../lang"
+import { config, page, boards, storeMine } from "../../state"
 import API from "../../api"
 import { showAlert } from "../../alerts"
 import { duration, fileSize } from "../../templates"
@@ -107,7 +107,8 @@ class FilePreview extends Component<any, any> {
 			this.setState(info)
 		}, () => {
 			showAlert(ln.UI.unsupFile)
-			// A bit stupid but simpler than check in parent component.
+			// A bit stupid but simpler than calling getInfo in parent
+			// component.
 			this.handleRemove()
 		})
 	}
@@ -314,6 +315,12 @@ class Reply extends Component<any, any> {
 		const file = this.fileEl.files[0]
 		// Allow to select same file again.
 		this.fileEl.value = null
+
+		if (file.size > config.maxSize<<20) {
+			showAlert(ln.UI["tooBig"])
+			return
+		}
+
 		this.setState({files: [file]})
 	}
 	handleSend = () => {
@@ -394,9 +401,14 @@ class Reply extends Component<any, any> {
 						onInput={this.handleBodyChange}
 					/>
 					<div class="reply-footer-controls reply-controls">
-						<a class="control reply-control reply-attach-control" onClick={this.handleAttach}>
+						<button
+							class="control reply-control reply-attach-control"
+							title={printf(ln.UI["attach"], fileSize(config.maxSize<<20))}
+							disabled={sending}
+							onClick={this.handleAttach}
+						>
 							<i class="fa fa-file-image-o" />
-						</a>
+						</button>
 					</div>
 				</div>
 				<div class="reply-side-controls reply-controls">
