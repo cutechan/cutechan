@@ -2,7 +2,7 @@
  * IndexedDB database controller.
  */
 
-const DB_VERSION = 7
+const DB_VERSION = 1
 let db = null as IDBDatabase
 
 // FF IndexedDB implementation is broken in private mode.
@@ -11,42 +11,38 @@ let db = null as IDBDatabase
 const FF_PRIVATE_MODE_MSG = "A mutation operation was attempted on a database that did not allow mutations."
 let ffPrivateMode = false
 
-// Expiring post ID object stores
+// Expiring post ID object stores.
 const postStores = [
-	"mine",     // Posts created by this client
-	"hidden",   // Posts hidden by client
-	"seen",     // Replies to the user's posts that have already been seen
-	"seenPost", // Posts that the user has viewed or scrolled past
+	"mine",      // Posts created by this client
+	"hidden",    // Posts hidden by client
+	"seen",      // Replies to the user's posts that have already been seen
+	"seenPost",  // Posts that the user has viewed or scrolled past
 ]
 
-// Open a connection to the IndexedDB database
+// Open a connection to the IndexedDB database.
 export function init(): Promise<void> {
 	return new Promise<void>((resolve, reject) => {
-		const r = indexedDB.open('meguca', DB_VERSION)
-
-		r.onerror = () =>
-			reject(r.error)
-
-		r.onupgradeneeded = upgradeDB
-
-		// Prepare for operation
+		const r = indexedDB.open("cutechan", DB_VERSION)
+		// Prepare for operation.
 		r.onsuccess = () => {
-			db = r.result as IDBDatabase
-
+			db = r.result
 			db.onerror = throwErr
+			// Reload this tab, if another tab requires a DB upgrade.
+			db.onversionchange = () => {
+				db.close()
+				location.reload(true)
+			}
+			// Delay for quicker starts.
+			// setTimeout(() => {
+			// 	for (let name of postStores) {
+			// 		deleteExpired(name)
+			// 	}
+			// }, 10000)
 			resolve()
-
-			// Reload this tab, if another tab requires a DB upgrade
-			db.onversionchange = () =>
-				(db.close(),
-					location.reload(true))
-
-			// Delay for quicker starts
-			setTimeout(() => {
-				for (let name of postStores) {
-					deleteExpired(name)
-				}
-			}, 10000)
+		}
+		r.onupgradeneeded = upgradeDB
+		r.onerror = () => {
+			reject(r.error)
 		}
 	}).catch(err => {
 		if (err.message === FF_PRIVATE_MODE_MSG) {
@@ -57,76 +53,42 @@ export function init(): Promise<void> {
 	})
 }
 
-// Upgrade or initialize the database
+// Upgrade or initialize the database.
 function upgradeDB(event: IDBVersionChangeEvent) {
-	db = (event.target as any).result as IDBDatabase
+	db = (event.target as any).result
 	switch (event.oldVersion) {
-		case 0:
-		case 1:
-		case 2:
-		case 3:
-			// Delete all previous object stores
-			for (let name of Array.from(db.objectStoreNames)) {
-				db.deleteObjectStore(name)
-			}
-
-			for (let name of postStores) {
-				const s = db.createObjectStore(name, { autoIncrement: true })
-				s.createIndex("expires", "expires")
-				s.createIndex("op", "op")
-			}
-
-			// Various miscellaneous objects
-			const main = db.createObjectStore('main', { keyPath: 'id' })
-			main.add({ id: 'background' })
-			main.add({ id: 'mascot' })
-			break
-		case 4:
-			// Can't modify data during an upgrade, so do it right after the
-			// "upgrade" completes
-			setTimeout(() => addObj("main", { id: "mascot" }), 1000)
-			break
-		case 5:
-			if (db.objectStoreNames.contains("seenPost")) {
-				break
-			}
-			db.createObjectStore("seenPost", { autoIncrement: true })
-				.createIndex("expires", "expires")
-			break
-		case 6:
-			// Recreate all previous post ID stores
-			for (let name of postStores) {
-				db.deleteObjectStore(name)
-				const s = db.createObjectStore(name, { autoIncrement: true })
-				s.createIndex("expires", "expires")
-				s.createIndex("op", "op")
-			}
-			break
+	case 0:
+		for (const name of postStores) {
+			const s = db.createObjectStore(name, {autoIncrement: true})
+			s.createIndex("expires", "expires")
+			s.createIndex("op", "op")
+		}
+		break
 	}
 }
 
-// Helper for throwing errors with event-based error passing
+// Helper for throwing errors with event-based error passing.
 function throwErr(err: ErrorEvent) {
 	throw err
 }
 
-// Delete expired keys from post ID object stores
-function deleteExpired(name: string) {
-	const req = newTransaction(name, true)
-		.index("expires")
-		.openCursor(IDBKeyRange.upperBound(Date.now()))
+// Delete expired keys from post ID object stores.
+// function deleteExpired(name: string) {
+// 	const req = newTransaction(name, true)
+// 		.index("expires")
+// 		.openCursor(IDBKeyRange.upperBound(Date.now()))
 
-	req.onerror = throwErr
+// 	req.onerror = throwErr
 
-	req.onsuccess = event => {
-		const cursor = (event.target as any).result as IDBCursor
-		if (!cursor) {
-			return
-		}
-		cursor.delete()
-		cursor.continue()
-	}
-}
+// 	req.onsuccess = event => {
+// 		const cursor = (event.target as any).result as IDBCursor
+// 		if (!cursor) {
+// 			return
+// 		}
+// 		cursor.delete()
+// 		cursor.continue()
+// 	}
+// }
 
 // Helper for initiating transactions on a single object store
 function newTransaction(store: string, write: boolean): IDBObjectStore {

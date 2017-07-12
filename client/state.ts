@@ -35,7 +35,7 @@ export type PageState = {
 	href: string
 }
 
-const tenDays = 10 * 24 * 60 * 60 * 1000
+const YEAR = 365 * 24 * 60 * 60 * 1000
 
 // Configuration passed from the server. Some values can be changed during
 // runtime.
@@ -118,7 +118,7 @@ export function storeHidden(id: number, op: number) {
 
 function store(set: Set<number>, key: string, id: number, op: number) {
 	set.add(id)
-	storeID(key, id, op, tenDays)
+	storeID(key, id, op, YEAR)
 }
 
 export function setBoardConfig(c: BoardConfigs) {
