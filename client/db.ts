@@ -1,14 +1,15 @@
-// IndexedDB database controller
+/**
+ * IndexedDB database controller.
+ */
 
-const dbVersion = 7
-
-let db: IDBDatabase
+const DB_VERSION = 7
+let db = null as IDBDatabase
 
 // FF IndexedDB implementation is broken in private mode.
 // See https://bugzilla.mozilla.org/show_bug.cgi?id=781982
 // Catch the error and NOOP all further DB requests.
-let isCuck: boolean
-const gayNiggerSemen = "A mutation operation was attempted on a database that did not allow mutations."
+const FF_PRIVATE_MODE_MSG = "A mutation operation was attempted on a database that did not allow mutations."
+let ffPrivateMode = false
 
 // Expiring post ID object stores
 const postStores = [
@@ -21,7 +22,7 @@ const postStores = [
 // Open a connection to the IndexedDB database
 export function init(): Promise<void> {
 	return new Promise<void>((resolve, reject) => {
-		const r = indexedDB.open('meguca', dbVersion)
+		const r = indexedDB.open('meguca', DB_VERSION)
 
 		r.onerror = () =>
 			reject(r.error)
@@ -47,14 +48,13 @@ export function init(): Promise<void> {
 				}
 			}, 10000)
 		}
+	}).catch(err => {
+		if (err.message === FF_PRIVATE_MODE_MSG) {
+			ffPrivateMode = true
+		} else {
+			throw err
+		}
 	})
-		.catch(err => {
-			if (err.message === gayNiggerSemen) {
-				isCuck = true
-			} else {
-				throw err
-			}
-		})
 }
 
 // Upgrade or initialize the database
@@ -137,9 +137,7 @@ function newTransaction(store: string, write: boolean): IDBObjectStore {
 
 // Read the contents of a postStore for specific threads into an array
 export function readIDs(store: string, ...ops: number[]): Promise<number[]> {
-	if (isCuck || !ops.length) {
-		return fakePromise([])
-	}
+	if (ffPrivateMode || !ops.length) return Promise.resolve([])
 	ops.sort((a, b) =>
 		a - b)
 	return new Promise<number[]>((resolve, reject) => {
@@ -148,8 +146,7 @@ export function readIDs(store: string, ...ops: number[]): Promise<number[]> {
 				.index("op")
 				.openCursor(IDBKeyRange.bound(ops[0], ops[ops.length - 1]))
 
-		req.onerror = err =>
-			reject(err)
+		req.onerror = reject
 
 		req.onsuccess = event => {
 			const cursor = (event as any).target.result as IDBCursorWithValue
@@ -165,16 +162,9 @@ export function readIDs(store: string, ...ops: number[]): Promise<number[]> {
 	})
 }
 
-function fakePromise<T>(res: T): Promise<T> {
-	return new Promise(r =>
-		r(res))
-}
-
 // Asynchronously insert a new expiring post id object into a postStore
 export function storeID(store: string, id: number, op: number, expiry: number) {
-	if (isCuck) {
-		return
-	}
+	if (ffPrivateMode) return
 	addObj(store, {
 		id, op,
 		expires: Date.now() + expiry,
@@ -187,9 +177,7 @@ function addObj(store: string, obj: any) {
 
 // Clear the target object store asynchronously
 export function clearStore(store: string) {
-	if (isCuck) {
-		return
-	}
+	if (ffPrivateMode) return
 	const trans = newTransaction(store, true),
 		req = trans.clear()
 	req.onerror = throwErr
@@ -197,9 +185,7 @@ export function clearStore(store: string) {
 
 // Retrieve an object from a specific object store
 export function getObj<T>(store: string, id: any): Promise<T> {
-	if (isCuck) {
-		return fakePromise({} as any)
-	}
+	if (ffPrivateMode) return Promise.resolve({})
 	return new Promise<T>((resolve, reject) => {
 		const t = newTransaction(store, false),
 			r = t.get(id)
@@ -212,9 +198,7 @@ export function getObj<T>(store: string, id: any): Promise<T> {
 
 // Put an object in the specific object store
 export function putObj(store: string, obj: any): Promise<void> {
-	if (isCuck) {
-		return fakePromise(undefined)
-	}
+	if (ffPrivateMode) return Promise.resolve()
 	return new Promise<void>((resolve, reject) => {
 		const t = newTransaction(store, true),
 			r = t.put(obj)
