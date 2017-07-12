@@ -137,7 +137,7 @@ allow caching of generated posts.
 
 IndexThreads renders abbreviated threads for display on board index pages
 {% func IndexThreads(threads []common.Thread, json []byte) %}{% stripspace %}
-	{% code bls :=extractBacklinks(15*6, threads...) %}
+	{% code bls := extractBacklinks(15*6, threads...) %}
 	<div id="index-thread-container">
 		{% for _, t := range threads %}
 			{% code idStr := strconv.FormatUint(t.ID, 10) %}

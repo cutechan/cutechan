@@ -82,7 +82,7 @@ var boardCache = cache.FrontEnd{
 
 		// Get data and JSON for these views and paginate
 		var (
-			pages = make([]pageStore, 0, len(ids)/15+1)
+			pages = make([]pageStore, 0, len(ids)/20+1)
 			page  pageStore
 		)
 		closePage := func() {
@@ -93,12 +93,12 @@ var boardCache = cache.FrontEnd{
 		}
 		for i, id := range ids {
 			// Start a new page
-			if i%15 == 0 {
+			if i%20 == 0 {
 				closePage()
 				page = pageStore{
 					pageNumber: len(pages),
 					json:       append(make([]byte, 0, 1<<10), '['),
-					data:       make(common.Board, 0, 15),
+					data:       make(common.Board, 0, 20),
 				}
 			}
 
