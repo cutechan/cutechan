@@ -23,7 +23,11 @@ var (
 	// This will cause not to spawn a daemon and stay attached to the launching
 	// shell.
 	daemonised bool
-	isWindows  = runtime.GOOS == "windows"
+
+	// Address is the listening address of the HTTP web server
+	address string
+
+	isWindows = runtime.GOOS == "windows"
 
 	// Is assigned in ./daemon.go to control/spawn a daemon process. That file
 	// is never compiled on Windows and this function is never called.
@@ -37,6 +41,8 @@ var (
 		"debug":   "start server in debug mode without daemonizing (default)",
 		"help":    "print this help text",
 	}
+
+	isTest bool
 )
 
 // Start parses command line arguments and initializes the server.
@@ -56,14 +62,6 @@ func Start() {
 		"PostgreSQL connection arguments",
 	)
 	flag.BoolVar(
-		&ssl,
-		"s",
-		false,
-		"serve and listen only through HTTPS. Requires -ssl-cert and "+
-			"-ssl-key to be set",
-	)
-	flag.StringVar(&sslCert, "S", "", "path to SSL certificate")
-	flag.BoolVar(
 		&auth.IsReverseProxied,
 		"r",
 		false,
@@ -75,7 +73,6 @@ func Start() {
 		"",
 		"IP of the reverse proxy. Only needed, when reverse proxy is not on localhost.",
 	)
-	flag.BoolVar(&enableGzip, "g", false, "compress all traffic with gzip")
 	flag.Usage = printUsage
 
 	// Parse command line arguments
@@ -153,7 +150,5 @@ func startServer() {
 	load(templates.Compile)
 	wg.Wait()
 
-	if err := startWebServer(); err != nil {
-		log.Fatal(err)
-	}
+	log.Fatal(startWebServer())
 }

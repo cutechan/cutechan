@@ -1,48 +1,19 @@
 package server
 
 import (
-	"compress/gzip"
 	"log"
+	"net/http"
 	"meguca/auth"
 	"meguca/imager"
 	"meguca/util"
 	"meguca/websockets"
-	"net/http"
-
 	"github.com/dimfeld/httptreemux"
-	"github.com/gorilla/handlers"
-)
-
-var (
-	// Address is the listening address of the HTTP web server
-	address string
-
-	// Defines if HTTPS should be used for listening for incoming connections.
-	// Requires sslCert and sslKey to be set.
-	ssl bool
-
-	// Path to SSL certificate
-	sslCert string
-
-	// Path to SSL key
-	sslKey string
-
-	// Defines, if all traffic should be piped through a gzip compression
-	// -decompression handler
-	enableGzip bool
-
-	isTest bool
 )
 
 func startWebServer() (err error) {
 	r := createRouter()
 	log.Println("listening on " + address)
-
-	if ssl {
-		err = http.ListenAndServeTLS(address, sslCert, sslKey, r)
-	} else {
-		err = http.ListenAndServe(address, r)
-	}
+	err = http.ListenAndServe(address, r)
 	if err != nil {
 		return util.WrapError("error starting web server", err)
 	}
@@ -152,10 +123,6 @@ func createRouter() http.Handler {
 	r.GET("/worker.js", serveWorker)
 
 	h := http.Handler(r)
-	if enableGzip {
-		h = handlers.CompressHandlerLevel(h, gzip.DefaultCompression)
-	}
-
 	return h
 }
 
