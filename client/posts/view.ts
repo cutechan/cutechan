@@ -76,7 +76,7 @@ export default class PostView extends View<Post> {
 		// if (el) return
 		// const b = document.createElement("b")
 		// b.classList.add("admin", "banned")
-		// b.innerText = lang.posts["banned"]
+		// b.textContent = lang.posts["banned"]
 		// this.el.querySelector("blockquote").after(b)
 	}
 

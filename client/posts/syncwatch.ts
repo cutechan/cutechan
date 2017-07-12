@@ -28,17 +28,17 @@ class Syncwatch {
 	private render() {
 		const now = Math.round(Date.now() / 1000) + offset
 		if (now > this.end) {
-			this.el.innerText = lang.ui["finished"]
+			this.el.textContent = lang.ui["finished"]
 			return
 		} else if (now < this.start) {
-			this.el.innerHTML = (this.start - now).toString()
+			this.el.textContent = (this.start - now).toString()
 		} else {
 			let diff = now - this.start
 			const hour = Math.floor(diff / 3600)
 			diff -= hour * 3600
 			const min = Math.floor(diff / 60)
 			diff -= min * 60
-			this.el.innerHTML = this.formatTime(hour, min, diff)
+			this.el.textContent = this.formatTime(hour, min, diff)
 				+ " / "
 				+ this.formatTime(this.hour, this.min, this.sec)
 		}

@@ -4,8 +4,7 @@ import { connSM, connState } from "../connection"
 import { Post } from "../posts"
 import { posts } from "../state"
 
-const titleEl = document.head.querySelector("title"),
-	title = titleEl.textContent,
+const baseTitle = document.title,
 	faviconEl = document.getElementById("favicon"),
 	urlBase = "/static/favicons/",
 	queue: Post[] = []
@@ -104,8 +103,8 @@ function apply(prefix: string, state: states) {
 	lastRendered.unseenPosts = unseenPosts
 	lastRendered.state = state
 
-	titleEl.innerHTML = prefix + title
-	let url: string
+	document.title = prefix + baseTitle
+	let url = ""
 	switch (state) {
 		case states.default:
 			url = urlBase + "default.ico"
