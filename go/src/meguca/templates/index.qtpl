@@ -29,9 +29,6 @@ TODO(Kagami): Remove.
 			<b class="admin"><b>
 		</div>
 	</template>
-	<template name="sticky">
-		{%= renderSticky(true) %}
-	</template>
 	{% if pos > auth.NotLoggedIn %}
 		<template name="keyValue">
 			{%= keyValueForm("", "") %}
@@ -224,21 +221,15 @@ TODO(Kagami): Remove.
 				{%= optionsModal() %}
 			</div>
 		</div>
-
 		<div id="hover-overlay" class="overlay"></div>
-
 		<div class="alerts-container"></div>
-
 		<div id="page-container">
-			<section id="left-panel" class="side-panel"></section>
-			<div id="left-spacer" class="side-spacer"></div>
 			{% comment %}
 				Contains posts, page navigation, title, image banner and the catalog.
 				Injected on the second parse of this template.
 			{% endcomment %}
 			<section id="threads">$$$</section>
 		</div>
-
 		{% comment %}
 			Finally load vendor libs and application.
 		{% endcomment %}

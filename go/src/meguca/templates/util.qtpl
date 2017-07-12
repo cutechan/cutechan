@@ -26,21 +26,6 @@ Renders the tab selection butts in tabbed windows
 	</a>
 {% endstripspace %}{% endfunc %}
 
-Notice widget, that reveals text on hover
-{% func hoverReveal(tag, text, label string) %}{% stripspace %}
-	{% if text == "" %}
-		{% return %}
-	{% endif %}
-	<{%s tag %}{% space %}class="hover-reveal">
-		<span class="act">
-			{%s label %}
-		</span>
-		<span class="popup-menu">
-			{%s text %}
-		</span>
-	</{%s tag %}>
-{% endstripspace %}{% endfunc %}
-
 Render pin signifying a thread is sticky
 {% func renderSticky(sticky bool) %}{% stripspace %}
 	{% if !sticky %}

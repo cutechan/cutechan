@@ -17,43 +17,11 @@ body, textarea {
 body {
   background-color: @bodyBG;
   line-height: @lineHeight;
-}
-
-body, article, code.code-tag {
   color: @body;
-}
-
-code.code-tag {
-  margin: 0;
-  white-space: pre-wrap;
-}
-
-.divide-rows {
-  tr:not(:last-child) {
-    border-bottom: 1px solid @link;
-  }
-  td {
-    padding: 0.5em;
-  }
 }
 
 b {
   color: @bold;
-}
-
-.sticky svg {
-  fill: @admin;
-}
-
-article audio {
-  &::-webkit-media-controls-current-time-display,
-  &::-webkit-media-controls-time-remaining-display {
-    color: @link;
-  }
-}
-
-em, .ms-string {
-  color: @em;
 }
 
 em {
@@ -74,18 +42,6 @@ del {
       color: @del;
     }
   }
-}
-
-.ms-operator {
-  color: @mod;
-}
-
-.ms-comment {
-  color: fade(@body, 60%);
-}
-
-.ms-function {
-  color: @link;
 }
 
 a {
@@ -117,16 +73,15 @@ aside {
   }
 }
 
+table {
+  border-collapse:collapse;
+  td {
+    padding: 0;
+  }
+}
+
 iframe {
   background: white;
-}
-
-.full-width {
-  width: 100%;
-}
-
-.close {
-  font-weight: bold;
 }
 
 h1, h2 {
@@ -162,50 +117,27 @@ hr {
   margin: 20px 0;
 }
 
-.spaced {
-  & > *:before {
-    content: " ";
+.divide-rows {
+  tr:not(:last-child) {
+    border-bottom: 1px solid @link;
   }
-}
-
-.margin-spaced > * + * {
-  margin-left: 0.1em;
-}
-
-.hover-reveal {
-  & > span:last-child {
-    display: none;
-    user-select: initial;
-  }
-  &:hover > span:last-child {
-    display: block;
-    position: absolute;
-    margin: 0;
-    white-space: pre-wrap;
-  }
-}
-
-.act {
-  cursor: pointer;
-  user-select: none;
-  & + & {
-    margin-left: 0.1em;
-  }
-}
-
-.hide-empty:empty {
-  display: none;
-}
-
-.top-margin {
-  margin-top: 1em;
-}
-
-table {
-  border-collapse:collapse;
   td {
-    padding: 0;
+    padding: 0.5em;
   }
+}
+
+.sticky svg {
+  width: 1em;
+  height: 1em;
+  fill: @admin;
+}
+
+.full-width {
+  width: 100%;
+}
+
+.close {
+  font-weight: bold;
 }
 
 .flex {
@@ -213,33 +145,44 @@ table {
   flex-wrap: wrap;
 }
 
-.aside-container {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: flex-end;
-}
-
-.captcha-container {
-  padding: 0.5em;
-  &, noscript {
-    display: grid;
-    grid-template-rows: auto;
-    grid-template-columns: 240px;
-  }
-  img {
-      background: white;
+.spaced {
+  & > *:before {
+    content: " ";
   }
 }
 
-.form-response {
-  text-align: center;
-  font-weight: bold;
+.hide-empty:empty {
+  display: none;
 }
 
-.ban-page {
-  margin-top: 2em;
-  padding: 1em;
-  text-align: center;
+.thread-links {
+  padding: 0.3em;
+  font-size: smaller;
+}
+
+//////////////////////////////
+// CODE
+//////////////////////////////
+
+.code-tag {
+  margin: 0;
+  white-space: pre-wrap;
+}
+
+.ms-string {
+  color: @em;
+}
+
+.ms-operator {
+  color: @mod;
+}
+
+.ms-comment {
+  color: fade(@body, 60%);
+}
+
+.ms-function {
+  color: @link;
 }
 
 //////////////////////////////
@@ -275,6 +218,45 @@ html, body {
   }
 }
 
+#index-thread-container > section:last-of-type hr {
+  display: none;
+}
+
+#thread-container, .index-thread {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+#catalog {
+  margin: 0 0.85em;
+  article {
+    width: 160px;
+    max-height: 300px;
+    display: inline-block;
+    text-align: center;
+    overflow: hidden;
+    vertical-align: top;
+    padding: 0.6em;
+    margin: 0.15em;
+    blockquote {
+      &:empty {
+        display: none;
+      }
+      min-width: initial;
+      margin: 0;
+      padding: 0;
+    }
+  }
+  figure {
+    float: none;
+    margin: 0;
+    img {
+      margin: 0;
+    }
+  }
+}
+
 .new-thread-container {
   margin: 0 auto;
   .reply-form {
@@ -293,6 +275,19 @@ html, body {
   .reply-form {
     margin-top: 20px;
   }
+}
+
+.ban-page {
+  margin-top: 2em;
+  padding: 1em;
+  text-align: center;
+}
+
+.omit {
+  margin-top: 2px;
+  margin-bottom: 8px;
+  white-space: nowrap;
+  color: #73806c;
 }
 
 //////////////////////////////
@@ -433,38 +428,7 @@ html, body {
 }
 
 //////////////////////////////
-// PANELS
-//////////////////////////////
-
-.side-panel {
-  &:not(:empty) {
-    padding: 1em;
-  }
-  &:empty {
-    border: none;
-  }
-  z-index: 10;
-  position: fixed;
-  height: ~"calc(100% - 3.7em)";
-  bottom: 0;
-  overflow-y: auto;
-  overflow-x: hidden;
-}
-
-.side-spacer {
-  top: 0;
-  bottom: 0;
-  height: 100%;
-}
-
-#left-panel, #left-spacer {
-  display: none;
-  left: 0;
-  margin-left: 0;
-}
-
-//////////////////////////////
-// MODAL
+// MODALS
 //////////////////////////////
 
 .modal {
@@ -552,6 +516,23 @@ a.tab-sel {
 // FORMS
 //////////////////////////////
 
+.captcha-container {
+  padding: 0.5em;
+  &, noscript {
+    display: grid;
+    grid-template-rows: auto;
+    grid-template-columns: 240px;
+  }
+  img {
+      background: white;
+  }
+}
+
+.form-response {
+  text-align: center;
+  font-weight: bold;
+}
+
 .form-selection-link {
   cursor: pointer;
 }
@@ -598,17 +579,27 @@ a.referenced {
   }
 }
 
-#thread-container, .index-thread, article {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+#text-input {
+  color: inherit;
+  font-size: inherit;
+  border: 0;
+  padding: 0;
+  background-color: transparent;
+  outline: none;
+  width: 100%;
+  max-height: 85vh;
+  max-width: 100%;
+  resize: none;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  word-break: break-word;
+  word-wrap: break-word;
 }
 
-.omit {
-  margin-top: 2px;
-  margin-bottom: 8px;
-  white-space: nowrap;
-  color: #73806c;
+// TODO(Kagami): To avoid accidental deletion. Use annoying confirm
+// instead.
+#deleteBoard {
+  display: none;
 }
 
 //////////////////////////////
@@ -772,17 +763,6 @@ header {
     font-family: inherit;
     font-weight: normal;
   }
-  // .control {
-  //   // Widen click area
-  //   width: 1em;
-  //   height: 1em;
-  //   margin-left: 0.5em;
-  //   float: right;
-  //   svg {
-  //     width: 0.7em;
-  //     height: 0.7em;
-  //   }
-  // }
 }
 
 .post-header {
@@ -915,9 +895,6 @@ html.work-mode {
 .post-backlink-pre {
   font-style: italic;
   color: #333;
-  &:before {
-    content: " "
-  }
 }
 
 .post-backlink {
@@ -1024,7 +1001,6 @@ html.pos-notstaff {
 // REPLY FORM
 //////////////////////////////
 
-// TODO(Kagami): Merge with post-control and theme.
 .control {
   display: inline-block;
   font-size: larger;
@@ -1066,20 +1042,6 @@ html.pos-notstaff {
 }
 
 .reply-form {
-  // position: fixed;
-  // z-index: 15;
-  // bottom: 0;
-  // left: 0;
-  // margin: 1em;
-  // .post-body {
-  //   max-height: 90vh;
-  //   max-width: 90vw;
-  //   display: flex;
-  //   flex-wrap: nowrap;
-  // }
-  // figure ~ blockquote {
-  //   margin-left: 0px;
-  // }
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
@@ -1219,72 +1181,6 @@ html.pos-notstaff {
 
 .upload-container label {
   padding: 0;
-}
-
-#text-input {
-  color: inherit;
-  font-size: inherit;
-  border: 0;
-  padding: 0;
-  background-color: transparent;
-  outline: none;
-  width: 100%;
-  max-height: 85vh;
-  max-width: 100%;
-  resize: none;
-  overflow: hidden;
-  overflow-wrap: break-word;
-  word-break: break-word;
-  word-wrap: break-word;
-}
-
-#catalog {
-  margin: 0 0.85em;
-  article {
-    width: 160px;
-    max-height: 300px;
-    display: inline-block;
-    text-align: center;
-    overflow: hidden;
-    vertical-align: top;
-    padding: 0.6em;
-    margin: 0.15em;
-    blockquote {
-      &:empty {
-        display: none;
-      }
-      min-width: initial;
-      margin: 0;
-      padding: 0;
-    }
-  }
-  figure {
-    float: none;
-    margin: 0;
-    img {
-      margin: 0;
-    }
-  }
-}
-
-#index-thread-container > section:last-of-type hr {
-  display: none;
-}
-
-.thread-links {
-  padding: 0.3em;
-  font-size: smaller;
-}
-
-.sticky svg {
-  width: 1em;
-  height: 1em;
-}
-
-// TODO(Kagami): To avoid accidental deletion. Use annoying confirm
-// instead.
-#deleteBoard {
-  display: none;
 }
 
 //////////////////////////////
