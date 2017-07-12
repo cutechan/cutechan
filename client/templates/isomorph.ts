@@ -1,16 +1,11 @@
 // MUST BE KEPT IN SYNC WITH go/src/meguca/templates/isomorph.go!
 // Template structs, helper routines and context providers.
-// TODO(Kagami): Move helper function here?
 
 import * as Mustache from "mustache"
 import templates from "templates"
 import { ln, lang } from "../lang"
 import { config } from "../state"
-import {
-	Thread, Post, Backlinks,
-	thumbPath, sourcePath, duration, fileSize,
-	parseBody,
-} from "../posts"
+import { Thread, Post, Backlinks, thumbPath, sourcePath, parseBody } from "../posts"
 import { Dict, makeEl, pad } from "../util"
 
 export class TemplateContext {
@@ -120,4 +115,23 @@ export function readableTime(time: number): string {
 	return `${pad(d.getDate())} ${lang.time.calendar[d.getMonth()]} `
 		+ `${d.getFullYear()} (${lang.time.week[d.getDay()]}) `
 		+ `${pad(d.getHours())}:${pad(d.getMinutes())}`
+}
+
+export function duration(l: number): string {
+  return pad(Math.floor(l / 60)) + ":" + pad(Math.floor(l % 60))
+}
+
+// Formats a human-readable representation of file size.
+export function fileSize(size: number): string {
+	const sizes = ln.Common.Sizes
+	let s = ""
+	if (size < (1 << 10)) {
+		s = size + sizes.b
+	} else if (size < (1 << 20)) {
+		s = Math.round(size / (1 << 10)) + sizes.kb
+	} else {
+		const text = Math.round(size / (1 << 20) * 10).toString()
+		s = `${text.slice(0, -1)}.${text.slice(-1)}${sizes.mb}`
+	}
+	return s
 }

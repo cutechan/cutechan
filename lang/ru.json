@@ -245,6 +245,11 @@
       "viewBySameIP": "Тот же IP",
       "toggleSticky": "Прикрепить"
     },
+    "sizes": {
+      "b": "б",
+      "kb": "Кб",
+      "mb": "Мб"
+    },
     "plurals": {
       "day": [
         "день",

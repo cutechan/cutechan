@@ -20,6 +20,7 @@ type Pack struct {
 	Templates       map[string][]string
 	Common          struct {
 		Posts   map[string]string
+		Sizes   map[string]string
 		Plurals map[string][]string
 		Time    map[string][]string
 		UI      map[string]string

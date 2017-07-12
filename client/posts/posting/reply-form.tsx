@@ -2,9 +2,9 @@ import * as cx from "classnames"
 import { h, render, Component } from "preact"
 import { ln } from "../../lang"
 import { page, boards, storeMine } from "../../state"
-import { fileSize, duration } from "../../posts"
 import API from "../../api"
 import { showAlert } from "../../alerts"
+import { duration, fileSize } from "../../templates"
 import {
 	POST_SEL,
 	POST_BODY_SEL,

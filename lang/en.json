@@ -245,6 +245,11 @@
       "viewBySameIP": "Same IP",
       "toggleSticky": "Toggle sticky"
     },
+    "sizes": {
+      "b": "b",
+      "kb": "Kb",
+      "mb": "Mb"
+    },
     "plurals": {
       "day": [
         "day",

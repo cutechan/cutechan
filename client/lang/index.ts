@@ -8,14 +8,14 @@ import langs from "langs"
 
 type LanguagePack = {
 	UI: { [key: string]: string }
-	ui: { [key: string]: string }
 	Common: CommonLanguagePack
-	common: CommonLanguagePack
 }
 
+// TODO(Kagami): Remove lowercase aliases.
 type CommonLanguagePack = {
 	Posts: { [key: string]: string }
 	posts: { [key: string]: string }
+	Sizes: { [key: string]: string }
 	plurals: { [key: string]: [string] }
 	time: {
 		calendar: string[]
@@ -27,15 +27,14 @@ type CommonLanguagePack = {
 }
 
 // TODO(Kagami): Add support for per-user site language.
-const current: string = (window as any).config.defaultLang
+const siteLang: string = (window as any).config.defaultLang
+const pack: any = langs[siteLang]
 
 // TODO(Kagami): Use `ln` everywhere.
-export const ln: LanguagePack = langs[current]
-export const lang: CommonLanguagePack = ln.common
+export const ln: LanguagePack = { UI: pack.ui, Common: pack.common }
+export const lang: CommonLanguagePack = ln.Common
 export default lang
 
 // Emulate lang.go to simplify template porting.
-ln.UI = ln.ui
-ln.Common = ln.common
-lang.Posts = lang.posts
-lang.UI = lang.ui
+lang.Posts = pack.common.posts
+lang.Sizes = pack.common.sizes
