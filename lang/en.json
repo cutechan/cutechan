@@ -236,7 +236,6 @@
       "hide": "Hide",
       "in": "in",
       "justNow": "just now",
-      "omitted": "omitted",
       "seeAll": "See all",
       "show": "Show",
       "you": "(You)",
@@ -253,6 +252,10 @@
       "mb": "Mb"
     },
     "plurals": {
+      "omitted": [
+        "omitted",
+        "omitted"
+      ],
       "day": [
         "day",
         "days"
@@ -262,8 +265,8 @@
         "hours"
       ],
       "image": [
-        "image",
-        "images"
+        "file",
+        "files"
       ],
       "minute": [
         "minute",

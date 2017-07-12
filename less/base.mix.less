@@ -481,6 +481,7 @@ html, body {
   }
   input[type=text], input[type=password] {
     width: 10em;
+    outline: none;
   }
   #modal-overlay > & {
     display: none;
@@ -496,10 +497,6 @@ html, body {
   padding: 0.6em;
   margin-left: auto;
   margin-right: auto;
-}
-
-.modal hr {
-  border-top: 1px solid @link;
 }
 
 .modal, form {
@@ -563,10 +560,6 @@ a.tab-sel {
   min-width: 220px;
 }
 
-label {
-  padding: 0.2em;
-}
-
 .option-select {
   cursor: pointer;
 }
@@ -576,6 +569,8 @@ label {
 }
 
 .option-label {
+  display: inline-block;
+  min-width: 65px;
   cursor: pointer;
   user-select: none;
 }

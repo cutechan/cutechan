@@ -85,7 +85,7 @@ Omitted posts and images info
 					{% space %}{%s ln.Common.Posts["and"] %}{% space %}
 					{%d imageOmit %}{% space %}{%s pluralize(imageOmit, ln.Common.Plurals["image"]) %}
 				{% endif %}
-				{% space %}{%s ln.Common.Posts["omitted"] %}
+				{% space %}{%s pluralize(omit, ln.Common.Plurals["omitted"]) %}
 			</div>
 		{% endif %}
 		<a clas="omit-link" href="/{%s t.Board %}/{%s idStr %}">
