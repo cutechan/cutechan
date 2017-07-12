@@ -155,7 +155,7 @@ func deleteOldThreads() (err error) {
 		if err != nil {
 			return
 		}
-		threshold := min + (-max+min)*math.Pow(float64(postCtr)/3000-1, 3)
+		threshold := min + (-max+min)*math.Pow(float64(postCtr)/500-1, 3)
 		if threshold < min {
 			threshold = min
 		}
