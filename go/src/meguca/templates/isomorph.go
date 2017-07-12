@@ -49,6 +49,12 @@ type FileContext struct {
 	ThumbPath string
 }
 
+type PostLinkContext struct {
+	ID string
+	URL string
+	Cross bool
+}
+
 type BacklinksContext struct {
 	LReplies string
 	Backlinks []string
@@ -197,9 +203,10 @@ func postLink(id uint64, cross, index bool) string {
 		url += "/all/" + idStr
 	}
 	url += "#" + idStr
-	ctx := map[string]string{
-		"ID": idStr,
-		"URL": url,
+	ctx := PostLinkContext{
+		ID: idStr,
+		URL: url,
+		Cross: cross,
 	}
 	return renderMustache("post-link", ctx)
 }

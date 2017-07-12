@@ -2,24 +2,21 @@
 
 import { page, mine } from '../../state'
 import lang from '../../lang'
-import { pluralize } from "../../templates"
+import { TemplateContext, pluralize } from "../../templates"
 import { makeAttrs } from "../../util"
 
-// Render a link to other posts
-// FIXME(Kagmai): Use post-link.mustache.
+// Render a link to other post.
 export function renderPostLink(id: number, op: number): string {
-	const cross = op !== page.thread,
-		index = !page.thread && !page.catalog,
-		url = `${(cross || index) ? `/all/${id}` : ""}#${id}`
-	let html = `<a class="post-link" data-id="${id}" href="${url}">&gt;&gt;${id}`
-	if (cross && !index) {
-		html += " ➡"
-	}
-	if (mine.has(id)) { // Post, I made
-		html += ' ' + lang.posts["you"]
-	}
-	html += `</a>`
-	return html
+	const cross = op !== page.thread
+	const index = !page.thread && !page.catalog
+	const url = `${(cross || index) ? `/all/${id}` : ""}#${id}`
+	return new TemplateContext("post-link", {
+		ID: id,
+		URL: url,
+		Cross: cross,
+		Mine: mine.has(id),
+		LYou: lang.posts.you,
+	}).render()
 }
 
 // Render a temporary link for open posts
