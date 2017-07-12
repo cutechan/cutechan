@@ -396,7 +396,7 @@ html, body {
   box-sizing: border-box;
   width: 100%;
   height: @bannerHeight;
-  line-height: @bannerHeight;
+  line-height: @bannerHeight - 3px;
   text-align: center;
   background: fade(@postBG, 80%);
   border-bottom: 1px solid #aaa;
@@ -560,7 +560,7 @@ a.tab-sel {
 }
 
 #options {
-  min-width: 210px;
+  min-width: 220px;
 }
 
 label {
@@ -905,6 +905,8 @@ html.work-mode {
 
 .post-message {
   margin: 0;
+  max-height: 350px;
+  overflow-y: auto;
 }
 
 .post-footer {
