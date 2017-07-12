@@ -36,7 +36,6 @@ TODO(Kagami): Fix markup and styles.
 
 {% func renderThread(postHTML []byte, id uint64, board, title string, abbrev bool, pos auth.ModerationLevel) %}{% stripspace %}
 	<h1 class="page-title">{%s title %}</h1>
-	<noscript>{%= renderNoscriptReplyForm(id, board, pos) %}</noscript>
 	{%= renderThreadNavigation(true) %}
 	<hr class="separator">
 	{%z= postHTML %}

@@ -67,7 +67,6 @@
 	<h1 class="page-title">{%s title %}</h1>
 	<aside class="reply-container new-thread-container"></aside>
 	<nav class="board-nav board-nav_top">
-		<noscript>{%= renderNoscriptThreadForm(id, conf, pos) %}</noscript>
 		{% if !catalog %}
 			<a class="button board-nav-item board-nav-new-thread trigger-open-reply">
 				{%s ln.UI["newThread"] %}
