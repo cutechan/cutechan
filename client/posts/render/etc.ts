@@ -1,9 +1,8 @@
 // Miscellaneous post component rendering functions
 
+import { ln } from "../../lang"
 import { page, mine } from '../../state'
-import lang from '../../lang'
 import { TemplateContext, pluralize } from "../../templates"
-import { makeAttrs } from "../../util"
 
 // Render a link to other post.
 export function renderPostLink(id: number, op: number): string {
@@ -15,23 +14,8 @@ export function renderPostLink(id: number, op: number): string {
 		URL: url,
 		Cross: cross,
 		Mine: mine.has(id),
-		LYou: lang.posts.you,
+		LYou: ln.Common.Posts["you"],
 	}).render()
-}
-
-// Render a temporary link for open posts
-export function renderTempLink(id: number): string {
-	const attrs = {
-		class: "post-link temp",
-		"data-id": id.toString(),
-		href: `#${id}`,
-	}
-	let html = `<a ${makeAttrs(attrs)}>>>${id}`
-	if (mine.has(id)) {
-		html += ' ' + lang.posts["you"]
-	}
-	html += "</a>"
-	return html
 }
 
 // Renders readable elapsed time since post. Numbers are in seconds.
@@ -41,7 +25,7 @@ export function relativeTime(then: number): string {
 		isFuture = false
 	if (time < 1) {
 		if (time > -5) { // Assume to be client clock imprecision
-			return lang.posts["justNow"]
+			return ln.Common.Posts["justNow"]
 		} else {
 			isFuture = true
 			time = -time
@@ -52,18 +36,18 @@ export function relativeTime(then: number): string {
 		unit = ['minute', 'hour', 'day', 'month']
 	for (let i = 0; i < divide.length; i++) {
 		if (time < divide[i]) {
-			return ago(time, lang.plurals[unit[i]], isFuture)
+			return ago(time, ln.Common.Plurals[unit[i]], isFuture)
 		}
 		time = Math.floor(time / divide[i])
 	}
 
-	return ago(time, lang.plurals["year"], isFuture)
+	return ago(time, ln.Common.Plurals["year"], isFuture)
 }
 
-// Renders "56 minutes ago" or "in 56 minutes" like relative time text
+// Renders "56 minutes ago" or "in 56 minutes" like relative time text.
 function ago(time: number, units: [string], isFuture: boolean): string {
 	const count = `${time} ${pluralize(time, units)}`
 	return isFuture
-		? `${lang.posts["in"]} ${count}`
-		: `${count} ${lang.posts["ago"]}`
+		? `${ln.Common.Posts["in"]} ${count}`
+		: `${count} ${ln.Common.Posts["ago"]}`
 }

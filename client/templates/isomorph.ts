@@ -126,12 +126,12 @@ export function fileSize(size: number): string {
 	const sizes = ln.Common.Sizes
 	let s = ""
 	if (size < (1 << 10)) {
-		s = size + sizes.b
+		s = size + sizes["b"]
 	} else if (size < (1 << 20)) {
-		s = Math.round(size / (1 << 10)) + sizes.kb
+		s = Math.round(size / (1 << 10)) + sizes["kb"]
 	} else {
 		const text = Math.round(size / (1 << 20) * 10).toString()
-		s = `${text.slice(0, -1)}.${text.slice(-1)}${sizes.mb}`
+		s = `${text.slice(0, -1)}.${text.slice(-1)}${sizes["mb"]}`
 	}
 	return s
 }

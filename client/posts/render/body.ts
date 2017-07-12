@@ -1,5 +1,4 @@
-import { posts } from '../../state'
-import { renderPostLink, renderTempLink } from './etc'
+import { renderPostLink } from './etc'
 import { PostData, PostLink, TextState } from '../../common'
 import { escape, makeAttrs } from '../../util'
 import { parseEmbeds } from "../embed"
@@ -26,7 +25,7 @@ export default function(data: PostData): string {
 	}
 	let html = ""
 
-	const fn = data.editing ? parseOpenLine : parseTerminatedLine,
+	const fn = parseTerminatedLine,
 		lines = data.body.split("\n"),
 		last = lines.length - 1
 	for (let i = 0; i < lines.length; i++) {
@@ -152,47 +151,6 @@ function terminateTags(state: TextState, newLine: boolean): string {
 	}
 	if (newLine) {
 		html += "<br>"
-	}
-	return html
-}
-
-// Parse a line that is still being edited
-function parseOpenLine(line: string, { state }: PostData): string {
-	return parseCode(line, state, parseOpenLinks)
-}
-
-// Parse temporary links, that still may be edited
-function parseOpenLinks(frag: string): string {
-	let html = ""
-	const words = frag.split(" ")
-	for (let i = 0; i < words.length; i++) {
-		if (i !== 0) {
-			html += " "
-		}
-
-		// Split leading and trailing punctuation, if any
-		const [leadPunct, word, trailPunct] = splitPunctuation(words[i])
-		if (leadPunct) {
-			html += leadPunct
-		}
-
-		let matched = false
-		if (word && word[0] === ">") {
-			const m = word.match(/^>>(>*)(\d+)$/)
-			if (m) {
-				const id = parseInt(m[2])
-				if (posts.has(id)) {
-					html += m[1] + renderTempLink(id)
-					matched = true
-				}
-			}
-		}
-		if (!matched) {
-			html += escape(word)
-		}
-		if (trailPunct) {
-			html += trailPunct
-		}
 	}
 	return html
 }
