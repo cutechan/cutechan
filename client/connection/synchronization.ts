@@ -91,7 +91,7 @@ async function fetchUnclosed(post: Post) {
 }
 
 async function fetchPost(id: number): Promise<PostData> {
-	const r = await uncachedGET(`/json/post/${id}`)
+	const r = await uncachedGET(`/api/post/${id}`)
 	if (r.status !== 200) {
 		throw await r.text()
 	}

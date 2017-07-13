@@ -36,7 +36,7 @@ export function makePostContext(t: Thread, p: Post): TemplateContext {
 		Badge: false,
 		Board: p.board,
 		Subject: p.subject,
-		Staff: p.auth != "",
+		Staff: !!p.auth,
 		Auth: ln.Common.Posts[p.auth],
 		Banned: p.banned,
 		LBanned: ln.Common.Posts["banned"],

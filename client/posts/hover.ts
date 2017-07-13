@@ -226,7 +226,7 @@ async function renderPostPreview(event: MouseEvent) {
 	if (!post) {
 		// Try to fetch from server, if this post is not currently displayed
 		// due to lastN or in a different thread
-		const [data] = await fetchJSON<PostData>(`/json/post/${id}`)
+		const [data] = await fetchJSON<PostData>(`/api/post/${id}`)
 		if (data) {
 			post = new Post(data)
 			new PostView(post, null)
