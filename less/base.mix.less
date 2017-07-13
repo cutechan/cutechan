@@ -259,9 +259,11 @@ html, body {
 
 .new-thread-container {
   margin: 0 auto;
+  &:not(:empty) {
+    margin-bottom: 20px;
+  }
   .reply-form {
     width: 1000px;
-    margin-bottom: 20px;
   }
   .reply-body {
     min-height: 134px;
@@ -272,7 +274,7 @@ html, body {
 }
 
 .new-post-container {
-  .reply-form {
+  &:not(:empty) {
     margin-top: 20px;
   }
 }
