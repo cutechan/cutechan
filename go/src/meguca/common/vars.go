@@ -59,6 +59,6 @@ var (
 
 // Server paths
 var (
-	WebRoot = "dist/static"
-	ImageWebRoot = "uploads"
+	WebRoot string
+	ImageWebRoot string
 )

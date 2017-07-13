@@ -9,6 +9,7 @@ import (
 	"log"
 	"meguca/auth"
 	"meguca/cache"
+	"meguca/common"
 	"meguca/db"
 	"meguca/imager/assets"
 	"meguca/lang"
@@ -35,8 +36,8 @@ var (
 
 	// CLI mode arguments and descriptions
 	arguments = map[string]string{
-		"start":   "start the meguca server",
-		"stop":    "stop a running daemonised meguca server",
+		"start":   "start the cutechan server",
+		"stop":    "stop a running daemonised cutechan server",
 		"restart": "combination of stop + start",
 		"debug":   "start server in debug mode without daemonizing (default)",
 		"help":    "print this help text",
@@ -50,14 +51,13 @@ func Start() {
 	// Define flags
 	flag.StringVar(
 		&address,
-		"a",
-		":8001",
+		"b",
+		"127.0.0.1:8001",
 		"address to listen on for incoming HTTP connections",
 	)
-	flag.Float64Var(&cache.Size, "c", 1<<7, "cache size in MB")
 	flag.StringVar(
 		&db.ConnArgs,
-		"d",
+		"c",
 		`user=meguca password=meguca dbname=meguca sslmode=disable`,
 		"PostgreSQL connection arguments",
 	)
@@ -65,14 +65,33 @@ func Start() {
 		&auth.IsReverseProxied,
 		"r",
 		false,
-		"assume server is behind reverse proxy, when resolving client IPs",
+		"assume server is behind reverse proxy when resolving client IPs",
 	)
 	flag.StringVar(
 		&auth.ReverseProxyIP,
-		"R",
+		"rip",
 		"",
-		"IP of the reverse proxy. Only needed, when reverse proxy is not on localhost.",
+		"IP of the reverse proxy, only needed when reverse proxy is not on localhost",
 	)
+	flag.IntVar(
+		&cache.Size,
+		"s",
+		128,
+		"cache size in megabytes",
+	)
+	flag.StringVar(
+		&common.ImageWebRoot,
+		"u",
+		"./uploads",
+		"file uploads location",
+	)
+	flag.StringVar(
+		&common.WebRoot,
+		"w",
+		"./dist/static",
+		"site static location",
+	)
+
 	flag.Usage = printUsage
 
 	// Parse command line arguments
@@ -102,7 +121,7 @@ func Start() {
 
 // Constructs and prints the CLI help text
 func printUsage() {
-	os.Stderr.WriteString("Usage: meguca [OPTIONS]... [MODE]\n\nMODES:\n")
+	os.Stderr.WriteString("Usage: cutechan [OPTIONS]... [MODE]\n\nMODES:\n")
 
 	toPrint := []string{"start"}
 	if !isWindows {
@@ -121,7 +140,7 @@ func printUsage() {
 	os.Stderr.Write(help.Bytes())
 	flag.PrintDefaults()
 	os.Stderr.WriteString(
-		"\nConsult the bundled README.md for more information\n",
+		"\nConsult the bundled README.md for more information.\n",
 	)
 
 	os.Exit(1)

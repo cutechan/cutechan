@@ -18,7 +18,7 @@ var (
 	mu        sync.Mutex
 
 	// Size sets the maximum size of cache before evicting unread data in MB
-	Size float64 = 1 << 7
+	Size int
 )
 
 // Key stores the ID of either a thread or board page
@@ -77,7 +77,7 @@ func updateUsedSize(delta int) {
 
 	totalUsed += delta
 
-	for totalUsed > int(Size)*(1<<20) {
+	for totalUsed > Size<<20 {
 		last := ll.Back()
 		if last == nil {
 			return
