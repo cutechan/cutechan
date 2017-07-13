@@ -7,6 +7,7 @@
 export const REPLY_CONTAINER_SEL = ".reply-container"
 export const ALERTS_CONTAINER_SEL = ".alerts-container"
 export const BOARD_SEARCH_INPUT_SEL = ".board-search-input"
+export const THREAD_SEL = ".thread"
 export const POST_SEL = ".post"
 export const POST_FILE_THUMB_SEL = ".post-file-thumb"
 export const POST_BODY_SEL = ".post-body"

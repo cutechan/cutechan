@@ -6,7 +6,7 @@ import { View, ViewAttrs } from "../base"
 import { findSyncwatches } from "./syncwatch"
 import { ln } from "../lang"
 import options from "../options"
-import { POST_BACKLINKS_SEL } from "../vars"
+import { THREAD_SEL, POST_BACKLINKS_SEL } from "../vars"
 
 /**
  * Base post view class
@@ -56,6 +56,10 @@ export default class PostView extends View<Post> {
 
 		const container = this.el.querySelector(POST_BACKLINKS_SEL)
 		container.innerHTML = html
+	}
+
+	public removeThread() {
+		this.el.closest(THREAD_SEL).remove()
 	}
 
 	// Render "USER WAS BANNED FOR THIS POST" message.

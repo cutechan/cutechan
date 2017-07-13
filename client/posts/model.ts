@@ -31,7 +31,7 @@ export class Post extends Model implements PostData {
 	public banned: boolean
 	public sticky: boolean
 	protected seenOnce: boolean
-	public image: ImageData
+	public image: ImageData  // TODO(Kagami): Rename to file
 	public time: number
 	public body: string
 	public name: string
@@ -44,7 +44,11 @@ export class Post extends Model implements PostData {
 	public backlinks: PostBacklinks
 	public links: PostLink[]
 
-	public get transparentImage() {
+	public get opPost() {
+		return this.id == this.op
+	}
+
+	public get transparentThumb() {
 		return this.image && this.image.thumbType === fileTypes.png
 	}
 
@@ -184,8 +188,17 @@ export class Post extends Model implements PostData {
 
 	// Set post as deleted
 	public setDeleted() {
-		posts.remove(this)
-		this.view.remove()
+		if (this.opPost) {
+			if (page.thread) {
+				location.href = "/"
+			} else {
+				posts.removeThread(this)
+				this.view.removeThread()
+			}
+		} else {
+			posts.remove(this)
+			this.view.remove()
+		}
 	}
 
 	public removeImage() {

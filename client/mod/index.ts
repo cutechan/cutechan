@@ -7,7 +7,7 @@ import { FormView } from "../ui"
 import { TabbedModal } from "../base"
 import { showAlert } from "../alerts"
 import { Post } from "../posts"
-import { getModel } from "../state"
+import { page, getModel } from "../state"
 import API from "../api"
 import { validatePasswordMatch } from "./common"
 import {
@@ -175,8 +175,12 @@ function getModelByEvent(e: Event): Post {
 
 function deletePost(post: Post) {
 	if (!confirm(ln.UI.sure)) return
-	const del = post.setDeleted.bind(post)
-	API.post.delete([post.id]).then(del, showAlert)
+	API.post.delete([post.id]).then(() => {
+		// In thread we should delete on WebSocket event.
+		if (!page.thread) {
+			post.setDeleted()
+		}
+	}, showAlert)
 }
 
 function banUser(post: Post) {

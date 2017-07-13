@@ -171,7 +171,7 @@ func deleteOldThreads() (err error) {
 	// Deleted any matched threads
 	q := tx.Stmt(prepared["delete_thread"])
 	for _, id := range toDel {
-		_, err = q.Exec(id)
+		_, err = q.Exec(id, "system")
 		if err != nil {
 			return
 		}

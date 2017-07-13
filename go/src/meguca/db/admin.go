@@ -110,11 +110,6 @@ func RefreshBanCache() (err error) {
 	return nil
 }
 
-// DeletePost marks the target post as deleted
-func DeletePost(id uint64, by string) error {
-	return moderatePost(id, by, "delete_post", common.DeletePost)
-}
-
 func moderatePost(
 	id uint64,
 	by, query string,
@@ -127,6 +122,10 @@ func moderatePost(
 		return
 	}
 
+	if id == op && query == "delete_post" {
+		query = "delete_thread"
+	}
+
 	err = execPrepared(query, id, by)
 	if err != nil {
 		return
@@ -134,6 +133,11 @@ func moderatePost(
 
 	err = propagate(id, op)
 	return
+}
+
+// DeletePost marks the target post as deleted
+func DeletePost(id uint64, by string) error {
+	return moderatePost(id, by, "delete_post", common.DeletePost)
 }
 
 // Permanently delete an image from a post

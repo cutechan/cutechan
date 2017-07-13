@@ -45,6 +45,14 @@ export default class PostCollection extends Model {
 		delete model.collection
 	}
 
+	public removeThread(opModel: Post) {
+		for (const model of this) {
+			if (model.op === opModel.id) {
+				this.remove(model)
+			}
+		}
+	}
+
 	// Remove all models from collection
 	public clear() {
 		for (let id in this.models) {

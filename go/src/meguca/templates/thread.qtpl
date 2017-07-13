@@ -47,7 +47,7 @@ TODO(Kagami): Fix markup and styles.
 ThreadPosts renders the post content of a thread. Separate function to allow
 caching of generated posts.
 {% func ThreadPosts(t common.Thread, json []byte) %}{% stripspace %}
-	<section class="thread" id="thread-container" data-id="{%s strconv.FormatUint(t.ID, 10) %}">
+	<section class="thread single-thread" id="thread-container" data-id="{%s strconv.FormatUint(t.ID, 10) %}">
 		{% code bls := extractBacklinks(1<<10, t) %}
 		{%= renderThreadPosts(t, bls, false, false) %}
 		<script id="post-data" type="application/json">
