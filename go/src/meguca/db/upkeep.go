@@ -20,11 +20,11 @@ func runCleanupTasks() {
 	runMinuteTasks()
 	runHourTasks()
 
-	min := time.Tick(time.Minute)
+	min5 := time.Tick(time.Minute * 5)
 	hour := time.Tick(time.Hour)
 	for {
 		select {
-		case <-min:
+		case <-min5:
 			runMinuteTasks()
 		case <-hour:
 			runHourTasks()
