@@ -173,8 +173,8 @@ function getModelByEvent(e: Event): Post {
 	return getModel(e.target as Element)
 }
 
-function deletePost(post: Post) {
-	if (!confirm(ln.UI.sure)) return
+function deletePost(post: Post, force?: boolean) {
+	if (!force && !confirm(ln.UI["delConfirm"])) return
 	API.post.delete([post.id]).then(() => {
 		// In thread we should delete on WebSocket event.
 		if (!page.thread) {
@@ -184,7 +184,7 @@ function deletePost(post: Post) {
 }
 
 function banUser(post: Post) {
-	if (!confirm(ln.UI.sure)) return
+	if (!confirm(ln.UI["banConfirm"])) return
 	const YEAR = 365 * 24 * 60
 	API.user.banByPost({
 		ids: [post.id],
@@ -192,6 +192,8 @@ function banUser(post: Post) {
 		global: true,
 		reason: "default",
 		duration: YEAR,
+	}).then(() => {
+		deletePost(post, true)
 	}).catch(showAlert)
 }
 

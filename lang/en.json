@@ -148,7 +148,8 @@
   "ui": {
     "attach": "Attach file (%s max)",
     "tooBig": "Too big file",
-    "sure": "Are you sure?",
+    "delConfirm": "Delete post?",
+    "banConfirm": "Delete post and ban author?",
     "unsupFile": "Unsupported file type",
     "unknownErr": "Unknown error",
     "initErr": "Site load error",
