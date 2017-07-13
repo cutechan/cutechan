@@ -59,7 +59,7 @@ type boardCreationRequest struct {
 	ID, Title string
 }
 
-// Decode JSON sent in a request with a read limit of 8 KB. Returns if the
+// Decode JSON sent in a request with a read limit. Returns if the
 // decoding succeeded.
 func decodeJSON(w http.ResponseWriter, r *http.Request, dest interface{}) bool {
 	decoder := json.NewDecoder(io.LimitReader(r.Body, jsonLimit))

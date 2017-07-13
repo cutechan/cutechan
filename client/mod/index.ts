@@ -189,7 +189,7 @@ function banUser(post: Post) {
 	API.user.banByPost({
 		ids: [post.id],
 		// Hardcode for now.
-		global: true,
+		global: position >= ModerationLevel.admin,
 		reason: "default",
 		duration: YEAR,
 	}).then(() => {
