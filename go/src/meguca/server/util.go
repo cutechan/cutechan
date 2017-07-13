@@ -23,7 +23,7 @@ const (
 var vanillaHeaders = map[string]string{
 	"X-Frame-Options": "sameorigin",
 	"Cache-Control":   "no-cache",
-	"Expires":         "Fri, 01 Jan 1990 00:00:00 GMT",
+	"Expires":         "Thu, 01 Jan 1970 00:00:01 GMT",
 }
 
 // Check is any of the etags the client provides in the "If-None-Match" header

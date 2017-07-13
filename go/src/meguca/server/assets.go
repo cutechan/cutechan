@@ -20,9 +20,7 @@ import (
 var (
 	// Set of headers for serving images (and other uploaded files)
 	imageHeaders = map[string]string{
-		// max-age set to 350 days. Some caches and browsers ignore max-age, if
-		// it is a year or greater, so keep it a little below.
-		"Cache-Control":   "max-age=30240000, public, immutable",
+		"Cache-Control":   "max-age=31536000, public",
 		"X-Frame-Options": "sameorigin",
 	}
 )
