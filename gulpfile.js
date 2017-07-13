@@ -56,7 +56,9 @@ const minify = composer(uglifyes, console);
 function handleError(err) {
   if (watch) {
     notifyError(err);
-    this.emit("end");
+    if (this) {
+      this.emit("end");
+    }
   } else {
     throw err;
   }
@@ -80,7 +82,15 @@ function langs() {
   return gulp.src(LANGS_GLOB)
     .pipe(tap(function(file) {
       const name = JSON.stringify(path.basename(file.path, ".json"));
-      const lang = JSON.stringify(JSON.parse(file.contents.toString()));
+      let contents = file.contents.toString();
+      try {
+        // Basically just a validation.
+        contents = JSON.parse(contents);
+      } catch(e) {
+        handleError(e);
+        contents = null;
+      }
+      const lang = JSON.stringify(contents);
       file.contents = new Buffer(`langs[${name}] = ${lang};`);
     }))
     .pipe(concat("langs.js"))

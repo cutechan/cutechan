@@ -609,7 +609,8 @@ func banList(w http.ResponseWriter, r *http.Request) {
 	}
 
 	canUnban := detectCanPerform(r, board, auth.Moderator)
-	html := []byte(templates.BanList(bans, board, canUnban))
+	content := []byte(templates.BanList(bans, board, canUnban))
+	html := []byte(templates.BasePage(content))
 	serveHTML(w, r, "", html, nil)
 }
 
@@ -694,5 +695,7 @@ func modLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	serveHTML(w, r, "", []byte(templates.ModLog(log)), nil)
+	content := []byte(templates.ModLog(log))
+	html := []byte(templates.BasePage(content))
+	serveHTML(w, r, "", html, nil)
 }

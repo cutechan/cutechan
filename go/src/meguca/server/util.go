@@ -128,7 +128,8 @@ func assertNotBanned(
 		}
 		head.Set("Content-Type", "text/html")
 		head.Set("Cache-Control", "no-store")
-		html := []byte(templates.BanPage(rec))
+		content := []byte(templates.BanPage(rec))
+		html := []byte(templates.BasePage(content))
 		w.Write(html)
 		return false
 	case sql.ErrNoRows:

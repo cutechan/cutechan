@@ -63,16 +63,8 @@ export default class PostView extends View<Post> {
 	}
 
 	// Render "USER WAS BANNED FOR THIS POST" message.
-	// TODO(Kagami): Implement.
+	// TODO(Kagami): Remove?
 	public renderBanned() {
-		// const el = firstChild(this.el.querySelector(".post-container"), el =>
-		// 	el.classList.contains("banned")
-		// )
-		// if (el) return
-		// const b = document.createElement("b")
-		// b.classList.add("admin", "banned")
-		// b.textContent = lang.posts["banned"]
-		// this.el.querySelector("blockquote").after(b)
 	}
 
 	// Render the sticky status of a thread OP.

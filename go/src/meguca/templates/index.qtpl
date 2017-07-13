@@ -237,3 +237,17 @@ TODO(Kagami): Remove.
 	</body>
 	</html>
 {% endstripspace %}{% endfunc %}
+
+Minimal possible page for reuse.
+{% func BasePage(content []byte) %}{% stripspace %}
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="icon" href="/static/favicons/default.ico">
+	</head>
+	<body>
+		{%z= content %}
+	</body>
+	</html>
+{% endstripspace %}{% endfunc %}

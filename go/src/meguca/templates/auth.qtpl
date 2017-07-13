@@ -8,22 +8,13 @@ BanPage renders a ban page for a banned user
 {% func BanPage(rec auth.BanRecord) %}{% stripspace %}
 	{% code ln := lang.Get().Templates["banPage"] %}
 	<div class="ban-page">
-		{%s= fmt.Sprintf(ln[0], bold(rec.Board), bold(rec.By)) %}
-		<br>
-		<br>
-		<b>
-			{%s rec.Reason %}
-		</b>
-		<br>
+		{%s= fmt.Sprintf(ln[0], bold(rec.Board)) %}{% space %}
+		<b>{%s rec.Reason %}</b>
 		<br>
 		{% code exp := correctTimeZone(rec.Expires) %}
 		{% code date := exp.Format(time.UnixDate) %}
 		{% code till := exp.Sub(time.Now().Round(time.Second)).String() %}
 		{%s= fmt.Sprintf(ln[1], bold(date), bold(till)) %}
-		<br>
-		<br>
-		{%s= fmt.Sprintf(ln[2], bold(rec.IP)) %}
-		<br>
 	</div>
 {% endstripspace %}{% endfunc %}
 
@@ -97,6 +88,8 @@ Renders a moderation log page
 						{%s ln["deletePost"] %}
 					{% case auth.DeleteImage %}
 						{%s ln["deleteImage"] %}
+					{% case auth.DeleteThread %}
+						{%s ln["deleteThread"] %}
 					{% endswitch %}
 				</td>
 				<td>{%s l.By %}</td>
