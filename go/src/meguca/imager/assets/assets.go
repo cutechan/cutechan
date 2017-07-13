@@ -123,7 +123,7 @@ func Delete(SHA1 string, fileType, thumbType uint8) error {
 // CreateDirs creates directories for processed image storage
 func CreateDirs() error {
 	for _, dir := range [...]string{"src", "thumb"} {
-		path := filepath.Join("uploads", dir)
+		path := filepath.Join(common.ImageWebRoot, dir)
 		if err := os.MkdirAll(path, 0700); err != nil {
 			return err
 		}
@@ -134,7 +134,7 @@ func CreateDirs() error {
 // DeleteDirs recursively deletes the image storage folder. Only used for
 // cleaning up after tests.
 func DeleteDirs() error {
-	return os.RemoveAll("uploads")
+	return os.RemoveAll(common.ImageWebRoot)
 }
 
 // ResetDirs removes all contents from the image storage directories. Only
