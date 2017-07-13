@@ -175,7 +175,8 @@ function getModelByEvent(e: Event): Post {
 
 function deletePost(post: Post) {
 	if (!confirm(ln.UI.sure)) return
-	API.post.delete([post.id]).catch(showAlert)
+	const del = post.setDeleted.bind(post)
+	API.post.delete([post.id]).then(del, showAlert)
 }
 
 function banUser(post: Post) {

@@ -58,11 +58,6 @@ export default class PostView extends View<Post> {
 		container.innerHTML = html
 	}
 
-	// Render indications that a post had been deleted.
-	public renderDeleted() {
-		this.el.classList.add("deleted")
-	}
-
 	// Render "USER WAS BANNED FOR THIS POST" message.
 	// TODO(Kagami): Implement.
 	public renderBanned() {

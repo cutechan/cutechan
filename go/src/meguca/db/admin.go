@@ -122,18 +122,17 @@ func moderatePost(
 ) (
 	err error,
 ) {
+	op, err := GetPostOP(id)
+	if err != nil {
+		return
+	}
+
 	err = execPrepared(query, id, by)
 	if err != nil {
 		return
 	}
 
-	op, err := GetPostOP(id)
-	if err != nil {
-		return
-	}
-	if !IsTest {
-		err = propagate(id, op)
-	}
+	err = propagate(id, op)
 	return
 }
 

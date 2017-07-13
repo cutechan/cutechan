@@ -184,8 +184,8 @@ export class Post extends Model implements PostData {
 
 	// Set post as deleted
 	public setDeleted() {
-		this.deleted = true
-		this.view.renderDeleted()
+		posts.remove(this)
+		this.view.remove()
 	}
 
 	public removeImage() {

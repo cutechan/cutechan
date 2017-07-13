@@ -35,6 +35,7 @@ func runCleanupTasks() {
 func runMinuteTasks() {
 	// logError("open post cleanup", closeDanglingPosts())
 	logPrepared("expire_image_tokens", "expire_bans")
+	logError("image cleanup", deleteUnusedImages())
 }
 
 func runHourTasks() {
@@ -43,7 +44,6 @@ func runHourTasks() {
 	)
 	logError("thread cleanup", deleteOldThreads())
 	logError("board cleanup", deleteUnusedBoards())
-	logError("image cleanup", deleteUnusedImages())
 	// logError("delete dangling open post bodies", cleanUpOpenPostBodies())
 	logError("vaccum database", func() error {
 		_, err := db.Exec(`vacuum`)
