@@ -130,18 +130,3 @@ func CreateDirs() error {
 	}
 	return nil
 }
-
-// DeleteDirs recursively deletes the image storage folder. Only used for
-// cleaning up after tests.
-func DeleteDirs() error {
-	return os.RemoveAll(common.ImageWebRoot)
-}
-
-// ResetDirs removes all contents from the image storage directories. Only
-// used for cleaning up after tests.
-func ResetDirs() error {
-	if err := DeleteDirs(); err != nil {
-		return err
-	}
-	return CreateDirs()
-}
