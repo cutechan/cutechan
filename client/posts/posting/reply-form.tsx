@@ -32,107 +32,90 @@ function quoteText(text: string): string {
   }).join("\n") + "\n";
 }
 
-class FilePreview extends Component<any, any> {
-	state = {
-		width: 0,
-		height: 0,
-		dur: 0,  // TODO(Kagami): Fix naming
-		url: null as string,
-	}
-	componentWillMount() {
-		this.setFileInfo(this.props.file)
-	}
-	componentWillReceiveProps({ file }: any) {
-		if (file !== this.props.file) {
-			this.setFileInfo(file)
-		}
-	}
-	getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
-		return new Promise((resolve, reject) => {
-			let url = URL.createObjectURL(file)
-			const img = new Image();
-			img.onload = () => {
-				const { width, height } = img
-				if (skipCopy) {
-					resolve({ width, height, url })
-					return
-				}
-				const c = document.createElement("canvas")
-				const ctx = c.getContext("2d")
-				c.width = width
-				c.height = height
-				ctx.drawImage(img, 0, 0, width, height)
-				url = c.toDataURL()
+
+function getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
+	return new Promise((resolve, reject) => {
+		let url = URL.createObjectURL(file)
+		const img = new Image();
+		img.onload = () => {
+			const { width, height } = img
+			if (skipCopy) {
 				resolve({ width, height, url })
+				return
 			}
-			img.onerror = reject
-			img.src = url
-		})
-	}
-	getVideoInfo(file: File): Promise<Dict> {
-		return new Promise((resolve, reject) => {
-			const vid = document.createElement("video");
-			vid.muted = true;
-			vid.onloadeddata = () => {
-				const { videoWidth: width, videoHeight: height, duration: dur } = vid
-				if (!width || !height) {
-					reject(new Error())
-					return
-				}
-				const c = document.createElement("canvas")
-				const ctx = c.getContext("2d")
-				c.width = width
-				c.height = height
-				ctx.drawImage(vid, 0, 0, width, height)
-				const url = c.toDataURL()
-				resolve({ width, height, dur, url })
-			}
-			vid.onerror = reject
-			vid.src = URL.createObjectURL(file)
-		})
-	}
-	setFileInfo(file: File) {
-		let fn = null
-		let skipCopy = false
-		if (file.type.startsWith("video/")) {
-			fn = this.getVideoInfo
-		} else {
-			fn = this.getImageInfo
-			// TODO(Kagami): Dump first frame of APNG and animated WebP.
-			if (file.type !== "image/gif") {
-				skipCopy = true
-			}
+			const c = document.createElement("canvas")
+			const ctx = c.getContext("2d")
+			c.width = width
+			c.height = height
+			ctx.drawImage(img, 0, 0, width, height)
+			url = c.toDataURL()
+			resolve({ width, height, url })
 		}
-		fn(file, skipCopy).then((info: Dict) => {
-			this.setState(info)
-		}, () => {
-			showAlert(ln.UI.unsupFile)
-			// A bit stupid but simpler than calling getInfo in parent
-			// component.
-			this.handleRemove()
-		})
+		img.onerror = reject
+		img.src = url
+	})
+}
+
+function getVideoInfo(file: File): Promise<Dict> {
+	return new Promise((resolve, reject) => {
+		const vid = document.createElement("video");
+		vid.muted = true;
+		vid.onloadeddata = () => {
+			const { videoWidth: width, videoHeight: height, duration: dur } = vid
+			if (!width || !height) {
+				reject(new Error())
+				return
+			}
+			const c = document.createElement("canvas")
+			const ctx = c.getContext("2d")
+			c.width = width
+			c.height = height
+			ctx.drawImage(vid, 0, 0, width, height)
+			const url = c.toDataURL()
+			resolve({ width, height, dur, url })
+		}
+		vid.onerror = reject
+		vid.src = URL.createObjectURL(file)
+	})
+}
+
+function getFileInfo(file: File): Promise<Dict> {
+	let fn = null
+	let skipCopy = false
+	if (file.type.startsWith("video/")) {
+		fn = getVideoInfo
+	} else {
+		fn = getImageInfo
+		// TODO(Kagami): Dump first frame of APNG and animated WebP.
+		if (file.type !== "image/gif") {
+			skipCopy = true
+		}
 	}
+	return fn(file, skipCopy)
+}
+
+class FilePreview extends Component<any, any> {
 	handleRemove = () => {
 		this.props.onRemove()
 	}
-	get info(): string {
-		const { type, size } = this.props.file
-		const { width, height, dur } = this.state
+	renderInfo(): string {
+		const { size } = this.props.file
+		const { width, height, dur } = this.props.info
 		let s = `${width}×${height}, ${fileSize(size)}`
-		if (type.startsWith("video/")) {
+		if (dur) {
 			s += `, ${duration(dur)}`
 		}
 		return s
 	}
-	render({}, { url }: any) {
-		if (!url) return null
+	render(props: any) {
+		const url = props.info.url
 		return (
 			<div class="reply-file-preview">
 				<a class="control reply-remove-file-control" onClick={this.handleRemove}>
 					<i class="fa fa-remove" />
 				</a>
 				<img class="reply-file-thumb" src={url} />
-				<div class="reply-file-info">{this.info}</div>
+				<div class="reply-file-info">{this.renderInfo()}</div>
 			</div>
 		)
 	}
@@ -156,7 +139,7 @@ class Reply extends Component<any, any> {
 		thread: page.thread,
 		subject: "",
 		body: "",
-		files: [] as [File],
+		files: [] as [{file: File, info: Dict}],
 	}
 	componentWillMount() {
 		const { quoted } = this.props
@@ -203,15 +186,19 @@ class Reply extends Component<any, any> {
 			}
 		}
 	}
-	get style() {
-		const { float, left, top } = this.state
-		return float ? {position: "fixed", left, top} : null
+	componentDidUpdate() {
+		this.bodyEl.style.height = this.getBodyHeight()
 	}
-	get bodyHeight() {
+	getBodyHeight() {
 		// See <https://stackoverflow.com/a/995374>.
 		if (!this.bodyEl) return "auto"
 		this.bodyEl.style.height = "1px"
-		return this.bodyEl.scrollHeight + "px"
+		const height = Math.min(this.bodyEl.scrollHeight, window.innerHeight - 200)
+		return height + "px"
+	}
+	get style() {
+		const { float, left, top } = this.state
+		return float ? {position: "fixed", left, top} : null
 	}
 	get invalid() {
 		const { subject, body, files } = this.state
@@ -304,8 +291,8 @@ class Reply extends Component<any, any> {
 	}
 	handleBodyChange = (e: any) => {
 		this.setState({body: e.target.value})
-		// XXX(Kagami): Prevents flickering if set early.
-		this.bodyEl.style.height = this.bodyHeight
+		// Prevents flickering if set early.
+		this.bodyEl.style.height = this.getBodyHeight()
 	}
 	handleAttach = () => {
 		this.fileEl.click()
@@ -323,11 +310,18 @@ class Reply extends Component<any, any> {
 			return
 		}
 
-		this.setState({files: [file]})
+		// Add file only if was able to grab info.
+		getFileInfo(file).then((info: Dict) => {
+			const files = [{file, info}]
+			this.setState({files})
+		}, () => {
+			showAlert(ln.UI["unsupFile"])
+		})
 	}
 	handleSend = () => {
 		if (this.disabled) return
-		const { board, thread, subject, body, files } = this.state
+		const { board, thread, subject, body } = this.state
+		const files = this.state.files.map(f => f.file)
 		const fn = page.thread ? API.post.create : API.thread.create
 		this.setState({sending: true})
 		fn({board, thread, subject, body, files}).then((res: Dict) => {
@@ -384,7 +378,7 @@ class Reply extends Component<any, any> {
 		const file = files[0]
 		return (
 			<div class="reply-file-previews" key="files">
-				<FilePreview file={file} onRemove={this.handleAttachRemove} />
+				<FilePreview {...file} onRemove={this.handleAttachRemove} />
 			</div>
 		);
 	}
@@ -396,7 +390,7 @@ class Reply extends Component<any, any> {
 					{this.renderHeader()}
 					<textarea
 						class="reply-body"
-						style={{height: this.bodyHeight}}
+						style={{height: this.getBodyHeight()}}
 						ref={s(this, "bodyEl")}
 						value={body}
 						disabled={sending}
