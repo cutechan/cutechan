@@ -1,5 +1,4 @@
 {% import "encoding/json" %}
-{% import "strings" %}
 {% import "meguca/config" %}
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
@@ -117,54 +116,6 @@ TODO(Kagami): Remove.
 				</div>
 			{% endfor %}
 		</div>
-	</div>
-{% endstripspace %}{% endfunc %}
-
-TODO(Kagami): Remove.
-{% func modModal(pos auth.ModerationLevel) %}{% stripspace %}
-	{% code ln := lang.Get() %}
-	<div id="moderation-panel" class="modal">
-		<form>
-			{% if pos >= auth.Moderator %}
-				<div id="ban-form" class="hidden">
-					{% for _, id  := range [...]string{"day", "hour", "minute"} %}
-						<input type="number" name="{%s id %}" min="0" placeholder="{%s strings.Title(ln.Common.Plurals[id][1]) %}">
-					{% endfor %}
-					<br>
-					<input type="text" name="reason" required class="full-width" placeholder="{%s ln.UI["reason"] %}" disabled>
-					<br>
-					{% if pos == auth.Admin %}
-						<label>
-							<input type="checkbox" name="global">
-							{%s ln.UI["global"] %}
-						</label>
-					{% endif %}
-				</div>
-			{% endif %}
-			{% if pos == auth.Admin %}
-				<div id="notification-form" class="hidden">
-					<input type="text" name="notification" required class="full-width" placeholder="{%s ln.UI["text"] %}" style="min-width: 20em;" disabled>
-					<br>
-				</div>
-			{% endif %}
-			<input type="checkbox" name="showCheckboxes" title="Show mod checkboxes">
-			<select name="action">
-				{% code ids := append(make([]string, 0, 5), "deletePost", "deleteImage") %}
-				{% if pos >= auth.Moderator %}
-					{% code ids = append(ids, "ban") %}
-				{% endif %}
-				{% if pos == auth.Admin %}
-					{% code ids = append(ids, "notification") %}
-				{% endif %}
-				{% for _, id := range ids %}
-					<option value="{%s id %}">
-						{%s ln.UI[id] %}
-					</option>
-				{% endfor %}
-			</select>
-			<input type="button" value="{%s ln.UI["clear"] %}" name="clear">
-			{%= submit(false) %}
-		</form>
 	</div>
 {% endstripspace %}{% endfunc %}
 
