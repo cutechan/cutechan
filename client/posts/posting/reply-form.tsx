@@ -166,6 +166,7 @@ class Reply extends Component<any, any> {
 		}
 	}
 	componentDidMount() {
+		hook(HOOKS.openReply, this.focus)
 		hook(HOOKS.sendReply, this.handleSend)
 		document.addEventListener(
 			"mousemove",
@@ -180,6 +181,7 @@ class Reply extends Component<any, any> {
 		this.focus()
 	}
 	componentWillUnmount() {
+		unhook(HOOKS.openReply, this.focus)
 		unhook(HOOKS.sendReply, this.handleSend)
 		document.removeEventListener(
 			"mousemove",
