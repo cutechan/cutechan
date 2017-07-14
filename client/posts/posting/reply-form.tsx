@@ -152,7 +152,7 @@ class Reply extends Component<any, any> {
 		left: 0,
 		top: 0,
 		sending: false,
-		board: page.board === "all" ? boards[0] : page.board,
+		board: page.board === "all" ? boards[0].id : page.board,
 		thread: page.thread,
 		subject: "",
 		body: "",
@@ -353,8 +353,8 @@ class Reply extends Component<any, any> {
 				disabled={sending}
 				onInput={this.handleBoardChange}
 			>
-				{boards.map(b =>
-				<option class="reply-board-item" key={b} value={b}>{b}</option>
+				{boards.map(({ id }) =>
+				<option class="reply-board-item" key={id} value={id}>{id}</option>
 				)}
 			</select>
 		)

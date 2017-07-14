@@ -18,6 +18,12 @@ interface Config {
 	imageRootOverride: string
 }
 
+// BoardTitle contains a board's ID and title
+export interface BoardTitle {
+	id: string
+	title: string
+}
+
 // Board-specific configurations
 export interface BoardConfig {
 	title: string
@@ -43,7 +49,7 @@ const YEAR = 365 * 24 * 60 * 60 * 1000
 export const config: Config = (window as any).config
 
 // Currently existing boards
-export let boards: string[] = (window as any).boards
+export let boards: [BoardTitle] = (window as any).boards
 
 export let boardConfig: BoardConfig = null
 

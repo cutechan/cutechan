@@ -172,7 +172,7 @@ TODO(Kagami): Remove.
 	{% code conf := config.Get() %}
 	{% code ln := lang.Get() %}
 	{% code confJSON, _ := config.GetClient() %}
-	{% code boards := config.GetBoards() %}
+	{% code boards := config.GetBoardTitles() %}
 	<!DOCTYPE html>
 	<html class="{%s posClass(pos) %}">
 	<head>
@@ -200,7 +200,7 @@ TODO(Kagami): Remove.
 				<nav class="site-nav">
 					<a class="site-nav-item" href="/all/">all</a>
 					{% for _, b := range boards %}
-						<a class="site-nav-item" href="/{%s b %}/">{%s b %}</a>
+						<a class="site-nav-item" href="/{%s b.ID %}/">{%s b.ID %}</a>
 					{% endfor %}
 				</nav>
 				<a id="banner-options" class="banner-item banner-icon" title="{%s ln.UI["options"] %}">

@@ -190,7 +190,7 @@ export class Post extends Model implements PostData {
 	public setDeleted() {
 		if (this.opPost) {
 			if (page.thread) {
-				location.href = "/"
+				location.href = "/all/"
 			} else {
 				posts.removeThread(this)
 				this.view.removeThread()
