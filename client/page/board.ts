@@ -1,7 +1,6 @@
 import { BOARD_SEARCH_INPUT_SEL } from "../vars"
 import { on } from '../util'
 import { page, posts, loadFromDB } from '../state'
-import options from '../options'
 import { Post, findSyncwatches } from "../posts"
 import { extractPost, reparseOpenPosts, extractPageData } from "./common"
 import { setPostCount } from "./thread"
@@ -12,7 +11,6 @@ type SortFunction = (a: Post, b: Post) => number
 // Thread sort functions
 const sorts: { [name: string]: SortFunction } = {
 	bump: subtract("bumpTime"),
-	lastReply: subtract("replyTime"),
 	creation: subtract("time"),
 	replyCount: subtract("postCtr"),
 	fileCount: subtract("imageCtr"),
@@ -81,13 +79,6 @@ export function sortThreads(initial: boolean) {
 	}
 
 	const [cont, threads] = getThreads()
-
-	// Index board pages use the same localization functions as threads
-	if (page.catalog && options.workModeToggle) {
-		for (let el of cont.querySelectorAll("img.catalog")) {
-			el.style.display = "none"
-		}
-	}
 
 	const sortMode = localStorage.getItem("catalogSort") || "bump"
 	// Already sorted as needed

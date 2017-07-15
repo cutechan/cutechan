@@ -1,5 +1,5 @@
-{% import "strconv" %}
 {% import "fmt" %}
+{% import "strconv" %}
 {% import "meguca/config" %}
 {% import "meguca/common" %}
 {% import "meguca/lang" %}
@@ -47,12 +47,14 @@
 
 {% func renderBoardSearch(catalog bool) %}{% stripspace %}
 	{% code ln := lang.Get() %}
+	{% code inputClass := "board-search-input" %}
+	{% code if catalog { inputClass += " board-search-input_catalog" } %}
 	<div class="board-search">
-		<input class="board-search-input" type="text" placeholder="{%s ln.UI["search"] %}">
+		<input class="{%s inputClass %}" type="text" placeholder="{%s ln.UI["search"] %}">
 		{% if catalog %}
-			<select name="sortMode">
-				{% for i, s := range [...]string{"bump", "lastReply", "creation", "replyCount", "fileCount"} %}
-					<option value="{%s s %}">
+			<select class="board-sort" name="sortMode">
+				{% for i, s := range [...]string{"bump", "creation", "replyCount", "fileCount"} %}
+					<option class="board-sort-mode" value="{%s s %}">
 						{%s ln.SortModes[i] %}
 					</option>
 				{% endfor %}
@@ -92,40 +94,38 @@
 	</nav>
 {% endstripspace %}{% endfunc %}
 
-CatalogThreads renders thread content for a catalog page. Separate function to
-allow caching of generated posts.
-{% func CatalogThreads(b []common.Thread, json []byte) %}{% stripspace %}
+CatalogThreads renders thread content for a catalog page. Separate
+function to allow caching of generated posts.
+{% func CatalogThreads(b []common.Thread, json []byte, all bool) %}{% stripspace %}
 	<div id="catalog">
 		{% for _, t := range b %}
-			{% code idStr:= strconv.FormatUint(t.ID, 10) %}
-			<article id="post{%s idStr %}">
+			{% code idStr := strconv.FormatUint(t.ID, 10) %}
+			{% code url := fmt.Sprintf("/%s/%s", t.Board, idStr) %}
+			<article class="post post_op post_catalog" id="post{%s idStr %}" data-id="{%s idStr %}">
 				{% if t.Image != nil %}
-					<figure>
+					<figure class="post-file">
 						{% code img := *t.Image %}
-						<a href="/{%s t.Board %}/{%s idStr %}">
-							<img width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}" class="catalog" src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}">
+						<a class="post-file-link" href="{%s url %}">
+							<img class="post-file-thumb" src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
 						</a>
 					</figure>
 				{% endif %}
-				<span class="spaced thread-links hide-empty">
-					<b class="board">
-						/{%s t.Board %}/
-					</b>
-					<span class="counters">
-						{%d int(t.PostCtr) %}/{%d int(t.ImageCtr) %}
-					</span>
-					{% if t.Image == nil %}
-						{%= expandLink(t.Board, idStr) %}
+				<div class="post-header">
+					{% if all %}
+						<a class="post-header-item post-board" href="/{%s t.Board %}/">{%s t.Board %}</a>
 					{% endif %}
-					{%= last100Link(t.Board, idStr) %}
-				</span>
-				<br>
-				<h3>
-					「{%s t.Subject %}」
-				</h3>
-				<blockquote>
-					{%s t.Body %}
-				</blockquote>
+					<a class="post-header-item post-id" href="{%s url %}">#{%s idStr %}</a>
+					<h3 class="post-header-item post-subject">{%s t.Subject %}</h3>
+					<span class="post-header-item post-counter post-posts-counter">
+						<i class="fa fa-comment">{% space %}{%d int(t.PostCtr) %}</i>
+					</span>
+					{% if t.ImageCtr > 0 %}
+						<span class="post-header-item post-counter post-files-counter">
+							<i class="fa fa-image">{% space %}{%d int(t.ImageCtr) %}</i>
+						</span>
+					{% endif %}
+				</div>
+				<blockquote class="post-catalog-message">{%s t.Body %}</blockquote>
 			</article>
 		{% endfor %}
 		<script id="post-data" type="application/json">

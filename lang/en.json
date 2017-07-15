@@ -209,8 +209,7 @@
     "unban": "Unban"
   },
   "sortModes": [
-    "Bump time",
-    "Last reply time",
+    "Reply time",
     "Creation time",
     "Reply count",
     "File count"

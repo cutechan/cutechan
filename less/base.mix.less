@@ -222,39 +222,14 @@ html, body {
   display: none;
 }
 
+#catalog {
+  text-align: center;
+}
+
 .thread {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-}
-
-#catalog {
-  margin: 0 0.85em;
-  article {
-    width: 160px;
-    max-height: 300px;
-    display: inline-block;
-    text-align: center;
-    overflow: hidden;
-    vertical-align: top;
-    padding: 0.6em;
-    margin: 0.15em;
-    blockquote {
-      &:empty {
-        display: none;
-      }
-      min-width: initial;
-      margin: 0;
-      padding: 0;
-    }
-  }
-  figure {
-    float: none;
-    margin: 0;
-    img {
-      margin: 0;
-    }
-  }
 }
 
 .new-thread-container {
@@ -683,7 +658,7 @@ a.referenced {
 }
 
 //////////////////////////////
-// BOARD SEARCH
+// BOARD SEARCH / SORT
 //////////////////////////////
 
 .board-search {
@@ -700,6 +675,38 @@ a.referenced {
     border-color: rgba(82,168,236,.8);
     box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(82,168,236,.6);
   }
+}
+
+.board-search-input_catalog {
+  border-radius: 15px 0 0 15px;
+}
+
+.board-sort {
+  width: 30px;
+  height: 31px;
+  border: 1px solid #ccc;
+  border-left-color: transparent;
+  border-radius: 0 15px 15px 0;
+  color: transparent;
+  background: none;
+  cursor: pointer;
+  outline: none;
+  appearance: none;
+  direction: rtl;
+  background-image:
+    linear-gradient(45deg, transparent 50%, gray 50%),
+    linear-gradient(135deg, gray 50%, transparent 50%);
+  background-position: 8px 14px, 13px 14px;
+  background-size: 5px 5px;
+  background-repeat: no-repeat;
+  &:focus {
+    border-color: rgba(82,168,236,.8);
+    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(82,168,236,.6);
+  }
+}
+
+.board-sort-mode {
+  color: @body;
 }
 
 //////////////////////////////
@@ -780,6 +787,14 @@ header {
   width: 100%;
 }
 
+.post-header-item {
+  display: inline-block;
+}
+
+.post-header-item ~ .post-header-item {
+  margin-left: 10px;
+}
+
 .post-anchor {
   display: block;
   position: relative;
@@ -789,7 +804,6 @@ header {
 
 .post-board {
   display: inline-block;
-  margin-right: 10px;
   padding: 0 4px;
   border-radius: 5px;
   background-color: @link;
@@ -805,13 +819,11 @@ header {
 }
 
 .post-subject {
-  padding-left: 10px;
   color: black;
 }
 
 .post-staff {
   font-weight: bold;
-  padding-left: 10px;
   color: @admin;
 }
 
@@ -819,7 +831,6 @@ header {
   float: right;
   font-style: italic;
   font-size: smaller;
-  padding-left: 10px;
   cursor: default;
   text-decoration: dotted underline;
   color: #333;
@@ -979,6 +990,46 @@ html.pos-notstaff {
   .post-quote-control {
     float: none
   }
+}
+
+//////////////////////////////
+// CATALOG POST
+//////////////////////////////
+
+.post_catalog {
+  width: 200px;
+  height: 250px;
+  display: inline-block;
+  text-align: center;
+  overflow: hidden;
+  vertical-align: top;
+  // TODO(Kagami): See post_op above. Fix this.
+  &:not(.preview) {
+    margin: 10px;
+    padding: 5px;
+    border: 3px dashed #ccc;
+  }
+  &:hover {
+    min-height: 250px;
+    height: auto;
+  }
+
+  .post-file-link {
+    display: inline-block;
+    float: none;
+    margin: 0;
+  }
+}
+
+.post-counter {
+  font-weight: bold;
+  font-size: 12px;
+  cursor: default;
+  color: brown;
+}
+
+.post-catalog-message {
+  margin: 5px 0 0;
 }
 
 //////////////////////////////

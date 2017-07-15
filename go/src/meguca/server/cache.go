@@ -51,7 +51,8 @@ var catalogCache = cache.FrontEnd{
 	},
 
 	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
-		return []byte(templates.CatalogThreads(data.(common.Board), json))
+		all := k.Board == "all"
+		return []byte(templates.CatalogThreads(data.(common.Board), json, all))
 	},
 }
 
