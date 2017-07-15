@@ -2,7 +2,7 @@
  * Expand media attachments to the middle of the screen.
  */
 
-import { POST_FILE_THUMB_SEL, ZOOM_STEP_PX, BANNER_HEIGHT_PX } from "../vars"
+import { TRIGGER_MEDIA_POPUP_SEL, ZOOM_STEP_PX, BANNER_HEIGHT_PX } from "../vars"
 import { getModel } from "../state"
 import { Post } from "./model"
 import { sourcePath } from "./images"
@@ -46,7 +46,7 @@ class Popup {
 		const t = (pH - h) / 2 + BANNER_HEIGHT_PX
 
 		this.el = document.createElement("div")
-		this.el.className = "post-popup"
+		this.el.className = "media-popup"
 		this.el.style.left = l + "px"
 		this.el.style.top = t + "px"
 
@@ -64,7 +64,7 @@ class Popup {
 		}
 		this.itemEl.src = this.url
 		this.itemEl.width = w
-		this.itemEl.className = "post-popup-item"
+		this.itemEl.className = "media-popup-item"
 		this.el.appendChild(this.itemEl)
 
 		this.attach()
@@ -169,6 +169,6 @@ export function isOpen(): boolean {
 
 export default function() {
 	on(document, "click", open, {
-		selector: POST_FILE_THUMB_SEL,
+		selector: TRIGGER_MEDIA_POPUP_SEL,
 	})
 }
