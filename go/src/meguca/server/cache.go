@@ -83,7 +83,7 @@ var boardCache = cache.FrontEnd{
 
 		// Get data and JSON for these views and paginate
 		var (
-			pages = make([]pageStore, 0, len(ids)/20+1)
+			pages = make([]pageStore, 0, (len(ids)-1)/20+1)
 			page  pageStore
 		)
 		closePage := func() {
