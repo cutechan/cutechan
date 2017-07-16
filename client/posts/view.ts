@@ -108,9 +108,9 @@ export default class PostView extends View<Post> {
 
 	// Check if we can see the post or have scrolled past it.
 	public scrolledPast() {
-		const rect = this.el.getBoundingClientRect(),
-			viewW = document.documentElement.clientWidth,
-			viewH = document.documentElement.clientHeight;
+		const rect = this.el.getBoundingClientRect()
+		const viewW = document.body.clientWidth
+		const viewH = document.body.clientHeight
 		return rect.bottom < viewH && rect.left > 0 && rect.left < viewW
 	}
 

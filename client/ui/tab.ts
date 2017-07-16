@@ -36,6 +36,21 @@ function processQueue() {
 	resolve()
 }
 
+// Recalculate unseen post status.
+function recalc() {
+	unseenPosts = 0
+	unseenReplies = false
+	recalcPending = false
+	for (const post of posts) {
+		if (post.seen()) continue
+		unseenPosts += 1
+		if (post.isReply()) {
+			unseenReplies = true
+		}
+	}
+	resolve()
+}
+
 // Resolve tab title and favicon.
 function resolve() {
 	let prefix = ""
@@ -57,20 +72,6 @@ function resolve() {
 		}
 	}
 	apply(prefix, state)
-}
-
-function recalc() {
-	unseenPosts = 0
-	unseenReplies = false
-	recalcPending = false
-	for (const post of posts) {
-		if (post.seen()) continue
-		unseenPosts += 1
-		if (post.isReply()) {
-			unseenReplies = true
-		}
-	}
-	resolve()
 }
 
 // Write tab title and favicon to DOM.
@@ -124,6 +125,12 @@ function cacheDiscoFavicon() {
 		.then(blob => discoFavicon = URL.createObjectURL(blob))
 }
 
+function onScroll() {
+	if (recalcPending || document.hidden) return
+	recalcPending = true
+	setTimeout(recalc, 200)
+}
+
 export function init() {
 	cacheDiscoFavicon()
 
@@ -131,11 +138,8 @@ export function init() {
 	connSM.on(connState.dropped, delayedDiscoRender)
 	connSM.on(connState.desynced, delayedDiscoRender)
 
-	document.addEventListener("scroll", () => {
-		if (recalcPending || document.hidden) return
-		recalcPending = true
-		setTimeout(recalc, 200)
-	}, { passive: true })
+	document.addEventListener("scroll", onScroll, { passive: true })
+	document.addEventListener("visibilitychange", onScroll)
 }
 
 // Update unseen post count based on post visibility and scroll
