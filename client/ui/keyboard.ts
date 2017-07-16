@@ -7,9 +7,10 @@ import options from "../options"
 import { page } from "../state"
 import { getID, trigger, HOOKS } from "../util"
 
-// Bind keyboard event listener to the document
-export default () =>
+// Bind keyboard event listener to the document.
+export function init() {
 	document.addEventListener("keydown", handleShortcut)
+}
 
 function handleShortcut(event: KeyboardEvent) {
 	let caught = false

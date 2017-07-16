@@ -80,55 +80,8 @@ export class Post extends Model implements PostData {
 		}
 	}
 
-	// Append a character to the text body
-	public append(code: number) {
-		const char = String.fromCodePoint(code)
-		this.body += char
-
-		// It is possible to receive text body updates after a post closes,
-		// due to server-side buffering optimizations. If so, rerender the body.
-		const needReparse = char === "\n"
-			|| !this.editing
-			|| this.state.code
-			|| endsWithTag(this.body)
-		if (needReparse) {
-			this.view.reparseBody()
-		} else {
-			// this.view.appendString(char)
-		}
-	}
-
-	// Backspace one character in the current line
-	public backspace() {
-		const needReparse = this.body[this.body.length - 1] === "\n"
-			|| !this.editing
-			|| this.state.code
-			|| endsWithTag(this.body)
-		this.body = this.body.slice(0, -1)
-		if (needReparse) {
-			this.view.reparseBody()
-		} else {
-			// this.view.backspace()
-		}
-	}
-
-	// Splice the current open line of text
-	public splice(msg: SpliceResponse) {
-		this.spliceText(msg)
-		this.view.reparseBody()
-	}
-
-	// Extra method for code reuse in post forms
-	protected spliceText({ start, len, text }: SpliceResponse) {
-		// Must use arrays of chars to properly splice multibyte unicode
-		const arr = [...this.body]
-		arr.splice(start, len, ...text)
-		this.body = arr.join("")
-	}
-
 	// Check if this post replied to one of the user's posts and trigger
-	// handlers.
-	// Set and render backlinks on any linked posts.
+	// handlers. Set and render backlinks on any linked posts.
 	public propagateLinks() {
 		if (this.isReply()) {
 			notifyAboutReply(this)
@@ -143,11 +96,9 @@ export class Post extends Model implements PostData {
 		}
 	}
 
-	// Returns, if post is a reply to one of the user's posts
+	// Returns, if post is a reply to one of the user's posts.
 	public isReply() {
-		if (!this.links) {
-			return false
-		}
+		if (!this.links) return false
 		for (let [id] of this.links) {
 			if (mine.has(id)) {
 				return true
@@ -156,7 +107,7 @@ export class Post extends Model implements PostData {
 		return false
 	}
 
-	// Insert data about another post linking this post into the model
+	// Insert data about another post linking this post into the model.
 	public insertBacklink(id: number, op: number) {
 		if (!this.backlinks) {
 			this.backlinks = {}
@@ -165,28 +116,20 @@ export class Post extends Model implements PostData {
 		this.view.renderBacklinks()
 	}
 
-	// Insert an image into an existing post
+	// Insert an image into an existing post.
 	public insertImage(img: ImageData) {
 		this.image = img
 		// this.view.renderImage(false)
 	}
 
-	// Close an open post and reparse its last line
-	public closePost() {
-		this.editing = false
-		// this.view.closePost()
-	}
-
-	// Set post as banned
+	// Set post as banned.
 	public setBanned() {
-		if (this.banned) {
-			return
-		}
+		if (this.banned) return
 		this.banned = true
 		this.view.renderBanned()
 	}
 
-	// Set post as deleted
+	// Set post as deleted.
 	public setDeleted() {
 		if (this.opPost) {
 			if (page.thread) {
@@ -206,29 +149,41 @@ export class Post extends Model implements PostData {
 		// this.view.removeImage()
 	}
 
-	// Returns, if this post has been seen already
+	// Returns, if this post has been seen already.
 	public seen() {
+		if (this.seenOnce) return true
+		if (document.hidden) return false
+		this.seenOnce = this.view.scrolledPast()
 		if (this.seenOnce) {
-			return true
-		}
-		if (document.hidden) {
-			return false
-		}
-		if (this.seenOnce = this.view.scrolledPast()) {
 			storeSeenPost(this.id, this.op)
 		}
 		return this.seenOnce
 	}
-}
 
-function endsWithTag(body: string): boolean {
-	switch (body[body.length - 1]) {
-		case ">":
-			return true
-		case "*":
-			return body[body.length - 2] === "*"
-		case "`":
-			return body[body.length - 2] === "`"
+	// Append a character to the text body.
+	// TODO(Kagami): Remove.
+	public append(code: number) {
 	}
-	return false
+
+	// Backspace one character in the current line.
+	// TODO(Kagami): Remove.
+	public backspace() {
+	}
+
+	// Splice the current open line of text.
+	// TODO(Kagami): Remove.
+	public splice(msg: SpliceResponse) {
+	}
+
+	// Extra method for code reuse in post forms.
+	// TODO(Kagami): Remove.
+	protected spliceText(msg: SpliceResponse) {
+	}
+
+	// Close an open post and reparse its last line.
+	// TODO(Kagami): Remove.
+	public closePost() {
+		this.editing = false
+		// this.view.closePost()
+	}
 }

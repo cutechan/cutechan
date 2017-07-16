@@ -4,8 +4,8 @@ export { default as notifyAboutReply, OverlayNotification } from "./notification
 export { default as CaptchaView } from "./captcha"
 import { BannerModal } from "../base"
 
-import initKeyboard from "./keyboard"
-import initTab from "./tab"
+import { init as initKeyboard } from "./keyboard"
+import { init as initTab } from "./tab"
 import OptionPanel from "./options"
 
 export function init() {
