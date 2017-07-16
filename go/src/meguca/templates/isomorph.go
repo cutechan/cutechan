@@ -62,7 +62,6 @@ type BacklinksContext struct {
 	Backlinks []string
 }
 
-// FIXME(Kagami): Return pointer, don't create context for each post?
 func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index bool, all bool) PostContext {
 	ln := lang.Get()
 	return PostContext{
@@ -83,10 +82,10 @@ func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index
 }
 
 func (ctx PostContext) Render() string {
-	return renderMustache("post", ctx)
+	return renderMustache("post", &ctx)
 }
 
-func (ctx PostContext) PostClass() string {
+func (ctx *PostContext) PostClass() string {
 	classes := []string{"post"}
 	if ctx.OP {
 		classes = append(classes, "post_op")
@@ -97,7 +96,7 @@ func (ctx PostContext) PostClass() string {
 	return strings.Join(classes, " ")
 }
 
-func (ctx PostContext) URL() (url string) {
+func (ctx *PostContext) URL() (url string) {
 	if !ctx.OP {
 		url = fmt.Sprintf("#%d", ctx.ID)
 	}
@@ -115,7 +114,7 @@ func pad(buf []byte, i int) []byte {
 	return append(buf, strconv.Itoa(i)...)
 }
 
-func (ctx PostContext) Time() string {
+func (ctx *PostContext) Time() string {
 	ln := lang.Get().Common.Time
 
 	t := time.Unix(ctx.post.Time, 0)
@@ -158,32 +157,31 @@ func fileSize(size int) string {
 	}
 }
 
-func (ctx PostContext) File() string {
+func (ctx *PostContext) File() string {
 	if ctx.post.Image == nil {
 		return ""
-	} else {
-		img := ctx.post.Image
-		ctx := FileContext{
-			HasArtist: img.Artist != "",
-			Artist: img.Artist,
-			HasTitle: img.Title != "",
-			Title: img.Title,
-			HasAudio: img.Audio,
-			HasLength: img.Length != 0,
-			Length: duration(img.Length),
-			Size: fileSize(img.Size),
-			Width: img.Dims[0],
-			Height: img.Dims[1],
-			TWidth: img.Dims[2],
-			THeight: img.Dims[3],
-			SourcePath: assets.SourcePath(img.FileType, img.SHA1),
-			ThumbPath: assets.ThumbPath(img.ThumbType, img.SHA1),
-		}
-		return renderMustache("post-file", ctx)
 	}
+	img := ctx.post.Image
+	fileCtx := FileContext{
+		HasArtist: img.Artist != "",
+		Artist: img.Artist,
+		HasTitle: img.Title != "",
+		Title: img.Title,
+		HasAudio: img.Audio,
+		HasLength: img.Length != 0,
+		Length: duration(img.Length),
+		Size: fileSize(img.Size),
+		Width: img.Dims[0],
+		Height: img.Dims[1],
+		TWidth: img.Dims[2],
+		THeight: img.Dims[3],
+		SourcePath: assets.SourcePath(img.FileType, img.SHA1),
+		ThumbPath: assets.ThumbPath(img.ThumbType, img.SHA1),
+	}
+	return renderMustache("post-file", &fileCtx)
 }
 
-func (ctx PostContext) Body() string {
+func (ctx *PostContext) Body() string {
 	buf := quicktemplate.AcquireByteBuffer()
 	defer quicktemplate.ReleaseByteBuffer(buf)
 	w := quicktemplate.AcquireWriter(buf)
@@ -200,29 +198,28 @@ func postLink(id uint64, cross, index bool) string {
 		url += "/all/" + idStr
 	}
 	url += "#" + idStr
-	ctx := PostLinkContext{
+	linkCtx := PostLinkContext{
 		ID: idStr,
 		URL: url,
 		Cross: cross,
 	}
-	return renderMustache("post-link", ctx)
+	return renderMustache("post-link", &linkCtx)
 }
 
-func (ctx PostContext) Backlinks() string {
+func (ctx *PostContext) Backlinks() string {
 	if links := ctx.backlinks[ctx.ID]; links != nil {
 		var list []string
 		for id, op := range links {
 			list = append(list, postLink(id, op != ctx.TID, ctx.Index))
 		}
 		ln := lang.Get()
-		ctx := BacklinksContext{
+		linkCtx := BacklinksContext{
 			LReplies: ln.Common.UI["replies"],
 			Backlinks: list,
 		}
-		return renderMustache("post-backlinks", ctx)
-	} else {
-		return ""
+		return renderMustache("post-backlinks", &linkCtx)
 	}
+	return ""
 }
 
 func getPluralFormIndex(langCode string, n int) int {
