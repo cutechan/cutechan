@@ -5,13 +5,13 @@
 
 import { ln } from "./lang"
 import { FormModel, postSM, postEvent, postState } from "./posts"
-import { Dict, postJSON, postForm } from "./util"
+import { Dict, uncachedGET, postJSON, postForm } from "./util"
 
 function handleErr(res: Response): Promise<Dict> {
 	const type = res.headers.get("Content-Type")
 	if (type === "application/json") {
 		return res.json().then(data => {
-			throw new Error(data.message || ln.UI.unknownErr)
+			throw new Error(data.message || ln.UI["unknownErr"])
 		})
 	} else {
 		return res.text().then(data => {
@@ -26,16 +26,19 @@ type ReqFn = (url: string, data: Dict) => Promise<Response>
 
 function req(reqFn: ReqFn, method: string, url: string) {
 	url = `/api/${url}`
-	return function(data: Dict): Promise<Dict> {
+	return function(data?: Dict): Promise<Dict> {
 		return reqFn(url, data).then(res => {
 			if (!res.ok) return handleErr(res)
-			return res.json().catch(() => { throw new Error(ln.UI.unknownErr) })
+			return res.json().catch(() => { throw new Error(ln.UI["unknownErr"]) })
 		})
 	}
 }
 
 // Convenient helper.
-const send = {
+const emit = {
+	GET: {
+		JSON: req.bind(null, uncachedGET, "GET"),
+	},
 	POST: {
 		JSON: req.bind(null, postJSON, "POST"),
 		Form: req.bind(null, postForm, "POST"),
@@ -63,15 +66,16 @@ function createPostWS({ body }: Dict): Promise<Dict> {
 
 export const API = {
 	thread: {
-		create: send.POST.Form("thread"),
+		create: emit.POST.Form("thread"),
 	},
 	post: {
-		create: send.POST.Form("post"),
+		get: (id: number) => emit.GET.JSON(`post/${id}`)(),
+		create: emit.POST.Form("post"),
 		createWS: createPostWS,
-		delete: send.POST.JSON("delete-post"),
+		delete: emit.POST.JSON("delete-post"),
 	},
 	user: {
-		banByPost: send.POST.JSON("ban"),
+		banByPost: emit.POST.JSON("ban"),
 	},
 }
 

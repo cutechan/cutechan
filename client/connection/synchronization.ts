@@ -4,10 +4,10 @@ import {
 	getPostModel, postSM, postEvent, postState, FormModel, Post
 } from "../posts"
 import { page, posts, displayLoading } from "../state"
-import { uncachedGET, extend } from "../util"
-import { PostData } from "../common"
+import { extend } from "../util"
 import { insertPost } from "../client"
 import { showAlert } from "../alerts"
+import API from "../api"
 
 // Passed from the server to allow the client to synchronise state, before
 // consuming any incoming update messages.
@@ -79,23 +79,15 @@ async function syncOpenPost(
 
 // Fetch a post not present on the client and render it
 async function fetchMissingPost(id: number) {
-	insertPost(await fetchPost(id))
+	insertPost(await API.post.get(id))
 	posts.get(id).view.reposition()
 }
 
 // Fetch a post that should be closed, but isn't
 async function fetchUnclosed(post: Post) {
-	extend(post, await fetchPost(post.id))
+	extend(post, await API.post.get(post.id))
 	post.propagateLinks()
 	// post.view.render()
-}
-
-async function fetchPost(id: number): Promise<PostData> {
-	const r = await uncachedGET(`/api/post/${id}`)
-	if (r.status !== 200) {
-		throw await r.text()
-	}
-	return r.json()
 }
 
 // Handle response to a open post reclaim request
@@ -149,7 +141,8 @@ handlers[message.synchronise] = async (data: SyncData) => {
 		for (let id of recent) {
 			// Missing posts, that are open, will be fetched by the loop above
 			if (id >= minID && !posts.get(id) && !open[id]) {
-				proms.push(fetchMissingPost(id))
+				// FIXME(Kagami): Remove deleted posts from recent.
+				proms.push(fetchMissingPost(id).catch(() => {}))
 			}
 		}
 
