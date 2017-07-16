@@ -1,13 +1,9 @@
-//go:generate go-bindata -o bin_data.go --pkg templates --nometadata --prefix ../../../../mustache-pp ../../../../mustache-pp/...
-
 package templates
 
 import (
 	"html"
 	"time"
 	"meguca/common"
-	"meguca/auth"
-	"github.com/hoisie/mustache"
 )
 
 // Extract reverse links to linked posts on a page
@@ -84,22 +80,4 @@ func correctTimeZone(t time.Time) time.Time {
 		0,
 		time.Local,
 	).UTC()
-}
-
-func posClass(pos auth.ModerationLevel) string {
-	posStr := pos.String()
-	if posStr == "" {
-		posStr = "notstaff"
-	}
-	return "pos-" + posStr
-}
-
-// TODO(Kagami): Partials?
-// FIXME(Kagami): Pre-parse, check for errors.
-func renderMustache(name string, ctx interface{}) string {
-	buf, err := Asset(name + ".mustache")
-	if err != nil {
-		return ""
-	}
-	return mustache.Render(string(buf), ctx)
 }

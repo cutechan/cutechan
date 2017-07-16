@@ -1,4 +1,5 @@
 //go:generate qtc
+//go:generate go-bindata -o bin_data.go --pkg templates --nometadata --prefix ../../../../mustache-pp ../../../../mustache-pp/...
 
 // Package templates generates and stores HTML templates
 package templates
@@ -7,15 +8,19 @@ import (
 	"bytes"
 	"fmt"
 	h "html"
+	"strings"
+	"sync"
 	"meguca/auth"
 	"meguca/config"
 	"meguca/lang"
-	"sync"
+	"github.com/hoisie/mustache"
 )
 
 var (
 	indexTemplates map[auth.ModerationLevel][3][]byte
 	mu             sync.RWMutex
+
+	mustacheTemplates = map[string]*mustache.Template{}
 )
 
 // Injects dynamic variables, hashes and stores compiled templates
@@ -92,4 +97,25 @@ func execIndex(html, title string, pos auth.ModerationLevel) []byte {
 		[]byte(html),
 		t[2],
 	}, nil)
+}
+
+func CompileMustache() error {
+	for _, name := range AssetNames() {
+		if strings.HasSuffix(name, ".mustache") {
+			tmpl, err := mustache.ParseString(string(MustAsset(name)))
+			if err != nil {
+				return fmt.Errorf("Failed to compile %s: %v", name, err)
+			}
+			tmplName := name[:len(name)-9]
+			mustacheTemplates[tmplName] = tmpl
+		}
+	}
+	return nil
+}
+
+func renderMustache(name string, ctx interface{}) string {
+	if tmpl, ok := mustacheTemplates[name]; ok {
+		return tmpl.Render(ctx)
+	}
+	return ""
 }

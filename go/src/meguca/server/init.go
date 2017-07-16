@@ -168,6 +168,8 @@ func startServer() {
 	wg.Wait()
 	load(templates.Compile)
 	wg.Wait()
+	load(templates.CompileMustache)
+	wg.Wait()
 
 	log.Fatal(startWebServer())
 }

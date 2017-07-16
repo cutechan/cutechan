@@ -9,6 +9,7 @@ import (
 	"time"
 	"strings"
 	"strconv"
+	"meguca/auth"
 	"meguca/common"
 	"meguca/config"
 	"meguca/imager/assets"
@@ -248,4 +249,12 @@ func getPluralFormIndex(langCode string, n int) int {
 func pluralize(num int, plurals []string) string {
 	langCode := config.Get().DefaultLang
 	return plurals[getPluralFormIndex(langCode, num)]
+}
+
+func posClass(pos auth.ModerationLevel) string {
+	posStr := pos.String()
+	if posStr == "" {
+		posStr = "notstaff"
+	}
+	return "pos-" + posStr
 }
