@@ -80,10 +80,6 @@ table {
   }
 }
 
-iframe {
-  background: white;
-}
-
 h1, h2 {
   text-align: center;
 }
@@ -892,26 +888,9 @@ html.work-mode {
   }
 }
 
-.embed {
-  background-color: rgba(255, 255, 255, 0.5);
-  border-radius: 4px;
-  display: inline-block;
-  font-style: normal;
-  margin: 0.1em;
-  padding: 2px;
-  color: black;
-  &.expanded {
-    max-width: 480px;
-  }
-  & > iframe {
-    display: block;
-    margin: auto;
-  }
-}
-
 .post-message {
   margin: 0;
-  max-height: 300px;
+  max-height: 350px;
   overflow-y: auto;
 }
 
@@ -960,6 +939,26 @@ html.pos-notstaff {
   .post-ban-control,
   {
     display: none;
+  }
+}
+
+//////////////////////////////
+// POST EMBED
+//////////////////////////////
+
+.embed {
+  border-radius: 4px;
+  display: inline-block;
+  font-style: normal;
+  margin: 0.1em;
+  padding: 2px;
+  color: black;
+  &.expanded {
+    max-width: 480px;
+  }
+  & > iframe {
+    display: block;
+    margin: auto;
   }
 }
 
