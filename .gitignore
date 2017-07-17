@@ -16,3 +16,5 @@ uploads
 thumb_*.jpg
 thumb_*.png
 tags
+/deb_dist/
+/*.deb

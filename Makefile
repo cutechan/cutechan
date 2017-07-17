@@ -12,37 +12,18 @@ endif
 
 .PHONY: client tags
 
-all: client server
+all: deps templates client server
 
-client: client-deps client-build
-
-client-deps:
+deps:
 	npm install --progress=false
-
-client-build: templates
-	$(GULP)
-
-watch: templates
-	$(GULP) -w
-
-server: server-deps server-build
-
-server-deps: client-deps
 	go get -v \
 		github.com/valyala/quicktemplate/qtc \
 		github.com/jteeuwen/go-bindata/... \
 		github.com/mailru/easyjson/...
 	go list -f '{{.Deps}}' meguca | tr -d '[]' | xargs go get -v
 
-server-build: templates
-	go generate meguca/...
-	go build -v -o cutechan meguca
-
-templates:
-	$(HTMLMIN) --collapse-whitespace --collapse-inline-tag-whitespace \
-		--input-dir mustache --output-dir mustache-pp
-
 update-deps:
+	npm update
 	go get -u -v \
 		github.com/valyala/quicktemplate/qtc \
 		github.com/jteeuwen/go-bindata/... \
@@ -52,7 +33,30 @@ update-deps:
 		xargs go list -e -f '{{if not .Standard}}{{.ImportPath}}{{end}}' |\
 		grep -v meguca |\
 		xargs go get -u -v
-	npm update
+
+templates:
+	$(HTMLMIN) --collapse-whitespace --collapse-inline-tag-whitespace \
+		--input-dir mustache --output-dir mustache-pp
+
+client:
+	$(GULP)
+
+watch:
+	$(GULP) -w
+
+server:
+	go generate meguca/...
+	go build -v -o cutechan meguca
+
+deb: clean templates client server
+	mkdir deb_dist
+	cp -a DEBIAN deb_dist
+	mkdir -p deb_dist/usr/share/cutechan/www
+	cp -a dist/* deb_dist/usr/share/cutechan/www
+	mkdir -p deb_dist/usr/bin
+	cp -a cutechan deb_dist/usr/bin
+	chmod -R go+rX deb_dist
+	fakeroot dpkg -b deb_dist cutechan.deb
 
 test:
 	go test -race -p 1 meguca/...
@@ -69,7 +73,10 @@ test-build:
 tags:
 	ctags -R go/src/meguca client
 
-clean: client-clean server-clean templates-clean test-clean
+clean: templates-clean client-clean server-clean deb-clean test-clean
+
+templates-clean:
+	rm -rf mustache-pp
 
 client-clean:
 	rm -rf dist
@@ -81,8 +88,8 @@ server-clean:
 		go/src/meguca/config/*_easyjson.go \
 		go/src/meguca/templates/*.qtpl.go
 
-templates-clean:
-	rm -rf mustache-pp
+deb-clean:
+	rm -rf deb_dist *.deb
 
 test-clean:
 	rm -rf go/multipart-* \
@@ -94,4 +101,4 @@ test-clean:
 distclean: clean
 	rm -rf uploads
 	rm -rf node_modules package-lock.json
-	rm -rf go/src/github.com go/src/golang.org go/bin go/pkg
+	rm -rf go/src/github.com go/src/golang.org go/bin go/pkg tags

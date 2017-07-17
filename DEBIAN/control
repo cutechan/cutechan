@@ -1,0 +1,8 @@
+Package: cutechan
+Version: 0.0.0
+Architecture: all
+Maintainer: Kagami Hiiragi <kagami@genshiken.org>
+Depends: libavformat57, libswscale4, libgraphicsmagick-q16-3
+Section: web
+Priority: optional
+Description: Cute chan
