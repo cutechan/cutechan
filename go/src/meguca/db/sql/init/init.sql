@@ -65,7 +65,7 @@ create table boards (
 	created timestamp not null,
 	title varchar(100) not null,
 	notice varchar(500) not null,
-	rules varchar(5000) not null,
+	rules varchar(5000) not null
 );
 
 create table staff (
