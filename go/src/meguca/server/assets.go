@@ -17,19 +17,6 @@ import (
 	"github.com/bakape/thumbnailer"
 )
 
-var (
-	// Set of headers for serving images (and other uploaded files)
-	imageHeaders = map[string]string{
-		"Cache-Control":   "max-age=31536000, public",
-		"X-Frame-Options": "sameorigin",
-	}
-)
-
-// Server static assets
-func serveStatic(w http.ResponseWriter, r *http.Request) {
-	serveFile(w, r, cleanJoin(common.WebRoot, extractParam(r, "path")))
-}
-
 // More performant handler for serving image assets. These are immutable
 // (except deletion), so we can also set separate caching policies for them.
 func serveImages(w http.ResponseWriter, r *http.Request) {
@@ -74,9 +61,16 @@ func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 	etag := strconv.FormatInt(modTime.Unix(), 10)
 
 	head := w.Header()
-	head.Set("Cache-Control", "no-cache")
+	for key, val := range vanillaHeaders {
+		head.Set(key, val)
+	}
 	head.Set("ETag", etag)
 	http.ServeContent(w, r, path, modTime, file)
+}
+
+// Server static assets
+func serveStatic(w http.ResponseWriter, r *http.Request) {
+	serveFile(w, r, cleanJoin(common.WebRoot, extractParam(r, "path")))
 }
 
 func serveWorker(w http.ResponseWriter, r *http.Request) {

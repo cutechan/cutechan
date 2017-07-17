@@ -19,12 +19,16 @@ const (
 	numPostsOnRequest = 100
 )
 
-// Base set of HTTP headers for both HTML and JSON
-var vanillaHeaders = map[string]string{
-	"X-Frame-Options": "sameorigin",
-	"Cache-Control":   "no-cache",
-	"Expires":         "Thu, 01 Jan 1970 00:00:01 GMT",
-}
+var (
+	// Base set of HTTP headers for both HTML and JSON
+	vanillaHeaders = map[string]string{
+		"Cache-Control": "no-cache, must-revalidate, max-age=0",
+	}
+	// Set of headers for serving images (and other uploaded files)
+	imageHeaders = map[string]string{
+		"Cache-Control": "max-age=31536000, public",
+	}
+)
 
 // Check is any of the etags the client provides in the "If-None-Match" header
 // match the generated etag. If yes, write 304 and return true.
