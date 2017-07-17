@@ -49,6 +49,7 @@ server:
 	go build -v -o cutechan meguca
 
 deb: clean templates client server
+	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 cutechan
 	mkdir deb_dist
 	cp -a DEBIAN deb_dist
 	mkdir -p deb_dist/usr/share/cutechan/www
