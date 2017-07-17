@@ -1088,6 +1088,9 @@ html.pos-notstaff {
   &:disabled {
     cursor: default;
   }
+  &:focus {
+    outline: none;
+  }
 }
 
 .button {
@@ -1104,6 +1107,9 @@ html.pos-notstaff {
   }
   &:disabled {
     cursor: default;
+  }
+  &:focus {
+    outline: none;
   }
 }
 
@@ -1137,6 +1143,11 @@ html.pos-notstaff {
   // XXX(Kagami): Try to fix inner padding of select. Might looks bad in
   // some browsers. Might try to rewrite with `appearance: none` later.
   margin-left: -4px;
+  // <https://stackoverflow.com/a/19468615>.
+  &:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+  }
 }
 
 .reply-subject {
