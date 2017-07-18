@@ -5,7 +5,7 @@
 import { POST_SEL, BOARD_SEARCH_INPUT_SEL } from "../vars"
 import options from "../options"
 import { page } from "../state"
-import { getID, trigger, HOOKS } from "../util"
+import { getID, scrollToTop, trigger, HOOKS } from "../util"
 
 // Bind keyboard event listener to the document.
 export function init() {
@@ -109,6 +109,7 @@ function navigatePost(reverse: boolean) {
 function navigateSearch() {
 	const el = document.querySelector(BOARD_SEARCH_INPUT_SEL)
 	if (el) {
+		scrollToTop()
 		el.focus()
 	}
 }
