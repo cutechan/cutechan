@@ -17,22 +17,22 @@ import (
 func runCleanupTasks() {
 	// To ensure even the once an hour tasks are run shortly after server start
 	time.Sleep(time.Minute)
-	runMinuteTasks()
+	runFiveMinuteTasks()
 	runHourTasks()
 
-	min5 := time.Tick(time.Minute * 5)
+	fiveMin := time.Tick(time.Minute * 5)
 	hour := time.Tick(time.Hour)
 	for {
 		select {
-		case <-min5:
-			runMinuteTasks()
+		case <-fiveMin:
+			runFiveMinuteTasks()
 		case <-hour:
 			runHourTasks()
 		}
 	}
 }
 
-func runMinuteTasks() {
+func runFiveMinuteTasks() {
 	// logError("open post cleanup", closeDanglingPosts())
 	logPrepared("expire_image_tokens", "expire_bans")
 	logError("image cleanup", deleteUnusedImages())
