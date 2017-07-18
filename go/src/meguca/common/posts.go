@@ -4,6 +4,10 @@
 // throughout the project
 package common
 
+import (
+	"time"
+)
+
 // ParseBody forwards parser.ParseBody to avoid cyclic imports in db/upkeep
 var ParseBody func([]byte, string) ([][2]uint64, []Command, error)
 
@@ -70,3 +74,13 @@ type StandalonePost struct {
 
 // Map of all backlinks on a page
 type Backlinks map[uint64]map[uint64]uint64
+
+// Single news entry.
+// TODO(Kagami): Need to use in both templates/ and db/ and can't keep
+// in db/ because of cyclic imports. Move to some better place.
+type NewsEntry struct {
+	Subject   string
+	Body      string
+	ImageName string
+	Time      time.Time
+}

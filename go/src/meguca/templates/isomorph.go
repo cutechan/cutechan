@@ -28,6 +28,7 @@ type PostContext struct {
 	Subject string
 	Staff bool
 	Auth string
+	Time string
 	Banned bool
 	LBanned string
 	post common.Post
@@ -64,6 +65,7 @@ type BacklinksContext struct {
 
 func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index bool, all bool) PostContext {
 	ln := lang.Get()
+	postTime := time.Unix(p.Time, 0)
 	return PostContext{
 		ID: p.ID,
 		TID: t.ID,
@@ -74,6 +76,7 @@ func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index
 		Subject: t.Subject,
 		Staff: p.Auth != "",
 		Auth: ln.Common.Posts[p.Auth],
+		Time: readableTime(postTime),
 		Banned: p.Banned,
 		LBanned: ln.Common.Posts["banned"],
 		post: p,
@@ -114,10 +117,8 @@ func pad(buf []byte, i int) []byte {
 	return append(buf, strconv.Itoa(i)...)
 }
 
-func (ctx *PostContext) Time() string {
+func readableTime(t time.Time) string {
 	ln := lang.Get().Common.Time
-
-	t := time.Unix(ctx.post.Time, 0)
 	year, m, day := t.Date()
 	weekday := ln["week"][int(t.Weekday())]
 	// Months are 1-indexed for some fucking reason.

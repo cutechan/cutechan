@@ -125,3 +125,11 @@ create index op on posts (op);
 create index image on posts (SHA1);
 create index editing on posts (editing);
 create index ip on posts (ip);
+
+create table news (
+	id bigserial primary key,
+	subject varchar(100) not null,
+	body varchar(2000) not null,
+	imageName varchar(200),
+	time timestamp default (now() at time zone 'utc')
+);

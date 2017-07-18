@@ -1,6 +1,7 @@
 package server
 
 import (
+	"errors"
 	"database/sql"
 	"fmt"
 	"meguca/auth"
@@ -11,6 +12,10 @@ import (
 	"meguca/templates"
 	"net/http"
 	"strconv"
+)
+
+var (
+	errNoNews = errors.New("can't get news")
 )
 
 // Apply headers and write HTML to client
@@ -38,8 +43,13 @@ func serveHTML(
 }
 
 func serveLanding(w http.ResponseWriter, r *http.Request) {
-	// TODO(Kagami): Cache?
-	html := templates.Landing()
+	// TODO(Kagami): Cache.
+	news, err := db.GetNews()
+	if err != nil {
+		text500(w, r, errNoNews)
+		return
+	}
+	html := templates.Landing(news)
 	serveHTML(w, r, "", html, nil)
 }
 

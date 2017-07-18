@@ -426,3 +426,25 @@ func scanThreadIDs(table tableScanner) (ids []uint64, err error) {
 
 // 	return tx.Rollback()
 // }
+
+// Retrieve latest news.
+func GetNews() (news []common.NewsEntry, err error) {
+	r, err := prepared["get_news"].Query()
+	if err != nil {
+		return
+	}
+	defer r.Close()
+
+	news = make([]common.NewsEntry, 0, 5)
+	var entry common.NewsEntry
+	for r.Next() {
+		err = r.Scan(&entry.Subject, &entry.Body, &entry.ImageName, &entry.Time)
+		if err != nil {
+			return
+		}
+		news = append(news, entry)
+	}
+	err = r.Err()
+
+	return
+}

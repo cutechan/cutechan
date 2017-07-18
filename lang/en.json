@@ -146,6 +146,7 @@
     ]
   },
   "ui": {
+    "news": "News",
     "sections": "Sections",
     "board": "Boards",
     "gallery": "Gallery",

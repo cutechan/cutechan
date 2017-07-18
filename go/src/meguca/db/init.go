@@ -227,6 +227,18 @@ var upgrades = []func(*sql.Tx) error{
 		)
 		return
 	},
+	func(tx *sql.Tx) (err error) {
+		_, err = tx.Exec(
+			`create table news (
+				id bigserial primary key,
+				subject varchar(100) not null,
+				body varchar(2000) not null,
+				imageName varchar(200),
+				time timestamp default (now() at time zone 'utc')
+			)`,
+		)
+		return
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both
