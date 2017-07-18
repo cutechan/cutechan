@@ -95,11 +95,11 @@ func Write(SHA1 string, fileType, thumbType uint8, src, thumb []byte) error {
 // Write a single file to disk with the appropriate permissions and flags
 func writeFile(path string, data []byte) error {
 	dir := filepath.Dir(path)
-	if err := os.Mkdir(dir, 0700); err != nil && !os.IsExist(err) {
+	if err := os.Mkdir(dir, 0755); err != nil && !os.IsExist(err) {
 		return err
 	}
 
-	file, err := os.OpenFile(path, fileCreationFlags, 0660)
+	file, err := os.OpenFile(path, fileCreationFlags, 0644)
 	if err != nil {
 		return err
 	}
@@ -124,7 +124,7 @@ func Delete(SHA1 string, fileType, thumbType uint8) error {
 func CreateDirs() error {
 	for _, dir := range [...]string{"src", "thumb"} {
 		path := filepath.Join(common.ImageWebRoot, dir)
-		if err := os.MkdirAll(path, 0700); err != nil {
+		if err := os.MkdirAll(path, 0755); err != nil {
 			return err
 		}
 	}
