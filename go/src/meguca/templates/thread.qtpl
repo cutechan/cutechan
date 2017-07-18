@@ -35,6 +35,7 @@ TODO(Kagami): Fix markup and styles.
 {% endstripspace %}{% endfunc %}
 
 {% func renderThread(postHTML []byte, id uint64, board, title string, abbrev bool, pos auth.ModerationLevel) %}{% stripspace %}
+	<div id="threads-inner">
 	<h1 class="page-title">{%s title %}</h1>
 	{%= renderThreadNavigation(true) %}
 	<hr class="separator">
@@ -42,6 +43,7 @@ TODO(Kagami): Fix markup and styles.
 	<aside class="reply-container new-post-container"></aside>
 	<hr class="separator">
 	{%= renderThreadNavigation(false) %}
+	</div>
 {% endstripspace %}{% endfunc %}
 
 ThreadPosts renders the post content of a thread. Separate function to allow

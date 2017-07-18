@@ -65,6 +65,7 @@
 
 {% func renderBoard(threadHTML []byte, id, title string, conf config.BoardConfContainer, page, total int, pos auth.ModerationLevel, catalog bool) %}{% stripspace %}
 	{% code ln := lang.Get() %}
+	<div id="threads-inner">
 	{%= renderBanner(conf) %}
 	<h1 class="page-title">{%s title %}</h1>
 	<aside class="reply-container new-thread-container"></aside>
@@ -92,6 +93,7 @@
 			{%= pagination(page, total) %}
 		{% endif %}
 	</nav>
+	</div>
 {% endstripspace %}{% endfunc %}
 
 CatalogThreads renders thread content for a catalog page. Separate

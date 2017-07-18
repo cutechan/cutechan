@@ -6,6 +6,8 @@ import (
 	"meguca/common"
 )
 
+const numBanners = 4
+
 // Extract reverse links to linked posts on a page
 func extractBacklinks(cap int, threads ...common.Thread) common.Backlinks {
 	bls := make(common.Backlinks, cap)

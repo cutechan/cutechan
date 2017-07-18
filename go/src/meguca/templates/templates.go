@@ -85,7 +85,7 @@ func Thread(
 
 // Render landing page.
 func Landing() []byte {
-	html := ""
+	html := renderLanding()
 	title := lang.Get().UI["main"]
 	pos := auth.NotLoggedIn
 	return execIndex(html, title, pos)

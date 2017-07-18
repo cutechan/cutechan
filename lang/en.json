@@ -146,6 +146,10 @@
     ]
   },
   "ui": {
+    "sections": "Sections",
+    "board": "Boards",
+    "gallery": "Gallery",
+    "games": "Games",
     "main": "Main page",
     "attach": "Attach file (%s max)",
     "tooBig": "Too big file",

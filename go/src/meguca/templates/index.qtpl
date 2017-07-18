@@ -1,4 +1,5 @@
 {% import "encoding/json" %}
+{% import "math/rand" %}
 {% import "meguca/config" %}
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
@@ -142,6 +143,20 @@ TODO(Kagami): Remove.
 			<i class="fa fa-gear"></i>
 		</a>
 	</header>
+{% endstripspace %}{% endfunc %}
+
+{% func renderLanding() %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	{% code n := rand.Intn(numBanners) + 1 %}
+	<img class="banner" src="/static/img/banner{%d n %}.jpg">
+	<nav class="sections">
+		<div class="sections-header">{%s ln.UI["sections"] %}</div>
+		<div class="sections-content">
+			<a class="section" href="/all/">{%s ln.UI["board"] %}</a>
+			<div class="section section_disabled">{%s ln.UI["gallery"] %}</div>
+			<div class="section section_disabled">{%s ln.UI["games"] %}</div>
+		</div>
+	</nav>
 {% endstripspace %}{% endfunc %}
 
 {% func renderIndex(pos auth.ModerationLevel) %}{% stripspace %}
