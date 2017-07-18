@@ -147,24 +147,24 @@ TODO(Kagami): Remove.
 	</head>
 	<body>
 		<div class="overlay-container">
-			<div class="banner">
+			<div class="header">
 				<nav class="site-nav">
 					<a class="site-nav-item" href="/all/">all</a>
 					{% for _, b := range boards %}
 						<a class="site-nav-item" href="/{%s b.ID %}/">{%s b.ID %}</a>
 					{% endfor %}
 				</nav>
-				<a id="banner-options" class="banner-item banner-icon" title="{%s ln.UI["options"] %}">
+				<a id="header-options" class="header-item header-icon" title="{%s ln.UI["options"] %}">
 					<i class="fa fa-gear"></i>
 				</a>
-				<a id="banner-account" class="banner-item banner-icon" title="{%s ln.UI["account"] %}">
+				<a id="header-account" class="header-item header-icon" title="{%s ln.UI["account"] %}">
 					<i class="fa fa-user-circle-o"></i>
 				</a>
-				<a id="banner-FAQ" class="banner-item banner-icon" title="{%s ln.UI["FAQ"] %}">
+				<a id="header-FAQ" class="header-item header-icon" title="{%s ln.UI["FAQ"] %}">
 					<i class="fa fa-info-circle"></i>
 				</a>
-				<span id="sync-counter" class="banner-item banner-status" title="{%s ln.UI["syncCount"] %}"></span>
-				<span id="sync-status" class="banner-item banner-status" title="{%s ln.UI["sync"] %}"></span>
+				<span id="sync-counter" class="header-item header-status" title="{%s ln.UI["syncCount"] %}"></span>
+				<span id="sync-status" class="header-item header-status" title="{%s ln.UI["sync"] %}"></span>
 			</div>
 			<div id="modal-overlay" class="overlay">
 				{%= faqModal() %}

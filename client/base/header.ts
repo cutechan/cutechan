@@ -1,28 +1,28 @@
 import View from "./view"
 
-// Stores the views of all BannerModal instances
-const bannerModals: { [key: string]: BannerModal } = {}
+// Stores the views of all HeaderModal instances
+const headerModals: { [key: string]: HeaderModal } = {}
 
 // View of the modal currently displayed, if any
-let visible: BannerModal
+let visible: HeaderModal
 
-// A modal element, that is positioned fixed right beneath the banner
-export class BannerModal extends View<null> {
+// A modal element, that is positioned fixed right beneath the header
+export class HeaderModal extends View<null> {
 	// Hook to execute, when the the modal is displayed
 	protected showHook: () => void
 
 	constructor(el: HTMLElement) {
 		super({ el })
-		bannerModals[this.id] = this
+		headerModals[this.id] = this
 
-		// Add click listener to the toggle button of the modal in the banner
+		// Add click listener to the toggle button of the modal in the header
 		document
-			.querySelector('#banner-' + (this.id as string).split('-')[0])
+			.getElementById('header-' + (this.id as string).split('-')[0])
 			.addEventListener('click', () => this.toggle(), { capture: true })
 	}
 
 	// Show the element, if hidden, hide - if shown. Hide already visible
-	// banner modal, if any.
+	// header modal, if any.
 	private toggle() {
 		if (visible) {
 			const old = visible
@@ -52,7 +52,7 @@ export class BannerModal extends View<null> {
 }
 
 // A view that supports switching between multiple tabs
-export class TabbedModal extends BannerModal {
+export class TabbedModal extends HeaderModal {
 	// Hook a function to execute on tab switching
 	protected tabHook: (id: number) => void
 

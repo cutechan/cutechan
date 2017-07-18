@@ -2,7 +2,7 @@
  * Expand media attachments to the middle of the screen.
  */
 
-import { TRIGGER_MEDIA_POPUP_SEL, ZOOM_STEP_PX, BANNER_HEIGHT_PX } from "../vars"
+import { TRIGGER_MEDIA_POPUP_SEL, ZOOM_STEP_PX, HEADER_HEIGHT_PX } from "../vars"
 import { getModel } from "../state"
 import { Post } from "./model"
 import { sourcePath } from "./images"
@@ -35,7 +35,7 @@ class Popup {
 		let h = file.dims[1]
 		this.aspect = w / h
 		const pW = document.body.clientWidth
-		const pH = window.innerHeight - BANNER_HEIGHT_PX
+		const pH = window.innerHeight - HEADER_HEIGHT_PX
 		w = Math.min(w, pW)
 		h = Math.ceil(w / this.aspect)
 		if (h > pH) {
@@ -43,7 +43,7 @@ class Popup {
 			w = Math.ceil(h * this.aspect)
 		}
 		const l = (pW - w) / 2
-		const t = (pH - h) / 2 + BANNER_HEIGHT_PX
+		const t = (pH - h) / 2 + HEADER_HEIGHT_PX
 
 		this.el = document.createElement("div")
 		this.el.className = "media-popup"
