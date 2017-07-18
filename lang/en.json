@@ -146,6 +146,7 @@
     ]
   },
   "ui": {
+    "main": "Main page",
     "attach": "Attach file (%s max)",
     "tooBig": "Too big file",
     "delConfirm": "Delete post?",

@@ -24,15 +24,17 @@ async function init() {
 	initAlerts()
 	initOptions()
 
-	if (page.thread) {
-		await renderThread()
-		initConnection()
-		initHandlers()
-	} else {
-		await renderBoard()
+	if (!page.landing) {
+		if (page.thread) {
+			await renderThread()
+			initConnection()
+			initHandlers()
+		} else {
+			await renderBoard()
+		}
 	}
 
-	if (!page.catalog) {
+	if (!page.landing && !page.catalog) {
 		initPosts()
 	}
 

@@ -34,6 +34,7 @@ export interface BoardConfig {
 
 // The current state of a board or thread page
 export type PageState = {
+	landing: boolean,
 	catalog: boolean
 	thread: number
 	lastN: number
@@ -82,7 +83,8 @@ export function read(href: string): PageState {
 		page = u.search.match(/[&\?]page=(\d+)/)
 	return {
 		href,
-		board: u.pathname.match(/^\/(\w+)\//)[1],
+		landing: u.pathname === "/",
+		board: u.pathname.match(/^\/(\w+)?\/?/)[1],
 		lastN: /[&\?]last=100/.test(u.search) ? 100 : 0,
 		page: page ? parseInt(page[1]) : 0,
 		catalog: /^\/\w+\/catalog/.test(u.pathname),

@@ -42,8 +42,7 @@ func Compile() error {
 	return nil
 }
 
-// Board renders board page HTML for noscript browsers. withIndex specifies, if
-// the rendered board page should be embedded in the index page
+// Board renders board page HTML.
 func Board(
 	b string,
 	page, total int,
@@ -71,7 +70,7 @@ func Board(
 	return execIndex(html, title, pos)
 }
 
-// Thread renders thread page HTML for noscript browsers
+// Thread renders thread page HTML.
 func Thread(
 	id uint64,
 	board, title string,
@@ -81,6 +80,14 @@ func Thread(
 ) []byte {
 	title = fmt.Sprintf("/%s/ — %s", board, title)
 	html := renderThread(postHTML, id, board, title, abbrev, pos)
+	return execIndex(html, title, pos)
+}
+
+// Render landing page.
+func Landing() []byte {
+	html := ""
+	title := lang.Get().UI["main"]
+	pos := auth.NotLoggedIn
 	return execIndex(html, title, pos)
 }
 

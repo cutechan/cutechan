@@ -37,6 +37,12 @@ func serveHTML(
 	writeData(w, r, data)
 }
 
+func serveLanding(w http.ResponseWriter, r *http.Request) {
+	// TODO(Kagami): Cache?
+	html := templates.Landing()
+	serveHTML(w, r, "", html, nil)
+}
+
 // Serves board HTML to regular or noscript clients
 func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 	if !auth.IsBoard(b) {

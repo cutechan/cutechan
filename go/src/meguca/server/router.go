@@ -29,7 +29,7 @@ func createRouter() http.Handler {
 	r.PanicHandler = text500
 
 	// HTML
-	r.GET("/", redirectToDefault)
+	r.GET("/", serveLanding)
 	r.GET("/:board/", func(w http.ResponseWriter, r *http.Request) {
 		boardHTML(w, r, extractParam(r, "board"), false)
 	})
@@ -122,9 +122,4 @@ func createRouter() http.Handler {
 
 	h := http.Handler(r)
 	return h
-}
-
-// Redirects to / requests to /all/ board
-func redirectToDefault(w http.ResponseWriter, r *http.Request) {
-	http.Redirect(w, r, "/all/", 301)
 }
