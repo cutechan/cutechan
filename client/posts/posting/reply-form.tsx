@@ -235,7 +235,8 @@ class Reply extends Component<any, any> {
 		}
 		body = body.slice(0, start) + cited + body.slice(end)
 		this.setState({body}, () => {
-			if (this.bodyEl) {
+			// Don't focus invisible element.
+			if (this.bodyEl && this.bodyEl.offsetParent !== null) {
 				this.focus()
 				this.bodyEl.setSelectionRange(caret, caret)
 			}
@@ -258,6 +259,7 @@ class Reply extends Component<any, any> {
 		}
 	}
 	handleMoveDown = (e: MouseEvent) => {
+		e.preventDefault()
 		this.moving = true
 		this.baseX = e.clientX
 		this.baseY = e.clientY
@@ -384,7 +386,7 @@ class Reply extends Component<any, any> {
 	}
 	render({}, { float, sending, body }: any) {
 		return (
-			<div class="reply-form" ref={s(this, "mainEl")} style={this.style}>
+			<div class={cx("reply-form", {"reply-form_float": float})} ref={s(this, "mainEl")} style={this.style}>
 				{this.renderPreviews()}
 				<div class="reply-content">
 					{this.renderHeader()}
