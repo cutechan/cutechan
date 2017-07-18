@@ -45,10 +45,10 @@ func runHourTasks() {
 	logError("thread cleanup", deleteOldThreads())
 	logError("board cleanup", deleteUnusedBoards())
 	// logError("delete dangling open post bodies", cleanUpOpenPostBodies())
-	logError("vaccum database", func() error {
-		_, err := db.Exec(`vacuum`)
-		return err
-	}())
+	// logError("vaccum database", func() error {
+	// 	_, err := db.Exec(`vacuum`)
+	// 	return err
+	// }())
 }
 
 func logPrepared(ids ...string) {
