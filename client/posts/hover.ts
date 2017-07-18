@@ -2,14 +2,11 @@
 
 import { posts } from "../state"
 import options from "../options"
-import {
-	setAttrs, getClosestID, fetchJSON, emitChanges, ChangeEmitter,
-	HOOKS, hook,
-} from "../util"
+import API from "../api"
+import { setAttrs, getClosestID, emitChanges, ChangeEmitter, HOOKS, hook } from "../util"
 import { Post } from "./model"
 import PostView from "./view"
 import { View } from "../base"
-import { PostData } from "../common"
 import * as popup from "./popup"
 
 interface MouseMove extends ChangeEmitter {
@@ -226,13 +223,9 @@ async function renderPostPreview(event: MouseEvent) {
 	if (!post) {
 		// Try to fetch from server, if this post is not currently displayed
 		// due to lastN or in a different thread
-		const [data] = await fetchJSON<PostData>(`/api/post/${id}`)
-		if (data) {
-			post = new Post(data)
-			new PostView(post, null)
-		} else {
-			return
-		}
+		const data = await API.post.get(id)
+		post = new Post(data)
+		new PostView(post, null)
 	}
 	postPreview = new PostPreview(post, target)
 }

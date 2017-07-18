@@ -65,6 +65,7 @@ export async function uncachedGET(url: string): Promise<Response> {
 	h.append("Cache-Control", "no-cache")
 	return await fetch(url, {
 		method: "GET",
+		credentials: "include",
 		headers: h,
 	})
 }
