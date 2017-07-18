@@ -6,6 +6,22 @@
 @import (inline) "node_modules/font-awesome/css/font-awesome.css";
 
 //////////////////////////////
+// MIXINS
+//////////////////////////////
+
+.hborder-light() {
+  border-image: linear-gradient(90deg, transparent, #bfb4d6 10%, #bfb4d6 90%, transparent 100%) 1;
+}
+
+.hborder-dark() {
+  border-image: linear-gradient(90deg, transparent, #a295bf 10%, #a295bf 90%, transparent 100%) 1;
+}
+
+.vborder-dark() {
+  border-image: linear-gradient(transparent, #a295bf 20%, #a295bf 80%, transparent 100%) 1;
+}
+
+//////////////////////////////
 // MAIN
 //////////////////////////////
 
@@ -365,20 +381,56 @@ html, body {
 //////////////////////////////
 
 .header {
+  display: flex;
+  height: 40px;
   box-sizing: border-box;
-  width: 100%;
-  height: @headerHeight;
-  line-height: @headerHeight - 3px;
-  text-align: center;
-  background: fade(@postBG, 80%);
-  border-bottom: 1px solid #aaa;
-  font-weight: bold;
+  border-bottom: 2px solid;
+  .hborder-dark;
+  background-image: linear-gradient(#ddd4f1 50%, #bfb4d6 100%);
   cursor: default;
   user-select: none;
 }
 
-.site-nav {
-  font-size: larger;
+.header-item {
+  display: inline-block;
+  font-size: 20px;
+  height: 100%;
+  line-height: 40px;
+  text-align: center;
+  padding: 0 15px;
+  color: #716090;
+  border-right: 2px solid;
+  .vborder-dark;
+  text-decoration: none;
+  &:not(.header-logo):not(.header-content):hover {
+    color: #716090;
+    background: #dad4e8;
+  }
+}
+
+.header-item:last-child {
+  border-right: none;
+}
+
+.header-logo {
+  margin-top: -10px;
+}
+
+.logo {
+  display: inline-block;
+  width: 75px;
+  height: 75px;
+  background: url(/static/img/logo.svg);
+}
+
+.header-content {
+  flex: 1;
+  display: flex;
+  height: 100%;
+  justify-content: center;
+  flex-direction: column;
+  line-height: normal;
+  font-size: 20px;
 }
 
 .header-status {
@@ -397,10 +449,7 @@ html, body {
 }
 
 .header-icon {
-  float: right;
-  display: inline-block;
-  font-size: larger;
-  width: 22px;
+  width: 40px;
   cursor: pointer;
 }
 

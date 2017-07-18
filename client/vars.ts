@@ -23,4 +23,4 @@ export const TRIGGER_MEDIA_POPUP_SEL = ".trigger-media-popup"
 export const ALERT_HIDE_TIMEOUT_SECS = 5
 export const RELATIVE_TIME_PERIOD_SECS = 60
 export const ZOOM_STEP_PX = 100
-export const HEADER_HEIGHT_PX = 25
+export const HEADER_HEIGHT_PX = 40

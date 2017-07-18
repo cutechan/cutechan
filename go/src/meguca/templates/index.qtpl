@@ -119,9 +119,33 @@ TODO(Kagami): Remove.
 	</div>
 {% endstripspace %}{% endfunc %}
 
+{% func renderHeader(boards config.BoardTitles) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<header class="header">
+		<a class="header-item header-logo" href="/">
+			<i class="logo"></i>
+		</a>
+		<a class="header-item" href="/all/">{%s ln.UI["aggregator"] %}</a>
+		{% for _, b := range boards %}
+			<a class="header-item" href="/{%s b.ID %}/">{%s b.Title %}</a>
+		{% endfor %}
+		<div class="header-item header-content"></div>
+		<span class="header-item header-status" id="sync-status" title="{%s ln.UI["sync"] %}"></span>
+		<span class="header-item header-status" id="sync-counter" title="{%s ln.UI["syncCount"] %}"></span>
+		<a class="header-item header-icon" id="header-FAQ" title="{%s ln.UI["FAQ"] %}">
+			<i class="fa fa-info-circle"></i>
+		</a>
+		<a class="header-item header-icon" id="header-account" title="{%s ln.UI["account"] %}">
+			<i class="fa fa-user-circle-o"></i>
+		</a>
+		<a class="header-item header-icon" id="header-options" title="{%s ln.UI["options"] %}">
+			<i class="fa fa-gear"></i>
+		</a>
+	</header>
+{% endstripspace %}{% endfunc %}
+
 {% func renderIndex(pos auth.ModerationLevel) %}{% stripspace %}
 	{% code conf := config.Get() %}
-	{% code ln := lang.Get() %}
 	{% code confJSON, _ := config.GetClient() %}
 	{% code boards := config.GetBoardTitles() %}
 	<!DOCTYPE html>
@@ -147,25 +171,7 @@ TODO(Kagami): Remove.
 	</head>
 	<body>
 		<div class="overlay-container">
-			<div class="header">
-				<nav class="site-nav">
-					<a class="site-nav-item" href="/all/">all</a>
-					{% for _, b := range boards %}
-						<a class="site-nav-item" href="/{%s b.ID %}/">{%s b.ID %}</a>
-					{% endfor %}
-				</nav>
-				<a id="header-options" class="header-item header-icon" title="{%s ln.UI["options"] %}">
-					<i class="fa fa-gear"></i>
-				</a>
-				<a id="header-account" class="header-item header-icon" title="{%s ln.UI["account"] %}">
-					<i class="fa fa-user-circle-o"></i>
-				</a>
-				<a id="header-FAQ" class="header-item header-icon" title="{%s ln.UI["FAQ"] %}">
-					<i class="fa fa-info-circle"></i>
-				</a>
-				<span id="sync-counter" class="header-item header-status" title="{%s ln.UI["syncCount"] %}"></span>
-				<span id="sync-status" class="header-item header-status" title="{%s ln.UI["sync"] %}"></span>
-			</div>
+			{%= renderHeader(boards) %}
 			<div id="modal-overlay" class="overlay">
 				{%= faqModal() %}
 				{%= accountModal(pos) %}
