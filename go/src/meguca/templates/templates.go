@@ -85,10 +85,9 @@ func Thread(
 }
 
 // Render landing page.
-func Landing(news []common.NewsEntry) []byte {
+func Landing(pos auth.ModerationLevel, news []common.NewsEntry) []byte {
 	html := renderLanding(news)
 	title := lang.Get().UI["main"]
-	pos := auth.NotLoggedIn
 	return execIndex(html, title, pos)
 }
 
