@@ -8,7 +8,6 @@ export { default as FSM } from "./fsm"
 export { default as ShowHide } from "./show-hide"
 export * from "./fetch"
 export * from "./hooks"
-export * from "./scroll"
 export * from "./render"
 export * from "./changes"
 
@@ -189,4 +188,14 @@ export function extractJSON(id: string): any {
 		return null
 	}
 	return JSON.parse(el.textContent)
+}
+
+// Scroll to the top of the page.
+export function scrollToTop() {
+	window.scrollTo(0, 0)
+}
+
+// Scroll to the bottom of the thread.
+export function scrollToBottom() {
+	window.scrollTo(0, document.documentElement.scrollHeight)
 }
