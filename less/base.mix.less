@@ -388,10 +388,11 @@ html, body {
   border-image: @darkVBorder;
   text-decoration: none;
   outline: none;
-  &:not(.header-logo):not(.header-content):hover {
-    color: @headeritem;
-    background: #dad4e8;
-  }
+}
+
+.header-board:hover, .header-icon:hover {
+  color: @headeritem;
+  background: #dad4e8;
 }
 
 .header-item:last-child {
@@ -411,16 +412,16 @@ html, body {
 
 .header-content {
   flex: 1;
-  display: flex;
-  height: 100%;
-  justify-content: center;
-  flex-direction: column;
-  line-height: normal;
-  font-size: 20px;
+  // display: flex;
+  // height: 100%;
+  // justify-content: center;
+  // flex-direction: column;
+  // line-height: normal;
+  border: none;
 }
 
-.header-status {
-  margin-right: 10px;
+.header-status, .header-counter {
+  border: none;
   &:empty {
     display: none;
   }
@@ -435,6 +436,10 @@ html, body {
 .header-icon {
   width: 40px;
   cursor: pointer;
+}
+
+#header-FAQ {
+  border-left: 2px solid;
 }
 
 //////////////////////////////
@@ -808,6 +813,8 @@ a.referenced {
 }
 
 .board-search-input {
+  box-sizing: border-box;
+  height: 30px;
   border-radius: 15px;
   padding: 6px 14px;
   border: @border;
@@ -823,8 +830,9 @@ a.referenced {
 }
 
 .board-sort {
+  box-sizing: border-box;
   width: 30px;
-  height: 31px;
+  height: 30px;
   border: @border;
   border-left-color: transparent;
   border-radius: 0 15px 15px 0;
