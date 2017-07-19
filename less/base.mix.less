@@ -247,7 +247,7 @@ html, body {
 }
 
 #threads-inner {
-  padding: 0 20px 20px 20px;
+  padding: 0 20px 50px 20px;
 }
 
 #index-thread-container, #thread-container {
@@ -701,13 +701,12 @@ html, body {
   }
 }
 
-.tab-sel {
-  color: @tabsel;
-}
-
 .tab-link {
   cursor: pointer;
   font-weight: bold;
+  &.tab-sel {
+    color: @tabsel;
+  }
 }
 
 //////////////////////////////
@@ -833,10 +832,6 @@ a.referenced {
   background-color: #f9fcf7;
 }
 
-.modal, .popup-menu, .side-panel {
-  background-color: #eee;
-}
-
 //////////////////////////////
 // NAVIGATION
 //////////////////////////////
@@ -941,7 +936,7 @@ a.referenced {
   max-width: 1000px;
   background: @postBG;
   border-radius: 4px;
-  box-shadow: 1px 2px 6px 0px rgba(59, 26, 84, 0.7);
+  box-shadow: @postShadow;
   word-wrap: break-word;
   word-break: break-word;
   ul {
