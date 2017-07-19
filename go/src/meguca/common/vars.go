@@ -38,7 +38,7 @@ const (
 	SessionExpiry = 5 * 365  // Days
 	DefaultMaxSize = 20  // Megabytes
 	DefaultLang = "en"
-	DefaultCSS = "cute"
+	DefaultCSS = "light"
 )
 
 // Available language packs and themes. Change this, when adding any new ones.
@@ -47,7 +47,7 @@ var (
 		"en", "ru",
 	}
 	Themes = []string{
-		"cute",
+		"light",
 	}
 )
 
