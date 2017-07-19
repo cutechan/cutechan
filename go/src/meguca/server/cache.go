@@ -4,6 +4,7 @@ package server
 
 import (
 	"errors"
+	"time"
 	"meguca/cache"
 	"meguca/common"
 	"meguca/db"
@@ -20,6 +21,28 @@ type pageStore struct {
 }
 
 var errPageOverflow = errors.New("page not found")
+
+var newsCache = cache.FrontEnd{
+	GetCounter: func(k cache.Key) (uint64, error) {
+		now := time.Now()
+		// Update once per 5 minutes.
+		ctr := now.Minute() / 5
+		return uint64(ctr), nil
+	},
+
+	GetFresh: func(k cache.Key) (interface{}, error) {
+		return db.GetNews()
+	},
+
+	EncodeJSON: func(data interface{}) ([]byte, error) {
+		// Not needed.
+		return nil, nil
+	},
+
+	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
+		return []byte(templates.News(data.([]common.NewsEntry)))
+	},
+}
 
 var threadCache = cache.FrontEnd{
 	GetCounter: func(k cache.Key) (uint64, error) {

@@ -142,3 +142,10 @@ func BoardKey(b string, page int64, index bool) Key {
 		LastN: lastN,
 	}
 }
+
+// Just a single list of news.
+func NewsKey() Key {
+	return Key{
+		ID: 0,
+	}
+}

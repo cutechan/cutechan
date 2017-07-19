@@ -47,13 +47,12 @@ func serveLanding(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	// TODO(Kagami): Cache.
-	news, err := db.GetNews()
+	newsHTML, _, _, err := cache.GetHTML(cache.NewsKey(), newsCache)
 	if err != nil {
 		text500(w, r, errNoNews)
 		return
 	}
-	html := templates.Landing(pos, news)
+	html := templates.Landing(pos, newsHTML)
 	serveHTML(w, r, "", html, nil)
 }
 

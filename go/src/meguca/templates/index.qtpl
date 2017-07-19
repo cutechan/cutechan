@@ -1,9 +1,7 @@
 {% import "encoding/json" %}
-{% import "math/rand" %}
 {% import "meguca/config" %}
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
-{% import "meguca/common" %}
 
 TODO(Kagami): Remove.
 {% func renderTemplates(pos auth.ModerationLevel) %}{% stripspace %}
@@ -144,37 +142,6 @@ TODO(Kagami): Remove.
 			<i class="fa fa-gear"></i>
 		</a>
 	</header>
-{% endstripspace %}{% endfunc %}
-
-{% func renderLanding(news []common.NewsEntry) %}{% stripspace %}
-	{% code ln := lang.Get() %}
-	{% code n := rand.Intn(numBanners) + 1 %}
-	<img class="banner" src="/static/img/banner{%d n %}.jpg">
-	<nav class="sections">
-		<div class="sections-header">{%s ln.UI["sections"] %}</div>
-		<div class="sections-content">
-			<a class="section" href="/all/">{%s ln.UI["board"] %}</a>
-			<div class="section section_disabled">{%s ln.UI["gallery"] %}</div>
-			<div class="section section_disabled">{%s ln.UI["games"] %}</div>
-		</div>
-	</nav>
-	<section class="news">
-		<header class="news-header">{%s ln.UI["news"] %}</header>
-		<section class="news-content">
-			{% for _, item := range news %}
-				<article class="news-item">
-					<figure class="news-item-file">
-						<time class="news-item-time">{%s readableTime(item.Time) %}</time>
-						<img class="news-item-thumb" src="{%s item.ImageName %}">
-					</figure>
-					<section class="news-item-body">
-						<div class="news-item-title">{%s item.Subject %}</div>
-						{%s= item.Body %}
-					</section>
-				</article>
-			{% endfor %}
-		</section>
-	</section>
 {% endstripspace %}{% endfunc %}
 
 {% func renderIndex(pos auth.ModerationLevel) %}{% stripspace %}

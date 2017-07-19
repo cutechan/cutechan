@@ -1,0 +1,40 @@
+{% import "math/rand" %}
+{% import "meguca/lang" %}
+{% import "meguca/common" %}
+
+Will be cached.
+{% func News(news []common.NewsEntry) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<section class="news">
+		<header class="news-header">{%s ln.UI["news"] %}</header>
+		<section class="news-content">
+			{% for _, item := range news %}
+				<article class="news-item">
+					<figure class="news-item-file">
+						<time class="news-item-time">{%s readableTime(item.Time) %}</time>
+						<img class="news-item-thumb" src="{%s item.ImageName %}">
+					</figure>
+					<section class="news-item-body">
+						<div class="news-item-title">{%s item.Subject %}</div>
+						{%s= item.Body %}
+					</section>
+				</article>
+			{% endfor %}
+		</section>
+	</section>
+{% endstripspace %}{% endfunc %}
+
+{% func renderLanding(newsHTML []byte) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	{% code n := rand.Intn(numBanners) + 1 %}
+	<img class="banner" src="/static/img/banner{%d n %}.jpg">
+	<nav class="sections">
+		<div class="sections-header">{%s ln.UI["sections"] %}</div>
+		<div class="sections-content">
+			<a class="section" href="/all/">{%s ln.UI["board"] %}</a>
+			<div class="section section_disabled">{%s ln.UI["gallery"] %}</div>
+			<div class="section section_disabled">{%s ln.UI["games"] %}</div>
+		</div>
+	</nav>
+	{%z= newsHTML %}
+{% endstripspace %}{% endfunc %}

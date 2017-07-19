@@ -10,7 +10,6 @@ import (
 	h "html"
 	"strings"
 	"sync"
-	"meguca/common"
 	"meguca/auth"
 	"meguca/config"
 	"meguca/lang"
@@ -85,8 +84,8 @@ func Thread(
 }
 
 // Render landing page.
-func Landing(pos auth.ModerationLevel, news []common.NewsEntry) []byte {
-	html := renderLanding(news)
+func Landing(pos auth.ModerationLevel, newsHTML []byte) []byte {
+	html := renderLanding(newsHTML)
 	title := lang.Get().UI["main"]
 	return execIndex(html, title, pos)
 }
