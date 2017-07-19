@@ -21,12 +21,13 @@ var (
 	Size int
 )
 
-// Key stores the ID of either a thread or board page
+// Key stores the ID of some cached page.
 type Key struct {
-	LastN uint8
-	Board string
-	ID    uint64
-	Page  int64
+	LastN  uint8
+	Board  string
+	ID     uint64
+	Page   int64
+	NewsID uint64
 }
 
 // Single cache entry
