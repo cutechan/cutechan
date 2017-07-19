@@ -162,6 +162,8 @@ class Reply extends Component<any, any> {
 			{passive: true}
 		)
 		this.focus()
+		const caret = this.state.body.length
+		this.bodyEl.setSelectionRange(caret, caret)
 	}
 	componentWillUnmount() {
 		unhook(HOOKS.openReply, this.focus)
