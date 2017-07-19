@@ -156,6 +156,50 @@ hr {
   font-size: smaller;
 }
 
+.control {
+  display: inline-block;
+  font-size: larger;
+  padding: 0;
+  text-align: center;
+  background: none;
+  border: none;
+  color: @link;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  &:not(:disabled):hover {
+    color: @linkHover;
+  }
+  &:disabled {
+    cursor: default;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
+.button {
+  display: inline-block;
+  background: @buttonBG;
+  color: @button;
+  border-radius: 3px;
+  border: @border;
+  padding: 5px 10px;
+  cursor: pointer;
+  outline: none;
+  user-select: none;
+  &:not(:disabled):hover {
+    color: @buttonHover;
+    box-shadow: @buttonShadow;
+  }
+  &:disabled {
+    cursor: default;
+  }
+  &:focus {
+    outline: none;
+  }
+}
+
 //////////////////////////////
 // CODE
 //////////////////////////////
@@ -1072,17 +1116,14 @@ html.work-mode {
 
 .post-controls {
   width: 100%;
-  user-select: none;
 }
 
 .post-control {
-  cursor: pointer;
-  color: #ccc;
+  font-size: inherit;
   margin-right: 20px;
 }
 
 .post-quote-control {
-  color: #16a085;
   float: right;
   margin-right: 0;
 }
@@ -1232,54 +1273,6 @@ html.pos-notstaff {
 //////////////////////////////
 // REPLY FORM
 //////////////////////////////
-
-.control {
-  display: inline-block;
-  font-size: larger;
-  padding: 0;
-  text-align: center;
-  background: none;
-  border: none;
-  color: @link;
-  cursor: pointer;
-  outline: none;
-  user-select: none;
-  &:not(:disabled):hover {
-    color: @linkHover;
-  }
-  &:disabled {
-    cursor: default;
-  }
-  &:focus {
-    outline: none;
-  }
-}
-
-.button {
-  display: inline-block;
-  background: @buttonBG;
-  color: @button;
-  border-radius: 3px;
-  border: @border;
-  padding: 5px 10px;
-  cursor: pointer;
-  outline: none;
-  user-select: none;
-  &:not(:disabled):hover {
-    color: @buttonHover;
-    box-shadow: @buttonShadow;
-  }
-  &:disabled {
-    cursor: default;
-  }
-  &:focus {
-    outline: none;
-  }
-}
-
-.spinner {
-  margin-right: 5px;
-}
 
 .reply-form {
   display: flex;
