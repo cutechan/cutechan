@@ -59,7 +59,7 @@ blockquote a {
 }
 
 .post-link {
-  color: @link;
+  color: @postlink;
 }
 
 aside {
@@ -463,7 +463,6 @@ html, body {
 }
 
 .header-counter, .header-status {
-  border: none;
   &:empty {
     display: none;
   }
@@ -476,7 +475,11 @@ html, body {
 }
 
 .header-counter {
-  padding-right: 0;
+  border-left: 2px solid;
+}
+
+.header-status {
+  border-right: none;
 }
 
 .header-icon {
@@ -858,6 +861,7 @@ a.referenced {
   height: 30px;
   border-radius: 15px;
   padding: 6px 14px;
+  color: @searchinput;
   border: @border;
   background: none;
   outline: none;
@@ -912,6 +916,10 @@ a.referenced {
   display: inline-block;
   padding: 5px 10px;
   margin-right: 5px;
+}
+
+.board-pagination-page_current {
+  color: @pagecurrent;
 }
 
 //////////////////////////////
@@ -1176,6 +1184,10 @@ html.pos-notstaff {
     font-size: larger;
   }
 
+  .post-id {
+    color: @postidop;
+  }
+
   .post-time {
     float: none;
     font-size: @posttimeFontSize;
@@ -1188,6 +1200,14 @@ html.pos-notstaff {
 
   .post-quote-control {
     float: none
+  }
+
+  .post-file-info, .post-backlink-pre {
+    color: @postinfoop;
+  }
+
+  .post-link {
+    color: @postlinkop;
   }
 }
 
@@ -1286,7 +1306,6 @@ html.pos-notstaff {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   background: @replyfloatBG;
-  box-shadow: @replyfloatShadow;
 }
 
 .reply-header {
