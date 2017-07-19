@@ -1,25 +1,69 @@
 //////////////////////////////
-// CUTE THEME
+// LIGHT THEME
 //////////////////////////////
 
-@font: Verdana, sans-serif;
-@fontSize: 15px;
+// Base settings.
+@font: Helvetica, sans-serif;
+@fontSize: 13px;
+@textareaFontSize: 14px;
+@headerFontSize: 14px;
+@searchFontSize: 15px;
+@posttimeFontSize: 11px;
 @lineHeight: 1.4;
-@headerHeight: 40px;
-@bodyBG: #f4eef8;
-@postBG: #ddd;
+@bodyBG: #eeebef;
+@postBG: #eeebef;
+@logoBG: rgba(221, 212, 241, 0.7);
+@headerBG: hsla(285, 20%, 93%, 0.8);
+@buttonBG: transparent;
+@modalBG: hsla(285, 20%, 93%, 1);
+@replyBG: #eeebef;
+@replyfloatBG: rgba(238, 235, 239, 0.9);
+@headerHeight: 30px;
+
+// Main colors.
 @body: #0a0a0a;
-@link: #54578c;
-@em: #6e9e06;
-@del: black;
-@border: 2px solid #ccc;
+@link: #8d6699;
+@linkHover: #9e85ad;
+@modallinkHover: #918466;
+@em: #00882d;
+@del: #775e7c;
+@border: 1px solid #94809f;
+@separatorBorder: 1px solid #b2a3ba;
+@headerBorder: 1px solid #775e7c;
+@modalBorder: 1px solid #775e7c;
+@postcatalogBorder: 1px dashed #2c2f63;
+@previewBorder: 1px solid #a482ab;
+@lightHBorder: linear-gradient(90deg, transparent, #bfb4d6 10%, #bfb4d6 90%, transparent 100%) 1;
+@darkHBorder: linear-gradient(90deg, transparent, #a295bf 10%, #a295bf 90%, transparent 100%) 1;
+@darkVBorder: linear-gradient(transparent, #a295bf 20%, #a295bf 80%, transparent 100%) 1;
 @bold: #1a8522;
 @admin: #d60000;
 @mod: #7800b3;
 @orange: #716090;
-@hborderLight: linear-gradient(90deg, transparent, #bfb4d6 10%, #bfb4d6 90%, transparent 100%) 1;
-@hborderDark: linear-gradient(90deg, transparent, #a295bf 10%, #a295bf 90%, transparent 100%) 1;
-@vborderDark: linear-gradient(transparent, #a295bf 20%, #a295bf 80%, transparent 100%) 1;
+@postop: #101010;
+@postid: #26003c;
+@postcounter: #80796a;
+@posttime: #59554b;
+@posttimeop: #86847f;
+@postsubject: #716090;
+@postinfo: #5f5f5f;
+@postmlink: #8e3bad;
+@postboard: #6e72b8;
+@postboardHover: #54578c;
+@postcatalogcounter: #6e72b8;
+@modal: #000000;
+@pagetitle: #716090;
+@headeritem: #50406b;
+@tabsel: #918466;
+@omit: #8a8a8a;
+@button: #9e85ad;
+@buttonHover: #955c9e;
+@buttonShadow: 0 0 5px rgba(149, 92, 158, 0.75);
+@searchShadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(149, 92, 158, 0.9);
+@headerShadow: 0 0 5px 0px #50406b;
+@modalShadow: 0 0 5px 0px #50406b;
+@previewShadow: 0 0 15px rgba(0, 0, 0, 0.26);
+@replyShadow: 0px 0px 8px 0px rgba(59, 26, 84, 0.7);
+@replyfloatShadow: 1px 1px 6px 1px rgba(59, 26, 84, 0.7);
 
-// TODO(Kagami): Extract all color/appearance styles from base.
 @import "base.mix.less";

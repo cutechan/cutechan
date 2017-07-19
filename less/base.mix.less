@@ -9,15 +9,17 @@
 // MAIN
 //////////////////////////////
 
-body, textarea {
-  font-family: @font;
-  font-size: @fontSize;
-}
-
 body {
   background-color: @bodyBG;
+  font-family: @font;
+  font-size: @fontSize;
   line-height: @lineHeight;
   color: @body;
+}
+
+textarea {
+  font-family: @font;
+  font-size: @textareaFontSize;
 }
 
 b {
@@ -34,10 +36,10 @@ del {
   &, em {
     background-color: @del;
   }
-  &:hover, &.reveal {
+  &:hover {
     color: #fff - @del;
   }
-  &:not(:hover):not(.reveal) {
+  &:not(:hover) {
     &, em, a {
       color: @del;
     }
@@ -48,21 +50,18 @@ a {
   color: @link;
   border: none;
   text-decoration: none !important;
-  &.nope, &.nope:hover {
-    color: inherit;
-  }
-  &.disabled {
-    pointer-events: none;
-    color: inherit;
-  }
 }
 
 a:hover {
-  color: #d17c43;
+  color: @linkHover;
 }
 
 blockquote a {
-  color: #54578c;
+  color: @postmlink;
+}
+
+.post-link {
+  color: @link;
 }
 
 aside {
@@ -111,6 +110,7 @@ hr {
 .separator {
   width: 100%;
   margin: 20px 0;
+  border-top: @separatorBorder;
 }
 
 .divide-rows {
@@ -239,7 +239,7 @@ html, body {
     margin-bottom: 20px;
   }
   .reply-body {
-    min-height: 136px;
+    min-height: 138px;
   }
   .reply-form-move-control {
     display: none;
@@ -252,11 +252,6 @@ html, body {
   }
 }
 
-.reply-form_float {
-  margin-top: 0 !important;
-  margin-bottom: 0 !important;
-}
-
 .ban-page {
   margin-top: 2em;
   padding: 1em;
@@ -267,7 +262,62 @@ html, body {
   margin-top: 2px;
   margin-bottom: 8px;
   white-space: nowrap;
-  color: #73806c;
+  color: @omit;
+}
+
+//////////////////////////////
+// OVERLAYS
+//////////////////////////////
+
+.overlay-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 1000;
+}
+
+.overlay {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: ~"calc(100% - @{headerHeight})";
+  align-items: flex-start;
+  pointer-events: none;
+}
+
+#hover-overlay {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  z-index: 320;
+  & > video, & > img {
+    max-height: 100%;
+    max-width: 100%;
+    margin: auto auto;
+    display: block;
+    object-fit: contain;
+  }
+  .post-controls {
+    display: none;
+  }
+}
+
+#modal-overlay {
+  .modal {
+    display: none;
+    margin-left: auto;
+  }
+
+  .modal.notification {
+    display: block;
+  }
+}
+
+.modal, .header {
+  pointer-events: all;
 }
 
 //////////////////////////////
@@ -312,88 +362,34 @@ html, body {
 }
 
 //////////////////////////////
-// OVERLAY
-//////////////////////////////
-
-.overlay-container {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 1000;
-}
-
-.overlay {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: ~"calc(100% - @{headerHeight})";
-  align-items: flex-start;
-  pointer-events: none;
-}
-
-#hover-overlay {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  z-index: 320;
-  & > video, & > img {
-    max-height: 100%;
-    max-width: 100%;
-    margin: auto auto;
-    display: block;
-    object-fit: contain;
-  }
-  .post-controls {
-    display: none;
-  }
-}
-
-.preview {
-  padding: 4px 10px;
-  position: fixed;
-  pointer-events: none;
-  z-index: 320;
-  .control {
-    display: none;
-  }
-}
-
-.modal, .header {
-  pointer-events: all;
-}
-
-//////////////////////////////
 // HEADER
 //////////////////////////////
 
 .header {
   display: flex;
-  height: 40px;
+  height: @headerHeight;
+  font-size: @headerFontSize;
   box-sizing: border-box;
-  border-bottom: 2px solid;
-  border-image: @hborderDark;
-  background-image: linear-gradient(#ddd4f1 50%, #bfb4d6 100%);
+  border-bottom: @headerBorder;
+  background: @headerBG;
+  box-shadow: @headerShadow;
   cursor: default;
   user-select: none;
 }
 
 .header-item {
   display: inline-block;
-  font-size: 20px;
   height: 100%;
-  line-height: 40px;
+  line-height: @headerHeight;
   text-align: center;
   padding: 0 15px;
-  color: #716090;
+  color: @headeritem;
   border-right: 2px solid;
-  border-image: @vborderDark;
+  border-image: @darkVBorder;
   text-decoration: none;
   outline: none;
   &:not(.header-logo):not(.header-content):hover {
-    color: #716090;
+    color: @headeritem;
     background: #dad4e8;
   }
 }
@@ -403,13 +399,13 @@ html, body {
 }
 
 .header-logo {
-  margin-top: -10px;
+  background: @logoBG;
 }
 
 .logo {
   display: inline-block;
-  width: 75px;
-  height: 75px;
+  width: 30px;
+  height: 30px;
   background: url(/static/img/logo.svg);
 }
 
@@ -424,8 +420,6 @@ html, body {
 }
 
 .header-status {
-  float: right;
-  color: #1a8522;
   margin-right: 10px;
   &:empty {
     display: none;
@@ -453,7 +447,7 @@ html, body {
   margin: 15px 0;
   border-width: 2px 0;
   border-style: solid;
-  border-image: @hborderLight;
+  border-image: @lightHBorder;
   user-select: none;
 }
 
@@ -469,7 +463,7 @@ html, body {
   background-image: linear-gradient(90deg, transparent, #e8e2f3 10%, #e8e2f3 90%,transparent 100%);
   border-style: solid;
   border-width: 2px 0;
-  border-image: @hborderLight;
+  border-image: @lightHBorder;
   cursor: default;
   user-select: none;
 }
@@ -496,7 +490,7 @@ html, body {
   background-image: linear-gradient(transparent, #ddd4f1 15%, #ddd4f1 85%, transparent 100%);
   cursor: pointer;
   border-right: 2px solid;
-  border-image: @vborderDark;
+  border-image: @darkVBorder;
   &:not(.section_disabled):hover {
     color: #716090;
   }
@@ -530,7 +524,7 @@ html, body {
   text-align: center;
   color: #716090;
   border-top: 2px solid;
-  border-image: @hborderDark;
+  border-image: @darkHBorder;
   cursor: default;
 }
 
@@ -538,7 +532,7 @@ html, body {
   font-size: 18px;
   border-style: solid;
   border-width: 2px 0;
-  border-image: @hborderDark;
+  border-image: @darkHBorder;
   padding: 5px;
   margin-bottom: 10px;
   background-image: linear-gradient(90deg, transparent, #ddd4f1 10%, #ddd4f1 90%, transparent 100%);
@@ -584,27 +578,31 @@ html, body {
   max-height: 90vh;
   max-width: 90vw;
   overflow: auto;
-  margin: 0.5em;
+  margin: 2px 3px 0.5em;
   padding: 10px;
   white-space: nowrap;
-  border: 1px solid #bbb;
+  background: @modalBG;
+  color: @modal;
+  border: @modalBorder;
+  border-width: 0 0 1px;
+  border-radius: 0 0 0 9px;
+  box-shadow: @modalShadow;
+
   input[type=number] {
     width: 5em;
   }
+
   input[type=text], input[type=password] {
     width: 10em;
     outline: none;
   }
-  #modal-overlay > & {
-    display: none;
-    margin-left: auto;
+
+  a:hover, .control:not(:disabled):hover {
+    color: @modallinkHover;
   }
 }
 
 .modal.notification {
-  #modal-overlay > & {
-      display: block;
-  }
   text-align: center;
   padding: 0.6em;
   margin-left: auto;
@@ -652,12 +650,13 @@ html, body {
   }
 }
 
-a.tab-sel {
-  color: #ba8d7a;
+.tab-sel {
+  color: @tabsel;
 }
 
 .tab-link {
   cursor: pointer;
+  font-weight: bold;
 }
 
 //////////////////////////////
@@ -788,41 +787,12 @@ a.referenced {
 }
 
 //////////////////////////////
-// SITE NAVIGATION
-//////////////////////////////
-
-.site-nav {
-  float: left;
-  margin-left: 10px;
-  &:before {
-    content: "[ ";
-  }
-  &:after {
-    content: " ]";
-  }
-}
-
-.site-nav-item {
-  &:after {
-    color: black;
-    content: " / ";
-  }
-  &:last-child:after {
-    content: "";
-  }
-}
-
-//////////////////////////////
-// BOARD NAVIGATION
+// NAVIGATION
 //////////////////////////////
 
 .board-nav-item {
   margin-right: 5px;
 }
-
-//////////////////////////////
-// THREAD NAVIGATION
-//////////////////////////////
 
 .thread-nav-item {
   margin-right: 5px;
@@ -833,18 +803,18 @@ a.referenced {
 //////////////////////////////
 
 .board-search {
+  font-size: @searchFontSize;
   float: right;
 }
 
 .board-search-input {
   border-radius: 15px;
   padding: 6px 14px;
-  border: 1px solid #ccc;
+  border: @border;
   background: none;
   outline: none;
   &:focus {
-    border-color: rgba(82,168,236,.8);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(82,168,236,.6);
+    box-shadow: @searchShadow;
   }
 }
 
@@ -855,7 +825,7 @@ a.referenced {
 .board-sort {
   width: 30px;
   height: 31px;
-  border: 1px solid #ccc;
+  border: @border;
   border-left-color: transparent;
   border-radius: 0 15px 15px 0;
   color: transparent;
@@ -871,8 +841,7 @@ a.referenced {
   background-size: 5px 5px;
   background-repeat: no-repeat;
   &:focus {
-    border-color: rgba(82,168,236,.8);
-    box-shadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 8px rgba(82,168,236,.6);
+    box-shadow: @searchShadow;
   }
 }
 
@@ -893,18 +862,7 @@ a.referenced {
 .board-pagination-page {
   display: inline-block;
   padding: 5px 10px;
-  margin-right: 3px;
-  background: #eee;
-  border: 1px solid #ccc;
-  border-radius: 3px;
-  &:hover {
-    background: #ddd;
-  }
-}
-
-.board-pagination-page_current {
-  background: none;
-  border: none;
+  margin-right: 5px;
 }
 
 //////////////////////////////
@@ -915,7 +873,7 @@ a.referenced {
   font-size: 2em;
   font-weight: bold;
   margin: 20px 0;
-  color: @orange;
+  color: @pagetitle;
 }
 
 //////////////////////////////
@@ -923,12 +881,13 @@ a.referenced {
 //////////////////////////////
 
 .post {
-  margin: 0 10px 6px 0;
+  margin: 0px 10px 10px 0;
   padding: 4px 10px;
   min-width: 200px;
   max-width: 1000px;
   background: @postBG;
-  border: @border;
+  border-radius: 4px;
+  box-shadow: 1px 2px 6px 0px rgba(59, 26, 84, 0.7);
   word-wrap: break-word;
   word-break: break-word;
   ul {
@@ -937,6 +896,20 @@ a.referenced {
   }
   &:last-of-type {
     margin-bottom: 0;
+  }
+}
+
+.preview {
+  padding: 4px 10px;
+  position: fixed;
+  border-radius: 3px;
+  border: @previewBorder;
+  box-shadow: @previewShadow;
+  pointer-events: none;
+  z-index: 320;
+
+  .control {
+    display: none;
   }
 }
 
@@ -977,20 +950,20 @@ header {
   display: inline-block;
   padding: 0 4px;
   border-radius: 5px;
-  background-color: @link;
+  background-color: @postboard;
   color: white;
   &:hover {
-    background-color: darkblue;
+    background-color: @postboardHover;
     color: white;
   }
 }
 
 .post-id {
-  color: @orange;
+  color: @postid;
 }
 
 .post-subject {
-  color: black;
+  color: @postsubject;
 }
 
 .post-staff {
@@ -999,18 +972,18 @@ header {
 }
 
 .post-time {
+  font-size: @posttimeFontSize;
   float: right;
   font-style: italic;
-  font-size: smaller;
   cursor: default;
   text-decoration: dotted underline;
-  color: #333;
+  color: @posttime;
 }
 
 .post-file-info {
   font-size: smaller;
   font-style: italic;
-  color: #999;
+  color: @postinfo;
 }
 
 .post-file-info-item ~ .post-file-info-item:before {
@@ -1080,7 +1053,7 @@ html.work-mode {
 
 .post-backlink-pre {
   font-style: italic;
-  color: #333;
+  color: @postinfo;
 }
 
 .post-backlink {
@@ -1143,11 +1116,14 @@ html.pos-notstaff {
 //////////////////////////////
 
 .post_op {
+  color: @postop;
+
   &:not(.preview) {
     margin-bottom: 0;
     padding-left: 0;
     background: none;
     border: none;
+    box-shadow: none;
   }
 
   .post-header {
@@ -1156,6 +1132,8 @@ html.pos-notstaff {
 
   .post-time {
     float: none;
+    font-size: @posttimeFontSize;
+    color: @posttimeop;
   }
 
   .post-body {
@@ -1182,7 +1160,7 @@ html.pos-notstaff {
   &:not(.preview) {
     margin: 10px;
     padding: 5px;
-    border: 3px dashed #ccc;
+    border: @postcatalogBorder;
   }
   &:hover {
     min-height: 250px;
@@ -1196,11 +1174,11 @@ html.pos-notstaff {
   }
 }
 
-.post-counter {
+.post-catalog-counter {
   font-weight: bold;
   font-size: 12px;
   cursor: default;
-  color: brown;
+  color: @postcatalogcounter;
 }
 
 .post-catalog-message {
@@ -1221,7 +1199,7 @@ html.pos-notstaff {
   }
   .post-id:after {
     content: " ("counter(p)")";
-    color: #16a085;
+    color: @postcounter;
   }
   .post_op .post-id:after {
     display: none;
@@ -1254,12 +1232,12 @@ html.pos-notstaff {
   text-align: center;
   background: none;
   border: none;
-  color: #16a085;
+  color: @link;
   cursor: pointer;
   outline: none;
   user-select: none;
   &:not(:disabled):hover {
-    color: #d17c43;
+    color: @linkHover;
   }
   &:disabled {
     cursor: default;
@@ -1271,15 +1249,17 @@ html.pos-notstaff {
 
 .button {
   display: inline-block;
-  background: #eee;
+  background: @buttonBG;
+  color: @button;
   border-radius: 3px;
-  border: 1px solid #ccc;
+  border: @border;
   padding: 5px 10px;
   cursor: pointer;
   outline: none;
   user-select: none;
   &:not(:disabled):hover {
-    background: #ddd;
+    color: @buttonHover;
+    box-shadow: @buttonShadow;
   }
   &:disabled {
     cursor: default;
@@ -1299,9 +1279,16 @@ html.pos-notstaff {
   flex-wrap: wrap;
   width: 700px;
   box-sizing: border-box;
-  border: 3px solid #ccc;
   border-radius: 3px;
-  background: #eee;
+  background: @replyBG;
+  box-shadow: @replyShadow;
+}
+
+.reply-form_float {
+  margin-top: 0 !important;
+  margin-bottom: 0 !important;
+  background: @replyfloatBG;
+  box-shadow: @replyfloatShadow;
 }
 
 .reply-header {
@@ -1424,7 +1411,7 @@ html.pos-notstaff {
 
 .reply-footer-controls {
   margin-top: 3px;
-  margin-bottom: -6px;
+  margin-bottom: -7px;
 }
 
 .reply-file-input {

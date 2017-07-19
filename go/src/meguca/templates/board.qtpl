@@ -118,11 +118,11 @@ function to allow caching of generated posts.
 					{% endif %}
 					<a class="post-header-item post-id" href="{%s url %}">#{%s idStr %}</a>
 					<h3 class="post-header-item post-subject">{%s t.Subject %}</h3>
-					<span class="post-header-item post-counter post-posts-counter">
+					<span class="post-header-item post-catalog-counter post-posts-counter">
 						<i class="fa fa-comment">{% space %}{%d int(t.PostCtr) %}</i>
 					</span>
 					{% if t.ImageCtr > 0 %}
-						<span class="post-header-item post-counter post-files-counter">
+						<span class="post-header-item post-catalog-counter post-files-counter">
 							<i class="fa fa-image">{% space %}{%d int(t.ImageCtr) %}</i>
 						</span>
 					{% endif %}
@@ -222,7 +222,7 @@ Links to different pages og the board index
 Link to a different paginated board page
 {% func pageLink(i int, text, cls string) %}{% stripspace %}
 	{% code if cls != "" { cls = " board-pagination-page_" + cls } %}
-	<a class="board-pagination-page{%s cls %}" href="?page={%d i %}">
+	<a class="button board-pagination-page{%s cls %}" href="?page={%d i %}">
 		{%s text %}
 	</a>
 {% endstripspace %}{% endfunc %}
