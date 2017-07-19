@@ -162,7 +162,7 @@ TODO(Kagami): Remove.
 		<header class="news-header">{%s ln.UI["news"] %}</header>
 		<section class="news-content">
 			{% for _, item := range news %}
-				<article class="news-item clearfix">
+				<article class="news-item">
 					<figure class="news-item-file">
 						<time class="news-item-time">{%s readableTime(item.Time) %}</time>
 						<img class="news-item-thumb" src="{%s item.ImageName %}">

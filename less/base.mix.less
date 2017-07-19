@@ -6,22 +6,6 @@
 @import (inline) "node_modules/font-awesome/css/font-awesome.css";
 
 //////////////////////////////
-// MIXINS
-//////////////////////////////
-
-.hborder-light() {
-  border-image: linear-gradient(90deg, transparent, #bfb4d6 10%, #bfb4d6 90%, transparent 100%) 1;
-}
-
-.hborder-dark() {
-  border-image: linear-gradient(90deg, transparent, #a295bf 10%, #a295bf 90%, transparent 100%) 1;
-}
-
-.vborder-dark() {
-  border-image: linear-gradient(transparent, #a295bf 20%, #a295bf 80%, transparent 100%) 1;
-}
-
-//////////////////////////////
 // MAIN
 //////////////////////////////
 
@@ -308,6 +292,7 @@ html, body {
   border-radius: 5px;
   color: #a94442;
   background-color: #f2dede;
+  .clearfix;
 }
 
 .alert-close-control {
@@ -389,7 +374,7 @@ html, body {
   height: 40px;
   box-sizing: border-box;
   border-bottom: 2px solid;
-  .hborder-dark;
+  border-image: @hborderDark;
   background-image: linear-gradient(#ddd4f1 50%, #bfb4d6 100%);
   cursor: default;
   user-select: none;
@@ -404,7 +389,7 @@ html, body {
   padding: 0 15px;
   color: #716090;
   border-right: 2px solid;
-  .vborder-dark;
+  border-image: @vborderDark;
   text-decoration: none;
   outline: none;
   &:not(.header-logo):not(.header-content):hover {
@@ -468,7 +453,7 @@ html, body {
   margin: 15px 0;
   border-width: 2px 0;
   border-style: solid;
-  .hborder-light;
+  border-image: @hborderLight;
   user-select: none;
 }
 
@@ -484,7 +469,7 @@ html, body {
   background-image: linear-gradient(90deg, transparent, #e8e2f3 10%, #e8e2f3 90%,transparent 100%);
   border-style: solid;
   border-width: 2px 0;
-  .hborder-light();
+  border-image: @hborderLight;
   cursor: default;
   user-select: none;
 }
@@ -511,7 +496,7 @@ html, body {
   background-image: linear-gradient(transparent, #ddd4f1 15%, #ddd4f1 85%, transparent 100%);
   cursor: pointer;
   border-right: 2px solid;
-  .vborder-dark;
+  border-image: @vborderDark;
   &:not(.section_disabled):hover {
     color: #716090;
   }
@@ -545,7 +530,7 @@ html, body {
   text-align: center;
   color: #716090;
   border-top: 2px solid;
-  .hborder-dark();
+  border-image: @hborderDark;
   cursor: default;
 }
 
@@ -553,10 +538,11 @@ html, body {
   font-size: 18px;
   border-style: solid;
   border-width: 2px 0;
-  .hborder-dark();
+  border-image: @hborderDark;
   padding: 5px;
   margin-bottom: 10px;
   background-image: linear-gradient(90deg, transparent, #ddd4f1 10%, #ddd4f1 90%, transparent 100%);
+  .clearfix;
 }
 
 .news-item:last-child {
@@ -1043,6 +1029,7 @@ header {
 .post-body {
   width: 100%;
   margin: 4px 0;
+  .clearfix;
 }
 
 .post-file {
@@ -1456,18 +1443,20 @@ html.pos-notstaff {
 // UTILS
 //////////////////////////////
 
+.clearfix {
+  &:after {
+    content: "";
+    display: table;
+    clear: both;
+  }
+}
+
 .hidden {
   display: none;
 }
 
 .invisible {
   visibility: hidden;
-}
-
-.clearfix:after {
-  content: "";
-  display: table;
-  clear: both;
 }
 
 //////////////////////////////

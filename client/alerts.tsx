@@ -47,7 +47,7 @@ class Alerts extends Component<any, any> {
 	}
 	renderAlert = ({ id, title, message }: Alert) => {
 		return (
-			<div class="alert clearfix" key={id.toString()}>
+			<div class="alert" key={id.toString()}>
 				<a class="control alert-close-control" onClick={this.Hide(id)}>
 					<i class="fa fa-remove" />
 				</a>
