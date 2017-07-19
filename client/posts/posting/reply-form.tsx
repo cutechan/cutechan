@@ -188,16 +188,6 @@ class Reply extends Component<any, any> {
 			}
 		}
 	}
-	componentDidUpdate() {
-		this.bodyEl.style.height = this.getBodyHeight()
-	}
-	getBodyHeight() {
-		// See <https://stackoverflow.com/a/995374>.
-		if (!this.bodyEl) return "auto"
-		this.bodyEl.style.height = "1px"
-		const height = Math.min(this.bodyEl.scrollHeight, window.innerHeight - 200)
-		return height + "px"
-	}
 	get style() {
 		const { float, left, top } = this.state
 		return float ? {position: "fixed", left, top} : null
@@ -299,8 +289,6 @@ class Reply extends Component<any, any> {
 	}
 	handleBodyChange = (e: any) => {
 		this.setState({body: e.target.value})
-		// Prevents flickering if set early.
-		this.bodyEl.style.height = this.getBodyHeight()
 	}
 	handleAttach = () => {
 		this.fileEl.click()
@@ -397,7 +385,6 @@ class Reply extends Component<any, any> {
 					{this.renderHeader()}
 					<textarea
 						class="reply-body"
-						style={{height: this.getBodyHeight()}}
 						ref={s(this, "bodyEl")}
 						value={body}
 						disabled={sending}
