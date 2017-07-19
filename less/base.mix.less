@@ -36,13 +36,11 @@ del {
   &, em {
     background-color: @del;
   }
-  &:hover {
-    color: #fff - @del;
+  &, em, a {
+    color: @del;
   }
-  &:not(:hover) {
-    &, em, a {
-      color: @del;
-    }
+  &:hover {
+    color: #fff;
   }
 }
 
