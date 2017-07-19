@@ -183,7 +183,7 @@ function parseFragment(frag: string, data: PostData): string {
 				// Post links
 				m = word.match(/^>>(>*)(\d+)$/)
 				if (m) {
-					html += parsePostLink(m, data.links)
+					html += parsePostLink(m, data.links, data.op)
 					matched = true
 				}
 				break
@@ -217,7 +217,7 @@ function parseFragment(frag: string, data: PostData): string {
 }
 
 // Verify and render a link to other posts
-function parsePostLink(m: string[], links: PostLink[]): string {
+function parsePostLink(m: string[], links: PostLink[], thread: number): string {
 	if (!links) {
 		return m[0]
 	}
@@ -232,7 +232,7 @@ function parsePostLink(m: string[], links: PostLink[]): string {
 	if (!op) {
 		return m[0]
 	}
-	return m[1] + renderPostLink(id, op)
+	return m[1] + renderPostLink(id, op, thread)
 }
 
 // Render and anchor link that opens in a new tab

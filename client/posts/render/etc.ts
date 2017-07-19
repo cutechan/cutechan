@@ -7,8 +7,9 @@ import { page, mine } from '../../state'
 import { TemplateContext, pluralize } from "../../templates"
 
 // Render a link to other post.
-export function renderPostLink(id: number, op: number): string {
-	const cross = op !== page.thread
+export function renderPostLink(id: number, op: number, thread?: number): string {
+	thread = thread || page.thread
+	const cross = op !== thread
 	const index = !page.thread && !page.catalog
 	const url = `${(cross || index) ? `/all/${id}` : ""}#${id}`
 	return new TemplateContext("post-link", {
