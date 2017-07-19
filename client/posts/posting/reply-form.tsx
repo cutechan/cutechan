@@ -222,7 +222,11 @@ class Reply extends Component<any, any> {
 			start = this.bodyEl.selectionStart
 			end = this.bodyEl.selectionEnd
 		}
-		let cited = `>>${postID}\n`
+
+		let cited = ""
+		if (!body.includes(postID.toString())) {
+			cited += `>>${postID}\n`
+		}
 
 		const sel = window.getSelection()
 		if (!sel.isCollapsed
