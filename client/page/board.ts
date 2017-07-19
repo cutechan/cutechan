@@ -3,7 +3,6 @@ import { on } from '../util'
 import { page, posts, loadFromDB } from '../state'
 import { Post, findSyncwatches } from "../posts"
 import { extractPost, reparseOpenPosts, extractPageData } from "./common"
-import { setPostCount } from "./thread"
 import { ThreadData } from "../common"
 
 type SortFunction = (a: Post, b: Post) => number
@@ -55,7 +54,6 @@ async function extractThreads() {
 
 // Apply client-side modifications to a board page's HTML
 export async function render() {
-	setPostCount(0, 0, 0)
 	if (page.catalog) {
 		await extractCatalogModels()
 	} else {

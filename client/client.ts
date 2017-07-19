@@ -5,7 +5,6 @@ import { posts, page } from './state'
 import { Post, FormModel, PostView, postEvent, postSM } from './posts'
 import { PostLink, Command, PostData, ImageData } from "./common"
 import { postAdded } from "./ui"
-import { incrementPostCount } from "./page"
 import { OverlayNotification } from "./ui"
 import { showAlert } from "./alerts"
 
@@ -42,7 +41,6 @@ export function insertPost(data: PostData) {
 	if (existing) {
 		if (existing instanceof FormModel && !existing.isAllocated) {
 			existing.onAllocation(data)
-			incrementPostCount(true, "image" in data)
 		}
 	}
 
@@ -67,7 +65,6 @@ export function insertPost(data: PostData) {
 	}
 
 	postAdded(model)
-	incrementPostCount(true, "image" in data)
 }
 
 export function init() {
@@ -82,9 +79,6 @@ export function init() {
 	handlers[message.insertImage] = (msg: ImageMessage) =>
 		handle(msg.id, m => {
 			delete msg.id
-			if (!("image" in m)) {
-				incrementPostCount(false, true)
-			}
 			m.insertImage(msg)
 		})
 

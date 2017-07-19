@@ -13,7 +13,7 @@ import {
 	TRIGGER_QUOTE_POST_SEL,
 } from "../../vars"
 import {
-	Dict, ShowHide, on, scrollToTop, scrollToBottom,
+	Dict, ShowHide, on, scrollToTop,
 	HOOKS, hook, unhook,
 	getID,
 } from "../../util"
@@ -336,7 +336,6 @@ class Reply extends Component<any, any> {
 			if (page.thread) {
 				storeMine(res.id, page.thread)
 				this.handleFormHide()
-				scrollToBottom()
 			} else {
 				storeMine(res.id, res.id)
 				location.href = `/${board}/${res.id}`
