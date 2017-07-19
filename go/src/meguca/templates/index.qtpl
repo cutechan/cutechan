@@ -132,8 +132,8 @@ TODO(Kagami): Remove.
 			<a class="header-item header-board" href="/{%s b.ID %}/">{%s b.Title %}</a>
 		{% endfor %}
 		<div class="header-item header-content"></div>
-		<span class="header-item header-status" id="sync-status" title="{%s ln.UI["sync"] %}"></span>
 		<span class="header-item header-counter" id="sync-counter" title="{%s ln.UI["syncCount"] %}"></span>
+		<span class="header-item header-status" id="sync-status" title="{%s ln.UI["sync"] %}"></span>
 		<a class="header-item header-icon" id="header-FAQ" title="{%s ln.UI["FAQ"] %}">
 			<i class="fa fa-info-circle"></i>
 		</a>

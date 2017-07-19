@@ -462,7 +462,7 @@ html, body {
   border: none;
 }
 
-.header-status, .header-counter {
+.header-counter, .header-status {
   border: none;
   &:empty {
     display: none;
@@ -473,6 +473,10 @@ html, body {
   &:after {
     content: " ]";
   }
+}
+
+.header-counter {
+  padding-right: 0;
 }
 
 .header-icon {
