@@ -444,7 +444,7 @@ class ReplyContainer extends Component<any, any> {
 	}
 	componentDidMount() {
 		hook(HOOKS.openReply, () => {
-			this.setState({show: true})
+			this.setState({show: true, quoted: null})
 		})
 		on(document, "click", () => {
 			this.setState({show: true, quoted: null})
