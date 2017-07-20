@@ -1,13 +1,15 @@
-// Post and image hover previews
+/**
+ * Post and image hover previews.
+ */
 
 import { posts } from "../state"
 import options from "../options"
 import API from "../api"
-import { setAttrs, getClosestID, emitChanges, ChangeEmitter, HOOKS, hook } from "../util"
 import { Post } from "./model"
 import PostView from "./view"
 import { View } from "../base"
 import * as popup from "./popup"
+import { getClosestID, emitChanges, ChangeEmitter, HOOKS, hook } from "../util"
 
 interface MouseMove extends ChangeEmitter {
 	event: MouseEvent
@@ -15,22 +17,21 @@ interface MouseMove extends ChangeEmitter {
 
 const overlay = document.querySelector("#hover-overlay")
 
-// Currently displayed preview, if any
-let postPreview: PostPreview,
-	imagePreview: HTMLElement
+// Currently displayed preview, if any.
+let postPreview = null as PostPreview
+let imagePreview = null as HTMLElement
 
-// Centralized mousemove target tracking
+// Centralized mousemove target tracking.
 const mouseMove = emitChanges<MouseMove>({
 	event: {
 		target: null,
 	},
 } as MouseMove)
 
-// Post hover preview view
+// Post hover preview view.
 class PostPreview extends View<Post> {
 	public el: HTMLElement
 	private clickHandler: EventListener
-	private observer: MutationObserver
 	private parent: HTMLElement
 	private source: HTMLElement
 	private sourceModel: Post
@@ -38,55 +39,25 @@ class PostPreview extends View<Post> {
 	constructor(model: Post, parent: HTMLElement) {
 		const { el } = model.view
 		super({ el: clonePost(el) })
-		this.parent = parent
-		this.model = Object.assign({}, model)
-		this.sourceModel = model
 		this.source = el
+		this.parent = parent
+		this.sourceModel = model
+		this.model = Object.assign({}, model)
 
-		// Remove on parent click
-		this.clickHandler = () =>
+		this.clickHandler = () => {
 			this.remove()
-		parent.addEventListener("click", this.clickHandler, {
-			passive: true,
-		})
-
-		// Propagate post updates to clone
-		this.observer = new MutationObserver(() =>
-			this.renderUpdates())
-		this.observer.observe(el, {
-			childList: true,
-			attributes: true,
-			characterData: true,
-			subtree: true,
-		})
+		}
+		parent.addEventListener("click", this.clickHandler)
 
 		this.render()
 	}
 
 	private render() {
-		// Stop any playing audio or video
-		const media = this.el.querySelector("audio, video") as HTMLMediaElement
-		if (media) {
-			media.pause()
-		}
 
-		// Remove any inline expanded posts
-		for (let el of this.el.querySelectorAll("article")) {
-			el.remove()
-		}
-
-		// Remove any existing reverse post link highlights due to link inline
-		// expansion
-		for (let el of this.el.querySelectorAll("a.post-link.referenced")) {
-			el.classList.remove("referenced")
-		}
-
-		// Underline reverse post links in preview
+		// Underline reverse post links in preview.
 		const patt = new RegExp(`[>\/]` + getClosestID(this.parent))
 		for (let el of this.el.querySelectorAll("a.post-link")) {
-			if (!patt.test(el.textContent)) {
-				continue
-			}
+			if (!patt.test(el.textContent)) continue
 			el.classList.add("referenced")
 		}
 
@@ -101,7 +72,7 @@ class PostPreview extends View<Post> {
 		this.position()
 	}
 
-	// Position the preview element relative to it's parent link
+	// Position the preview element relative to it's parent link.
 	private position() {
 		const rect = this.parent.getBoundingClientRect()
 
@@ -114,32 +85,22 @@ class PostPreview extends View<Post> {
 		const height = this.el.offsetHeight
 		let top = rect.top - height - 5
 
-		// If post gets cut off at the top, put it bellow the link
+		// If post gets cut off at the top, put it bellow the link.
 		if (top < 0) {
 			top += height + 23
 		}
 		this.el.style.top = top + "px"
 	}
 
-	// Reclone and reposition on update. This is pretty expensive, but good
-	// enough, because only one post will ever be previewed at a time
-	private renderUpdates() {
-		const el = clonePost(this.source)
-		this.el.replaceWith(el)
-		this.el = el
-		this.render()
-	}
-
-	// Remove reference to this view from the parent element and module
+	// Remove this view.
 	public remove() {
-		this.observer.disconnect()
 		this.parent.removeEventListener("click", this.clickHandler)
 		postPreview = null
 		super.remove()
 	}
 }
 
-// Clear any previews
+// Clear any previews.
 function clear() {
 	if (postPreview) {
 		postPreview.remove()
@@ -151,7 +112,7 @@ function clear() {
 	}
 }
 
-// Clone a post element as a preview
+// Clone a post element as a preview.
 function clonePost(el: HTMLElement): HTMLElement {
 	const preview = el.cloneNode(true) as HTMLElement
 	preview.removeAttribute("id")
@@ -160,16 +121,11 @@ function clonePost(el: HTMLElement): HTMLElement {
 }
 
 function renderImagePreview(event: MouseEvent) {
-	if (!options.imageHover) {
-		return
-	}
-	if (popup.isOpen()) {
-		return
-	}
+	if (!options.imageHover) return
+	if (popup.isOpen()) return
+
 	const target = event.target as HTMLElement
 	const bypass = target.tagName !== "IMG"
-		|| target.classList.contains("expanded")
-		|| target.classList.contains("catalog")
 	if (bypass) {
 		if (imagePreview) {
 			imagePreview.remove()
@@ -179,13 +135,11 @@ function renderImagePreview(event: MouseEvent) {
 	}
 
 	const link = target.closest("a")
-	if (!link) {
-		return
-	}
-	const src = link.getAttribute("href"),
-		ext = src.slice(src.lastIndexOf(".") + 1)
-	let tag: string
+	if (!link) return
+	const src = link.getAttribute("href")
+	const ext = src.slice(src.lastIndexOf(".") + 1)
 
+	let tag = ""
 	switch (ext) {
 	case "jpg":
 	case "png":
@@ -193,36 +147,27 @@ function renderImagePreview(event: MouseEvent) {
 		tag = "img"
 		break
 	default:
-		return clear()
+		clear()
+		return
 	}
 
-	const el = document.createElement(tag)
-	setAttrs(el, {
-		src: src,
-		autoplay: "",
-		loop: "",
-	})
+	const el = document.createElement(tag) as HTMLImageElement
+	el.src = src
 	imagePreview = el
 	overlay.append(el)
 }
 
 async function renderPostPreview(event: MouseEvent) {
 	let target = event.target as HTMLElement
-	if (!target.matches || !target.matches("a.post-link")) {
-		return
-	}
-	if (target.matches("em.expanded > a")) {
-		return
-	}
+	if (!target.matches || !target.matches("a.post-link")) return
+	if (target.matches("em.expanded > a")) return
 	const id = parseInt(target.getAttribute("data-id"))
-	if (!id) {
-		return
-	}
+	if (!id) return
 
 	let post = posts.get(id)
 	if (!post) {
 		// Try to fetch from server, if this post is not currently displayed
-		// due to lastN or in a different thread
+		// due to lastN or in a different thread.
 		const data = await API.post.get(id)
 		post = new Post(data)
 		new PostView(post, null)
@@ -230,7 +175,7 @@ async function renderPostPreview(event: MouseEvent) {
 	postPreview = new PostPreview(post, target)
 }
 
-// Bind mouse movement event listener
+// Bind mouse movement event listener.
 function onMouseMove(event: MouseEvent) {
 	if (event.target !== mouseMove.event.target) {
 		clear()
@@ -245,7 +190,5 @@ export default () => {
 	mouseMove.onChange("event", renderPostPreview)
 	mouseMove.onChange("event", renderImagePreview)
 
-	hook(HOOKS.openPostPopup, () => {
-		clear()
-	})
+	hook(HOOKS.openPostPopup, clear)
 }
