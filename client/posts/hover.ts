@@ -124,6 +124,7 @@ async function renderPostPreview(event: MouseEvent) {
 		const data = await API.post.get(id)
 		post = new Post(data)
 		new PostView(post, null)
+		posts.add(post)
 	}
 
 	const preview = new PostPreview(post, target)
@@ -175,11 +176,6 @@ function clearImagePreview() {
 	}
 }
 
-function clearPreviews() {
-	clearPostPreviews()
-	clearImagePreview()
-}
-
 function onMouseMove(event: MouseEvent) {
 	if (event.target !== mouseMove.event.target) {
 		clearImagePreview()
@@ -191,5 +187,5 @@ export function init() {
 	document.addEventListener("mousemove", onMouseMove, {passive: true})
 	mouseMove.onChange("event", renderPostPreview)
 	mouseMove.onChange("event", renderImagePreview)
-	hook(HOOKS.openPostPopup, clearPreviews)
+	hook(HOOKS.openPostPopup, clearImagePreview)
 }
