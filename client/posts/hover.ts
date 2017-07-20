@@ -113,6 +113,9 @@ async function renderPostPreview(event: MouseEvent) {
 
 	const id = getID(target)
 	if (!id) return
+	// Don't duplicate.
+	const len = postPreviews.length
+	if (len && postPreviews[len - 1].model.id === id) return
 
 	let post = posts.get(id)
 	if (!post) {
@@ -141,6 +144,7 @@ function renderImagePreview(event: MouseEvent) {
 
 	if (ext === "jpg" || ext === "png" || ext === "gif") {
 		const el = document.createElement("img")
+		el.className = "media_hover"
 		el.src = src
 		imagePreview = el
 		overlay.append(el)

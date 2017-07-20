@@ -323,7 +323,7 @@ html, body {
   top: 0;
   bottom: 0;
   pointer-events: none;
-  z-index: 1000;
+  z-index: 100;
 }
 
 .overlay {
@@ -339,7 +339,7 @@ html, body {
   position: fixed;
   bottom: 0;
   right: 0;
-  z-index: 320;
+  z-index: 100;
   & > video, & > img {
     max-height: 100%;
     max-width: 100%;
@@ -375,7 +375,7 @@ html, body {
   position: fixed;
   top: 50px;
   right: 20px;
-  z-index: 100;
+  z-index: 300;
 }
 
 // Bootstrap alike.
@@ -821,7 +821,6 @@ input[type=number], input[type=text], input[type=password], textarea {
   position: relative;
   padding: 5px;
   margin-top: 0.1em;
-  z-index: 15;
   white-space: nowrap;
   border: @border;
   user-select: none;
@@ -1170,12 +1169,16 @@ html.pos-notstaff {
   border-radius: 3px;
   border: @previewBorder;
   box-shadow: @previewShadow;
-  z-index: 900;
+  z-index: 101;
   pointer-events: all;
 
   .control {
     display: none;
   }
+}
+
+.media_hover {
+  z-index: 102;
 }
 
 //////////////////////////////
@@ -1184,7 +1187,7 @@ html.pos-notstaff {
 
 .media-popup {
   position: fixed;
-  z-index: 1000;
+  z-index: 200;
 }
 
 .media-popup-item {
