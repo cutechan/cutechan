@@ -17,7 +17,7 @@ interface MouseMove extends ChangeEmitter {
 
 const overlay = document.querySelector("#hover-overlay")
 
-// Currently displayed preview, if any.
+// Currently displayed previews, if any.
 let postPreview = null as PostPreview
 let imagePreview = null as HTMLElement
 
@@ -53,7 +53,6 @@ class PostPreview extends View<Post> {
 	}
 
 	private render() {
-
 		// Underline reverse post links in preview.
 		const patt = new RegExp(`[>\/]` + getClosestID(this.parent))
 		for (let el of this.el.querySelectorAll("a.post-link")) {
@@ -95,20 +94,7 @@ class PostPreview extends View<Post> {
 	// Remove this view.
 	public remove() {
 		this.parent.removeEventListener("click", this.clickHandler)
-		postPreview = null
 		super.remove()
-	}
-}
-
-// Clear any previews.
-function clear() {
-	if (postPreview) {
-		postPreview.remove()
-		postPreview = null
-	}
-	if (imagePreview) {
-		imagePreview.remove()
-		imagePreview = null
 	}
 }
 
@@ -116,8 +102,26 @@ function clear() {
 function clonePost(el: HTMLElement): HTMLElement {
 	const preview = el.cloneNode(true) as HTMLElement
 	preview.removeAttribute("id")
-	preview.classList.add("preview")
+	preview.classList.add("post_hover")
 	return preview
+}
+
+async function renderPostPreview(event: MouseEvent) {
+	const target = event.target as HTMLElement
+	if (!target.matches || !target.matches(".post-link")) return
+
+	const id = +target.dataset.id
+	if (!id) return
+
+	let post = posts.get(id)
+	if (!post) {
+		// Fetch from server, if this post is not currently displayed due to
+		// lastN or in a different thread.
+		const data = await API.post.get(id)
+		post = new Post(data)
+		new PostView(post, null)
+	}
+	postPreview = new PostPreview(post, target)
 }
 
 function renderImagePreview(event: MouseEvent) {
@@ -127,10 +131,7 @@ function renderImagePreview(event: MouseEvent) {
 	const target = event.target as HTMLElement
 	const bypass = target.tagName !== "IMG"
 	if (bypass) {
-		if (imagePreview) {
-			imagePreview.remove()
-			imagePreview = null
-		}
+		clearImagePreview()
 		return
 	}
 
@@ -147,7 +148,7 @@ function renderImagePreview(event: MouseEvent) {
 		tag = "img"
 		break
 	default:
-		clear()
+		clearPreviews()
 		return
 	}
 
@@ -157,38 +158,35 @@ function renderImagePreview(event: MouseEvent) {
 	overlay.append(el)
 }
 
-async function renderPostPreview(event: MouseEvent) {
-	let target = event.target as HTMLElement
-	if (!target.matches || !target.matches("a.post-link")) return
-	if (target.matches("em.expanded > a")) return
-	const id = parseInt(target.getAttribute("data-id"))
-	if (!id) return
-
-	let post = posts.get(id)
-	if (!post) {
-		// Try to fetch from server, if this post is not currently displayed
-		// due to lastN or in a different thread.
-		const data = await API.post.get(id)
-		post = new Post(data)
-		new PostView(post, null)
+function clearPostChain() {
+	if (postPreview) {
+		postPreview.remove()
+		postPreview = null
 	}
-	postPreview = new PostPreview(post, target)
 }
 
-// Bind mouse movement event listener.
+function clearImagePreview() {
+	if (imagePreview) {
+		imagePreview.remove()
+		imagePreview = null
+	}
+}
+
+function clearPreviews() {
+	clearPostChain()
+	clearImagePreview()
+}
+
 function onMouseMove(event: MouseEvent) {
 	if (event.target !== mouseMove.event.target) {
-		clear()
+		clearPreviews()
 		mouseMove.event = event
 	}
 }
 
-export default () => {
-	document.addEventListener("mousemove", onMouseMove, {
-		passive: true,
-	})
+export function init() {
+	document.addEventListener("mousemove", onMouseMove, {passive: true})
 	mouseMove.onChange("event", renderPostPreview)
 	mouseMove.onChange("event", renderImagePreview)
-
-	hook(HOOKS.openPostPopup, clear)
+	hook(HOOKS.openPostPopup, clearPreviews)
 }

@@ -957,20 +957,6 @@ a.referenced {
   }
 }
 
-.preview {
-  padding: 4px 10px;
-  position: fixed;
-  border-radius: 3px;
-  border: @previewBorder;
-  box-shadow: @previewShadow;
-  pointer-events: none;
-  z-index: 320;
-
-  .control {
-    display: none;
-  }
-}
-
 .post_file {
   min-width: 400px;
 }
@@ -1175,13 +1161,31 @@ html.pos-notstaff {
 }
 
 //////////////////////////////
+// HOVER POST
+//////////////////////////////
+
+.post_hover {
+  padding: 4px 10px;
+  position: fixed;
+  border-radius: 3px;
+  border: @previewBorder;
+  box-shadow: @previewShadow;
+  z-index: 320;
+  pointer-events: all;
+
+  .control {
+    display: none;
+  }
+}
+
+//////////////////////////////
 // OP POST
 //////////////////////////////
 
 .post_op {
   color: @postop;
 
-  &:not(.preview) {
+  &:not(.post_hover) {
     margin-bottom: 0;
     padding-left: 0;
     background: none;
@@ -1231,12 +1235,13 @@ html.pos-notstaff {
   text-align: center;
   overflow: hidden;
   vertical-align: top;
-  // TODO(Kagami): See post_op above. Fix this.
-  &:not(.preview) {
+
+  &:not(.post_hover) {
     margin: 10px;
     padding: 5px;
     border: @postcatalogBorder;
   }
+
   &:hover {
     min-height: 250px;
     height: auto;

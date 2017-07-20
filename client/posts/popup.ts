@@ -167,7 +167,7 @@ export function isOpen(): boolean {
 	return opened > 0
 }
 
-export default function() {
+export function init() {
 	on(document, "click", open, {
 		selector: TRIGGER_MEDIA_POPUP_SEL,
 	})

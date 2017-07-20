@@ -150,7 +150,7 @@ function bindNagging() {
 // 	postSM.feed(postEvent.open)
 // }
 
-export default () => {
+export function init() {
 	// Synchronise with connection state machine
 	connSM.on(connState.synced, postSM.feeder(postEvent.sync))
 	connSM.on(connState.dropped, postSM.feeder(postEvent.disconnect))

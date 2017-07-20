@@ -6,9 +6,9 @@ export * from "./render"
 export { default as PostCollection } from "./collection"
 export { findSyncwatches } from "./syncwatch"
 
-import initPosting from "./posting"
-import initHover from "./hover"
-import initPopup from "./popup"
+import { init as initPosting } from "./posting"
+import { init as initHover } from "./hover"
+import { init as initPopup } from "./popup"
 
 export function init() {
 	initPosting()
