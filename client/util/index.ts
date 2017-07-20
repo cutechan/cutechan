@@ -190,6 +190,13 @@ export function extractJSON(id: string): any {
 	return JSON.parse(el.textContent)
 }
 
+
+// Are we at bottom of the page.
+export function isAtBottom() {
+	const el = document.documentElement
+	return el.scrollHeight - el.scrollTop <= el.clientHeight + 10
+}
+
 // Scroll to the top of the page.
 export function scrollToTop() {
 	window.scrollTo(0, 0)

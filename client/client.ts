@@ -1,13 +1,13 @@
 // Core websocket message handlers
 
 import { handlers, message, connSM, connEvent } from './connection'
-import { posts, page, mine } from './state'
+import { posts, page } from './state'
 import { Post, FormModel, PostView, postEvent, postSM } from './posts'
 import { PostLink, Command, PostData, ImageData } from "./common"
 import { postAdded } from "./ui"
 import { OverlayNotification } from "./ui"
 import { showAlert } from "./alerts"
-import { scrollToBottom } from "./util"
+import { isAtBottom, scrollToBottom } from "./util"
 
 // Message for splicing the contents of the current line
 export type SpliceResponse = {
@@ -38,6 +38,8 @@ function handle(id: number, fn: (m: Post) => void) {
 
 // Insert a post into the models and DOM
 export function insertPost(data: PostData) {
+	const atBottom = isAtBottom()
+
 	const existing = posts.get(data.id)
 	if (existing) {
 		if (existing instanceof FormModel && !existing.isAllocated) {
@@ -67,7 +69,7 @@ export function insertPost(data: PostData) {
 
 	postAdded(model)
 
-	if (mine.has(data.id)) {
+	if (atBottom) {
 		scrollToBottom()
 	}
 }
