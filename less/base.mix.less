@@ -1170,12 +1170,27 @@ html.pos-notstaff {
   border-radius: 3px;
   border: @previewBorder;
   box-shadow: @previewShadow;
-  z-index: 1000;
+  z-index: 900;
   pointer-events: all;
 
   .control {
     display: none;
   }
+}
+
+//////////////////////////////
+// MEDIA POPUP
+//////////////////////////////
+
+.media-popup {
+  position: fixed;
+  z-index: 1000;
+}
+
+.media-popup-item {
+  display: block;
+  outline: none;
+  user-select: none;
 }
 
 //////////////////////////////
@@ -1284,21 +1299,6 @@ html.pos-notstaff {
   .post_op .post-id:after {
     display: none;
   }
-}
-
-//////////////////////////////
-// MEDIA POPUP
-//////////////////////////////
-
-.media-popup {
-  position: fixed;
-  z-index: 1000;
-}
-
-.media-popup-item {
-  display: block;
-  outline: none;
-  user-select: none;
 }
 
 //////////////////////////////
