@@ -431,8 +431,6 @@ html, body {
   text-align: center;
   padding: 0 15px;
   color: @headeritem;
-  border-right: 2px solid;
-  border-image: @darkVBorder;
   text-decoration: none;
   outline: none;
 }
@@ -447,7 +445,9 @@ html, body {
 }
 
 .header-logo {
-  background: @logoBG;
+  &:hover {
+    background: @logoBGHover;
+  }
 }
 
 .logo {
@@ -480,7 +480,7 @@ html, body {
 }
 
 .header-counter {
-  border-left: 2px solid;
+  border-left: @headerBorder;
 }
 
 .header-status {
@@ -493,7 +493,7 @@ html, body {
 }
 
 #header-FAQ {
-  border-left: 2px solid;
+  border-left: @headerBorder;
 }
 
 //////////////////////////////
