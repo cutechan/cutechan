@@ -24,9 +24,8 @@ var errPageOverflow = errors.New("page not found")
 
 var newsCache = cache.FrontEnd{
 	GetCounter: func(k cache.Key) (uint64, error) {
-		now := time.Now()
 		// Update once per 5 minutes.
-		ctr := now.Minute() / 5
+		ctr := time.Now().Unix() / 60 / 5
 		return uint64(ctr), nil
 	},
 
