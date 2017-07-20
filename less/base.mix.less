@@ -62,6 +62,11 @@ blockquote a {
   color: @postlink;
 }
 
+.post-link_ref {
+  text-decoration: none;
+  border-bottom: 1px dashed currentColor;
+}
+
 aside {
   display: table;
   &.disabled a {
@@ -769,11 +774,6 @@ input[type=number], input[type=text], input[type=password], textarea {
   width: 2em;
 }
 
-a.referenced {
-  text-decoration: none;
-  border-bottom: 1px dashed currentColor;
-}
-
 .errored {
   &, * {
     color: red !important;
@@ -1165,12 +1165,12 @@ html.pos-notstaff {
 //////////////////////////////
 
 .post_hover {
-  padding: 4px 10px;
   position: fixed;
+  padding: 4px 10px;
   border-radius: 3px;
   border: @previewBorder;
   box-shadow: @previewShadow;
-  z-index: 320;
+  z-index: 1000;
   pointer-events: all;
 
   .control {

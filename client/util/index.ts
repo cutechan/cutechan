@@ -20,7 +20,7 @@ interface Loader {
 	onerror: EventListener
 }
 
-// Retrieve post id of post element.
+// Retrieve element id.
 export function getID(el: Element): number {
 	return el ? +el.getAttribute("data-id") : 0
 }

@@ -2,24 +2,33 @@
  * Post and image hover previews.
  */
 
-import { posts } from "../state"
-import options from "../options"
 import API from "../api"
+import options from "../options"
+import { posts } from "../state"
+import { View } from "../base"
 import { Post } from "./model"
 import PostView from "./view"
-import { View } from "../base"
 import * as popup from "./popup"
-import { getClosestID, emitChanges, ChangeEmitter, HOOKS, hook } from "../util"
+import {
+	POST_LINK_SEL, POST_FILE_LINK_SEL, POST_FILE_THUMB_SEL,
+	POST_HOVER_TIMEOUT_SECS,
+} from "../vars"
+import {
+	getID, getClosestID,
+	emitChanges, ChangeEmitter, HOOKS, hook,
+} from "../util"
 
 interface MouseMove extends ChangeEmitter {
 	event: MouseEvent
 }
 
-const overlay = document.querySelector("#hover-overlay")
+const overlay = document.getElementById("hover-overlay")
 
 // Currently displayed previews, if any.
-let postPreview = null as PostPreview
+const postPreviews = [] as [PostPreview]
 let imagePreview = null as HTMLElement
+
+let clearPostTID = 0
 
 // Centralized mousemove target tracking.
 const mouseMove = emitChanges<MouseMove>({
@@ -28,46 +37,38 @@ const mouseMove = emitChanges<MouseMove>({
 	},
 } as MouseMove)
 
+// Clone a post element as a preview.
+// TODO(Kagami): Render mustache template instead?
+function clonePost(el: HTMLElement): HTMLElement {
+	const preview = el.cloneNode(true) as HTMLElement
+	preview.removeAttribute("id")
+	preview.classList.add("post_hover")
+	return preview
+}
+
 // Post hover preview view.
 class PostPreview extends View<Post> {
 	public el: HTMLElement
-	private clickHandler: EventListener
-	private parent: HTMLElement
-	private source: HTMLElement
-	private sourceModel: Post
+	public parent: HTMLElement
 
 	constructor(model: Post, parent: HTMLElement) {
 		const { el } = model.view
-		super({ el: clonePost(el) })
-		this.source = el
+		super({el: clonePost(el)})
 		this.parent = parent
-		this.sourceModel = model
 		this.model = Object.assign({}, model)
-
-		this.clickHandler = () => {
-			this.remove()
-		}
-		parent.addEventListener("click", this.clickHandler)
-
 		this.render()
+		parent.addEventListener("click", clearPostPreviews)
 	}
 
 	private render() {
 		// Underline reverse post links in preview.
-		const patt = new RegExp(`[>\/]` + getClosestID(this.parent))
-		for (let el of this.el.querySelectorAll("a.post-link")) {
-			if (!patt.test(el.textContent)) continue
-			el.classList.add("referenced")
-		}
-
-		const fc = overlay.firstChild
-		if (fc !== this.el) {
-			if (fc) {
-				fc.remove()
+		const re = new RegExp("[>\/]" + getClosestID(this.parent))
+		for (const el of this.el.querySelectorAll(POST_LINK_SEL)) {
+			if (re.test(el.textContent)) {
+				el.classList.add("post-link_ref")
 			}
-			overlay.append(this.el)
 		}
-
+		overlay.append(this.el)
 		this.position()
 	}
 
@@ -93,24 +94,24 @@ class PostPreview extends View<Post> {
 
 	// Remove this view.
 	public remove() {
-		this.parent.removeEventListener("click", this.clickHandler)
+		this.parent.removeEventListener("click", clearPostPreviews)
 		super.remove()
 	}
 }
 
-// Clone a post element as a preview.
-function clonePost(el: HTMLElement): HTMLElement {
-	const preview = el.cloneNode(true) as HTMLElement
-	preview.removeAttribute("id")
-	preview.classList.add("post_hover")
-	return preview
-}
-
 async function renderPostPreview(event: MouseEvent) {
 	const target = event.target as HTMLElement
-	if (!target.matches || !target.matches(".post-link")) return
+	if (!target.matches || !target.matches(POST_LINK_SEL)) {
+		if (postPreviews.length && !clearPostTID) {
+			clearPostTID = window.setTimeout(
+				clearInactivePostPreviews,
+				POST_HOVER_TIMEOUT_SECS * 1000
+			)
+		}
+		return
+	}
 
-	const id = +target.dataset.id
+	const id = getID(target)
 	if (!id) return
 
 	let post = posts.get(id)
@@ -121,7 +122,9 @@ async function renderPostPreview(event: MouseEvent) {
 		post = new Post(data)
 		new PostView(post, null)
 	}
-	postPreview = new PostPreview(post, target)
+
+	const preview = new PostPreview(post, target)
+	postPreviews.push(preview)
 }
 
 function renderImagePreview(event: MouseEvent) {
@@ -129,39 +132,35 @@ function renderImagePreview(event: MouseEvent) {
 	if (popup.isOpen()) return
 
 	const target = event.target as HTMLElement
-	const bypass = target.tagName !== "IMG"
-	if (bypass) {
-		clearImagePreview()
-		return
-	}
+	if (!target.matches || !target.matches(POST_FILE_THUMB_SEL)) return
 
-	const link = target.closest("a")
+	const link = target.closest(POST_FILE_LINK_SEL)
 	if (!link) return
 	const src = link.getAttribute("href")
 	const ext = src.slice(src.lastIndexOf(".") + 1)
 
-	let tag = ""
-	switch (ext) {
-	case "jpg":
-	case "png":
-	case "gif":
-		tag = "img"
-		break
-	default:
-		clearPreviews()
-		return
+	if (ext === "jpg" || ext === "png" || ext === "gif") {
+		const el = document.createElement("img")
+		el.src = src
+		imagePreview = el
+		overlay.append(el)
 	}
-
-	const el = document.createElement(tag) as HTMLImageElement
-	el.src = src
-	imagePreview = el
-	overlay.append(el)
 }
 
-function clearPostChain() {
-	if (postPreview) {
-		postPreview.remove()
-		postPreview = null
+function clearInactivePostPreviews() {
+	clearPostTID = 0
+	const target = mouseMove.event.target as HTMLElement
+	for (let i = postPreviews.length - 1; i >= 0; i--) {
+		const preview = postPreviews[i]
+		if (target === preview.parent || preview.el.contains(target)) return
+		postPreviews.pop().remove()
+	}
+}
+
+function clearPostPreviews() {
+	let preview
+	while (preview = postPreviews.pop()) {
+		preview.remove()
 	}
 }
 
@@ -173,13 +172,13 @@ function clearImagePreview() {
 }
 
 function clearPreviews() {
-	clearPostChain()
+	clearPostPreviews()
 	clearImagePreview()
 }
 
 function onMouseMove(event: MouseEvent) {
 	if (event.target !== mouseMove.event.target) {
-		clearPreviews()
+		clearImagePreview()
 		mouseMove.event = event
 	}
 }
