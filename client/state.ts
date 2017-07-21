@@ -27,6 +27,7 @@ export interface BoardTitle {
 // Board-specific configurations
 export interface BoardConfig {
 	title: string
+	readOnly: boolean
 }
 
 // The current state of a board or thread page

@@ -14,6 +14,7 @@ import (
 )
 
 var (
+	errReadOnly          = errors.New("read only board")
 	errInvalidImageToken = errors.New("invalid image token")
 	errImageNameTooLong  = errors.New("image name too long")
 	errNoTextOrImage     = errors.New("no text or image")
@@ -62,6 +63,11 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 		return
 	case !auth.AuthenticateCaptcha(req.Captcha):
 		err = errInValidCaptcha
+		return
+	}
+
+	_, err = getBoardConfig(req.Board)
+	if err != nil {
 		return
 	}
 
@@ -121,6 +127,11 @@ func CreatePost(
 			// Captcha solved - reset spam score.
 			auth.ResetSpamScore(ip)
 		}
+	}
+
+	_, err = getBoardConfig(board)
+	if err != nil {
+		return
 	}
 
 	// Post must have either at least one character or an image to be allocated
@@ -218,6 +229,15 @@ func (c *Client) submitCaptcha(data []byte) (err error) {
 // 	}
 // 	return nil
 // }
+
+// Retrieve post-related board configurations
+func getBoardConfig(board string) (conf config.BoardConfigs, err error) {
+	 conf = config.GetBoardConfigs(board).BoardConfigs
+	 if conf.ReadOnly {
+		 err = errReadOnly
+	 }
+	 return
+}
 
 // Construct the common parts of the new post for both threads and replies
 func constructPost(

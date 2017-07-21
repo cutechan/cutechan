@@ -68,10 +68,6 @@
       "New Post",
       "Open new post"
     ],
-    "notice": [
-      "Notice",
-      "Short informational message displayed at the top of the page"
-    ],
     "notification": [
       "Desktop Notifications",
       "Get desktop notifications when quoted"
@@ -96,6 +92,10 @@
       "Prune threads",
       "Delete threads that have not had any posts in N days"
     ],
+    "readOnly": [
+      "Read only",
+      "Disable post creation"
+    ],
     "register": [
       "Register",
       ""
@@ -111,10 +111,6 @@
     "rootURL": [
       "Root URL",
       "Root URL of the imageboard."
-    ],
-    "rules": [
-      "Rules",
-      "Board rules to display in the rule modal window"
     ],
     "staffTitle": [
       "Staff Title",
@@ -199,11 +195,9 @@
     "report": "Report",
     "reason": "Reason",
     "return": "Return",
-    "rules": "Show Rules",
     "search": "Search",
     "searchTooltip": "Filter threads by subject, body or board name encased in backslashes. Accepts Regular expressions.",
     "setBanners": "Set banners",
-    "showNotice": "Notice",
     "sortMode": "Sort threads by",
     "subject": "Subject",
     "submit": "Submit",

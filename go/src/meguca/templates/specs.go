@@ -95,6 +95,7 @@ var specs = map[string][]inputSpec{
 			Type:      _string,
 			MaxLength: common.MaxLenBoardTitle,
 		},
+		{ID: "readOnly"},
 	},
 	"createBoard": {
 		{

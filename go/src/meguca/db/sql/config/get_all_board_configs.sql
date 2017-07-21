@@ -1,2 +1,2 @@
-select id, title
+select id, title, readOnly
 	from boards
