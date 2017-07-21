@@ -127,24 +127,6 @@ func TestValidateBoardConfigs(t *testing.T) {
 			nil,
 		},
 		{
-			"notice too long",
-			config.BoardConfigs{
-				BoardPublic: config.BoardPublic{
-					Notice: GenString(common.MaxLenNotice + 1),
-				},
-			},
-			errNoticeTooLong,
-		},
-		{
-			"rules too long",
-			config.BoardConfigs{
-				BoardPublic: config.BoardPublic{
-					Rules: GenString(common.MaxLenRules + 1),
-				},
-			},
-			errRulesTooLong,
-		},
-		{
 			"title too long",
 			config.BoardConfigs{
 				BoardPublic: config.BoardPublic{

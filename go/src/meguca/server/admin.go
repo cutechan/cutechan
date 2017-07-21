@@ -28,8 +28,6 @@ const (
 
 var (
 	errTitleTooLong     = common.ErrTooLong("board title")
-	errNoticeTooLong    = common.ErrTooLong("notice")
-	errRulesTooLong     = common.ErrTooLong("rules")
 	errBanReasonTooLong = common.ErrTooLong("ban reason")
 	errInvalidBoardName = errors.New("invalid board name")
 	errBoardNameTaken   = errors.New("board name taken")
@@ -163,10 +161,6 @@ func validateBoardConfigs(
 ) bool {
 	var err error
 	switch {
-	case len(conf.Notice) > common.MaxLenNotice:
-		err = errNoticeTooLong
-	case len(conf.Rules) > common.MaxLenRules:
-		err = errRulesTooLong
 	case len(conf.Title) > common.MaxLenBoardTitle:
 		err = errTitleTooLong
 	}

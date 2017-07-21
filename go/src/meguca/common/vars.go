@@ -16,8 +16,6 @@ const (
 	MaxLenUserID       = 20
 	MaxLenBoardID      = 10
 	MaxLenBoardTitle   = 100
-	MaxLenNotice       = 500
-	MaxLenRules        = 5000
 	MaxBanReasonLength = 100
 	MaxNumBanners      = 20
 	MaxBannerSize      = 100 << 10

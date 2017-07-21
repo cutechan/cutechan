@@ -132,7 +132,7 @@ func TestSetDifferentBoardConfigs(t *testing.T) {
 	}
 
 	testBoardConfChange(t, conf)
-	conf.Notice = "foo"
+	conf.Title = "foo"
 	testBoardConfChange(t, conf)
 }
 

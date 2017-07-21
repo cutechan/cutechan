@@ -27,9 +27,6 @@ export interface BoardTitle {
 // Board-specific configurations
 export interface BoardConfig {
 	title: string
-	notice: string
-	rules: string
-	[index: string]: any
 }
 
 // The current state of a board or thread page

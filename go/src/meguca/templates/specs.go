@@ -95,18 +95,6 @@ var specs = map[string][]inputSpec{
 			Type:      _string,
 			MaxLength: common.MaxLenBoardTitle,
 		},
-		{
-			ID:        "notice",
-			Type:      _textarea,
-			Rows:      5,
-			MaxLength: common.MaxLenNotice,
-		},
-		{
-			ID:        "rules",
-			Type:      _textarea,
-			Rows:      5,
-			MaxLength: common.MaxLenRules,
-		},
 	},
 	"createBoard": {
 		{

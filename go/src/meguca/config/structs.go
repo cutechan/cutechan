@@ -33,8 +33,6 @@ type BoardConfigs struct {
 // BoardPublic contains publically accessible board-specific configurations
 type BoardPublic struct {
 	Title      string `json:"title"`
-	Notice     string `json:"notice"`
-	Rules      string `json:"rules"`
 }
 
 // BoardConfContainer contains configurations for an individual board as well

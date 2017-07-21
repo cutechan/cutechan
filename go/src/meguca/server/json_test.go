@@ -187,7 +187,6 @@ func TestServeBoardConfigs(t *testing.T) {
 		ID: "a",
 		BoardPublic: config.BoardPublic{
 			Title:  "Animu",
-			Notice: "Notice",
 		},
 	}
 	config.SetBoardConfigs(conf)

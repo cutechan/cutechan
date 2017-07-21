@@ -1,5 +1,5 @@
 insert into boards (
-	id, created, title,	notice, rules
+	id, created, title
 )
-	values ($1, $2, $3, $4, $5)
+	values ($1, $2, $3)
 	returning pg_notify('board_updated', $1)
