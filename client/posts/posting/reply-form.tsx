@@ -3,6 +3,7 @@ import { h, render, Component } from "preact"
 import { ln, printf } from "../../lang"
 import { config, page, boards, storeMine } from "../../state"
 import API from "../../api"
+import * as signature from "./signature"
 import { showAlert } from "../../alerts"
 import { duration, fileSize } from "../../templates"
 import {
@@ -318,9 +319,10 @@ class Reply extends Component<any, any> {
 		if (this.disabled) return
 		const { board, thread, subject, body } = this.state
 		const files = this.state.files.map(f => f.file)
+		const sign = signature.gen()
 		const fn = page.thread ? API.post.create : API.thread.create
 		this.setState({sending: true})
-		fn({board, thread, subject, body, files}).then((res: Dict) => {
+		fn({board, thread, subject, body, files, sign}).then((res: Dict) => {
 			if (page.thread) {
 				storeMine(res.id, page.thread)
 				this.handleFormHide()

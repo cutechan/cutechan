@@ -7,6 +7,7 @@
     "jsx": "React",
     "jsxFactory": "h",
     "newLine": "LF",
+    "allowJs": true,
     "removeComments": true,
     "noImplicitAny": true,
     "noImplicitThis": true,
