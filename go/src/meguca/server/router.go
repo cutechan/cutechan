@@ -81,7 +81,7 @@ func createRouter() http.Handler {
 	// api.POST("/config", servePrivateServerConfigs)
 	api.POST("/configure-server", configureServer)
 	api.POST("/create-board", createBoard)
-	api.POST("/delete-board", deleteBoard)
+	// api.POST("/delete-board", deleteBoard)
 	api.POST("/delete-post", deletePost)
 	api.POST("/delete-image", deleteImage)
 	api.POST("/ban", ban)
