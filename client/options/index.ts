@@ -20,14 +20,17 @@ interface Options extends ChangeEmitter {
 	lang: string
 }
 
-// Central options storage model
-let options = {} as Options
-// Need to define all properties ahead of time for the ES5 Proxy polyfill to
-// work
-for (let k in specs) {
-	options[k] = undefined
-}
-export default options = emitChanges({} as Options)
+// Central options storage model.
+const options: Options = (function() {
+	// Need to define all properties ahead of time for the ES5 Proxy
+	// polyfill to work.
+	const opts = {} as Options
+	for (const k in specs) {
+		opts[k] = undefined
+	}
+	return emitChanges(opts)
+})()
+export default options
 
 // All loaded option models
 export const models: { [key: string]: OptionModel } = {}
