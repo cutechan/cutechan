@@ -2,16 +2,16 @@
   <figcaption class="post-file-info">
     <span class="post-file-info-item post-file-dims">{{ Width }}×{{ Height }}</span>
     <span class="post-file-info-item post-file-size">{{ Size }}</span>
-    {{#HasLength}}
+    {{#HasVideo}}
       <span class="post-file-info-item post-file-length">{{ Length }}</span>
-    {{/HasLength}}{{#HasTitle}}
+    {{/HasVideo}}{{#HasTitle}}
       <span class="post-file-info-item post-file-title" title="{{ Title }}">{{ Title }}</span>
     {{/HasTitle}}
   </figcaption>
   <a class="post-file-link" href="{{ SourcePath }}" target="_blank">
-    {{#HasLength}}
+    {{#HasVideo}}
       <i class="fa fa-play-circle-o post-file-badge post-file-video-badge trigger-media-popup"></i>
-    {{/HasLength}}{{#HasAudio}}
+    {{/HasVideo}}{{#HasAudio}}
       <i class="fa fa-volume-up post-file-badge post-file-audio-badge trigger-media-popup"></i>
     {{/HasAudio}}
     <img class="post-file-thumb trigger-media-popup" src="{{ ThumbPath }}" width="{{ TWidth }}" height="{{ THeight }}">

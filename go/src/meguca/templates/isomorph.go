@@ -40,8 +40,8 @@ type FileContext struct {
 	Artist string
 	HasTitle bool
 	Title string
+	HasVideo bool
 	HasAudio bool
-	HasLength bool
 	Length string
 	Size string
 	TWidth uint16
@@ -168,8 +168,8 @@ func (ctx *PostContext) File() string {
 		Artist: img.Artist,
 		HasTitle: img.Title != "",
 		Title: img.Title,
+		HasVideo: img.Video,
 		HasAudio: img.Audio,
-		HasLength: img.Length != 0,
 		Length: duration(img.Length),
 		Size: fileSize(img.Size),
 		Width: img.Dims[0],
