@@ -102,6 +102,7 @@
     "Array.prototype.includes",
     "String.prototype.includes",
     "String.prototype.repeat",
+    "Object.entries",
   ];
   for (var i = 0; i < stdlibTests.length; i++) {
     if (!checkFunction(stdlibTests[i])) {
