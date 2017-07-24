@@ -18,7 +18,7 @@ const rjsOptimize = require("gulp-requirejs-optimize");
 const less = require("gulp-less");
 const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
-const composer = require("gulp-uglify/composer");
+const minify = require("gulp-uglify/composer")(uglifyes, console);
 const notify = require("gulp-notify");
 const livereload = require("gulp-livereload");
 const runSequence = require("run-sequence");
@@ -46,9 +46,6 @@ const notifyError = notify.onError({
   message: "<%= options.stripAnsi(error.message) %>",
   templateOptions: {stripAnsi},
 });
-
-// ES6 minification.
-const minify = composer(uglifyes, console);
 
 // Simply log the error on continuos builds, but fail the build and exit
 // with an error status, if failing a one-time build. This way we can
@@ -144,7 +141,7 @@ function buildES6() {
   tasks.push(name);
   gulp.task(name, () =>
     buildClient({target: "ES6", outFile: "app.js"})
-      .pipe(gulpif(!watch, minify()))
+      .pipe(gulpif(!watch, minify({mangle: {safari10: true}})))
       .pipe(sourcemaps.write("maps"))
       .pipe(gulp.dest(JS_DIR)));
 
