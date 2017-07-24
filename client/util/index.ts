@@ -206,3 +206,16 @@ export function scrollToTop() {
 export function scrollToBottom() {
 	window.scrollTo(0, document.documentElement.scrollHeight)
 }
+
+// https://stackoverflow.com/a/30810322
+export function copyToClipboard(text: string) {
+	const textarea = document.createElement("textarea")
+	textarea.value = text
+	document.body.appendChild(textarea)
+	textarea.select()
+	try {
+		document.execCommand("copy")
+	} finally {
+		document.body.removeChild(textarea)
+	}
+}

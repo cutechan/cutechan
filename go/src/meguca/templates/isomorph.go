@@ -29,8 +29,6 @@ type PostContext struct {
 	Staff bool
 	Auth string
 	Time string
-	Banned bool
-	LBanned string
 	post common.Post
 	backlinks common.Backlinks
 }
@@ -39,6 +37,7 @@ type FileContext struct {
 	HasArtist bool
 	Artist string
 	HasTitle bool
+	LCopy string
 	Title string
 	HasVideo bool
 	HasAudio bool
@@ -77,8 +76,6 @@ func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index
 		Staff: p.Auth != "",
 		Auth: ln.Common.Posts[p.Auth],
 		Time: readableTime(postTime),
-		Banned: p.Banned,
-		LBanned: ln.Common.Posts["banned"],
 		post: p,
 		backlinks: bls,
 	}
@@ -162,11 +159,13 @@ func (ctx *PostContext) File() string {
 	if ctx.post.Image == nil {
 		return ""
 	}
+	ln := lang.Get()
 	img := ctx.post.Image
 	fileCtx := FileContext{
 		HasArtist: img.Artist != "",
 		Artist: img.Artist,
 		HasTitle: img.Title != "",
+		LCopy: ln.Common.Posts["clickToCopy"],
 		Title: img.Title,
 		HasVideo: img.Video,
 		HasAudio: img.Audio,

@@ -6,12 +6,22 @@ export * from "./render"
 export { default as PostCollection } from "./collection"
 export { findSyncwatches } from "./syncwatch"
 
+import { POST_FILE_TITLE_SEL } from "../vars"
+import { on, copyToClipboard } from "../util"
 import { init as initPosting } from "./posting"
 import { init as initHover } from "./hover"
 import { init as initPopup } from "./popup"
+
+function initFileTitle() {
+	on(document, "click", e => {
+		const title = (e.target as HTMLElement).textContent
+		copyToClipboard(title)
+	}, {selector: POST_FILE_TITLE_SEL})
+}
 
 export function init() {
 	initPosting()
 	initHover()
 	initPopup()
+	initFileTitle()
 }

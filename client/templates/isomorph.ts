@@ -38,8 +38,6 @@ export function makePostContext(t: Thread, p: Post): TemplateContext {
 		Subject: p.subject,
 		Staff: !!p.auth,
 		Auth: ln.Common.Posts[p.auth],
-		Banned: p.banned,
-		LBanned: ln.Common.Posts["banned"],
 		backlinks: null,
 		post: p,
 	}
@@ -76,6 +74,7 @@ export function makePostContext(t: Thread, p: Post): TemplateContext {
 			HasArtist: !!img.artist,
 			Artist: img.artist,
 			HasTitle: !!img.title,
+			LCopy: ln.Common.Posts["clickToCopy"],
 			Title: img.title,
 			HasVideo: img.video,
 			HasAudio: img.audio,

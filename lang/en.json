@@ -226,6 +226,7 @@
   },
   "common": {
     "posts": {
+      "clickToCopy": "Click to copy",
       "ago": "ago",
       "and": "and",
       "banned": "USER WAS BANNED FOR THIS POST",

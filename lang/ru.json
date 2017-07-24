@@ -226,6 +226,7 @@
   },
   "common": {
     "posts": {
+      "clickToCopy": "Нажмите, чтобы скопировать",
       "ago": "назад",
       "and": "и",
       "banned": "USER WAS BANNED FOR THIS POST",
