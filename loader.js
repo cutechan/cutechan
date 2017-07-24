@@ -155,7 +155,7 @@
 
   // Iterable NodeList.
   // TODO(Kagami): Check if still needed.
-  if (!checkFunction("NodeList.prototype[Symbol.iterator]")) {
+  if (!window.legacy && !checkFunction("NodeList.prototype[Symbol.iterator]")) {
     NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
   }
 
