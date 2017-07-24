@@ -24,7 +24,6 @@ type CommonLanguagePack = {
 	}
 	UI: { [key: string]: string }
 	ui: { [key: string]: string }
-	sync: string[]
 }
 
 // TODO(Kagami): Add support for per-user site language.
@@ -41,7 +40,6 @@ export const lang: CommonLanguagePack = {
 	time: pack.common.time,
 	UI: pack.common.ui,
 	ui: pack.common.ui,
-	sync: pack.common.sync,
 }
 export const ln: LanguagePack = { UI: pack.ui, Common: lang }
 export default lang

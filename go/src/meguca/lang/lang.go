@@ -24,7 +24,6 @@ type Pack struct {
 		Plurals map[string][]string
 		Time    map[string][]string
 		UI      map[string]string
-		Sync    []string
 	}
 }
 

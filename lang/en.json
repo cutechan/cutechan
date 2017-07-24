@@ -310,18 +310,10 @@
         "Sat"
       ]
     },
-    "sync": [
-      "disconnected",
-      "connecting…",
-      "syncing…",
-      "synced",
-      "desynced"
-    ],
     "ui": {
       "send": "Send",
       "attach": "Attach",
       "replies": "Replies",
-      "reading": "reading",
       "mustMatch": "Passwords must match",
       "invalidCaptcha": "Invalid captcha",
       "quoted": "You have been quoted",
