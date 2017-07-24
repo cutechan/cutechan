@@ -205,6 +205,14 @@ func newThumbnail(data []byte, img common.ImageCommon) (int, string, error) {
 	return newImageToken(img.SHA1)
 }
 
+func truncString(s string, max int) string {
+	if len(s) > max {
+		return s[:max]
+	} else {
+		return s
+	}
+}
+
 // Separate function for easier testability
 func processFile(
 	data []byte,
@@ -240,8 +248,8 @@ func processFile(
 
 	img.Length = uint32(src.Length / time.Second)
 	img.Size = len(data)
-	img.Artist = src.Artist
-	img.Title = src.Title
+	img.Artist = truncString(src.Artist, common.MaxLenFileArist)
+	img.Title = truncString(src.Title, common.MaxLenFileTitle)
 
 	// MP3, OGG and MP4 might only contain audio and need a fallback thumbnail
 	// if thumb.Data == nil {
