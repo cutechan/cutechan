@@ -45,7 +45,7 @@ var (
 		"en", "ru",
 	}
 	Themes = []string{
-		"light", "dark",
+		"light", "dark", "photon",
 	}
 )
 
