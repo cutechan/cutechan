@@ -83,20 +83,3 @@ export const specs: { [id: string]: OptionSpec } = {
 		type: optionType.shortcut,
 	},
 }
-
-// Toggle an optional style element in the head.
-// function toggleHeadStyle(
-// 	name: string,
-// 	css: string,
-// ): (toggle: boolean) => void {
-// 	return toggle => {
-// 		const id = name + "-toggle"
-// 		if (!document.getElementById(id)) {
-// 			const html = `<style id="${id}">${css}</style>`
-// 			document.head.append(makeEl(html))
-// 		}
-// 		// The disabled property only exists on elements in the DOM, so we
-// 		// do another query.
-// 		(document.getElementById(id) as HTMLStyleElement).disabled = !toggle
-// 	}
-// }
