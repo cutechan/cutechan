@@ -103,8 +103,8 @@ export default class FormView extends PostView {
 			this.el.querySelector(".post-container"),
 			this.el.querySelector(".post-controls"),
 		]
-		for (let el of controls) {
-			el.style.display = "none"
+		for (const c of controls) {
+			c.style.display = "none"
 		}
 
 		el.addEventListener("submit", e => {
@@ -114,8 +114,8 @@ export default class FormView extends PostView {
 			send(message.captcha, this.captcha.data())
 
 			el.remove()
-			for (let el of controls) {
-				el.style.display = ""
+			for (const c of controls) {
+				c.style.display = ""
 			}
 			this.input.focus()
 			postSM.feed(postEvent.captchaSolved)
