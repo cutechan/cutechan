@@ -3,41 +3,6 @@
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
 
-TODO(Kagami): Remove.
-{% func renderTemplates(pos auth.ModerationLevel) %}{% stripspace %}
-	{% code ln := lang.Get() %}
-	<template name="post-controls">
-		<form class="antispam-captcha">
-			{%= captcha() %}
-			{%= submit(true) %}
-		</form>
-		<div class="post-controls">
-			{%= cancel() %}
-			<input name="done" type="button" value="{%s ln.UI["done"] %}" hidden>
-			<span class="upload-container" hidden>
-				<input type="file" name="image" accept="image/png, image/gif, image/jpeg, video/webm, video/ogg, audio/ogg, application/ogg, video/mp4, audio/mp4, audio/mp3, application/zip, application/x-7z-compressed, application/x-xz, application/x-gzip">
-				<strong class="upload-status"></strong>
-				{% if pos > auth.NotStaff %}
-					{%= input(staffTitleSpec.wrap(), ln) %}
-				{% endif %}
-			</span>
-		</div>
-	</template>
-	<template name="notification">
-		<div class="notification modal">
-			<b class="admin"><b>
-		</div>
-	</template>
-	{% if pos > auth.NotLoggedIn %}
-		<template name="keyValue">
-			{%= keyValueForm("", "") %}
-		</template>
-		<template name="arrayItem">
-			{%= arrayItemForm("") %}
-		</template>
-	{% endif %}
-{% endstripspace %}{% endfunc %}
-
 {% func faqModal() %}{% stripspace %}
 	<div id="FAQ" class="modal">
 		cutechan is licensed under the{% space %}
@@ -167,7 +132,14 @@ TODO(Kagami): Remove.
 				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
 			}
 		</script>
-		{%= renderTemplates(pos) %}
+		{% if pos > auth.NotLoggedIn %}
+			<template name="keyValue">
+				{%= keyValueForm("", "") %}
+			</template>
+			<template name="arrayItem">
+				{%= arrayItemForm("") %}
+			</template>
+		{% endif %}
 	</head>
 	<body>
 		<div class="overlay-container">
