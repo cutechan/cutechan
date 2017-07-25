@@ -829,7 +829,7 @@ input[type=number], input[type=text], input[type=password], textarea {
 }
 
 //////////////////////////////
-// BOARD SEARCH / SORT
+// BOARD SEARCH
 //////////////////////////////
 
 .board-search {
@@ -1152,13 +1152,12 @@ html.pos-notstaff {
 //////////////////////////////
 
 .post_hover {
-  position: fixed;
+  position: absolute;
   padding: 4px 10px;
   border-radius: 3px;
   border: @previewBorder;
   box-shadow: @previewShadow;
   z-index: 101;
-  pointer-events: all;
 
   .control {
     display: none;

@@ -67,25 +67,26 @@ class PostPreview extends View<Post> {
 				el.classList.add("post-link_ref")
 			}
 		}
-		overlay.append(this.el)
+		document.body.append(this.el)
 		this.position()
 	}
 
 	// Position the preview element relative to it's parent link.
 	private position() {
+		const height = this.el.offsetHeight
 		const rect = this.parent.getBoundingClientRect()
+		let left = rect.left + window.scrollX
+		let top = rect.top + window.scrollY
 
 		// The preview will never take up more than 100% screen width, so no
 		// need for checking horizontal overflow. Must be applied before
 		// reading the height, so it takes into account post resizing to
 		// viewport edge.
-		this.el.style.left = rect.left + "px"
+		this.el.style.left = left + "px"
 
-		const height = this.el.offsetHeight
-		let top = rect.top - height - 5
-
+		top -= height - 5
 		// If post gets cut off at the top, put it bellow the link.
-		if (top < 0) {
+		if (top < window.scrollY) {
 			top += height + 23
 		}
 		this.el.style.top = top + "px"
