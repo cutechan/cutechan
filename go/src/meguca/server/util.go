@@ -98,7 +98,7 @@ func text403(w http.ResponseWriter, err error) {
 
 // Text-only 500 response
 func text500(w http.ResponseWriter, r *http.Request, err interface{}) {
-	http.Error(w, fmt.Sprintf("500 %s", err), 500)
+	http.Error(w, "500 internal server error", 500)
 	logError(r, err)
 }
 
