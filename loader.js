@@ -1,7 +1,7 @@
 define("loader", ["almond", "mustache", "preact", "classnames", "events"],
        function () {
   var scriptCount = 0;
-  var polyfills = [];
+  var scripts = [];
 
   // Check for browser compatibility by trying to detect some ES6
   // features.
@@ -105,13 +105,13 @@ define("loader", ["almond", "mustache", "preact", "classnames", "events"],
   ];
   for (var i = 0; i < stdlibTests.length; i++) {
     if (!checkFunction(stdlibTests[i])) {
-      polyfills.push("core.min");
+      scripts.push("core.min");
       break;
     }
   }
 
   if (!checkFunction("Proxy")) {
-    polyfills.push("proxy.min");
+    scripts.push("proxy.min");
   }
 
   var DOMMethods = [
@@ -145,17 +145,17 @@ define("loader", ["almond", "mustache", "preact", "classnames", "events"],
     DOMUpToDate = check(s);
   }
   if (!DOMUpToDate) {
-    polyfills.push("dom4");
+    scripts.push("dom4");
   }
 
   // Fetch API.
   if (!checkFunction("fetch")) {
-    polyfills.push("fetch");
+    scripts.push("fetch");
   }
 
   // URL polyfill.
   if (!checkFunction("URL")) {
-    polyfills.push("url-polyfill.min");
+    scripts.push("url-polyfill.min");
   }
 
   // Iterable NodeList.
@@ -175,23 +175,16 @@ define("loader", ["almond", "mustache", "preact", "classnames", "events"],
     }
   }
 
-  if (polyfills.length) {
-    for (var i = 0; i < polyfills.length; i++) {
-      scriptCount++;
-      loadScript(polyfills[i]).onload = checkAllLoaded;
-    }
-  } else {
-    loadClient();
+  // Application.
+  scripts.push("app" + (window.legacy ? ".es5" : ""));
+
+  for (var i = 0; i < scripts.length; i++) {
+    scriptCount++;
+    loadScript(scripts[i]).onload = checkAllLoaded;
   }
 
   function checkAllLoaded() {
     if (--scriptCount === 0) {
-      loadClient();
-    }
-  }
-
-  function loadClient() {
-    loadScript("app" + (window.legacy ? ".es5" : "")).onload = function () {
       requirejs("app");
     }
   }
