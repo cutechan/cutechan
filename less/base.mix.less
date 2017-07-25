@@ -281,20 +281,16 @@ html, body {
 
 .new-thread-container {
   margin: 0 auto;
-  .reply-form {
-    width: 1000px;
+  .reply {
     margin-bottom: 20px;
   }
-  .reply-body {
-    min-height: 138px;
-  }
-  .reply-form-move-control {
+  .reply-move-control {
     display: none;
   }
 }
 
 .new-post-container {
-  .reply-form {
+  .reply {
     margin-top: 20px;
   }
 }
@@ -1300,19 +1296,21 @@ html.pos-notstaff {
 // REPLY FORM
 //////////////////////////////
 
-.reply-form {
+.reply {
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
-  width: 700px;
   box-sizing: border-box;
+  min-width: 500px;
+  min-height: 200px;
+  position: relative;
   border-radius: 3px;
   border: @replyBorder;
   background: @replyBG;
   box-shadow: @replyShadow;
 }
 
-.reply-form_float {
+.reply_float {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   background: @replyfloatBG;
@@ -1406,7 +1404,6 @@ html.pos-notstaff {
   display: block;
   box-sizing: border-box;
   width: 100%;
-  min-height: 164px;
   padding: 0;
   overflow: hidden;
   resize: none;
@@ -1422,12 +1419,12 @@ html.pos-notstaff {
   padding: 5px 0;
 }
 
-.reply-form-hide-control {
+.reply-hide-control {
   font-size: 28px;
   margin-top: -3px;
 }
 
-.reply-form-move-control {
+.reply-move-control {
   flex: 1;
   text-align: center;
   cursor: move;
@@ -1447,12 +1444,14 @@ html.pos-notstaff {
   display: none;
 }
 
-.upload-status {
-  margin-left: 0.5em;
-}
-
-.upload-container label {
-  padding: 0;
+.reply-resize {
+  display: block;
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  right: -5px;
+  bottom: -5px;
+  cursor: nwse-resize;
 }
 
 //////////////////////////////

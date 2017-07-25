@@ -12,6 +12,8 @@ import {
 	REPLY_CONTAINER_SEL,
 	TRIGGER_OPEN_REPLY_SEL,
 	TRIGGER_QUOTE_POST_SEL,
+	REPLY_THREAD_WIDTH_PX,
+	REPLY_BOARD_WIDTH_PX,
 } from "../../vars"
 import {
 	Dict, ShowHide, on, scrollToTop,
@@ -127,6 +129,7 @@ class Reply extends Component<any, any> {
 	private bodyEl: HTMLInputElement = null
 	private fileEl: HTMLInputElement = null
 	private moving = false
+	private resizing = false
 	private baseX = 0
 	private baseY = 0
 	private startX = 0
@@ -135,6 +138,8 @@ class Reply extends Component<any, any> {
 		float: false,
 		left: 0,
 		top: 0,
+		width: page.thread ? REPLY_THREAD_WIDTH_PX : REPLY_BOARD_WIDTH_PX,
+		height: "auto",
 		sending: false,
 		board: page.board === "all" ? boards[0].id : page.board,
 		thread: page.thread,
@@ -192,8 +197,12 @@ class Reply extends Component<any, any> {
 		}
 	}
 	get style() {
-		const { float, left, top } = this.state
-		return float ? {position: "fixed", left, top} : null
+		const { float, left, top, width, height } = this.state
+		const o = {width, height}
+		if (float) {
+			Object.assign(o, {position: "fixed", left, top})
+		}
+		return o
 	}
 	get invalid() {
 		const { subject, body, files } = this.state
@@ -266,6 +275,14 @@ class Reply extends Component<any, any> {
 		this.startX = rect.left
 		this.startY = rect.top
 	}
+	handleResizeDown = (e: MouseEvent) => {
+		e.preventDefault()
+		this.resizing = true
+		this.baseX = e.clientX
+		this.baseY = e.clientY
+		this.startX = this.mainEl.offsetWidth;
+		this.startY = this.mainEl.offsetHeight;
+	}
 	handleGlobalMove = (e: MouseEvent) => {
 		if (this.moving) {
 			this.setState({
@@ -273,10 +290,16 @@ class Reply extends Component<any, any> {
 				left: this.startX + e.clientX - this.baseX,
 				top: this.startY + e.clientY - this.baseY,
 			})
+		} else if (this.resizing) {
+			this.setState({
+				width: this.startX + e.clientX - this.baseX,
+				height: this.startY + e.clientY - this.baseY,
+			})
 		}
 	}
 	handleGlobalUp = () => {
 		this.moving = false
+		this.resizing = false
 	}
 	handleFormPin = () => {
 		this.setState({float: false}, this.focus)
@@ -383,7 +406,7 @@ class Reply extends Component<any, any> {
 	}
 	render({}, { float, sending, body }: any) {
 		return (
-			<div class={cx("reply-form", {"reply-form_float": float})} ref={s(this, "mainEl")} style={this.style}>
+			<div class={cx("reply", {"reply_float": float})} ref={s(this, "mainEl")} style={this.style}>
 				{this.renderPreviews()}
 				<div class="reply-content">
 					{this.renderHeader()}
@@ -406,14 +429,14 @@ class Reply extends Component<any, any> {
 					</div>
 				</div>
 				<div class="reply-side-controls reply-controls">
-					<a class="control reply-control reply-form-hide-control" onClick={this.handleFormHide}>
+					<a class="control reply-control reply-hide-control" onClick={this.handleFormHide}>
 						<i class="fa fa-remove" />
 					</a>
-					<a class="control reply-control reply-form-move-control" onMouseDown={this.handleMoveDown}>
+					<a class="control reply-control reply-move-control" onMouseDown={this.handleMoveDown}>
 						<i class="fa fa-arrows-alt" />
 					</a>
 					<ShowHide show={float}>
-						<a class="control reply-control reply-form-pin-control" onClick={this.handleFormPin}>
+						<a class="control reply-control reply-pin-control" onClick={this.handleFormPin}>
 							<i class="fa fa-thumb-tack" />
 						</a>
 					</ShowHide>
@@ -436,6 +459,7 @@ class Reply extends Component<any, any> {
 					accept="image/*,video/*"
 					onChange={this.handleFileLoad}
 				/>
+				<i class="reply-resize" onMouseDown={this.handleResizeDown} />
 			</div>
 		)
 	}

@@ -29,3 +29,5 @@ export const RELATIVE_TIME_PERIOD_SECS = 60
 export const POST_HOVER_TIMEOUT_SECS = 0.5
 export const ZOOM_STEP_PX = 100
 export const HEADER_HEIGHT_PX = 30
+export const REPLY_THREAD_WIDTH_PX = 700
+export const REPLY_BOARD_WIDTH_PX = 1000
