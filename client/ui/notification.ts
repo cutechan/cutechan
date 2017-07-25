@@ -5,10 +5,7 @@ import { thumbPath, Post } from "../posts"
 import { repliedToMe } from "./tab"
 import { importTemplate } from "../util"
 import { View } from "../base"
-
-// Displayed, when there is no image in post
-const defaultIcon = "/static/img/notification.png",
-	overlay = document.getElementById("modal-overlay")
+import { DEFAULT_NOTIFICATION_IMAGE_URL } from "../vars"
 
 // Notify the user that one of their posts has been replied to
 export default function notifyAboutReply(post: Post) {
@@ -34,7 +31,7 @@ export default function notifyAboutReply(post: Post) {
 			const { thumbType, SHA1 } = post.image
 			icon = thumbPath(thumbType, SHA1)
 		} else {
-			icon = defaultIcon
+			icon = DEFAULT_NOTIFICATION_IMAGE_URL
 		}
 	}
 	const n = new Notification(lang.ui["quoted"], {
@@ -50,12 +47,13 @@ export default function notifyAboutReply(post: Post) {
 }
 
 // Textual notification at the top of the page
+// TODO(Kagami): Rework.
 export class OverlayNotification extends View<null> {
 	constructor(text: string) {
 		super({ el: importTemplate("notification").firstChild as HTMLElement })
 		this.on("click", () =>
 			this.remove())
 		this.el.querySelector("b").textContent = text
-		overlay.prepend(this.el)
+		// overlay.prepend(this.el)
 	}
 }

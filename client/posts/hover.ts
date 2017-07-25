@@ -10,7 +10,7 @@ import { Post } from "./model"
 import PostView from "./view"
 import * as popup from "./popup"
 import {
-	POST_LINK_SEL, POST_FILE_THUMB_SEL,
+	HOVER_CONTAINER_SEL, POST_LINK_SEL, POST_FILE_THUMB_SEL,
 	HOVER_TRIGGER_TIMEOUT_SECS, POST_HOVER_TIMEOUT_SECS,
 } from "../vars"
 import {
@@ -29,12 +29,12 @@ const mouseMove = emitChanges<MouseMove>({
 	},
 } as MouseMove)
 
-let overlay = null as HTMLElement
+let container = null as HTMLElement
 let lastTarget = null as EventTarget
 let delayedTID = 0
 let clearPostTID = 0
 const postPreviews = [] as [PostPreview]
-let imagePreview = null as HTMLElement
+let imagePreview = null as HTMLImageElement
 
 // Clone a post element as a preview.
 // TODO(Kagami): Render mustache template instead?
@@ -67,7 +67,7 @@ class PostPreview extends View<Post> {
 				el.classList.add("post-link_ref")
 			}
 		}
-		document.body.append(this.el)
+		container.append(this.el)
 		this.position()
 	}
 
@@ -84,10 +84,10 @@ class PostPreview extends View<Post> {
 		// viewport edge.
 		this.el.style.left = left + "px"
 
-		top -= height - 5
+		top -= height
 		// If post gets cut off at the top, put it bellow the link.
 		if (top < window.scrollY) {
-			top += height + 23
+			top += height + 20
 		}
 		this.el.style.top = top + "px"
 	}
@@ -140,15 +140,17 @@ function renderImagePreview(event: MouseEvent) {
 	if (!target.matches || !target.matches(POST_FILE_THUMB_SEL)) return
 
 	const post = getModel(target)
-	if (!post) return
+	if (!post || post.image.video) return
 
-	if (!post.image.video) {
-		const el = document.createElement("img")
-		el.className = "media_hover"
-		el.src = post.fileSrc
-		imagePreview = el
-		overlay.append(el)
-	}
+	const [width, height] = post.image.dims
+	const rect = popup.getCenteredRect({width, height})
+	imagePreview = document.createElement("img")
+	imagePreview.className = "media_hover"
+	imagePreview.src = post.fileSrc
+	imagePreview.style.left = rect.left + "px"
+	imagePreview.style.top = rect.top + "px"
+	imagePreview.width = rect.width
+	container.append(imagePreview)
 }
 
 function clearInactivePostPreviews() {
@@ -194,7 +196,7 @@ function onMouseMove(event: MouseEvent) {
 }
 
 export function init() {
-	overlay = document.getElementById("hover-overlay")
+	container = document.querySelector(HOVER_CONTAINER_SEL)
 	document.addEventListener("mousemove", onMouseMove, {passive: true})
 	mouseMove.onChange("event", renderPostPreview)
 	mouseMove.onChange("event", renderImagePreview)

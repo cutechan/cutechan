@@ -237,8 +237,31 @@ html, body {
   height: 100%;
 }
 
-#page-container {
-  height: 100%;
+.overlay-container {
+  position: fixed;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  pointer-events: none;
+  z-index: 100;
+}
+
+.modal-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  height: ~"calc(100% - @{headerHeight})";
+  align-items: flex-start;
+  pointer-events: none;
+
+  .modal {
+    display: none;
+    margin-left: auto;
+    &.notification {
+      display: block;
+    }
+  }
 }
 
 #threads {
@@ -309,61 +332,6 @@ html, body {
 }
 
 //////////////////////////////
-// OVERLAYS
-//////////////////////////////
-
-.overlay-container {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 100;
-}
-
-.overlay {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: ~"calc(100% - @{headerHeight})";
-  align-items: flex-start;
-  pointer-events: none;
-}
-
-#hover-overlay {
-  position: fixed;
-  bottom: 0;
-  right: 0;
-  z-index: 100;
-  & > video, & > img {
-    max-height: 100%;
-    max-width: 100%;
-    margin: auto auto;
-    display: block;
-    object-fit: contain;
-  }
-  .post-controls {
-    display: none;
-  }
-}
-
-#modal-overlay {
-  .modal {
-    display: none;
-    margin-left: auto;
-  }
-
-  .modal.notification {
-    display: block;
-  }
-}
-
-.modal, .header {
-  pointer-events: all;
-}
-
-//////////////////////////////
 // ALERTS
 //////////////////////////////
 
@@ -405,6 +373,21 @@ html, body {
 }
 
 //////////////////////////////
+// POPUP
+//////////////////////////////
+
+.popup {
+  position: fixed;
+  z-index: 200;
+}
+
+.popup-item {
+  display: block;
+  outline: none;
+  user-select: none;
+}
+
+//////////////////////////////
 // HEADER
 //////////////////////////////
 
@@ -418,6 +401,7 @@ html, body {
   box-shadow: @headerShadow;
   cursor: default;
   user-select: none;
+  pointer-events: all;
 }
 
 .header-item {
@@ -628,6 +612,7 @@ html, body {
   border-width: 0 0 1px;
   border-radius: 0 0 0 9px;
   box-shadow: @modalShadow;
+  pointer-events: all;
 
   input[type=number] {
     width: 5em;
@@ -791,29 +776,6 @@ input[type=number], input[type=text], input[type=password], textarea {
 // instead.
 #deleteBoard {
   display: none;
-}
-
-//////////////////////////////
-// POPUP MENU
-//////////////////////////////
-
-.popup-menu {
-  display: table;
-  position: relative;
-  padding: 5px;
-  margin-top: 0.1em;
-  white-space: nowrap;
-  border: @border;
-  user-select: none;
-  li {
-    list-style: none;
-    margin: 0;
-    padding: 3px 3px 3px 5px;
-  }
-}
-
-.popup-menu li:hover {
-  background-color: #f9fcf7;
 }
 
 //////////////////////////////
@@ -1148,42 +1110,6 @@ html.pos-notstaff {
 }
 
 //////////////////////////////
-// HOVER POST
-//////////////////////////////
-
-.post_hover {
-  position: absolute;
-  padding: 4px 10px;
-  border-radius: 3px;
-  border: @previewBorder;
-  box-shadow: @previewShadow;
-  z-index: 101;
-
-  .control {
-    display: none;
-  }
-}
-
-.media_hover {
-  z-index: 102;
-}
-
-//////////////////////////////
-// MEDIA POPUP
-//////////////////////////////
-
-.media-popup {
-  position: fixed;
-  z-index: 200;
-}
-
-.media-popup-item {
-  display: block;
-  outline: none;
-  user-select: none;
-}
-
-//////////////////////////////
 // OP POST
 //////////////////////////////
 
@@ -1268,6 +1194,29 @@ html.pos-notstaff {
 
 .post-catalog-message {
   margin: 5px 0 0;
+}
+
+//////////////////////////////
+// HOVER POST
+//////////////////////////////
+
+.post_hover {
+  position: absolute;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: @previewBorder;
+  box-shadow: @previewShadow;
+  z-index: 101;
+
+  .post-controls {
+    display: none;
+  }
+}
+
+.media_hover {
+  position: fixed;
+  display: block;
+  z-index: 102;
 }
 
 //////////////////////////////

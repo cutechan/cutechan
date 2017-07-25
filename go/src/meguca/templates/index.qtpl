@@ -144,24 +144,16 @@
 	<body>
 		<div class="overlay-container">
 			{%= renderHeader(boards) %}
-			<div id="modal-overlay" class="overlay">
+			<div class="modal-container">
 				{%= faqModal() %}
 				{%= accountModal(pos) %}
 				{%= optionsModal() %}
 			</div>
 		</div>
-		<div id="hover-overlay" class="overlay"></div>
+		<main id="threads">$$$</main>
 		<div class="alerts-container"></div>
-		<div id="page-container">
-			{% comment %}
-				Contains posts, page navigation, title, image banner and the catalog.
-				Injected on the second parse of this template.
-			{% endcomment %}
-			<section id="threads">$$$</section>
-		</div>
-		{% comment %}
-			Finally load vendor libs and application.
-		{% endcomment %}
+		<div class="hover-container"></div>
+		<div class="popup-container"></div>
 		<script src="/static/js/deps.js"></script>
 	</body>
 	</html>

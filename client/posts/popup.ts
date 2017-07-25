@@ -2,11 +2,17 @@
  * Expand media attachments to the middle of the screen.
  */
 
-import { TRIGGER_MEDIA_POPUP_SEL, ZOOM_STEP_PX, HEADER_HEIGHT_PX } from "../vars"
 import { getModel } from "../state"
 import { Post } from "./model"
 import { on, trigger, HOOKS } from "../util"
+import {
+	POPUP_CONTAINER_SEL,
+	TRIGGER_MEDIA_POPUP_SEL,
+	ZOOM_STEP_PX,
+	HEADER_HEIGHT_PX,
+} from "../vars"
 
+let container = null as HTMLElement
 let opened = 0
 let lastUrl = ""
 
@@ -28,24 +34,14 @@ class Popup {
 		if (this.url === lastUrl) return
 		lastUrl = this.url
 
-		let w = post.image.dims[0]
-		let h = post.image.dims[1]
-		this.aspect = w / h
-		const pW = document.body.clientWidth
-		const pH = window.innerHeight - HEADER_HEIGHT_PX
-		w = Math.min(w, pW)
-		h = Math.ceil(w / this.aspect)
-		if (h > pH) {
-			h = pH
-			w = Math.ceil(h * this.aspect)
-		}
-		const l = (pW - w) / 2
-		const t = (pH - h) / 2 + HEADER_HEIGHT_PX
+		const [width, height] = post.image.dims
+		const rect = getCenteredRect({width, height})
+		this.aspect = width / height
 
 		this.el = document.createElement("div")
-		this.el.className = "media-popup"
-		this.el.style.left = l + "px"
-		this.el.style.top = t + "px"
+		this.el.className = "popup"
+		this.el.style.left = rect.left + "px"
+		this.el.style.top = rect.top + "px"
 
 		if (post.image.video) {
 			this.itemEl = document.createElement("video") as any
@@ -60,8 +56,8 @@ class Popup {
 			this.itemEl = document.createElement("img") as any
 		}
 		this.itemEl.src = this.url
-		this.itemEl.width = w
-		this.itemEl.className = "media-popup-item"
+		this.itemEl.width = rect.width
+		this.itemEl.className = "popup-item"
 		this.el.appendChild(this.itemEl)
 
 		this.attach()
@@ -128,7 +124,7 @@ class Popup {
 		this.el.style.top = t + "px"
 	}
 	attach() {
-		document.body.appendChild(this.el)
+		container.appendChild(this.el)
 		document.addEventListener("click", this.handleClick)
 		document.addEventListener("keydown", this.handleKey)
 		document.addEventListener("mousemove", this.handleMouseMove)
@@ -164,7 +160,23 @@ export function isOpen(): boolean {
 	return opened > 0
 }
 
+export function getCenteredRect({ width, height }: any) {
+	const aspect = width / height
+	const pW = document.body.clientWidth
+	const pH = window.innerHeight - HEADER_HEIGHT_PX
+	width = Math.min(width, pW)
+	height = Math.ceil(width / aspect)
+	if (height > pH) {
+		height = pH
+		width = Math.ceil(height * aspect)
+	}
+	const left = (pW - width) / 2
+	const top = (pH - height) / 2 + HEADER_HEIGHT_PX
+	return {width, height, left, top}
+}
+
 export function init() {
+	container = document.querySelector(POPUP_CONTAINER_SEL)
 	on(document, "click", open, {
 		selector: TRIGGER_MEDIA_POPUP_SEL,
 	})

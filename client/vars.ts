@@ -4,8 +4,10 @@
 // Don't import here anything!
 
 // Selectors, must be kept in sync with markup and styles!
-export const REPLY_CONTAINER_SEL = ".reply-container"
 export const ALERTS_CONTAINER_SEL = ".alerts-container"
+export const HOVER_CONTAINER_SEL = ".hover-container"
+export const POPUP_CONTAINER_SEL = ".popup-container"
+export const REPLY_CONTAINER_SEL = ".reply-container"
 export const BOARD_SEARCH_INPUT_SEL = ".board-search-input"
 export const THREAD_SEL = ".thread"
 export const POST_LINK_SEL = ".post-link"
@@ -32,3 +34,4 @@ export const ZOOM_STEP_PX = 100
 export const HEADER_HEIGHT_PX = 30
 export const REPLY_THREAD_WIDTH_PX = 700
 export const REPLY_BOARD_WIDTH_PX = 1000
+export const DEFAULT_NOTIFICATION_IMAGE_URL = "/static/img/notification.png"
