@@ -150,7 +150,7 @@
   }
 
   // Fetch API.
-  if (!checkFunction("window.fetch")) {
+  if (!checkFunction("fetch")) {
     polyfills.push("fetch");
   }
 
@@ -165,10 +165,15 @@
     NodeList.prototype[Symbol.iterator] = Array.prototype[Symbol.iterator];
   }
 
-  // Remove prefixes on Web Crypto API for Safari.
-  if (!checkFunction("window.crypto.subtle.digest")
-      && checkFunction("window.crypto.webkitSubtle")) {
-    window.crypto.subtle = window.crypto.webkitSubtle;
+  if (!checkFunction("window.crypto.subtle.digest")) {
+    // Remove prefixes on Web Crypto API for Safari.
+    if (checkFunction("window.crypto.webkitSubtle.digest")) {
+      window.crypto.subtle = window.crypto.webkitSubtle;
+    }
+    // Remove prefixes on Web Crypto API for IE11.
+    else if (checkFunction("window.msCrypto.subtle.digest")) {
+      window.crypto = window.msCrypto;
+    }
   }
 
   if (polyfills.length) {
