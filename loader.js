@@ -2,7 +2,6 @@ define("loader", ["almond", "mustache", "preact", "classnames", "events"],
        function () {
   var scriptCount = 0;
   var polyfills = [];
-  var head = document.getElementsByTagName("head")[0];
 
   // Check for browser compatibility by trying to detect some ES6
   // features.
@@ -27,7 +26,7 @@ define("loader", ["almond", "mustache", "preact", "classnames", "events"],
     var script = document.createElement("script");
     script.src = "/static/js/" + path + ".js"
     script.async = true;
-    head.appendChild(script);
+    document.body.appendChild(script);
     return script;
   }
 
