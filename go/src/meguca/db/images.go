@@ -19,8 +19,8 @@ const (
 
 var (
 	// ErrInvalidToken occurs, when trying to retrieve an image with an
-	// non-existent token. The token might have expired (60 to 119 seconds) or
-	// the client could have provided an invalid token to begin with.
+	// non-existent token. The token might have expired or the client
+	// could have provided an invalid token to begin with.
 	ErrInvalidToken = errors.New("invalid image token")
 )
 

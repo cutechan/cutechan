@@ -46,7 +46,7 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 }
 
 // Create a closed reply post
-func createReply(w http.ResponseWriter, r *http.Request) {
+func createPost(w http.ResponseWriter, r *http.Request) {
 	req, ok := parsePostCreationForm(w, r)
 	if !ok {
 		return

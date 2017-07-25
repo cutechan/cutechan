@@ -65,7 +65,7 @@ func createRouter() http.Handler {
 	api.GET("/post/:post", servePost)
 	// TODO(Kagami): Use single route?
 	api.POST("/thread", createThread)
-	api.POST("/post", createReply)
+	api.POST("/post", createPost)
 	// TODO(Kagami): Remove.
 	// api.POST("/upload", imager.NewImageUpload)
 	// api.POST("/upload-hash", imager.UploadImageHash)
