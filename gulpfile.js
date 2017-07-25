@@ -25,7 +25,7 @@ const runSequence = require("run-sequence");
 
 const LANGS_GLOB = "lang/*.json";
 const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
-const TYPESCRIPT_GLOB = "{main,client/**/*}.[tj]s?(x)";
+const TYPESCRIPT_GLOB = "{app,client/**/*}.[tj]s?(x)";
 
 const DIST_DIR = "dist";
 const STATIC_DIR = path.join(DIST_DIR, "static");
@@ -123,7 +123,7 @@ function templates() {
 
 function typescript(opts) {
   const project = ts.createProject("tsconfig.json", opts);
-  return gulp.src("main.ts")
+  return gulp.src("app.ts")
     .pipe(project(ts.reporter.nullReporter()))
     .on("error", handleError);
 }
@@ -172,7 +172,7 @@ buildES6();
 if (!watch) buildES5();
 
 // Third-party dependencies and loader.
-createTask("deps", "loader.js", src =>
+createTask("loader", "loader.js", src =>
   src
     .pipe(rjsOptimize({
       optimize: "none",
@@ -184,8 +184,6 @@ createTask("deps", "loader.js", src =>
         classnames: "node_modules/classnames/index",
         events: "node_modules/events/events",
       },
-      deps: ["almond", "mustache", "preact", "classnames", "events"],
-      out: "deps.js",
     }))
     .pipe(gulpif(!watch, minify()))
     .pipe(gulp.dest(JS_DIR))

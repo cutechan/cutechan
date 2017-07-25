@@ -154,7 +154,7 @@
 		<div class="alerts-container"></div>
 		<div class="hover-container"></div>
 		<div class="popup-container"></div>
-		<script src="/static/js/deps.js"></script>
+		<script src="/static/js/loader.js"></script>
 	</body>
 	</html>
 {% endstripspace %}{% endfunc %}

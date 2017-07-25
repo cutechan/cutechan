@@ -1,4 +1,5 @@
-(function () {
+define("loader", ["almond", "mustache", "preact", "classnames", "events"],
+       function () {
   var scriptCount = 0;
   var polyfills = [];
   var head = document.getElementsByTagName("head")[0];
@@ -192,11 +193,9 @@
 
   function loadClient() {
     loadScript("app" + (window.legacy ? ".es5" : "")).onload = function () {
-      requirejs("main");
+      requirejs("app");
     }
-
-    // if ("serviceWorker" in navigator) {
-    //   navigator.serviceWorker.register("/worker.js");
-    // }
   }
-})();
+});
+
+requirejs("loader");
