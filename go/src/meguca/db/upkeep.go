@@ -39,9 +39,7 @@ func runFiveMinuteTasks() {
 }
 
 func runHourTasks() {
-	logPrepared(
-		"expire_user_sessions", "remove_identity_info", "expire_mod_log",
-	)
+	logPrepared("expire_user_sessions", "remove_identity_info")
 	logError("thread cleanup", deleteOldThreads())
 	logError("board cleanup", deleteUnusedBoards())
 	// logError("delete dangling open post bodies", cleanUpOpenPostBodies())
