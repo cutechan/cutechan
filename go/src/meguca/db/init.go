@@ -255,6 +255,13 @@ var upgrades = []func(*sql.Tx) error{
 				ALTER COLUMN readOnly DROP DEFAULT`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		_, err = tx.Exec(
+			`ALTER TABLE images
+				ALTER COLUMN Title TYPE varchar(300)`,
+		)
+		return
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both
