@@ -175,7 +175,9 @@ function clearImagePreview() {
 }
 
 function delayedSetEvent(event: MouseEvent) {
-	mouseMove.event = event
+	if (event.target !== mouseMove.event.target) {
+		mouseMove.event = event
+	}
 }
 
 function onMouseMove(event: MouseEvent) {
