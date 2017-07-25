@@ -152,6 +152,7 @@ class Reply extends Component<any, any> {
 	componentDidMount() {
 		hook(HOOKS.openReply, this.focus)
 		hook(HOOKS.sendReply, this.handleSend)
+		hook(HOOKS.selectFile, this.handleAttach)
 		document.addEventListener(
 			"mousemove",
 			this.handleGlobalMove,
@@ -169,6 +170,7 @@ class Reply extends Component<any, any> {
 	componentWillUnmount() {
 		unhook(HOOKS.openReply, this.focus)
 		unhook(HOOKS.sendReply, this.handleSend)
+		unhook(HOOKS.selectFile, this.handleAttach)
 		document.removeEventListener(
 			"mousemove",
 			this.handleGlobalMove,

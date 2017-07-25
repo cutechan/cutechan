@@ -40,6 +40,10 @@ function handleShortcut(event: KeyboardEvent) {
 				caught = true
 				navigateSearch()
 				break
+			case "o":
+				caught = true
+				trigger(HOOKS.selectFile)
+				break
 			}
 		}
 	} else if (event.altKey) {
