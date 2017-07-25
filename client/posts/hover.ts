@@ -75,8 +75,8 @@ class PostPreview extends View<Post> {
 	private position() {
 		const height = this.el.offsetHeight
 		const rect = this.parent.getBoundingClientRect()
-		let left = rect.left + window.scrollX
-		let top = rect.top + window.scrollY
+		let left = rect.left + window.pageXOffset
+		let top = rect.top + window.pageYOffset
 
 		// The preview will never take up more than 100% screen width, so no
 		// need for checking horizontal overflow. Must be applied before
@@ -86,7 +86,7 @@ class PostPreview extends View<Post> {
 
 		top -= height
 		// If post gets cut off at the top, put it bellow the link.
-		if (top < window.scrollY) {
+		if (top < window.pageYOffset) {
 			top += height + 20
 		}
 		this.el.style.top = top + "px"
