@@ -7,8 +7,8 @@ import { mine, seenPosts, storeSeenPost, posts, page } from "../state"
 import { notifyAboutReply } from "../ui"
 import { PostData, TextState, PostLink, Command, ImageData, fileTypes } from "../common"
 
-export type Backlinks = { [id: number]: PostBacklinks }
-export type PostBacklinks = { [id: number]: number }
+export type Backlinks = { [id: string]: PostBacklinks }
+export type PostBacklinks = { [id: string]: number }
 
 // Thread model, mirroring common.Thread.
 // Just a stub yet, for usage in isomorphic templates.

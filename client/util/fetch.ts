@@ -14,7 +14,8 @@ type Dict = { [key: string]: any }
 
 function toFormData(data: Dict): FormData {
 	const form = new FormData()
-	for (let [k, v] of Object.entries(data)) {
+	for (let k of Object.keys(data)) {
+		const v = data[k]
 		if (Array.isArray(v)) {
 			k += "[]"
 			v.forEach(item => form.append(k, item))

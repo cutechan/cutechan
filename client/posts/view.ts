@@ -44,8 +44,8 @@ export default class PostView extends View<Post> {
 
 	// Render links to posts linking to this post.
 	public renderBacklinks() {
-		const links = Object.entries(this.model.backlinks).map(([id, op]) =>
-			renderPostLink(+id, op as number)
+		const links = Object.keys(this.model.backlinks).map(id =>
+			renderPostLink(+id, this.model.backlinks[id])
 		)
 		if (!links.length) return
 
