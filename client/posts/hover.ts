@@ -4,14 +4,14 @@
 
 import API from "../api"
 import options from "../options"
-import { posts } from "../state"
+import { posts, getModel } from "../state"
 import { View } from "../base"
 import { Post } from "./model"
 import PostView from "./view"
 import * as popup from "./popup"
 import {
-	POST_LINK_SEL, POST_FILE_LINK_SEL, POST_FILE_THUMB_SEL,
-	POST_HOVER_TIMEOUT_SECS,
+	POST_LINK_SEL, POST_FILE_THUMB_SEL,
+	HOVER_TRIGGER_TIMEOUT_SECS, POST_HOVER_TIMEOUT_SECS,
 } from "../vars"
 import {
 	getID, getClosestID,
@@ -22,20 +22,19 @@ interface MouseMove extends ChangeEmitter {
 	event: MouseEvent
 }
 
-const overlay = document.getElementById("hover-overlay")
-
-// Currently displayed previews, if any.
-const postPreviews = [] as [PostPreview]
-let imagePreview = null as HTMLElement
-
-let clearPostTID = 0
-
 // Centralized mousemove target tracking.
 const mouseMove = emitChanges<MouseMove>({
 	event: {
 		target: null,
 	},
 } as MouseMove)
+
+let overlay = null as HTMLElement
+let lastTarget = null as EventTarget
+let delayedTID = 0
+let clearPostTID = 0
+const postPreviews = [] as [PostPreview]
+let imagePreview = null as HTMLElement
 
 // Clone a post element as a preview.
 // TODO(Kagami): Render mustache template instead?
@@ -132,21 +131,20 @@ async function renderPostPreview(event: MouseEvent) {
 }
 
 function renderImagePreview(event: MouseEvent) {
+	clearImagePreview()
 	if (!options.imageHover) return
 	if (popup.isOpen()) return
 
 	const target = event.target as HTMLElement
 	if (!target.matches || !target.matches(POST_FILE_THUMB_SEL)) return
 
-	const link = target.closest(POST_FILE_LINK_SEL)
-	if (!link) return
-	const src = link.getAttribute("href")
-	const ext = src.slice(src.lastIndexOf(".") + 1)
+	const post = getModel(target)
+	if (!post) return
 
-	if (ext === "jpg" || ext === "png" || ext === "gif") {
+	if (!post.image.video) {
 		const el = document.createElement("img")
 		el.className = "media_hover"
-		el.src = src
+		el.src = post.fileSrc
 		imagePreview = el
 		overlay.append(el)
 	}
@@ -163,7 +161,7 @@ function clearInactivePostPreviews() {
 }
 
 function clearPostPreviews() {
-	let preview
+	let preview = null
 	while (preview = postPreviews.pop()) {
 		preview.remove()
 	}
@@ -176,14 +174,24 @@ function clearImagePreview() {
 	}
 }
 
+function delayedSetEvent(event: MouseEvent) {
+	mouseMove.event = event
+}
+
 function onMouseMove(event: MouseEvent) {
-	if (event.target !== mouseMove.event.target) {
-		clearImagePreview()
-		mouseMove.event = event
+	if (event.target !== lastTarget) {
+		lastTarget = event.target
+		clearTimeout(delayedTID)
+		// Don't show previews when moving mouse across the page.
+		delayedTID = window.setTimeout(() =>
+			delayedSetEvent(event),
+			HOVER_TRIGGER_TIMEOUT_SECS * 1000
+		)
 	}
 }
 
 export function init() {
+	overlay = document.getElementById("hover-overlay")
 	document.addEventListener("mousemove", onMouseMove, {passive: true})
 	mouseMove.onChange("event", renderPostPreview)
 	mouseMove.onChange("event", renderImagePreview)

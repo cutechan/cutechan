@@ -1,10 +1,11 @@
-export type ModelAttrs = { [attr: string]: any }
+/**
+ * Subscribable properties container.
+ */
 
 type HookHandler = (arg: any) => void
 type HookMap = { [key: string]: HookHandler[] }
 
 export interface ChangeEmitter {
-	// key can also be "*" to execute func on any property change
 	onChange(key: string, func: HookHandler): void
 }
 
@@ -25,19 +26,11 @@ export function emitChanges<T extends ChangeEmitter>(obj: T): T {
 		}
 	}
 
-	const proxy = new Proxy<T>(obj, {
+	return new Proxy<T>(obj, {
 		set(target: T, key: string, val: any) {
-			(target as any)[key] = val;
-
-			// Execute handlers hooked into the key change, if any
-			(changeHooks[key] || [])
-				.concat(changeHooks["*"] || [])
-				.forEach(fn =>
-					fn(val))
-
+			target[key] = val
+			;(changeHooks[key] || []).forEach(fn => fn(val))
 			return true
 		},
 	})
-
-	return proxy
 }

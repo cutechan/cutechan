@@ -2,6 +2,7 @@ import { Model } from '../base'
 import { extend } from '../util'
 import Collection from './collection'
 import PostView from './view'
+import { sourcePath } from "./images"
 import { SpliceResponse } from '../client'
 import { mine, seenPosts, storeSeenPost, posts, page } from "../state"
 import { notifyAboutReply } from "../ui"
@@ -50,6 +51,11 @@ export class Post extends Model implements PostData {
 
 	public get transparentThumb() {
 		return this.image && this.image.thumbType === fileTypes.png
+	}
+
+	// TODO(Kagami): Move to ImageData?
+	public get fileSrc(): string {
+		return sourcePath(this.image.fileType, this.image.SHA1)
 	}
 
 	constructor(attrs: PostData) {

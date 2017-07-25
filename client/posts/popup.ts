@@ -5,7 +5,6 @@
 import { TRIGGER_MEDIA_POPUP_SEL, ZOOM_STEP_PX, HEADER_HEIGHT_PX } from "../vars"
 import { getModel } from "../state"
 import { Post } from "./model"
-import { sourcePath } from "./images"
 import { on, trigger, HOOKS } from "../util"
 
 let opened = 0
@@ -25,14 +24,12 @@ class Popup {
 
 	constructor(post: Post) {
 		this.post = post
-		const file = post.image
-		// TODO(Kagami): Add getter.
-		this.url = sourcePath(file.fileType, file.SHA1)
+		this.url = post.fileSrc
 		if (this.url === lastUrl) return
 		lastUrl = this.url
 
-		let w = file.dims[0]
-		let h = file.dims[1]
+		let w = post.image.dims[0]
+		let h = post.image.dims[1]
 		this.aspect = w / h
 		const pW = document.body.clientWidth
 		const pH = window.innerHeight - HEADER_HEIGHT_PX
@@ -50,7 +47,7 @@ class Popup {
 		this.el.style.left = l + "px"
 		this.el.style.top = t + "px"
 
-		if (file.video) {
+		if (post.image.video) {
 			this.itemEl = document.createElement("video") as any
 			this.itemEl.loop = true
 			this.itemEl.autoplay = true

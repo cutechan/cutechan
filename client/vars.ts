@@ -26,6 +26,7 @@ export const TRIGGER_MEDIA_POPUP_SEL = ".trigger-media-popup"
 // Constants.
 export const ALERT_HIDE_TIMEOUT_SECS = 5
 export const RELATIVE_TIME_PERIOD_SECS = 60
+export const HOVER_TRIGGER_TIMEOUT_SECS = 0.1
 export const POST_HOVER_TIMEOUT_SECS = 0.5
 export const ZOOM_STEP_PX = 100
 export const HEADER_HEIGHT_PX = 30
