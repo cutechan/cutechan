@@ -6,12 +6,13 @@
 import { ln } from "./lang"
 import { FormModel, postSM, postEvent, postState } from "./posts"
 import {
-	Dict, ProgressFn,
+	Dict, ProgressFn, FutureAPI,
 	uncachedGET, postJSON, postFormProgress,
 } from "./util"
 
 type ReqFn = (
-	url: string, data?: Dict, onProgress?: ProgressFn
+	url: string, data?: Dict,
+	onProgress?: ProgressFn, api?: FutureAPI,
 ) => Promise<Response>
 
 function handleErr(res: Response): Promise<Dict> {
@@ -32,10 +33,19 @@ function handleErr(res: Response): Promise<Dict> {
 
 function req(reqFn: ReqFn, method: string, url: string) {
 	url = `/api/${url}`
-	return function(data?: Dict, onProgress?: ProgressFn): Promise<Dict> {
-		return reqFn(url, data, onProgress).then(res => {
+	return function(
+		data?: Dict,
+		onProgress?: ProgressFn,
+		api?: FutureAPI,
+	): Promise<Dict> {
+		return reqFn(url, data, onProgress, api).then(res => {
 			if (!res.ok) return handleErr(res)
-			return res.json().catch(() => { throw new Error(ln.UI["unknownErr"]) })
+			return res.json().catch(() => {
+				throw new Error(ln.UI["unknownErr"])
+			})
+		}, err => {
+			err.message = err.message || ln.UI["networkErr"]
+			throw err
 		})
 	}
 }

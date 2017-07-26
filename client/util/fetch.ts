@@ -4,6 +4,8 @@
 
 export type Dict = { [key: string]: any }
 export type ProgressFn = (e: ProgressEvent) => void
+export type FutureAPI = { abort?: () => void }
+export class AbortError extends Error {}
 
 function toFormData(data: Dict): FormData {
 	const form = new FormData()
@@ -67,15 +69,17 @@ export function postForm(url: string, data: Dict): Promise<Response> {
 }
 
 // Send a POST multipart/form-data request to the server, accepting
-// optional progress callback.
+// optional progress callback and storage for XHR API methods like
+// `abort`.
 // Implemented using XHR underneath because Fetch API currently lacks
 // this functionality, but provides roughly same API as fetch version.
 export function postFormProgress(
-	url: string, data: Dict, onProgress?: ProgressFn
+	url: string, data: Dict,
+	onProgress?: ProgressFn, api?: FutureAPI,
 ): Promise<Response> {
 	return new Promise((resolve, reject) => {
-		const xhr = new XMLHttpRequest();
-		xhr.open("POST", url);
+		const xhr = new XMLHttpRequest()
+		xhr.open("POST", url)
 		xhr.onload = () => {
 			const { status, statusText } = xhr
 			const headers = xhrToFetchHeaders(xhr)
@@ -86,6 +90,13 @@ export function postFormProgress(
 		if (onProgress) {
 			xhr.upload.onprogress = onProgress
 		}
+		if (api) {
+			// A bit kludgy but there is no other way..
+			api.abort = () => {
+				xhr.abort()
+				reject(new AbortError())
+			}
+		}
 		xhr.send(toFormData(data))
-	});
+	})
 }

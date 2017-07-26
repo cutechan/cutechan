@@ -19,7 +19,8 @@ import {
 } from "../../vars"
 import {
 	ShowHide, Pie,
-	Dict, on, scrollToTop,
+	Dict, FutureAPI, AbortError,
+	on, scrollToTop,
 	HOOKS, hook, unhook,
 	getID,
 } from "../../util"
@@ -131,6 +132,7 @@ class Reply extends Component<any, any> {
 	private mainEl: HTMLElement = null
 	private bodyEl: HTMLInputElement = null
 	private fileEl: HTMLInputElement = null
+	private sendAPI: FutureAPI = {}
 	private moving = false
 	private resizing = false
 	private baseX = 0
@@ -354,10 +356,6 @@ class Reply extends Component<any, any> {
 			showAlert(ln.UI["unsupFile"])
 		})
 	}
-	handleSendProgress = (e: ProgressEvent) => {
-		const progress = Math.floor(e.loaded / e.total * 100)
-		this.setState({progress})
-	}
 	handleSend = () => {
 		if (this.disabled) return
 		const { board, thread, subject, body } = this.state
@@ -370,7 +368,7 @@ class Reply extends Component<any, any> {
 				board, thread,
 				subject, body, files,
 				token, sign,
-			}, this.handleSendProgress)
+			}, this.handleSendProgress, this.sendAPI)
 		}).then((res: Dict) => {
 			if (page.thread) {
 				storeMine(res.id, page.thread)
@@ -379,11 +377,22 @@ class Reply extends Component<any, any> {
 				storeMine(res.id, res.id)
 				location.href = `/${board}/${res.id}`
 			}
-		}, ({ message }: Error) => {
-			showAlert({title: ln.UI.sendErr, message})
+		}, (err: Error) => {
+			if (err instanceof AbortError) return
+			showAlert({title: ln.UI["sendErr"], message: err.message})
 		}).then(() => {
-			this.setState({sending: false})
+			this.setState({sending: false, progress: 0})
+			this.sendAPI = {}
 		})
+	}
+	handleSendProgress = (e: ProgressEvent) => {
+		const progress = Math.floor(e.loaded / e.total * 100)
+		this.setState({progress})
+	}
+	handleSendAbort = () => {
+		if (this.sendAPI.abort) {
+			this.sendAPI.abort()
+		}
 	}
 	renderBoards() {
 		if (page.board !== "all") return null;
@@ -474,7 +483,12 @@ class Reply extends Component<any, any> {
 						</button>
 					</ShowHide>
 					<ShowHide show={sending}>
-						<Pie className="reply-progress" progress={progress} />
+						<Pie
+							className="reply-progress"
+							progress={progress}
+							title={`${progress}% (${ln.UI["clickToCancel"]})`}
+							onClick={this.handleSendAbort}
+						/>
 					</ShowHide>
 				</div>
 				<input

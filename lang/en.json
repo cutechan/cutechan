@@ -146,6 +146,7 @@
     ]
   },
   "ui": {
+    "clickToCancel": "Click to cancel",
     "news": "News",
     "sections": "Sections",
     "board": "Boards",
@@ -158,6 +159,7 @@
     "banConfirm": "Delete post and ban author?",
     "unsupFile": "Unsupported file type",
     "unknownErr": "Unknown error",
+    "networkErr": "Network error",
     "initErr": "Site load error",
     "sendErr": "Send error",
     "aggregator": "Aggregator metaboard",
