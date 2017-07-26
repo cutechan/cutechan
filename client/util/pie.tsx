@@ -13,6 +13,8 @@ interface Props {
 }
 
 export default function({ progress, className, ...props }: Props): JSX.Element {
+	progress = Math.floor(progress)
+	progress = Math.max(0, Math.min(progress, 99))
 	const cls = cx("pie", `pie_progress${progress}`, className)
 	return (
 		<div class={cls} title={`${progress}%`} {...props}>

@@ -387,7 +387,7 @@ class Reply extends Component<any, any> {
 		})
 	}
 	handleSendProgress = (e: ProgressEvent) => {
-		const progress = Math.floor(e.loaded / e.total * 100)
+		const progress = e.loaded / e.total * 100
 		this.setState({progress})
 	}
 	handleSendAbort = () => {
