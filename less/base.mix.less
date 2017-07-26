@@ -212,9 +212,9 @@ hr {
 // PIE
 //////////////////////////////
 
-@pieSize: 26px;
-@pieinnerSize: 16px;
-@pieBG: #8e44ad;
+@pieSize: 30px;
+@pieinnerSize: 20px;
+@pieBG: @control;
 @piebackBG: #bdc3c7;
 
 .pie {
@@ -232,6 +232,12 @@ hr {
   left: (@pieSize - @pieinnerSize) / 2;
   background-color: @replyBG;
   border-radius: 50%;
+  color: @control;
+  font-weight: bold;
+  font-family: Verdana;
+  line-height: 20px;
+  text-align: center;
+  text-shadow: @piebackBG 1px 1px;
 }
 
 .pie_progress(@i) when (@i < 50) {
@@ -1414,7 +1420,7 @@ html.pos-notstaff {
 }
 
 .reply-side-controls {
-  flex: 0 30px;
+  flex: 0 32px;
   display: flex;
   flex-direction: column;
   align-items: center;

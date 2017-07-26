@@ -16,7 +16,7 @@ export default function({ progress, className, ...props }: Props): JSX.Element {
 	const cls = cx("pie", `pie_progress${progress}`, className)
 	return (
 		<div class={cls} title={`${progress}%`} {...props}>
-			<div class="pie-inner" />
+			<div class="pie-inner">{progress}</div>
 		</div>
 	)
 }

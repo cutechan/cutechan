@@ -336,6 +336,7 @@ class Reply extends Component<any, any> {
 		this.fileEl.click()
 	}
 	handleAttachRemove = () => {
+		if (this.state.sending) return
 		this.setState({files: []})
 	}
 	handleFileLoad = () => {
@@ -462,9 +463,13 @@ class Reply extends Component<any, any> {
 					</div>
 				</div>
 				<div class="reply-side-controls reply-controls">
-					<a class="control reply-control reply-hide-control" onClick={this.handleFormHide}>
+					<button
+						class="control reply-control reply-hide-control"
+						onClick={this.handleFormHide}
+						disabled={sending}
+					>
 						<i class="fa fa-remove" />
-					</a>
+					</button>
 					<a class="control reply-control reply-move-control" onMouseDown={this.handleMoveDown}>
 						<i class="fa fa-arrows-alt" />
 					</a>
