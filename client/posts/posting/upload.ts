@@ -1,5 +1,5 @@
 import lang from '../../lang'
-import { load, postText } from '../../util'
+import { load } from '../../util'
 import { Post } from "../model"
 import { View } from "../../base"
 
@@ -61,19 +61,19 @@ export default class UploadForm extends View<Post> {
 			// the file thumbnailed and we don't need to upload.
 			const r = new FileReader()
 			r.readAsArrayBuffer(file)
-			const { target: { result } } = await load(r) as ArrayBufferLoadEvent,
-				hash = await crypto.subtle.digest("SHA-1", result),
-				[res, err] = await postText(
-					"/api/upload-hash",
-					bufferToHex(hash),
-				)
-			if (err) {
-				this.isUploading = false
-				throw err
-			}
-			if (res) {
-				token = res
-			}
+			// const { target: { result } } = await load(r) as ArrayBufferLoadEvent,
+			// 	hash = await crypto.subtle.digest("SHA-1", result),
+			// 	[res, err] = await postText(
+			// 		"/api/upload-hash",
+			// 		bufferToHex(hash),
+			// 	)
+			// if (err) {
+			// 	this.isUploading = false
+			// 	throw err
+			// }
+			// if (res) {
+			// 	token = res
+			// }
 		}
 
 		if (!token) {
@@ -144,11 +144,11 @@ export default class UploadForm extends View<Post> {
 }
 
 // Encodes an ArrayBuffer to a hex string
-function bufferToHex(buf: ArrayBuffer): string {
-	const b = new Uint8Array(buf),
-		res = new Array(buf.byteLength)
-	for (let i = 0; i < res.length; i++) {
-		res[i] = precomputedHex[b[i]]
-	}
-	return res.join('')
-}
+// function bufferToHex(buf: ArrayBuffer): string {
+// 	const b = new Uint8Array(buf),
+// 		res = new Array(buf.byteLength)
+// 	for (let i = 0; i < res.length; i++) {
+// 		res[i] = precomputedHex[b[i]]
+// 	}
+// 	return res.join('')
+// }
