@@ -16,6 +16,7 @@ interface Options extends ChangeEmitter {
 	notification: boolean
 	workModeToggle: boolean
 	newPost: number
+	cancelPost: number
 	workMode: number
 	lang: string
 }

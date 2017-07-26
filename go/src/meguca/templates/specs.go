@@ -181,6 +181,10 @@ var optionSpecs = [...][]inputSpec{
 			Type: _shortcut,
 		},
 		{
+			ID:   "cancelPost",
+			Type: _shortcut,
+		},
+		{
 			ID:   "workMode",
 			Type: _shortcut,
 		},

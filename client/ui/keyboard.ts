@@ -52,6 +52,10 @@ function handleShortcut(event: KeyboardEvent) {
 			caught = true
 			trigger(HOOKS.openReply)
 			break
+		case options.cancelPost:
+			caught = true
+			trigger(HOOKS.closeReply)
+			break
 		case options.workMode:
 			caught = true
 			options.workModeToggle = !options.workModeToggle

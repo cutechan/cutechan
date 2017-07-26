@@ -7,6 +7,7 @@ import { EventEmitter } from "events"
 
 export const enum HOOKS {
 	openReply,
+	closeReply,
 	sendReply,
 	showAlert,
 	openPostPopup,

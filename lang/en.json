@@ -65,8 +65,12 @@
       ""
     ],
     "newPost": [
-      "New Post",
-      "Open new post"
+      "New post",
+      "Open reply form"
+    ],
+    "cancelPost": [
+      "Cancel post",
+      "Close reply form"
     ],
     "notification": [
       "Desktop Notifications",

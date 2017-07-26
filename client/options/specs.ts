@@ -78,6 +78,10 @@ export const specs: { [id: string]: OptionSpec } = {
 		default: 78,
 		type: optionType.shortcut,
 	},
+	cancelPost: {
+		default: 67,
+		type: optionType.shortcut,
+	},
 	workMode: {
 		default: 66,
 		type: optionType.shortcut,
