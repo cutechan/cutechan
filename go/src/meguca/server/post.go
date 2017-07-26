@@ -15,6 +15,29 @@ import (
 	"strings"
 )
 
+// Client should get token and solve challenge in order to post.
+func createPostToken(w http.ResponseWriter, r *http.Request) {
+	ip, err := auth.GetIP(r)
+	if err != nil {
+		text400(w, err)
+		return
+	}
+
+	token, err := db.NewPostToken(ip)
+	switch err {
+	case nil:
+	case db.ErrTokenForbidden:
+		text403(w, err)
+		return
+	default:
+		text500(w, r, err)
+		return
+	}
+
+	res := map[string]string{"id": token}
+	serveJSON(w, r, "", res)
+}
+
 // Create a thread with a closed OP
 func createThread(w http.ResponseWriter, r *http.Request) {
 	repReq, ok := parsePostCreationForm(w, r)
@@ -41,7 +64,7 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	res := websockets.ThreadCreationResponse{ID: post.ID}
+	res := map[string]uint64{"id": post.ID}
 	serveJSON(w, r, "", res)
 }
 
@@ -81,7 +104,7 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	}
 	feeds.InsertPostInto(post.StandalonePost, msg)
 
-	res := websockets.PostCreationResponse{ID: post.ID}
+	res := map[string]uint64{"id": post.ID}
 	serveJSON(w, r, "", res)
 }
 
@@ -126,6 +149,7 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 
 	req = websockets.ReplyCreationRequest{
 		Body: body,
+		Token: f.Get("token"),
 		Sign: f.Get("sign"),
 		Captcha: auth.Captcha{
 			CaptchaID: f.Get("captchaID"),

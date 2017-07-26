@@ -262,6 +262,16 @@ var upgrades = []func(*sql.Tx) error{
 		)
 		return
 	},
+	func(tx *sql.Tx) (err error) {
+		_, err = tx.Exec(
+			`create table post_tokens (
+				id char(20) not null primary key,
+				ip inet not null,
+				expires timestamp not null
+			)`,
+		)
+		return
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both

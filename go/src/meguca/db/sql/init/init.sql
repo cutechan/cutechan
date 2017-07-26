@@ -132,3 +132,9 @@ create table news (
 	imageName varchar(200),
 	time timestamp default (now() at time zone 'utc')
 );
+
+create table post_tokens (
+	id char(20) not null primary key,
+	ip inet not null,
+	expires timestamp not null
+);

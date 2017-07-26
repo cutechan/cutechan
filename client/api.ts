@@ -73,6 +73,7 @@ export const API = {
 		create: emit.POST.Form("post"),
 		createWS: createPostWS,
 		delete: emit.POST.JSON("delete-post"),
+		createToken: emit.POST.JSON("post/token"),
 	},
 	user: {
 		banByPost: emit.POST.JSON("ban"),

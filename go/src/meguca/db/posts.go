@@ -2,15 +2,33 @@
 package db
 
 import (
+	"time"
 	"database/sql"
 	"database/sql/driver"
 	"errors"
 	"fmt"
-	"meguca/common"
 	"strconv"
+	"meguca/common"
+	"meguca/auth"
 
 	"github.com/lib/pq"
 	"github.com/mailru/easyjson"
+)
+
+const (
+	// Clients with slow connection should be able to upload files before
+	// the token expires.
+	postTokenTimeout = time.Minute * 5
+)
+
+var (
+	// ErrInvalidToken occurs, when trying to retrieve post or image with
+	// an non-existent token. The token might have expired or the client
+	// could have provided an invalid token to begin with.
+	ErrInvalidToken = errors.New("invalid token")
+
+	// Occurs when client tries to retrieve too much tokens.
+	ErrTokenForbidden = errors.New("token forbidden")
 )
 
 // Post is for writing new posts to a database. It contains the Password
@@ -361,4 +379,41 @@ func GetPostPassword(id uint64) (p []byte, err error) {
 func SetPostCounter(c uint64) error {
 	_, err := db.Exec(`SELECT setval('post_id', $1)`, c)
 	return err
+}
+
+func NewPostToken(ip string) (token string, err error) {
+	// Check if client tries to abuse.
+	var can bool
+	err = prepared["can_get_post_token"].QueryRow(ip).Scan(&can)
+	if err != nil {
+		return
+	}
+	if !can {
+		err = ErrTokenForbidden
+		return
+	}
+
+	// 120 bits of entropy (20 base64 symbols) should be enough.
+	token, err = auth.RandomID(15)
+	if err != nil {
+		return
+	}
+
+	expires := time.Now().Add(postTokenTimeout)
+	err = execPrepared("write_post_token", token, ip, expires)
+	return
+}
+
+func UsePostToken(token string) (err error) {
+	var dbToken string
+	err = prepared["use_post_token"].QueryRow(token).Scan(&dbToken)
+	switch err {
+	case nil:
+		if token != dbToken {
+			err = ErrInvalidToken
+		}
+	case sql.ErrNoRows:
+		err = ErrInvalidToken
+	}
+	return
 }

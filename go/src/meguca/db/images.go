@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"errors"
 	"meguca/auth"
 	"meguca/common"
 	"meguca/imager/assets"
@@ -14,14 +13,7 @@ import (
 
 const (
 	// Time it takes for an image allocation token to expire
-	tokenTimeout = time.Minute
-)
-
-var (
-	// ErrInvalidToken occurs, when trying to retrieve an image with an
-	// non-existent token. The token might have expired or the client
-	// could have provided an invalid token to begin with.
-	ErrInvalidToken = errors.New("invalid image token")
+	imageTokenTimeout = time.Minute
 )
 
 // WriteImage writes a processed image record to the DB
@@ -57,7 +49,7 @@ func NewImageToken(SHA1 string) (token string, err error) {
 		if err != nil {
 			return
 		}
-		expires := time.Now().Add(tokenTimeout)
+		expires := time.Now().Add(imageTokenTimeout)
 
 		err = execPrepared("write_image_token", token, SHA1, expires)
 		switch {

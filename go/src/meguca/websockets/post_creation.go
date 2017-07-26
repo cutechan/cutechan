@@ -32,14 +32,6 @@ type ThreadCreationRequest struct {
 	Subject, Board string
 }
 
-type ThreadCreationResponse struct {
-	ID uint64 `json:"id"`
-}
-
-type PostCreationResponse struct {
-	ID uint64 `json:"id"`
-}
-
 // ReplyCreationRequest contains common fields for both thread and reply
 // creation
 type ReplyCreationRequest struct {
@@ -48,7 +40,7 @@ type ReplyCreationRequest struct {
 	auth.SessionCreds
 	auth.Captcha
 	Password, Body string
-	Sign string
+	Token, Sign string
 }
 
 // ImageRequest contains data for allocating an image
@@ -247,7 +239,7 @@ func getBoardConfig(board string) (conf config.BoardConfigs, err error) {
 }
 
 // Check post signature
-func checkSign(sign string) bool {
+func checkSign(token, sign string) bool {
 	if len(sign) < 2 || len(sign) > 100 {
 		return false
 	}
@@ -274,7 +266,13 @@ func constructPost(
 		IP: ip,
 	}
 
-	if !checkSign(req.Sign) {
+	// Check token and its signature.
+	// TODO(Kagami): Rollback token on failure to allow to cache it?
+	err = db.UsePostToken(req.Token)
+	if err != nil {
+		return
+	}
+	if !checkSign(req.Token, req.Sign) {
 		err = errBadSignature
 		return
 	}
