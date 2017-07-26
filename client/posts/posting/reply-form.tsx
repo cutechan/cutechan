@@ -344,10 +344,10 @@ class Reply extends Component<any, any> {
 		if (this.disabled) return
 		const { board, thread, subject, body } = this.state
 		const files = this.state.files.map(f => f.file)
-		const sign = signature.gen()
 		const sendFn = page.thread ? API.post.create : API.thread.create
 		this.setState({sending: true})
 		API.post.createToken().then(({ id: token }: Dict) => {
+			const sign = signature.gen(token)
 			return sendFn({
 				board, thread,
 				subject, body, files,

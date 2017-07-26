@@ -240,12 +240,14 @@ func getBoardConfig(board string) (conf config.BoardConfigs, err error) {
 
 // Check post signature
 func checkSign(token, sign string) bool {
-	if len(sign) < 2 || len(sign) > 100 {
+	if len(token) != 20 || len(sign) > 100 {
 		return false
 	}
+	cToken := C.CString(token)
 	cSign := C.CString(sign)
 	defer C.free(unsafe.Pointer(cSign))
-	return C.check_sign(cSign) >= 0
+	defer C.free(unsafe.Pointer(cToken))
+	return C.check_sign(cToken, cSign) >= 0
 }
 
 // Construct the common parts of the new post for both threads and replies

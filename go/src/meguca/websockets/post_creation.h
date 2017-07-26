@@ -1,1 +1,1 @@
-int check_sign(char *str);
+int check_sign(char *token, char *sign);
