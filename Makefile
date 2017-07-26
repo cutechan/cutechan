@@ -41,7 +41,7 @@ templates:
 client:
 	$(GULP)
 
-watch:
+client-watch:
 	$(GULP) -w
 
 server:

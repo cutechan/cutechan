@@ -18,7 +18,7 @@ const rjsOptimize = require("gulp-requirejs-optimize");
 const less = require("gulp-less");
 const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
-const minify = require("gulp-uglify/composer")(uglifyes, console);
+const uglify = require("gulp-uglify/composer")(uglifyes, console);
 const notify = require("gulp-notify");
 const livereload = require("gulp-livereload");
 const runSequence = require("run-sequence");
@@ -141,7 +141,7 @@ function buildES6() {
   tasks.push(name);
   gulp.task(name, () =>
     buildClient({target: "ES6", outFile: "app.js"})
-      .pipe(gulpif(!watch, minify({mangle: {safari10: true}})))
+      .pipe(gulpif(!watch, uglify({mangle: {safari10: true}})))
       .pipe(sourcemaps.write("maps"))
       .pipe(gulp.dest(JS_DIR)));
 
@@ -157,7 +157,7 @@ function buildES5() {
   tasks.push(name);
   gulp.task(name, () =>
     buildClient({target: "ES5", outFile: "app.es5.js"})
-      .pipe(minify())
+      .pipe(uglify())
       .pipe(sourcemaps.write("maps"))
       .pipe(gulp.dest(JS_DIR))
   );
@@ -185,7 +185,7 @@ createTask("loader", "loader.js", src =>
         events: "node_modules/events/events",
       },
     }))
-    .pipe(gulpif(!watch, minify()))
+    .pipe(gulpif(!watch, uglify()))
     .pipe(gulp.dest(JS_DIR))
 );
 
