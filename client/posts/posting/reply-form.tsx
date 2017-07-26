@@ -14,6 +14,8 @@ import {
 	TRIGGER_QUOTE_POST_SEL,
 	REPLY_THREAD_WIDTH_PX,
 	REPLY_BOARD_WIDTH_PX,
+	REPLY_HEIGHT_PX,
+	HEADER_HEIGHT_PX,
 } from "../../vars"
 import {
 	Dict, ShowHide, on, scrollToTop,
@@ -139,7 +141,7 @@ class Reply extends Component<any, any> {
 		left: 0,
 		top: 0,
 		width: page.thread ? REPLY_THREAD_WIDTH_PX : REPLY_BOARD_WIDTH_PX,
-		height: "auto",
+		height: REPLY_HEIGHT_PX,
 		sending: false,
 		board: page.board === "all" ? boards[0].id : page.board,
 		thread: page.thread,
@@ -251,10 +253,20 @@ class Reply extends Component<any, any> {
 		})
 	}
 	setFloat(e: MouseEvent) {
-		const float = true
-		const left = 300
-		const top = 300
-		this.setState({float, left, top})
+		const post = (e.target as Element).closest(POST_SEL)
+		const rect = post.getBoundingClientRect()
+
+		const margin = 10
+		const leftest = 0
+		const rightest = window.innerWidth - this.state.width - margin
+		const toppest = HEADER_HEIGHT_PX + margin
+		const bottomest = window.innerHeight - this.state.height - margin
+		const x = rect.right + margin
+		const y = rect.top
+		const left = Math.max(leftest, Math.min(x, rightest))
+		const top = Math.max(toppest, Math.min(y, bottomest))
+
+		this.setState({float: true, left, top})
 	}
 	focus = () => {
 		this.bodyEl.focus()
@@ -280,8 +292,8 @@ class Reply extends Component<any, any> {
 		this.resizing = true
 		this.baseX = e.clientX
 		this.baseY = e.clientY
-		this.startX = this.mainEl.offsetWidth;
-		this.startY = this.mainEl.offsetHeight;
+		this.startX = this.mainEl.offsetWidth
+		this.startY = this.mainEl.offsetHeight
 	}
 	handleGlobalMove = (e: MouseEvent) => {
 		if (this.moving) {
