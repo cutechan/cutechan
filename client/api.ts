@@ -5,7 +5,14 @@
 
 import { ln } from "./lang"
 import { FormModel, postSM, postEvent, postState } from "./posts"
-import { Dict, uncachedGET, postJSON, postForm } from "./util"
+import {
+	Dict, ProgressFn,
+	uncachedGET, postJSON, postFormProgress,
+} from "./util"
+
+type ReqFn = (
+	url: string, data?: Dict, onProgress?: ProgressFn
+) => Promise<Response>
 
 function handleErr(res: Response): Promise<Dict> {
 	const type = res.headers.get("Content-Type")
@@ -15,19 +22,18 @@ function handleErr(res: Response): Promise<Dict> {
 		})
 	} else {
 		return res.text().then(data => {
-			// XXX(Kagami): Might be quite huge HTML dump (e.g. 500). Maybe do
-			// it more elegantly...
-			throw new Error(data.slice(0, 200))
+			// XXX(Kagami): Might be quite huge HTML dump (e.g. 500 error).
+			// Maybe do it more elegantly...
+			const message = data.slice(0, 200)
+			throw new Error(message)
 		})
 	}
 }
 
-type ReqFn = (url: string, data: Dict) => Promise<Response>
-
 function req(reqFn: ReqFn, method: string, url: string) {
 	url = `/api/${url}`
-	return function(data?: Dict): Promise<Dict> {
-		return reqFn(url, data).then(res => {
+	return function(data?: Dict, onProgress?: ProgressFn): Promise<Dict> {
+		return reqFn(url, data, onProgress).then(res => {
 			if (!res.ok) return handleErr(res)
 			return res.json().catch(() => { throw new Error(ln.UI["unknownErr"]) })
 		})
@@ -41,7 +47,7 @@ const emit = {
 	},
 	POST: {
 		JSON: req.bind(null, postJSON, "POST"),
-		Form: req.bind(null, postForm, "POST"),
+		Form: req.bind(null, postFormProgress, "POST"),
 	},
 }
 

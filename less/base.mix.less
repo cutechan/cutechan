@@ -159,6 +159,10 @@ hr {
   font-size: smaller;
 }
 
+//////////////////////////////
+// CONTROLS
+//////////////////////////////
+
 .control {
   display: inline-block;
   font-size: larger;
@@ -203,6 +207,55 @@ hr {
     outline: none;
   }
 }
+
+//////////////////////////////
+// PIE
+//////////////////////////////
+
+@pieSize: 26px;
+@pieinnerSize: 16px;
+@pieBG: #8e44ad;
+@piebackBG: #bdc3c7;
+
+.pie {
+  width: @pieSize;
+  height: @pieSize;
+  position: relative;
+  border-radius: 50%;
+}
+
+.pie-inner {
+  position: absolute;
+  width: @pieinnerSize;
+  height: @pieinnerSize;
+  top: (@pieSize - @pieinnerSize) / 2;
+  left: (@pieSize - @pieinnerSize) / 2;
+  background-color: @replyBG;
+  border-radius: 50%;
+}
+
+.pie_progress(@i) when (@i < 50) {
+  @nextdeg: 90deg + (360 / 100 * @i);
+  background-image:
+    linear-gradient(90deg, @piebackBG 50%, transparent 50%, transparent),
+    linear-gradient(@nextdeg, @pieBG 50%, @piebackBG 50%, @piebackBG);
+}
+
+.pie_progress(@i) when (@i >= 50) {
+  @nextdeg: -90deg + (360 / 100 * (@i - 50));
+  background-image:
+    linear-gradient(@nextdeg, @pieBG 50%, transparent 50%, transparent),
+    linear-gradient(270deg, @pieBG 50%, @piebackBG 50%, @piebackBG);
+}
+
+.pie-loop(@i) when (@i >= 0) {
+  .pie-loop(@i - 1);
+  .pie_progress@{i} {
+    .pie_progress(@i);
+  }
+}
+
+.pie-loop(100);
 
 //////////////////////////////
 // CODE
@@ -1364,6 +1417,7 @@ html.pos-notstaff {
   flex: 0 30px;
   display: flex;
   flex-direction: column;
+  align-items: center;
   padding: 5px 0;
 }
 
@@ -1381,6 +1435,10 @@ html.pos-notstaff {
 .reply-send-control {
   margin-top: auto;
   margin-bottom: -4px;
+}
+
+.reply-progress {
+  margin-top: auto;
 }
 
 .reply-footer-controls {

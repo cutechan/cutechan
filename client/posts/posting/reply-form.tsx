@@ -18,7 +18,8 @@ import {
 	HEADER_HEIGHT_PX,
 } from "../../vars"
 import {
-	Dict, ShowHide, on, scrollToTop,
+	ShowHide, Pie,
+	Dict, on, scrollToTop,
 	HOOKS, hook, unhook,
 	getID,
 } from "../../util"
@@ -143,6 +144,7 @@ class Reply extends Component<any, any> {
 		width: page.thread ? REPLY_THREAD_WIDTH_PX : REPLY_BOARD_WIDTH_PX,
 		height: REPLY_HEIGHT_PX,
 		sending: false,
+		progress: 0,
 		board: page.board === "all" ? boards[0].id : page.board,
 		thread: page.thread,
 		subject: "",
@@ -352,6 +354,10 @@ class Reply extends Component<any, any> {
 			showAlert(ln.UI["unsupFile"])
 		})
 	}
+	handleSendProgress = (e: ProgressEvent) => {
+		const progress = Math.floor(e.loaded / e.total * 100)
+		this.setState({progress})
+	}
 	handleSend = () => {
 		if (this.disabled) return
 		const { board, thread, subject, body } = this.state
@@ -364,7 +370,7 @@ class Reply extends Component<any, any> {
 				board, thread,
 				subject, body, files,
 				token, sign,
-			})
+			}, this.handleSendProgress)
 		}).then((res: Dict) => {
 			if (page.thread) {
 				storeMine(res.id, page.thread)
@@ -422,7 +428,7 @@ class Reply extends Component<any, any> {
 			</div>
 		);
 	}
-	render({}, { float, sending, body }: any) {
+	render({}, { float, sending, progress, body }: any) {
 		return (
 			<div class={cx("reply", {"reply_float": float})} ref={s(this, "mainEl")} style={this.style}>
 				{this.renderPreviews()}
@@ -458,17 +464,18 @@ class Reply extends Component<any, any> {
 							<i class="fa fa-thumb-tack" />
 						</a>
 					</ShowHide>
-					<button
-						class="control reply-control reply-send-control"
-						disabled={this.disabled}
-						onClick={this.handleSend}
-					>
-						<i class={cx("fa", {
-							"fa-check": !sending,
-							"fa-spinner fa-pulse fa-fw": sending,
-							"hidden": this.invalid,
-						})} />
-					</button>
+					<ShowHide show={!sending}>
+						<button
+							class="control reply-control reply-send-control"
+							disabled={this.disabled}
+							onClick={this.handleSend}
+						>
+							<i class={cx("fa", "fa-check", this.invalid && "hidden")} />
+						</button>
+					</ShowHide>
+					<ShowHide show={sending}>
+						<Pie className="reply-progress" progress={progress} />
+					</ShowHide>
 				</div>
 				<input
 					class="reply-file-input"

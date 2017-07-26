@@ -5,14 +5,12 @@
 import { POST_SEL } from "../vars"
 
 export { default as FSM } from "./fsm"
+export { default as Pie } from "./pie"
 export { default as ShowHide } from "./show-hide"
 export * from "./fetch"
 export * from "./hooks"
 export * from "./render"
 export * from "./changes"
-
-// Useful helper.
-export type Dict = { [key: string]: any }
 
 // Any object with an event-based interface for passing to load()
 interface Loader {
