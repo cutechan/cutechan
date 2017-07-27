@@ -15,6 +15,8 @@ import {
 	REPLY_THREAD_WIDTH_PX,
 	REPLY_BOARD_WIDTH_PX,
 	REPLY_HEIGHT_PX,
+	REPLY_MIN_WIDTH_PX,
+	REPLY_MIN_HEIGHT_PX,
 	HEADER_HEIGHT_PX,
 } from "../../vars"
 import {
@@ -32,11 +34,11 @@ function s(self: any, name: string) {
 }
 
 function quoteText(text: string): string {
-  return text.trim().split(/\n/).filter(function(line) {
-    return line.length > 0;
-  }).map(function(line) {
-    return ">" + line;
-  }).join("\n") + "\n";
+	return text.trim().split(/\n/).filter(function(line) {
+		return line.length > 0;
+	}).map(function(line) {
+		return ">" + line;
+	}).join("\n") + "\n";
 }
 
 
@@ -139,12 +141,15 @@ class Reply extends Component<any, any> {
 	private baseY = 0
 	private startX = 0
 	private startY = 0
+	private startW = 0
+	private startH = 0
 	state = {
 		float: false,
 		left: 0,
 		top: 0,
 		width: page.thread ? REPLY_THREAD_WIDTH_PX : REPLY_BOARD_WIDTH_PX,
 		height: REPLY_HEIGHT_PX,
+		pos: "i",
 		sending: false,
 		progress: 0,
 		board: page.board === "all" ? boards[0].id : page.board,
@@ -202,9 +207,27 @@ class Reply extends Component<any, any> {
 			}
 		}
 	}
+	get cursor() {
+		switch (this.state.pos) {
+		case "nw":
+		case "se":
+			return "nwse-resize"
+		case "ne":
+		case "sw":
+			return "nesw-resize"
+		case "n":
+		case "s":
+			return "ns-resize"
+		case "e":
+		case "w":
+			return "ew-resize"
+		default:
+			return "default"
+		}
+	}
 	get style() {
 		const { float, left, top, width, height } = this.state
-		const o = {width, height}
+		const o = {width, height, cursor: this.cursor}
 		if (float) {
 			Object.assign(o, {position: "fixed", left, top})
 		}
@@ -282,22 +305,19 @@ class Reply extends Component<any, any> {
 			scrollToTop()
 		}
 	}
-	handleMoveDown = (e: MouseEvent) => {
-		e.preventDefault()
-		this.moving = true
+	saveCoords(e: MouseEvent) {
 		this.baseX = e.clientX
 		this.baseY = e.clientY
 		const rect = this.mainEl.getBoundingClientRect()
 		this.startX = rect.left
 		this.startY = rect.top
+		this.startW = rect.width
+		this.startH = rect.height
 	}
-	handleResizeDown = (e: MouseEvent) => {
+	handleMoveDown = (e: MouseEvent) => {
 		e.preventDefault()
-		this.resizing = true
-		this.baseX = e.clientX
-		this.baseY = e.clientY
-		this.startX = this.mainEl.offsetWidth
-		this.startY = this.mainEl.offsetHeight
+		this.moving = true
+		this.saveCoords(e)
 	}
 	handleGlobalMove = (e: MouseEvent) => {
 		if (this.moving) {
@@ -307,15 +327,98 @@ class Reply extends Component<any, any> {
 				top: this.startY + e.clientY - this.baseY,
 			})
 		} else if (this.resizing) {
-			this.setState({
-				width: this.startX + e.clientX - this.baseX,
-				height: this.startY + e.clientY - this.baseY,
-			})
+			const { pos } = this.state
+			const dx = e.clientX - this.baseX
+			const dy = e.clientY - this.baseY
+			let { startW: width, startH: height, startX: left, startY: top } = this
+			switch (pos) {
+			case "nw":
+				left += dx
+				width -= dx
+				top += dy
+				height -= dy
+				break
+			case "se":
+				width += dx
+				height += dy
+				break
+			case "ne":
+				width += dx
+				top += dy
+				height -= dy
+				break
+			case "sw":
+				left += dx
+				width -= dx
+				height += dy
+				break
+			case "n":
+				top += dy
+				height -= dy
+				break
+			case "s":
+				height += dy
+				break
+			case "e":
+				width += dx
+				break
+			case "w":
+				left += dx
+				width -= dx
+				break
+			}
+
+			// Restore out-of-bound values.
+			if (width < REPLY_MIN_WIDTH_PX
+					&& (pos === "nw" || pos === "sw" || pos === "w")) {
+				left -= REPLY_MIN_WIDTH_PX - width
+			}
+			if (height < REPLY_MIN_HEIGHT_PX
+					&& (pos === "nw" || pos === "ne" || pos === "n")) {
+				top -= REPLY_MIN_HEIGHT_PX - height
+			}
+			width = Math.max(width, REPLY_MIN_WIDTH_PX)
+			height = Math.max(height, REPLY_MIN_HEIGHT_PX)
+
+			this.setState({width, height, left, top})
 		}
 	}
 	handleGlobalUp = () => {
 		this.moving = false
 		this.resizing = false
+	}
+	handleFormDown = (e: MouseEvent) => {
+		if (this.state.pos === "i") return
+		e.preventDefault()
+		this.resizing = true
+		this.saveCoords(e)
+	}
+	handleFormMove = (e: MouseEvent) => {
+		if (this.resizing) return
+		const w = this.state.width
+		const h = this.state.height
+		const ox = e.offsetX
+		const oy = e.offsetY
+		const b = 5
+		let pos = "i"
+		if (ox <= b && oy <= b) {
+			pos = "nw"
+		} else if (ox <= b && oy >= h - b) {
+			pos = "sw"
+		} else if (ox >= w - b && oy <= b) {
+			pos = "ne"
+		} else if (ox >= w - b && oy >= h - b) {
+			pos = "se"
+		} else if (ox <= b) {
+			pos = "w"
+		} else if (oy <= b) {
+			pos = "n"
+		} else if (ox >= w - b) {
+			pos = "e"
+		} else if (oy >= h - b) {
+			pos = "s"
+		}
+		this.setState({pos})
 	}
 	handleFormPin = () => {
 		this.setState({float: false}, this.focus)
@@ -492,7 +595,13 @@ class Reply extends Component<any, any> {
 	}
 	render({}, { float, sending, progress, body }: any) {
 		return (
-			<div class={cx("reply", {"reply_float": float})} ref={s(this, "mainEl")} style={this.style}>
+			<div
+				class={cx("reply", {"reply_float": float})}
+				ref={s(this, "mainEl")}
+				style={this.style}
+				onMouseDown={this.handleFormDown}
+				onMouseMove={this.handleFormMove}
+			>
 
 				{this.renderFiles()}
 
@@ -523,8 +632,6 @@ class Reply extends Component<any, any> {
 					accept="image/*,video/*"
 					onChange={this.handleFileLoad}
 				/>
-
-				<i class="reply-resize" onMouseDown={this.handleResizeDown} />
 
 			</div>
 		)
