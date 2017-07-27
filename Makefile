@@ -72,7 +72,7 @@ test-build:
 	go build -o /dev/null meguca
 
 tags:
-	ctags -R go/src/meguca client
+	ctags -R go/src/meguca ts
 
 clean: templates-clean client-clean server-clean deb-clean test-clean
 
