@@ -1,3 +1,5 @@
+# cutechan [![Build Status](https://travis-ci.org/cutechan/cutechan.svg?branch=master)](https://travis-ci.org/cutechan/cutechan)
+
 Platforms: Linux, OSX, Win64
 
 License: GNU AGPL
