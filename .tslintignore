@@ -1,4 +1,3 @@
---exclude app.ts
 --exclude ts/posts/model.ts
 --exclude ts/posts/render/body.ts
 --exclude ts/posts/render/index.ts

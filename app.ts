@@ -2,51 +2,53 @@
  * Application entry point.
  */
 
+// tslint:disable-next-line:no-reference
 /// <reference path="ts/util/dom4.d.ts" />
 
-import { init as initDB } from "./ts/db"
-import { init as initAlerts, showAlert } from "./ts/alerts"
-import { init as initOptions } from "./ts/options"
-import { init as initConnection } from "./ts/connection"
-import { init as initHandlers } from "./ts/client"
-import { init as initPosts } from "./ts/posts"
-import { init as initUI } from "./ts/ui"
-import { init as initModeration } from "./ts/mod"
-import { ln } from "./ts/lang"
-import { page } from "./ts/state"
-import { extractConfigs, renderThread, renderBoard } from "./ts/page"
+import { init as initAlerts, showAlert } from "./ts/alerts";
+import { init as initHandlers } from "./ts/client";
+import { init as initConnection } from "./ts/connection";
+import { init as initDB } from "./ts/db";
+import { ln } from "./ts/lang";
+import { init as initModeration } from "./ts/mod";
+import { init as initOptions } from "./ts/options";
+import { extractConfigs, renderBoard, renderThread } from "./ts/page";
+import { init as initPosts } from "./ts/posts";
+import { page } from "./ts/state";
+import { init as initUI } from "./ts/ui";
 
 // Load all stateful modules in dependency order.
 async function init() {
-  extractConfigs()
-  await initDB()
+  extractConfigs();
+  await initDB();
 
-  initAlerts()
-  initOptions()
+  initAlerts();
+  initOptions();
 
   if (!page.landing) {
     if (page.thread) {
-      await renderThread()
-      initConnection()
-      initHandlers()
+      await renderThread();
+      initConnection();
+      initHandlers();
     } else {
-      await renderBoard()
+      await renderBoard();
     }
   }
 
   if (!page.landing && !page.catalog) {
-    initPosts()
+    initPosts();
   }
 
-  initUI()
-  initModeration()
+  initUI();
+  initModeration();
 }
 
-init().catch(err => {
-  console.error(err)
+init().catch((err) => {
+  // tslint:disable-next-line:no-console
+  console.error(err);
   showAlert({
+    message: err.message,
     sticky: true,
     title: ln.UI.initErr,
-    message: err.message,
-  })
-})
+  });
+});
