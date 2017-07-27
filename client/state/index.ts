@@ -1,9 +1,9 @@
 // Stores the central state of the web application
 
-import { Post, PostCollection } from './posts'
-import { getClosestID } from './util'
-import { readIDs, storeID } from './db'
-import { send } from './connection'
+import { Post, PostCollection } from '../posts'
+import { getClosestID } from '../util'
+import { readIDs, storeID } from '../db'
+import { send } from '../connection'
 
 // Server-wide global configurations
 interface Config {

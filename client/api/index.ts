@@ -3,12 +3,12 @@
  */
 // TODO(Kagami): Port everything to the use of this module.
 
-import { ln } from "./lang"
-import { FormModel, postSM, postEvent, postState } from "./posts"
+import { ln } from "../lang"
+import { FormModel, postSM, postEvent, postState } from "../posts"
 import {
 	Dict, ProgressFn, FutureAPI,
 	uncachedGET, postJSON, postFormProgress,
-} from "./util"
+} from "../util"
 
 type ReqFn = (
 	url: string, data?: Dict,

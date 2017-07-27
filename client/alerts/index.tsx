@@ -4,8 +4,8 @@
  */
 
 import { h, render, Component } from "preact"
-import { ALERTS_CONTAINER_SEL, ALERT_HIDE_TIMEOUT_SECS } from "./vars"
-import { HOOKS, hook, unhook, trigger } from "./util"
+import { ALERTS_CONTAINER_SEL, ALERT_HIDE_TIMEOUT_SECS } from "../vars"
+import { HOOKS, hook, unhook, trigger } from "../util"
 
 interface Alert {
 	id?: number

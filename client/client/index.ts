@@ -1,13 +1,13 @@
 // Core websocket message handlers
 
-import { handlers, message, connSM, connEvent } from './connection'
-import { posts, page } from './state'
-import { Post, FormModel, PostView, postEvent, postSM } from './posts'
-import { PostLink, Command, PostData, ImageData } from "./common"
-import { postAdded } from "./ui"
-import { OverlayNotification } from "./ui"
-import { showAlert } from "./alerts"
-import { isAtBottom, scrollToBottom } from "./util"
+import { handlers, message, connSM, connEvent } from '../connection'
+import { posts, page } from '../state'
+import { Post, FormModel, PostView, postEvent, postSM } from '../posts'
+import { PostLink, Command, PostData, ImageData } from "../common"
+import { postAdded } from "../ui"
+import { OverlayNotification } from "../ui"
+import { showAlert } from "../alerts"
+import { isAtBottom, scrollToBottom } from "../util"
 
 // Message for splicing the contents of the current line
 export type SpliceResponse = {
