@@ -36,5 +36,5 @@ export const REPLY_THREAD_WIDTH_PX = 700
 export const REPLY_BOARD_WIDTH_PX = 1000
 export const REPLY_HEIGHT_PX = 200
 export const REPLY_MIN_WIDTH_PX = 400
-export const REPLY_MIN_HEIGHT_PX = 150
+export const REPLY_MIN_HEIGHT_PX = 200
 export const DEFAULT_NOTIFICATION_IMAGE_URL = "/static/img/notification.png"
