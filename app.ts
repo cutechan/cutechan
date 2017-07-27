@@ -5,13 +5,15 @@
 // tslint:disable-next-line:no-reference
 /// <reference path="ts/util/dom4.d.ts" />
 
+// FIXME(Kagami): Circular imports, must go before client module.
+import { init as initOptions } from "./ts/options";
+
 import { init as initAlerts, showAlert } from "./ts/alerts";
 import { init as initHandlers } from "./ts/client";
 import { init as initConnection } from "./ts/connection";
 import { init as initDB } from "./ts/db";
 import { ln } from "./ts/lang";
 import { init as initModeration } from "./ts/mod";
-import { init as initOptions } from "./ts/options";
 import { extractConfigs, renderBoard, renderThread } from "./ts/page";
 import { init as initPosts } from "./ts/posts";
 import { page } from "./ts/state";
