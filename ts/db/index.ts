@@ -147,7 +147,7 @@ export function clearStore(store: string) {
 
 // Retrieve an object from a specific object store
 export function getObj<T>(store: string, id: any): Promise<T> {
-  if (ffPrivateMode) return Promise.resolve({})
+  if (ffPrivateMode) return Promise.resolve({} as T)
   return new Promise<T>((resolve, reject) => {
     const t = newTransaction(store, false),
       r = t.get(id)
