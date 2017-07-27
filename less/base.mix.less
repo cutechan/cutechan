@@ -1302,7 +1302,6 @@ html.pos-notstaff {
 
 .reply {
   display: flex;
-  flex-direction: row;
   flex-wrap: wrap;
   box-sizing: border-box;
   min-width: 500px;
@@ -1318,6 +1317,61 @@ html.pos-notstaff {
   margin-top: 0 !important;
   margin-bottom: 0 !important;
   background: @replyfloatBG;
+}
+
+.reply-files {
+  flex: 0;
+  user-select: none;
+}
+
+.reply-file {
+  position: relative;
+}
+
+.reply-remove-file-control {
+  position: absolute;
+  top: -3px;
+  right: 3px;
+}
+
+.reply-file-thumb {
+  display: block;
+  min-width: 50px;
+  max-width: 200px;
+  max-height: 200px;
+  border-top-left-radius: 3px;
+}
+
+.reply-file-info {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  text-align: center;
+  font-style: italic;
+  font-size: smaller;
+  background: white;
+  color: #555;
+  opacity: 0.8;
+  cursor: default;
+  user-select: none;
+}
+
+.reply-main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  padding: 5px;
+}
+
+.reply-content-wrapper {
+  flex: 1;
+  display: flex;
+}
+
+.reply-content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
 }
 
 .reply-header {
@@ -1350,59 +1404,6 @@ html.pos-notstaff {
   border: none;
 }
 
-.reply-file-previews {
-  flex: 0;
-  user-select: none;
-}
-
-.reply-file-preview {
-  position: relative;
-}
-
-.reply-remove-file-control {
-  position: absolute;
-  top: -3px;
-  right: 3px;
-}
-
-.reply-file-thumb {
-  display: block;
-  min-width: 50px;
-  max-width: 200px;
-  max-height: 200px;
-  border-top-left-radius: 3px;
-}
-
-.reply-file-info {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  text-align: center;
-  font-style: italic;
-  font-size: smaller;
-  background: white;
-  color: #555;
-  opacity: 0.8;
-  cursor: default;
-  user-select: none;
-}
-
-.reply-controls {
-  user-select: none;
-  line-height: 28px;
-}
-
-.reply-control {
-  font-size: 22px;
-}
-
-.reply-content {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 5px;
-}
-
 .reply-body {
   flex: 1;
   display: block;
@@ -1416,41 +1417,45 @@ html.pos-notstaff {
   background: none;
 }
 
-.reply-side-controls {
-  flex: 0 32px;
+.reply-controls {
+  user-select: none;
   display: flex;
-  flex-direction: column;
-  align-items: center;
-  padding: 5px 0;
 }
 
-.reply-hide-control {
-  font-size: 28px;
-  margin-top: -3px;
-}
-
-.reply-move-control {
+.reply-dragger {
   flex: 1;
-  text-align: center;
   cursor: move;
 }
 
-.reply-send-control {
-  margin-top: auto;
-  margin-bottom: -4px;
+.reply-side-controls {
+  flex-direction: column;
 }
 
-.reply-progress {
-  margin-top: auto;
-  cursor: pointer;
+.reply-side-control {
+  margin-left: 5px;
+}
+
+.reply-hide-control {
+  margin-top: -1px;
+  font-size: 18px;
 }
 
 .reply-footer-controls {
-  margin-top: 3px;
-  margin-bottom: -7px;
+  margin-top: 5px;
 }
 
-.reply-file-input {
+.reply-attach-control {
+  font-size: 22px;
+}
+
+.reply-send-button {
+  padding: 5px;
+  font-size: inherit;
+  border: 1px solid #754383;
+  border-radius: 3px;
+}
+
+.reply-files-input {
   display: none;
 }
 

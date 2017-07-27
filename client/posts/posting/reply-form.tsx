@@ -18,7 +18,7 @@ import {
 	HEADER_HEIGHT_PX,
 } from "../../vars"
 import {
-	ShowHide, Pie,
+	ShowHide,
 	Dict, FutureAPI, AbortError,
 	on, scrollToTop,
 	HOOKS, hook, unhook,
@@ -117,7 +117,7 @@ class FilePreview extends Component<any, any> {
 	render(props: any) {
 		const url = props.info.url
 		return (
-			<div class="reply-file-preview">
+			<div class="reply-file">
 				<a class="control reply-remove-file-control" onClick={this.handleRemove}>
 					<i class="fa fa-remove" />
 				</a>
@@ -411,11 +411,22 @@ class Reply extends Component<any, any> {
 			</select>
 		)
 	}
+	renderFiles() {
+		const { files } = this.state
+		if (!files.length) return null
+		// Only single file is supported at the moment.
+		const file = files[0]
+		return (
+			<div class="reply-files">
+				<FilePreview {...file} onRemove={this.handleAttachRemove} />
+			</div>
+		);
+	}
 	renderHeader() {
 		if (page.thread) return null;
 		const { sending, subject } = this.state
 		return (
-			<div class="reply-header" key="header">
+			<div class="reply-header">
 				{this.renderBoards()}
 				<input
 					class="reply-subject"
@@ -427,83 +438,91 @@ class Reply extends Component<any, any> {
 			</div>
 		);
 	}
-	renderPreviews() {
-		const { files } = this.state
-		if (!files.length) return null
-		// Only single file is supported at the moment.
-		const file = files[0]
+	renderSideControls() {
+		const { float, sending } = this.state
 		return (
-			<div class="reply-file-previews" key="files">
-				<FilePreview {...file} onRemove={this.handleAttachRemove} />
-			</div>
-		);
-	}
-	render({}, { float, sending, progress, body }: any) {
-		return (
-			<div class={cx("reply", {"reply_float": float})} ref={s(this, "mainEl")} style={this.style}>
-				{this.renderPreviews()}
-				<div class="reply-content">
-					{this.renderHeader()}
-					<textarea
-						class="reply-body"
-						ref={s(this, "bodyEl")}
-						value={body}
-						disabled={sending}
-						onInput={this.handleBodyChange}
-					/>
-					<div class="reply-footer-controls reply-controls">
-						<button
-							class="control reply-control reply-attach-control"
-							title={printf(ln.UI["attach"], fileSize(config.maxSize<<20))}
-							disabled={sending}
-							onClick={this.handleAttach}
+			<div class="reply-controls reply-side-controls">
+				<div class="reply-side-controls-inner">
+					<ShowHide show={float}>
+						<a
+							class="control reply-side-control reply-pin-control"
+							onClick={this.handleFormPin}
 						>
-							<i class="fa fa-file-image-o" />
-						</button>
-					</div>
-				</div>
-				<div class="reply-side-controls reply-controls">
+							<i class="fa fa-thumb-tack" />
+						</a>
+					</ShowHide>
 					<button
-						class="control reply-control reply-hide-control"
+						class="control reply-side-control reply-hide-control"
 						onClick={this.handleFormHide}
 						disabled={sending}
 					>
 						<i class="fa fa-remove" />
 					</button>
-					<a class="control reply-control reply-move-control" onMouseDown={this.handleMoveDown}>
-						<i class="fa fa-arrows-alt" />
-					</a>
-					<ShowHide show={float}>
-						<a class="control reply-control reply-pin-control" onClick={this.handleFormPin}>
-							<i class="fa fa-thumb-tack" />
-						</a>
-					</ShowHide>
-					<ShowHide show={!sending}>
-						<button
-							class="control reply-control reply-send-control"
-							disabled={this.disabled}
-							onClick={this.handleSend}
-						>
-							<i class={cx("fa", "fa-check", this.invalid && "hidden")} />
-						</button>
-					</ShowHide>
-					<ShowHide show={sending}>
-						<Pie
-							className="reply-progress"
-							progress={progress}
-							title={`${progress}% (${ln.UI["clickToCancel"]})`}
-							onClick={this.handleSendAbort}
-						/>
-					</ShowHide>
 				</div>
+				<div class="reply-dragger" onMouseDown={this.handleMoveDown} />
+			</div>
+		)
+	}
+	renderFooterControls() {
+		const { sending } = this.state
+		return (
+			<div class="reply-controls reply-footer-controls">
+				<button
+					class="control reply-footer-control reply-attach-control"
+					title={printf(ln.UI["attach"], fileSize(config.maxSize<<20))}
+					disabled={sending}
+					onClick={this.handleAttach}
+				>
+					<i class="fa fa-file-image-o" />
+				</button>
+				<div class="reply-dragger" onMouseDown={this.handleMoveDown} />
+				<ShowHide show={!this.disabled}>
+					<button
+						class="button reply-footer-button reply-send-button"
+						onClick={this.handleSend}
+					>
+						{ln.UI["submit"]}
+					</button>
+				</ShowHide>
+			</div>
+		)
+	}
+	render({}, { float, sending, progress, body }: any) {
+		return (
+			<div class={cx("reply", {"reply_float": float})} ref={s(this, "mainEl")} style={this.style}>
+
+				{this.renderFiles()}
+
+				<div class="reply-main">
+
+					<div class="reply-content-wrapper">
+						<div class="reply-content">
+							{this.renderHeader()}
+							<textarea
+								class="reply-body"
+								ref={s(this, "bodyEl")}
+								value={body}
+								disabled={sending}
+								onInput={this.handleBodyChange}
+							/>
+						</div>
+						{this.renderSideControls()}
+					</div>
+
+					{this.renderFooterControls()}
+
+				</div>
+
 				<input
-					class="reply-file-input"
+					class="reply-files-input"
 					ref={s(this, "fileEl")}
 					type="file"
 					accept="image/*,video/*"
 					onChange={this.handleFileLoad}
 				/>
+
 				<i class="reply-resize" onMouseDown={this.handleResizeDown} />
+
 			</div>
 		)
 	}
