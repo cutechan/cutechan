@@ -7,22 +7,22 @@ const threads = document.getElementById("threads")
 
 // Render the HTML of a thread page
 export async function render() {
-	if (isBanned()) {
-		return
-	}
+  if (isBanned()) {
+    return
+  }
 
-	await loadFromDB(page.thread)
+  await loadFromDB(page.thread)
 
-	const { threads: data, backlinks } = extractPageData<ThreadData>(),
-		{ posts } = data
+  const { threads: data, backlinks } = extractPageData<ThreadData>(),
+    { posts } = data
 
-	data.posts = null
+  data.posts = null
 
-	extractPost(data, data.id, data.board, backlinks)
+  extractPost(data, data.id, data.board, backlinks)
 
-	for (let post of posts) {
-		extractPost(post, data.id, data.board, backlinks)
-	}
-	reparseOpenPosts()
-	findSyncwatches(threads)
+  for (let post of posts) {
+    extractPost(post, data.id, data.board, backlinks)
+  }
+  reparseOpenPosts()
+  findSyncwatches(threads)
 }

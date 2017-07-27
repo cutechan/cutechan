@@ -18,35 +18,35 @@ import { extractConfigs, renderThread, renderBoard } from "./ts/page"
 
 // Load all stateful modules in dependency order.
 async function init() {
-	extractConfigs()
-	await initDB()
+  extractConfigs()
+  await initDB()
 
-	initAlerts()
-	initOptions()
+  initAlerts()
+  initOptions()
 
-	if (!page.landing) {
-		if (page.thread) {
-			await renderThread()
-			initConnection()
-			initHandlers()
-		} else {
-			await renderBoard()
-		}
-	}
+  if (!page.landing) {
+    if (page.thread) {
+      await renderThread()
+      initConnection()
+      initHandlers()
+    } else {
+      await renderBoard()
+    }
+  }
 
-	if (!page.landing && !page.catalog) {
-		initPosts()
-	}
+  if (!page.landing && !page.catalog) {
+    initPosts()
+  }
 
-	initUI()
-	initModeration()
+  initUI()
+  initModeration()
 }
 
 init().catch(err => {
-	console.error(err)
-	showAlert({
-		sticky: true,
-		title: ln.UI.initErr,
-		message: err.message,
-	})
+  console.error(err)
+  showAlert({
+    sticky: true,
+    title: ln.UI.initErr,
+    message: err.message,
+  })
 })

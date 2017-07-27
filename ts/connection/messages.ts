@@ -1,49 +1,49 @@
 // Message types of the WebSocket communication protocol
 export const enum message {
-	invalid,
+  invalid,
 
-	// 1 - 29 modify post model state
-	_,
-	insertPost,
-	append,
-	backspace,
-	splice,
-	closePost,
-	__,
-	insertImage,
-	spoiler,
-	deletePost,
-	banned,
-	deleteImage,
+  // 1 - 29 modify post model state
+  _,
+  insertPost,
+  append,
+  backspace,
+  splice,
+  closePost,
+  __,
+  insertImage,
+  spoiler,
+  deletePost,
+  banned,
+  deleteImage,
 
-	// >= 30 are miscellaneous and do not write to post models
-	synchronise = 30,
-	reclaim,
+  // >= 30 are miscellaneous and do not write to post models
+  synchronise = 30,
+  reclaim,
 
-	// Send new post ID to client
-	postID,
+  // Send new post ID to client
+  postID,
 
-	// Concatenation of multiple websocket messages to reduce transport overhead
-	concat,
+  // Concatenation of multiple websocket messages to reduce transport overhead
+  concat,
 
-	// Invokes no operation on the server. Used to test the client's connection
-	// in situations, when you can't be certain the client is still connected.
-	NOOP,
+  // Invokes no operation on the server. Used to test the client's connection
+  // in situations, when you can't be certain the client is still connected.
+  NOOP,
 
-	// Transmit current synced IP count to client
-	syncCount,
+  // Transmit current synced IP count to client
+  syncCount,
 
-	// Send current server Unix time to client
-	serverTime,
+  // Send current server Unix time to client
+  serverTime,
 
-	// Redirect the client to a specific board
-	redirect,
+  // Redirect the client to a specific board
+  redirect,
 
-	// Send a notification to a client
-	notification,
+  // Send a notification to a client
+  notification,
 
-	// Notification about needing a captcha on the next post allocation
-	captcha,
+  // Notification about needing a captcha on the next post allocation
+  captcha,
 }
 
 export type MessageHandler = (msg: {}) => void

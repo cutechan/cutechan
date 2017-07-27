@@ -9,8 +9,8 @@ import { init as initTab } from "./tab"
 import OptionPanel from "./options"
 
 export function init() {
-	initKeyboard()
-	initTab()
-	new OptionPanel()
-	new HeaderModal(document.getElementById("FAQ"))
+  initKeyboard()
+  initTab()
+  new OptionPanel()
+  new HeaderModal(document.getElementById("FAQ"))
 }

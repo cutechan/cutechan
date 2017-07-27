@@ -4,63 +4,63 @@ import { showAlert } from "../alerts"
 
 // Wrapper around Solve Media's captcha service AJAX API
 export default class CaptchaView extends View<null> {
-	private captchaID: string
-	private input: HTMLInputElement
+  private captchaID: string
+  private input: HTMLInputElement
 
-	constructor(el: HTMLElement) {
-		super({ el })
+  constructor(el: HTMLElement) {
+    super({ el })
 
-		// <noscript> loaded with AJAX can still load and cause submission
-		// problems. Remove any.
-		const ns = this.el.querySelector("noscript")
-		if (ns) {
-			ns.remove()
-		}
+    // <noscript> loaded with AJAX can still load and cause submission
+    // problems. Remove any.
+    const ns = this.el.querySelector("noscript")
+    if (ns) {
+      ns.remove()
+    }
 
-		// Exposed outside through data() and therefore should always be defined
-		this.input = this.el
-			.querySelector(`input[name="captcha"]`) as HTMLInputElement
+    // Exposed outside through data() and therefore should always be defined
+    this.input = this.el
+      .querySelector(`input[name="captcha"]`) as HTMLInputElement
 
-		this.render().catch(e => {
-			showAlert(e.message)
-			throw e
-		})
-	}
+    this.render().catch(e => {
+      showAlert(e.message)
+      throw e
+    })
+  }
 
-	// Render the actual captcha
-	private async render() {
-		const r = await uncachedGET(`/api/captcha/new`),
-			text = await r.text()
-		if (r.status !== 200) {
-			throw text
-		}
-		this.captchaID = text;
-		this.el
-			.querySelector("img")
-			.setAttribute("src", `/api/captcha/image/${this.captchaID}.png`)
+  // Render the actual captcha
+  private async render() {
+    const r = await uncachedGET(`/api/captcha/new`),
+      text = await r.text()
+    if (r.status !== 200) {
+      throw text
+    }
+    this.captchaID = text;
+    this.el
+      .querySelector("img")
+      .setAttribute("src", `/api/captcha/image/${this.captchaID}.png`)
 
-		// Set captchaID, to enable sending with FormData()
-		const cID = this.inputElement("captchaID")
-		cID.hidden = true
-		cID.value = this.captchaID
-	}
+    // Set captchaID, to enable sending with FormData()
+    const cID = this.inputElement("captchaID")
+    cID.hidden = true
+    cID.value = this.captchaID
+  }
 
-	// Returns the data from the captcha widget
-	public data(): { [key: string]: string } {
-		// Captchas are disabled. Cache-induced race.
-		if (!this.input) {
-			return {}
-		}
+  // Returns the data from the captcha widget
+  public data(): { [key: string]: string } {
+    // Captchas are disabled. Cache-induced race.
+    if (!this.input) {
+      return {}
+    }
 
-		return {
-			captchaID: this.captchaID,
-			solution: this.input.value,
-		}
-	}
+    return {
+      captchaID: this.captchaID,
+      solution: this.input.value,
+    }
+  }
 
-	// Load a new captcha
-	public reload() {
-		this.input.value = ""
-		this.render()
-	}
+  // Load a new captcha
+  public reload() {
+    this.input.value = ""
+    this.render()
+  }
 }
