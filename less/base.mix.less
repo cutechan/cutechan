@@ -1410,8 +1410,12 @@ html.pos-notstaff {
   line-height: 20px;
   padding: 0;
   text-align: center;
-  border: 1px solid #754383;
+  border: @replysendBorder;
   border-radius: 3px;
+  &:not(:disabled):hover {
+    color: @replysendHover;
+    box-shadow: @replysendShadow;
+  }
 }
 
 .reply-files-input {
