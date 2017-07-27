@@ -209,59 +209,11 @@ hr {
 }
 
 //////////////////////////////
-// PIE
+// PROGRESS
 //////////////////////////////
 
-@pieSize: 30px;
-@pieinnerSize: 20px;
-@pieBG: @control;
-@piebackBG: #bdc3c7;
-
-.pie {
-  width: @pieSize;
-  height: @pieSize;
-  position: relative;
-  border-radius: 50%;
+.progress {
 }
-
-.pie-inner {
-  position: absolute;
-  width: @pieinnerSize;
-  height: @pieinnerSize;
-  top: (@pieSize - @pieinnerSize) / 2;
-  left: (@pieSize - @pieinnerSize) / 2;
-  background-color: @replyBG;
-  border-radius: 50%;
-  color: @control;
-  font-weight: bold;
-  font-family: Verdana;
-  line-height: 20px;
-  text-align: center;
-  text-shadow: @piebackBG 1px 1px;
-}
-
-.pie_progress(@i) when (@i < 50) {
-  @nextdeg: 90deg + (360 / 100 * @i);
-  background-image:
-    linear-gradient(90deg, @piebackBG 50%, transparent 50%, transparent),
-    linear-gradient(@nextdeg, @pieBG 50%, @piebackBG 50%, @piebackBG);
-}
-
-.pie_progress(@i) when (@i >= 50) {
-  @nextdeg: -90deg + (360 / 100 * (@i - 50));
-  background-image:
-    linear-gradient(@nextdeg, @pieBG 50%, transparent 50%, transparent),
-    linear-gradient(270deg, @pieBG 50%, @piebackBG 50%, @piebackBG);
-}
-
-.pie-loop(@i) when (@i >= 0) {
-  .pie-loop(@i - 1);
-  .pie_progress@{i} {
-    .pie_progress(@i);
-  }
-}
-
-.pie-loop(100);
 
 //////////////////////////////
 // CODE
@@ -1446,11 +1398,17 @@ html.pos-notstaff {
 
 .reply-attach-control {
   font-size: 22px;
+  height: 22px;
+  line-height: 22px;
 }
 
 .reply-send-button {
-  padding: 5px;
-  font-size: inherit;
+  box-sizing: border-box;
+  width: 100px;
+  height: 22px;
+  line-height: 22px;
+  padding: 0;
+  text-align: center;
   border: 1px solid #754383;
   border-radius: 3px;
 }

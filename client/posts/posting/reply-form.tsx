@@ -18,7 +18,7 @@ import {
 	HEADER_HEIGHT_PX,
 } from "../../vars"
 import {
-	ShowHide,
+	ShowHide, Progress,
 	Dict, FutureAPI, AbortError,
 	on, scrollToTop,
 	HOOKS, hook, unhook,
@@ -387,7 +387,7 @@ class Reply extends Component<any, any> {
 		})
 	}
 	handleSendProgress = (e: ProgressEvent) => {
-		const progress = e.loaded / e.total * 100
+		const progress = Math.floor(e.loaded / e.total * 100)
 		this.setState({progress})
 	}
 	handleSendAbort = () => {
@@ -464,7 +464,8 @@ class Reply extends Component<any, any> {
 		)
 	}
 	renderFooterControls() {
-		const { sending } = this.state
+		const { sending, progress } = this.state
+		const sendTitle = sending ? `${progress}% (${ln.UI["clickToCancel"]})` : ""
 		return (
 			<div class="reply-controls reply-footer-controls">
 				<button
@@ -476,13 +477,15 @@ class Reply extends Component<any, any> {
 					<i class="fa fa-file-image-o" />
 				</button>
 				<div class="reply-dragger" onMouseDown={this.handleMoveDown} />
-				<ShowHide show={!this.disabled}>
-					<button
-						class="button reply-footer-button reply-send-button"
-						onClick={this.handleSend}
+				<ShowHide show={!this.invalid}>
+					<Progress
+						className="button reply-send-button"
+						progress={progress}
+						title={sendTitle}
+						onClick={sending ? this.handleSendAbort: this.handleSend}
 					>
-						{ln.UI["submit"]}
-					</button>
+						{sending ? "" : ln.UI["submit"]}
+					</Progress>
 				</ShowHide>
 			</div>
 		)

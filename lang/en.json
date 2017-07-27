@@ -146,7 +146,7 @@
     ]
   },
   "ui": {
-    "clickToCancel": "Click to cancel",
+    "clickToCancel": "Click to cancel upload",
     "news": "News",
     "sections": "Sections",
     "board": "Boards",

@@ -5,7 +5,7 @@
 import { POST_SEL } from "../vars"
 
 export { default as FSM } from "./fsm"
-export { default as Pie } from "./pie"
+export { default as Progress } from "./progress"
 export { default as ShowHide } from "./show-hide"
 export * from "./fetch"
 export * from "./hooks"
