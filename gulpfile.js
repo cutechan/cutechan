@@ -25,7 +25,7 @@ const runSequence = require("run-sequence");
 
 const LANGS_GLOB = "lang/*.json";
 const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
-const TYPESCRIPT_GLOB = "{app,client/**/*}.[tj]s?(x)";
+const TYPESCRIPT_GLOB = "{app,ts/**/*}.[tj]s?(x)";
 
 const DIST_DIR = "dist";
 const STATIC_DIR = path.join(DIST_DIR, "static");
