@@ -183,7 +183,7 @@ function delayedSetEvent(event: MouseEvent) {
 	}
 }
 
-function onMouseMove(event: MouseEvent) {
+function onMouseOver(event: MouseEvent) {
 	if (event.target !== lastTarget) {
 		lastTarget = event.target
 		clearTimeout(delayedTID)
@@ -197,7 +197,7 @@ function onMouseMove(event: MouseEvent) {
 
 export function init() {
 	container = document.querySelector(HOVER_CONTAINER_SEL)
-	document.addEventListener("mousemove", onMouseMove, {passive: true})
+	document.addEventListener("mouseover", onMouseOver, {passive: true})
 	mouseMove.onChange("event", renderPostPreview)
 	mouseMove.onChange("event", renderImagePreview)
 	hook(HOOKS.openPostPopup, clearImagePreview)
