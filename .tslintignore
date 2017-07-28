@@ -31,7 +31,6 @@
 --exclude ts/page/index.ts
 --exclude ts/page/board.ts
 --exclude ts/page/common.ts
---exclude ts/vars/index.ts
 --exclude ts/alerts/index.tsx
 --exclude ts/common/index.ts
 --exclude ts/api/index.ts
