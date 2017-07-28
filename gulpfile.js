@@ -203,7 +203,7 @@ createTask("polyfills", [
 );
 
 // Compile Less to CSS.
-createTask("css", ["less/*.less", "!less/*.mix.less"], src =>
+createTask("css", "less/[^_]*.less", src =>
   src
     .pipe(sourcemaps.init())
     .pipe(less())
