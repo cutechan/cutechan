@@ -24,7 +24,7 @@ export function extractPageData<T>(): {
 
 // Check if the rendered page is a ban page
 export function isBanned(): boolean {
-  return !!document.querySelector(".ban-page")
+  return !!document.querySelector(".ban")
 }
 
 // Extract post model and view from the HTML fragment and apply client-specific

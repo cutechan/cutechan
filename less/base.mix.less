@@ -241,7 +241,7 @@ hr {
 }
 
 //////////////////////////////
-// CONTAINERS
+// MAIN CONTAINERS
 //////////////////////////////
 
 html, body {
@@ -275,13 +275,13 @@ html, body {
   }
 }
 
-#threads {
-  box-sizing: border-box;
+.app {
   height: 100%;
+  box-sizing: border-box;
   padding-top: @headerHeight;
 }
 
-#threads-inner {
+.board {
   display: flex;
   flex-direction: column;
   box-sizing: border-box;
@@ -289,21 +289,17 @@ html, body {
   padding: 0 20px 50px 20px;
 }
 
-#index-thread-container, #thread-container, #catalog {
+.threads-container, .catalog {
   flex: 1 auto;
 }
 
-#index-thread-container {
-  .post-quote-control {
-    display: none;
-  }
+.catalog {
+  text-align: center;
 }
 
-#index-thread-container > section:last-of-type hr {
-  display: none;
-}
-
-#catalog {
+.ban {
+  margin-top: 2em;
+  padding: 1em;
   text-align: center;
 }
 
@@ -311,28 +307,16 @@ html, body {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-}
 
-.new-thread-container {
-  margin: 0 auto;
-  .reply {
-    margin-bottom: 20px;
-  }
-  .reply-move-control {
+  &:last-of-type .separator {
     display: none;
   }
 }
 
-.new-post-container {
-  .reply {
-    margin-top: 20px;
+.thread_index {
+  .post-quote-control {
+    display: none;
   }
-}
-
-.ban-page {
-  margin-top: 2em;
-  padding: 1em;
-  text-align: center;
 }
 
 .omit {
@@ -340,6 +324,13 @@ html, body {
   margin-bottom: 8px;
   white-space: nowrap;
   color: @omit;
+}
+
+.page-title {
+  font-size: 2em;
+  font-weight: bold;
+  margin: 20px 0;
+  color: @pagetitle;
 }
 
 //////////////////////////////
@@ -802,7 +793,27 @@ input[type=number], input[type=text], input[type=password], textarea {
 }
 
 //////////////////////////////
-// BOARD SEARCH
+// PAGINATION
+//////////////////////////////
+
+.board-pagination {
+  display: inline-block;
+  user-select: none;
+  cursor: default;
+}
+
+.board-pagination-page {
+  display: inline-block;
+  padding: 5px 10px;
+  margin-right: 5px;
+}
+
+.board-pagination-page_current {
+  color: @pagecurrent;
+}
+
+//////////////////////////////
+// SEARCH
 //////////////////////////////
 
 .board-search {
@@ -856,37 +867,6 @@ input[type=number], input[type=text], input[type=password], textarea {
 
 .board-sort-mode {
   color: @body;
-}
-
-//////////////////////////////
-// BOARD PAGINATION
-//////////////////////////////
-
-.board-pagination {
-  display: inline-block;
-  user-select: none;
-  cursor: default;
-}
-
-.board-pagination-page {
-  display: inline-block;
-  padding: 5px 10px;
-  margin-right: 5px;
-}
-
-.board-pagination-page_current {
-  color: @pagecurrent;
-}
-
-//////////////////////////////
-// PAGE
-//////////////////////////////
-
-.page-title {
-  font-size: 2em;
-  font-weight: bold;
-  margin: 20px 0;
-  color: @pagetitle;
 }
 
 //////////////////////////////
@@ -1231,7 +1211,7 @@ html.pos-notstaff {
 // POST COUNTER
 //////////////////////////////
 
-.single-thread {
+.thread_single {
   counter-reset: p;
   .post {
     counter-increment: p;
@@ -1251,6 +1231,22 @@ html.pos-notstaff {
 //////////////////////////////
 // REPLY FORM
 //////////////////////////////
+
+.reply-container_board {
+  margin: 0 auto;
+  .reply {
+    margin-bottom: 20px;
+  }
+  .reply-move-control {
+    display: none;
+  }
+}
+
+.reply-container_thread {
+  .reply {
+    margin-top: 20px;
+  }
+}
 
 .reply {
   display: flex;

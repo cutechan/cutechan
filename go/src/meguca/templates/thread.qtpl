@@ -35,23 +35,26 @@ TODO(Kagami): Fix markup and styles.
 {% endstripspace %}{% endfunc %}
 
 {% func renderThread(postHTML []byte, id uint64, board, title string, abbrev bool, pos auth.ModerationLevel) %}{% stripspace %}
-	<div id="threads-inner">
-	<h1 class="page-title">{%s title %}</h1>
-	{%= renderThreadNavigation(true) %}
-	<hr class="separator">
-	{%z= postHTML %}
-	<aside class="reply-container new-post-container"></aside>
-	<hr class="separator">
-	{%= renderThreadNavigation(false) %}
-	</div>
+	<section class="board" id="threads">
+		<h1 class="page-title">{%s title %}</h1>
+		{%= renderThreadNavigation(true) %}
+		<hr class="separator">
+		{%z= postHTML %}
+		<aside class="reply-container reply-container_thread"></aside>
+		<hr class="separator">
+		{%= renderThreadNavigation(false) %}
+	</section>
 {% endstripspace %}{% endfunc %}
 
 ThreadPosts renders the post content of a thread. Separate function to allow
 caching of generated posts.
 {% func ThreadPosts(t common.Thread, json []byte) %}{% stripspace %}
-	<section class="thread single-thread" id="thread-container" data-id="{%s strconv.FormatUint(t.ID, 10) %}">
-		{% code bls := extractBacklinks(1<<10, t) %}
-		{%= renderThreadPosts(t, bls, false, false) %}
+	{% code idStr := strconv.FormatUint(t.ID, 10) %}
+	{% code bls := extractBacklinks(1<<10, t) %}
+	<section class="threads-container" id="thread-container">
+		<article class="thread thread_single" data-id="{%s idStr %}">
+			{%= renderThreadPosts(t, bls, false, false) %}
+		</article>
 		<script id="post-data" type="application/json">
 			{%z= json %}
 		</script>

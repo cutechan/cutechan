@@ -10,15 +10,15 @@ export const POPUP_CONTAINER_SEL = ".popup-container"
 export const REPLY_CONTAINER_SEL = ".reply-container"
 export const BOARD_SEARCH_INPUT_SEL = ".board-search-input"
 export const THREAD_SEL = ".thread"
-export const POST_LINK_SEL = ".post-link"
 export const POST_SEL = ".post"
+export const POST_LINK_SEL = ".post-link"
 export const POST_BODY_SEL = ".post-body"
 export const POST_FILE_TITLE_SEL = ".post-file-title"
 export const POST_FILE_LINK_SEL = ".post-file-link"
 export const POST_FILE_THUMB_SEL = ".post-file-thumb"
 export const POST_BACKLINKS_SEL = ".post-backlinks"
 
-// Action trigger selectors, might appear multiple time in markup.
+// Action trigger selectors, might appear multiple times in markup.
 export const TRIGGER_OPEN_REPLY_SEL = ".trigger-open-reply"
 export const TRIGGER_QUOTE_POST_SEL = ".trigger-quote-post"
 export const TRIGGER_DELETE_POST_SEL = ".trigger-delete-post"
