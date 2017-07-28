@@ -22,28 +22,6 @@ textarea {
   font-size: @textareaFontSize;
 }
 
-b {
-  color: @bold;
-}
-
-em {
-  color: @em;
-  font-style: normal;
-}
-
-del {
-  text-decoration: none;
-  &, em {
-    background-color: @del;
-  }
-  &, em, a {
-    color: @del;
-  }
-  &:hover {
-    color: #fff;
-  }
-}
-
 a {
   color: @link;
   border: none;
@@ -52,10 +30,6 @@ a {
 
 a:hover {
   color: @linkHover;
-}
-
-blockquote a {
-  color: @postmlink;
 }
 
 .post-link {
@@ -206,38 +180,6 @@ hr {
   &:focus {
     outline: none;
   }
-}
-
-//////////////////////////////
-// PROGRESS
-//////////////////////////////
-
-.progress {
-}
-
-//////////////////////////////
-// CODE
-//////////////////////////////
-
-.code-tag {
-  margin: 0;
-  white-space: pre-wrap;
-}
-
-.ms-string {
-  color: @em;
-}
-
-.ms-operator {
-  color: @mod;
-}
-
-.ms-comment {
-  color: fade(@body, 60%);
-}
-
-.ms-function {
-  color: @link;
 }
 
 //////////////////////////////
@@ -1063,6 +1005,34 @@ html.work-mode {
 .post-quote-control {
   float: right;
   margin-right: 0;
+}
+
+//////////////////////////////
+// POST FORMATTING
+//////////////////////////////
+
+.post-message {
+  del {
+    text-decoration: none;
+    &, em {
+      background-color: @spoiler;
+    }
+    &, em, a {
+      color: @spoiler;
+    }
+    &:hover {
+      color: #fff;
+    }
+  }
+
+  blockquote {
+    margin: 0;
+    color: @quote;
+  }
+
+  a {
+    color: @postlinkmessage;
+  }
 }
 
 //////////////////////////////

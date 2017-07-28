@@ -1,5 +1,11 @@
-define("loader", ["almond", "mustache", "preact", "classnames", "events"],
-       function () {
+define("loader", [
+  "almond",
+  "events",
+  "mustache",
+  "marked",
+  "classnames",
+  "preact",
+], function () {
   var scriptCount = 0;
   var scripts = [];
 

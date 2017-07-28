@@ -1,8 +1,80 @@
+/**
+ * Post formatting renderer. Uses marked with custom rules.
+ */
+
+import * as marked from "marked"
 import { renderPostLink } from './etc'
 import { PostData, PostLink, TextState } from '../../common'
 import { escape, makeAttrs } from '../../util'
 import { parseEmbeds } from "../embed"
-import highlightSyntax from "./code"
+
+type Renderer = (body: string) => string
+
+function noop() {}
+;(noop as any).exec = noop
+
+// Create renderer instance.
+// XXX(Kagami): This currently fixes regexes and methods in-place for
+// simplicity but might actually instantiate own Lexer, Renderer, etc.
+// objects if needed.
+function makeWakabaMarked(): Renderer {
+  // Fix block rules.
+  // Make sure to use same preset as selected in options!
+  // TODO(Kagami): Remove def from regexps?
+  const blockRules = (marked as any).Lexer.rules.gfm
+  Object.assign(blockRules, {
+    code: noop,
+    hr: noop,
+    heading: noop,
+    lheading: noop,
+    blockquote: /^( *>[^\n]+)/,
+    def: noop,
+  })
+
+  // Fix inline rules.
+  // Make sure to use same preset as selected in options!
+  const inlineRules = (marked as any).InlineLexer.rules.breaks
+  Object.assign(inlineRules, {
+    link: noop,
+  })
+
+  // Fix rendering.
+  const renderer = new marked.Renderer()
+  renderer.blockquote = function(quote) {
+    return "<blockquote>&gt; " + quote + "</blockquote>"
+  }
+  renderer.paragraph = function(text) {
+    return text
+  }
+
+  // Fix defaults.
+  marked.setOptions({
+    // gfm: true,
+    tables: false,
+    breaks: true,
+    // pedantic: false,
+    sanitize: true,  // Very important!
+    // sanitizer: null,
+    // mangle: true,
+    // smartLists: false,
+    // silent: false,
+    // highlight: null,
+    // langPrefix: 'lang-',
+    // smartypants: false,
+    // headerPrefix: '',
+    renderer: renderer,
+    // xhtml: false
+  })
+
+  return marked
+}
+
+const wakabaMarked = makeWakabaMarked()
+
+// Render Markdown-like post body to sanitized HTML.
+export function render(post: PostData): string {
+  return wakabaMarked(post.body)
+}
 
 // URLs supported for linkification
 const urlPrefixes = {
@@ -83,18 +155,7 @@ function formatCode(
   state: TextState,
   fn: (frag: string) => string,
 ): string {
-  let html = ""
-  if (state.code) {
-    // Strip quotes
-    while (frag[0] === '>') {
-      html += "&gt;"
-      frag = frag.slice(1)
-    }
-    html += highlightSyntax(frag)
-  } else {
-    html += parseSpoilers(frag, state, fn)
-  }
-  return html
+  return parseSpoilers(frag, state, fn)
 }
 
 // Injects spoiler tags and calls fn on the remaining parts

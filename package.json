@@ -26,6 +26,7 @@
     "dom4": "^1.8.5",
     "events": "^1.1.1",
     "font-awesome": "^4.7.0",
+    "marked": "^0.3.6",
     "mustache": "^2.3.0",
     "normalize.css": "^7.0.0",
     "preact": "^8.2.1",
@@ -35,6 +36,7 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.0",
+    "@types/marked": "0.0.28",
     "@types/mustache": "^0.8.29",
     "@types/node": "^8.0.17",
     "autoprefixer": "^7.1.2",

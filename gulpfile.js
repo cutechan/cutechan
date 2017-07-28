@@ -179,10 +179,11 @@ createTask("loader", "loader.js", src =>
       cjsTranslate: true,
       paths: {
         almond: "node_modules/almond/almond",
-        mustache: "node_modules/mustache/mustache",
-        preact: "node_modules/preact/dist/preact",
-        classnames: "node_modules/classnames/index",
         events: "node_modules/events/events",
+        mustache: "node_modules/mustache/mustache",
+        marked: "node_modules/marked/lib/marked",
+        classnames: "node_modules/classnames/index",
+        preact: "node_modules/preact/dist/preact",
       },
     }))
     .pipe(gulpif(!watch, uglify()))

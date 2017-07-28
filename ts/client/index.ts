@@ -60,6 +60,7 @@ export function insertPost(data: PostData) {
   // Find last allocated post and insert after it
   const last = document
     .getElementById("thread-container")
+    .firstChild
     .lastElementChild
   if (last.id === "post0") {
     last.before(view.el)
