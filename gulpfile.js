@@ -208,10 +208,10 @@ createTask("css", "less/[^_]*.less", src =>
     .pipe(sourcemaps.init())
     .pipe(less())
     .on("error", handleError)
-    .pipe(postcss([
+    .pipe(gulpif(!watch, postcss([
       autoprefixer(),
       cssnano({discardComments: {removeAll: true}}),
-    ]))
+    ])))
     .on("error", handleError)
     .pipe(sourcemaps.write("maps"))
     .pipe(gulp.dest(CSS_DIR))
