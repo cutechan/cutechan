@@ -4,7 +4,6 @@ export { getPostModel, postEvent, postSM, postState, FormModel } from "./posting
 export { thumbPath, sourcePath } from "./images"
 export * from "./render"
 export { default as PostCollection } from "./collection"
-export { findSyncwatches } from "./syncwatch"
 
 import { POST_FILE_TITLE_SEL } from "../vars"
 import { on, copyToClipboard } from "../util"

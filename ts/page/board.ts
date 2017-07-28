@@ -1,7 +1,7 @@
 import { BOARD_SEARCH_INPUT_SEL } from "../vars"
 import { on } from '../util'
 import { page, posts, loadFromDB } from '../state'
-import { Post, findSyncwatches } from "../posts"
+import { Post } from "../posts"
 import { extractPost, reparseOpenPosts, extractPageData } from "./common"
 import { ThreadData } from "../common"
 
@@ -59,9 +59,7 @@ export async function render() {
   } else {
     await extractThreads()
   }
-  if (!page.catalog) {
-    findSyncwatches(threads)
-  } else {
+  if (page.catalog) {
     (threads.querySelector("select[name=sortMode]") as HTMLSelectElement)
       .value = localStorage.getItem("catalogSort") || "bump"
     sortThreads(true)

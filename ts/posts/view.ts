@@ -3,7 +3,6 @@ import { makeFrag, getID } from '../util'
 import { parseBody, relativeTime, renderPostLink } from './render'
 import { TemplateContext, makePostContext, readableTime } from "../templates"
 import { View, ViewAttrs } from "../base"
-import { findSyncwatches } from "./syncwatch"
 import { ln } from "../lang"
 import options from "../options"
 import { THREAD_SEL, POST_BACKLINKS_SEL } from "../vars"
@@ -119,8 +118,5 @@ export default class PostView extends View<Post> {
     const bq = this.el.querySelector("blockquote")
     bq.innerHTML = ""
     bq.append(makeFrag(parseBody(this.model)))
-    if (this.model.state.haveSyncwatch) {
-      findSyncwatches(this.el)
-    }
   }
 }

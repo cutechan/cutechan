@@ -1,9 +1,6 @@
 import { ThreadData } from "../common"
-import { findSyncwatches } from "../posts"
 import { page, loadFromDB } from "../state"
 import { isBanned, extractPost, reparseOpenPosts, extractPageData } from "./common"
-
-const threads = document.getElementById("threads")
 
 // Render the HTML of a thread page
 export async function render() {
@@ -24,5 +21,4 @@ export async function render() {
     extractPost(post, data.id, data.board, backlinks)
   }
   reparseOpenPosts()
-  findSyncwatches(threads)
 }
