@@ -329,10 +329,7 @@ func constructPost(
 			return
 		}
 	} else {
-		post.Links, post.Commands, err = parser.ParseBody(
-			[]byte(req.Body),
-			board,
-		)
+		post.Links, err = parser.ParseBody([]byte(req.Body), board)
 		if err != nil {
 			return
 		}

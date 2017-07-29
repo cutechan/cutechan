@@ -9,7 +9,7 @@ import (
 )
 
 // ParseBody forwards parser.ParseBody to avoid cyclic imports in db/upkeep
-var ParseBody func([]byte, string) ([][2]uint64, []Command, error)
+var ParseBody func([]byte, string) ([][2]uint64, error)
 
 //easyjson:json
 // Board is defined to enable marshalling optimizations and sorting by sticky
@@ -59,7 +59,6 @@ type Post struct {
 	Trip     string      `json:"trip,omitempty"`
 	Auth     string      `json:"auth,omitempty"`
 	Links    [][2]uint64 `json:"links,omitempty"`
-	Commands []Command   `json:"commands,omitempty"`
 	Image    *Image      `json:"image,omitempty"`
 }
 

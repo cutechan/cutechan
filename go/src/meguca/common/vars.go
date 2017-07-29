@@ -1,9 +1,5 @@
 package common
 
-import (
-	"regexp"
-)
-
 // Maximum lengths of various input fields
 const (
 	MaxLenName         = 50
@@ -49,12 +45,6 @@ var (
 	Themes = []string{
 		"light", "dark", "photon",
 	}
-)
-
-// Common Regex expressions
-var (
-	CommandRegexp = regexp.MustCompile(`^#(flip|\d*d\d+)$`)
-	DiceRegexp    = regexp.MustCompile(`(\d*)d(\d+)`)
 )
 
 // Server paths

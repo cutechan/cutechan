@@ -6,7 +6,7 @@ import { sourcePath } from "./images"
 import { SpliceResponse } from '../client'
 import { mine, seenPosts, storeSeenPost, posts, page } from "../state"
 import { notifyAboutReply } from "../ui"
-import { PostData, TextState, PostLink, Command, ImageData, fileTypes } from "../common"
+import { PostData, TextState, PostLink, ImageData, fileTypes } from "../common"
 
 export type Backlinks = { [id: string]: PostBacklinks }
 export type PostBacklinks = { [id: string]: number }
@@ -41,7 +41,6 @@ export class Post extends Model implements PostData {
   public subject: string
   public board: string
   public state: TextState
-  public commands: Command[]
   public backlinks: PostBacklinks
   public links: PostLink[]
 
@@ -70,7 +69,6 @@ export class Post extends Model implements PostData {
       quote: false,
       lastLineEmpty: false,
       code: false,
-      iDice: 0,
     }
   }
 

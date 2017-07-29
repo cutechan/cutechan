@@ -10,9 +10,6 @@ import (
 	"strconv"
 	"meguca/common"
 	"meguca/auth"
-
-	"github.com/lib/pq"
-	"github.com/mailru/easyjson"
 )
 
 const (
@@ -138,56 +135,18 @@ func (l linkRow) Value() (driver.Value, error) {
 	return string(b), nil
 }
 
-// For encoding and decoding hash command results
-type commandRow []common.Command
-
-func (c *commandRow) Scan(src interface{}) error {
-	switch src := src.(type) {
-	case []byte:
-		return c.scanBytes(src)
-	case string:
-		return c.scanBytes([]byte(src))
-	case nil:
-		*c = nil
-		return nil
-	default:
-		return fmt.Errorf("db: cannot convert %T to []common.Command", src)
-	}
+type Command struct {
 }
 
-func (c *commandRow) scanBytes(data []byte) (err error) {
-	var bArr pq.ByteaArray
-	err = bArr.Scan(data)
-	if err != nil {
-		return
-	}
+// For encoding and decoding hash command results
+type commandRow []Command
 
-	*c = make([]common.Command, len(bArr))
-	for i := range bArr {
-		err = (*c)[i].UnmarshalJSON(bArr[i])
-		if err != nil {
-			return
-		}
-	}
-
-	return
+func (c *commandRow) Scan(src interface{}) error {
+	return nil
 }
 
 func (c commandRow) Value() (driver.Value, error) {
-	if c == nil {
-		return nil, nil
-	}
-
-	var strArr = make(pq.StringArray, len(c))
-	for i := range strArr {
-		s, err := easyjson.Marshal(c[i])
-		if err != nil {
-			return nil, err
-		}
-		strArr[i] = string(s)
-	}
-
-	return strArr.Value()
+	return nil, nil
 }
 
 // ValidateOP confirms the specified thread exists on specific board
@@ -290,7 +249,7 @@ func genPostCreationArgs(p Post) []interface{} {
 	return []interface{}{
 		p.Editing, spoiler, p.ID, p.Board, p.OP, p.Time, p.Body, name, trip,
 		auth, p.Password, ip, img, imgName,
-		linkRow(p.Links), commandRow(p.Commands),
+		linkRow(p.Links), commandRow([]Command{}),
 	}
 }
 

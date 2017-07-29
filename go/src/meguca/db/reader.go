@@ -79,8 +79,6 @@ func (p postScanner) Val() (common.Post, error) {
 	p.Trip = p.trip.String
 	p.Auth = p.auth.String
 	p.Links = [][2]uint64(p.links)
-	p.Commands = []common.Command(p.commands)
-
 	return p.Post, nil
 }
 

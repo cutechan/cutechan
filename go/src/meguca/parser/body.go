@@ -14,10 +14,8 @@ func init() {
 	common.ParseBody = ParseBody
 }
 
-// ParseBody parses the entire post text body for commands and links
-func ParseBody(body []byte, board string) (
-	links [][2]uint64, com []common.Command, err error,
-) {
+// ParseBody parses the entire post text body for links.
+func ParseBody(body []byte, board string) (links [][2]uint64, err error) {
 	start := 0
 
 	for i, b := range body {
@@ -50,21 +48,6 @@ func ParseBody(body []byte, board string) (
 				return
 			case l[0] != 0:
 				links = append(links, l)
-			}
-		case '#':
-			m := common.CommandRegexp.FindSubmatch(word)
-			if m == nil {
-				continue
-			}
-			var c common.Command
-			c, err = parseCommand(m[1], board)
-			switch err {
-			case nil:
-				com = append(com, c)
-			case errTooManyRolls, errDieTooBig: // Consider command invalid
-				err = nil
-			default:
-				return
 			}
 		}
 	}

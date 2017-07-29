@@ -3,7 +3,7 @@
 import { handlers, message, connSM, connEvent } from '../connection'
 import { posts, page } from '../state'
 import { Post, FormModel, PostView, postEvent, postSM } from '../posts'
-import { PostLink, Command, PostData, ImageData } from "../common"
+import { PostLink, PostData, ImageData } from "../common"
 import { postAdded } from "../ui"
 import { OverlayNotification } from "../ui"
 import { showAlert } from "../alerts"
@@ -20,7 +20,6 @@ export type SpliceResponse = {
 type CloseMessage = {
   id: number
   links: PostLink[] | null
-  commands: Command[] | null
 }
 
 // Message for inserting images into an open post
@@ -102,14 +101,11 @@ export function init() {
     handle(msg.id, m =>
       m.splice(msg))
 
-  handlers[message.closePost] = ({ id, links, commands }: CloseMessage) =>
+  handlers[message.closePost] = ({ id, links }: CloseMessage) =>
     handle(id, m => {
       if (links) {
         m.links = links
         m.propagateLinks()
-      }
-      if (commands) {
-        m.commands = commands
       }
       m.closePost()
     })

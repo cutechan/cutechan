@@ -43,7 +43,6 @@ export default class FormModel extends Post {
         quote: false,
         lastLineEmpty: false,
         code: false,
-        iDice: 0,
       },
     })
   }

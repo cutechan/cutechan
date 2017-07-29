@@ -113,7 +113,6 @@ export default function(data: PostData): string {
     quote: false,
     lastLineEmpty: false,
     code: false,
-    iDice: 0,
   }
   let html = ""
 
@@ -267,13 +266,6 @@ function parseFragment(frag: string, data: PostData): string {
           matched = true
         }
         break
-      case "#": // Hash commands
-        m = word.match(/^#(flip|\d*d\d+)$/)
-        if (m) {
-          html += parseCommand(m[1], data)
-          matched = true
-        }
-        break
       default:
         // Generic HTTP(S) URLs, magnet links and embeds
         // Checking the first byte is much cheaper than a function call.
@@ -324,38 +316,3 @@ function parseFragment(frag: string, data: PostData): string {
 //     return escape(bit)
 //   }
 // }
-
-// Parse a hash command
-function parseCommand(bit: string, { commands, state }: PostData): string {
-  // Guard against invalid dice rolls and parsing lines in the post form
-  if (!commands || !commands[state.iDice]) {
-    return "#" + bit
-  }
-
-  let inner: string
-  switch (bit) {
-    case "flip":
-    default:
-      // Validate dice
-      const m = bit.match(/^(\d*)d(\d+)$/)
-      if (parseInt(m[1]) > 10 || parseInt(m[2]) > 100) {
-        return "#" + bit
-      }
-
-      const rolls = commands[state.iDice++].val as number[]
-      inner = ""
-      let sum = 0
-      for (let i = 0; i < rolls.length; i++) {
-        if (i) {
-          inner += " + "
-        }
-        sum += rolls[i]
-        inner += rolls[i]
-      }
-      if (rolls.length > 1) {
-        inner += " = " + sum
-      }
-  }
-
-  return `<strong>#${bit} (${inner})</strong>`
-}

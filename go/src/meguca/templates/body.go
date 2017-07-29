@@ -63,7 +63,6 @@ type bodyContext struct {
 	index bool     // Rendered for an index page
 	state struct { // Body parser state
 		spoiler, quote, lastLineEmpty, code bool
-		iDice                               int
 	}
 	common.Post
 	OP uint64
@@ -222,11 +221,6 @@ func (c *bodyContext) parseFragment(frag string) {
 				c.parsePostLink(m)
 				goto end
 			}
-		case '#': // Hash commands
-			if m := common.CommandRegexp.FindStringSubmatch(word); m != nil {
-				c.parseCommands(string(m[1]))
-				goto end
-			}
 		default: // Generic HTTP(S) URLs and magnet links
 			// Checking the first byte is much cheaper than a function call. Do
 			// that first, as most cases won't match.
@@ -321,64 +315,8 @@ func (c *bodyContext) parseEmbeds(s string) bool {
 	return false
 }
 
-// Parse a hash command
-func (c *bodyContext) parseCommands(bit string) {
-	// Guard against invalid dice rolls
-	if c.Commands == nil || c.state.iDice > len(c.Commands)-1 {
-		c.writeInvalidCommand(bit)
-		return
-	}
-
-	inner := make([]byte, 0, 32)
-	val := c.Commands[c.state.iDice]
-	switch bit {
-	case "flip":
-		inner = strconv.AppendBool(inner, val.Flip)
-		c.state.iDice++
-	default:
-		// Validate dice
-		m := common.DiceRegexp.FindStringSubmatch(bit)
-		if m[1] != "" {
-			if rolls, err := strconv.Atoi(m[1]); err != nil || rolls > 10 {
-				c.writeInvalidCommand(bit)
-				return
-			}
-		}
-		if sides, err := strconv.Atoi(m[2]); err != nil || sides > 100 {
-			c.writeInvalidCommand(bit)
-			return
-		}
-
-		c.state.iDice++
-		var sum uint64
-		for i, roll := range val.Dice {
-			if i != 0 {
-				inner = append(inner, " + "...)
-			}
-			sum += uint64(roll)
-			inner = strconv.AppendUint(inner, uint64(roll), 10)
-		}
-		if len(val.Dice) > 1 {
-			inner = append(inner, " = "...)
-			inner = strconv.AppendUint(inner, sum, 10)
-		}
-	}
-
-	c.string(`<strong>#`)
-	c.string(bit)
-	c.string(` (`)
-	c.N().Z(inner)
-	c.string(`)</strong>`)
-}
-
 func (c *bodyContext) uint64(i uint64) {
 	c.string(strconv.FormatUint(i, 10))
-}
-
-// If command validation failed, simply write the string
-func (c *bodyContext) writeInvalidCommand(s string) {
-	c.byte('#')
-	c.escape(s)
 }
 
 // Close any open HTML tags
