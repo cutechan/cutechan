@@ -1,11 +1,14 @@
 import { Thread, Post } from './model'
 import { makeFrag, getID } from '../util'
-import { parseBody, relativeTime, renderPostLink } from './render'
-import { TemplateContext, makePostContext, readableTime } from "../templates"
+import { parseBody } from './render'
 import { View, ViewAttrs } from "../base"
 import { ln } from "../lang"
 import options from "../options"
 import { THREAD_SEL, POST_BACKLINKS_SEL } from "../vars"
+import {
+  TemplateContext, makePostContext,
+  readableTime, relativeTime, renderPostLink,
+} from "../templates"
 
 /**
  * Base post view class

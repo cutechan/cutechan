@@ -3,8 +3,8 @@
  */
 
 import * as marked from "marked"
-import { renderPostLink } from "./etc"
 import { escape } from "../../util"
+import { renderPostLink } from "../../templates"
 import { PostData, PostLink, TextState } from "../../common"
 
 type AnyClass = { new(...args: any[]): any }
