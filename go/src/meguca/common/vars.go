@@ -53,7 +53,7 @@ var (
 
 // Common Regex expressions
 var (
-	CommandRegexp = regexp.MustCompile(`^#(flip|\d*d\d+|pyu|pcount|sw(?:\d+:)?\d+:\d+(?:[+-]\d+)?)$`)
+	CommandRegexp = regexp.MustCompile(`^#(flip|\d*d\d+)$`)
 	DiceRegexp    = regexp.MustCompile(`(\d*)d(\d+)`)
 )
 

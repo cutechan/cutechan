@@ -268,7 +268,7 @@ function parseFragment(frag: string, data: PostData): string {
         }
         break
       case "#": // Hash commands
-        m = word.match(/^#(flip|\d*d\d+|pyu|pcount|sw(?:\d+:)?\d+:\d+(?:[+-]\d+)?)$/)
+        m = word.match(/^#(flip|\d*d\d+)$/)
         if (m) {
           html += parseCommand(m[1], data)
           matched = true
@@ -335,10 +335,6 @@ function parseCommand(bit: string, { commands, state }: PostData): string {
   let inner: string
   switch (bit) {
     case "flip":
-    case "pyu":
-    case "pcount":
-      inner = commands[state.iDice++].val.toString()
-      break
     default:
       // Validate dice
       const m = bit.match(/^(\d*)d(\d+)$/)

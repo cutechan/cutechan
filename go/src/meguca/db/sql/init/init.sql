@@ -4,8 +4,7 @@ create table main (
 );
 insert into main (id, val) values
 	('version', %d),
-	('config', '%s'),
-	('pyu', '0');
+	('config', '%s');
 
 create table accounts (
 	id varchar(20) primary key,

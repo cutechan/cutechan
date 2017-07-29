@@ -18,24 +18,15 @@ const (
 
 	// Flip is the coin flip command type
 	Flip
-
-	// Pyu - don't ask
-	Pyu
-
-	// Pcount - don't ask
-	Pcount
 )
 
 // Command contains the type and value array of hash commands, such as dice
 // rolls, #flip, etc. The Val field depends on the Type field.
 // Dice: []uint16
 // Flip: bool
-// Pyu: uint64
-// Pcount: uint64
 type Command struct {
 	Type      CommandType
 	Flip      bool
-	Pyu       uint64
 	Dice      []uint16
 }
 
@@ -56,8 +47,6 @@ func (c Command) MarshalEasyJSON(w *jwriter.Writer) {
 	switch c.Type {
 	case Flip:
 		w.Bool(c.Flip)
-	case Pyu, Pcount:
-		w.Uint64(c.Pyu)
 	case Dice:
 		w.RawByte('[')
 		for i, v := range c.Dice {
@@ -89,12 +78,6 @@ func (c *Command) UnmarshalJSON(data []byte) error {
 	case Flip:
 		c.Type = Flip
 		err = json.Unmarshal(data, &c.Flip)
-	case Pyu:
-		c.Type = Pyu
-		err = json.Unmarshal(data, &c.Pyu)
-	case Pcount:
-		c.Type = Pcount
-		err = json.Unmarshal(data, &c.Pyu)
 	case Dice:
 		c.Type = Dice
 		err = json.Unmarshal(data, &c.Dice)

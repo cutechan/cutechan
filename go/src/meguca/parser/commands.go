@@ -7,8 +7,6 @@ import (
 	"errors"
 	"math/rand"
 	"meguca/common"
-	"meguca/config"
-	"meguca/db"
 	"strconv"
 	"time"
 )
@@ -30,20 +28,6 @@ func parseCommand(match []byte, board string) (com common.Command, err error) {
 	case bytes.Equal(match, []byte("flip")):
 		com.Type = common.Flip
 		com.Flip = rand.Intn(2) == 0
-
-	// Increment pyu counter
-	case bytes.Equal(match, []byte("pyu")):
-		if config.Get().Pyu {
-			com.Type = common.Pyu
-			com.Pyu, err = db.IncrementPyu()
-		}
-
-	// Return current pyu count
-	case bytes.Equal(match, []byte("pcount")):
-		if config.Get().Pyu {
-			com.Type = common.Pcount
-			com.Pyu, err = db.GetPyu()
-		}
 
 	default:
 		matchStr := string(match)

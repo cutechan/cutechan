@@ -69,24 +69,6 @@ func StartTransaction() (*sql.Tx, error) {
 	return db.Begin()
 }
 
-// GetPyu retrieves current pyu counter
-func GetPyu() (c uint64, err error) {
-	err = prepared["get_pyu"].QueryRow().Scan(&c)
-	return
-}
-
-// IncrementPyu increments the pyu counter by one and returns the new counter
-func IncrementPyu() (c uint64, err error) {
-	err = prepared["increment_pyu"].QueryRow().Scan(&c)
-	return
-}
-
-// SetPyu sets the pyu counter. Only used in tests.
-func SetPyu(c uint) error {
-	_, err := db.Exec(`UPDATE main SET val = $1::text WHERE id = 'pyu'`, c)
-	return err
-}
-
 func getExecutor(tx *sql.Tx, key string) executor {
 	if tx != nil {
 		return tx.Stmt(prepared[key])

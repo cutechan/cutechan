@@ -4,7 +4,6 @@ package config
 
 // Configs stores the global server configuration
 type Configs struct {
-	Pyu     bool `json:"pyu"`
 	RootURL string `json:"rootURL"`
 	Public
 }

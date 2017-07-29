@@ -272,6 +272,12 @@ var upgrades = []func(*sql.Tx) error{
 		)
 		return
 	},
+	func(tx *sql.Tx) (err error) {
+		_, err = tx.Exec(
+			`DELETE FROM main WHERE id = 'pyu'`,
+		)
+		return
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both

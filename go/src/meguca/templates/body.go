@@ -335,9 +335,6 @@ func (c *bodyContext) parseCommands(bit string) {
 	case "flip":
 		inner = strconv.AppendBool(inner, val.Flip)
 		c.state.iDice++
-	case "pyu", "pcount":
-		inner = strconv.AppendUint(inner, val.Pyu, 10)
-		c.state.iDice++
 	default:
 		// Validate dice
 		m := common.DiceRegexp.FindStringSubmatch(bit)
