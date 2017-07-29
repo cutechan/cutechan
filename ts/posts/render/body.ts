@@ -8,46 +8,78 @@ import { PostData, PostLink, TextState } from '../../common'
 import { escape, makeAttrs } from '../../util'
 import { parseEmbeds } from "../embed"
 
-type Renderer = (body: string) => string
+type AnyClass = { new(...args: any[]): any }
+type Renderer = (post: PostData) => string
 
 function noop() {}
 ;(noop as any).exec = noop
 
 // Create renderer instance.
-// XXX(Kagami): This currently fixes regexes and methods in-place for
-// simplicity but might actually instantiate own Lexer, Renderer, etc.
-// objects if needed.
-function makeWakabaMarked(): Renderer {
-  // Fix block rules.
-  // Make sure to use same preset as selected in options!
-  // TODO(Kagami): Remove def from regexps?
-  const blockRules = (marked as any).Lexer.rules.gfm
-  Object.assign(blockRules, {
-    code: noop,
-    hr: noop,
-    heading: noop,
-    lheading: noop,
-    blockquote: /^( *>[^\n]+)/,
-    def: noop,
-  })
-
-  // Fix inline rules.
-  // Make sure to use same preset as selected in options!
-  const inlineRules = (marked as any).InlineLexer.rules.breaks
-  Object.assign(inlineRules, {
-    link: noop,
-  })
-
-  // Fix rendering.
-  const renderer = new marked.Renderer()
-  renderer.blockquote = function(quote) {
-    return "<blockquote>&gt; " + quote + "</blockquote>"
-  }
-  renderer.paragraph = function(text) {
-    return text
+function makeRenderer(): Renderer {
+  // Custom Lexer.
+  class Lexer extends ((marked as any).Lexer as AnyClass) {
+    constructor(options?: any) {
+      super(options)
+      // TODO(Kagami): Remove def from regexes?
+      Object.assign(this.rules, {
+        code: noop,
+        hr: noop,
+        heading: noop,
+        lheading: noop,
+        blockquote: /^( *>[^>\n][^\n]*)/,
+        def: noop,
+      })
+    }
   }
 
-  // Fix defaults.
+  // Custom InlineLexer.
+  class InlineLexer extends ((marked as any).InlineLexer as AnyClass) {
+    constructor(links: any, options: any, post: PostData) {
+      // XXX(Kagami): Inject post link logic via hardcoded link defs.
+      // Hacky, but unfortunately marked can't be easily customized.
+      links[""] = {href: "post-link", title: ""}
+      super(links, options)
+      this.post = post
+      Object.assign(this.rules, {
+        link: noop,
+        reflink: /^>>\d+()/,
+        nolink: noop,
+      })
+    }
+    outputLink(cap: any, link: any) {
+      if (link.href === "post-link") {
+        return parsePostLink(cap, this.post.links, this.post.op)
+      }
+      return super.outputLink(cap, link)
+    }
+  }
+
+  // Custom Parser.
+  class Parser extends (marked as any).Parser {
+    parse(src: any, post: PostData) {
+      this.inline = new InlineLexer(src.links, this.options, post)
+      this.tokens = src.reverse()
+
+      let out = ""
+      while (this.next()) {
+        out += this.tok()
+      }
+
+      return out
+    }
+  }
+
+  // Custom Renderer.
+  class Renderer extends marked.Renderer {
+    blockquote(quote: string): string {
+      return "<blockquote>&gt; " + quote + "</blockquote>"
+    }
+    // paragraph(text: string): string {
+    //   return text
+    // }
+  }
+
+  // Set defaults.
   marked.setOptions({
     // gfm: true,
     tables: false,
@@ -62,18 +94,33 @@ function makeWakabaMarked(): Renderer {
     // langPrefix: 'lang-',
     // smartypants: false,
     // headerPrefix: '',
-    renderer: renderer,
+    renderer: new Renderer(),
     // xhtml: false
   })
 
-  return marked
+  // Resulting render function.
+  return function(post) {
+    const lexer = new Lexer()
+    const tokens = lexer.lex(post.body)
+    const parser = new Parser()
+    return parser.parse(tokens, post)
+  }
 }
 
-const wakabaMarked = makeWakabaMarked()
+const renderer = makeRenderer()
 
 // Render Markdown-like post body to sanitized HTML.
 export function render(post: PostData): string {
-  return wakabaMarked(post.body)
+  return renderer(post)
+}
+
+// Verify and render a link to other posts.
+function parsePostLink(m: string[], links: PostLink[], thread: number): string {
+  if (!links) return m[0]
+  const id = +m[0].slice(2)
+  const link = links.find(l => l[0] === id)
+  if (!link) return m[0]
+  return renderPostLink(id, link[1], thread)
 }
 
 // URLs supported for linkification
@@ -121,7 +168,6 @@ export default function(data: PostData): string {
 
   return html
 }
-
 
 // Parse a single line, that is no longer being edited
 function parseTerminatedLine(line: string, data: PostData): string {
@@ -275,25 +321,6 @@ function parseFragment(frag: string, data: PostData): string {
   }
 
   return html
-}
-
-// Verify and render a link to other posts
-function parsePostLink(m: string[], links: PostLink[], thread: number): string {
-  if (!links) {
-    return m[0]
-  }
-  const id = parseInt(m[2])
-  let op: number
-  for (let l of links) {
-    if (l[0] === id) {
-      op = l[1]
-      break
-    }
-  }
-  if (!op) {
-    return m[0]
-  }
-  return m[1] + renderPostLink(id, op, thread)
 }
 
 // Render and anchor link that opens in a new tab
