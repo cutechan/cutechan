@@ -9,78 +9,81 @@ import { escape, makeAttrs } from '../../util'
 import { parseEmbeds } from "../embed"
 
 type AnyClass = { new(...args: any[]): any }
-type Renderer = (post: PostData) => string
 
 function noop() {}
 ;(noop as any).exec = noop
 
-// Create renderer instance.
-function makeRenderer(): Renderer {
-  // Custom Lexer.
-  class Lexer extends ((marked as any).Lexer as AnyClass) {
-    constructor(options?: any) {
-      super(options)
-      // TODO(Kagami): Remove def from regexes?
-      Object.assign(this.rules, {
-        code: noop,
-        hr: noop,
-        heading: noop,
-        lheading: noop,
-        blockquote: /^( *>[^>\n][^\n]*)/,
-        def: noop,
-      })
-    }
+// Verify and render a link to other posts.
+function parsePostLink(m: string[], links: PostLink[], thread: number): string {
+  if (!links) return m[0]
+  const id = +m[0].slice(2)
+  const link = links.find(l => l[0] === id)
+  if (!link) return m[0]
+  return renderPostLink(id, link[1], thread)
+}
+
+class CustomLexer extends ((marked as any).Lexer as AnyClass) {
+  constructor(options: any) {
+    super(options)
+    // TODO(Kagami): Remove def from regexes?
+    Object.assign(this.rules, {
+      code: noop,
+      hr: noop,
+      heading: noop,
+      lheading: noop,
+      blockquote: /^( *>[^>\n][^\n]*)/,
+      def: noop,
+    })
   }
+}
 
-  // Custom InlineLexer.
-  class InlineLexer extends ((marked as any).InlineLexer as AnyClass) {
-    constructor(links: any, options: any, post: PostData) {
-      // XXX(Kagami): Inject post link logic via hardcoded link defs.
-      // Hacky, but unfortunately marked can't be easily customized.
-      links[""] = {href: "post-link", title: ""}
-      super(links, options)
-      this.post = post
-      Object.assign(this.rules, {
-        link: noop,
-        reflink: /^>>\d+()/,
-        nolink: noop,
-      })
-    }
-    outputLink(cap: any, link: any) {
-      if (link.href === "post-link") {
-        return parsePostLink(cap, this.post.links, this.post.op)
-      }
-      return super.outputLink(cap, link)
-    }
+class CustomInlineLexer extends ((marked as any).InlineLexer as AnyClass) {
+  constructor(links: any, options: any, post: PostData) {
+    // XXX(Kagami): Inject post link logic via hardcoded link defs.
+    // Hacky, but unfortunately marked can't be easily extended.
+    links[""] = {href: "post-link", title: ""}
+    super(links, options)
+    this.post = post
+    Object.assign(this.rules, {
+      link: noop,
+      reflink: /^>>\d+()/,
+      nolink: noop,
+    })
   }
-
-  // Custom Parser.
-  class Parser extends (marked as any).Parser {
-    parse(src: any, post: PostData) {
-      this.inline = new InlineLexer(src.links, this.options, post)
-      this.tokens = src.reverse()
-
-      let out = ""
-      while (this.next()) {
-        out += this.tok()
-      }
-
-      return out
+  outputLink(cap: any, link: any) {
+    if (link.href === "post-link") {
+      return parsePostLink(cap, this.post.links, this.post.op)
     }
+    return super.outputLink(cap, link)
   }
+}
 
-  // Custom Renderer.
-  class Renderer extends marked.Renderer {
-    blockquote(quote: string): string {
-      return "<blockquote>&gt; " + quote + "</blockquote>"
+class CustomParser extends ((marked as any).Parser as AnyClass) {
+  parse(src: any, post: PostData) {
+    this.inline = new CustomInlineLexer(src.links, this.options, post)
+    this.tokens = src.reverse()
+
+    let out = ""
+    while (this.next()) {
+      out += this.tok()
     }
-    // paragraph(text: string): string {
-    //   return text
-    // }
-  }
 
-  // Set defaults.
-  marked.setOptions({
+    return out
+  }
+}
+
+class CustomRenderer extends marked.Renderer {
+  blockquote(quote: string): string {
+    return "<blockquote>&gt; " + quote + "</blockquote>"
+  }
+  // paragraph(text: string): string {
+  //   return text
+  // }
+}
+
+// Render Markdown-like post body to sanitized HTML.
+export function render(post: PostData): string {
+  const options = {
     // gfm: true,
     tables: false,
     breaks: true,
@@ -94,33 +97,13 @@ function makeRenderer(): Renderer {
     // langPrefix: 'lang-',
     // smartypants: false,
     // headerPrefix: '',
-    renderer: new Renderer(),
+    renderer: new CustomRenderer(),
     // xhtml: false
-  })
-
-  // Resulting render function.
-  return function(post) {
-    const lexer = new Lexer()
-    const tokens = lexer.lex(post.body)
-    const parser = new Parser()
-    return parser.parse(tokens, post)
   }
-}
-
-const renderer = makeRenderer()
-
-// Render Markdown-like post body to sanitized HTML.
-export function render(post: PostData): string {
-  return renderer(post)
-}
-
-// Verify and render a link to other posts.
-function parsePostLink(m: string[], links: PostLink[], thread: number): string {
-  if (!links) return m[0]
-  const id = +m[0].slice(2)
-  const link = links.find(l => l[0] === id)
-  if (!link) return m[0]
-  return renderPostLink(id, link[1], thread)
+  const lexer = new CustomLexer(options)
+  const tokens = lexer.lex(post.body)
+  const parser = new CustomParser(options)
+  return parser.parse(tokens, post)
 }
 
 // URLs supported for linkification
