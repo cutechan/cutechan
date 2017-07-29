@@ -12,8 +12,6 @@ import (
 	"meguca/config"
 	"meguca/imager/assets"
 	"meguca/lang"
-
-	"github.com/valyala/quicktemplate"
 )
 
 type PostContext struct {
@@ -180,12 +178,7 @@ func (ctx *PostContext) File() string {
 }
 
 func (ctx *PostContext) Body() string {
-	buf := quicktemplate.AcquireByteBuffer()
-	defer quicktemplate.ReleaseByteBuffer(buf)
-	w := quicktemplate.AcquireWriter(buf)
-	defer quicktemplate.ReleaseWriter(w)
-	streambody(w, ctx.post, ctx.TID, ctx.Index)
-	return string(buf.B)
+	return renderBody(ctx.post, ctx.TID, ctx.Index)
 }
 
 // Render a link to another post. Can optionally be cross-thread.

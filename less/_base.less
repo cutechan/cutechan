@@ -1012,6 +1012,10 @@ html.work-mode {
 //////////////////////////////
 
 .post-message, .reply-message {
+  a {
+    color: @postlinkmessage;
+  }
+
   del {
     text-decoration: none;
     &, em {
@@ -1025,17 +1029,17 @@ html.work-mode {
     }
   }
 
+  p {
+    margin: 0;
+  }
+
   blockquote {
     margin: 0;
     color: @quote;
   }
 
-  p {
-    margin: 0;
-  }
-
-  a {
-    color: @postlinkmessage;
+  blockquote > p, blockquote > blockquote {
+    display: inline;
   }
 }
 

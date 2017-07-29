@@ -5,8 +5,6 @@ import (
 	"meguca/config"
 	. "meguca/test"
 	"testing"
-
-	"github.com/valyala/quicktemplate"
 )
 
 func TestRenderBody(t *testing.T) {
@@ -235,15 +233,9 @@ func TestRenderBody(t *testing.T) {
 				Links:    c.links,
 				Commands: c.commands,
 			}
+			s := renderBody(p, c.op, false)
 
-			buf := quicktemplate.AcquireByteBuffer()
-			defer quicktemplate.ReleaseByteBuffer(buf)
-			w := quicktemplate.AcquireWriter(buf)
-			defer quicktemplate.ReleaseWriter(w)
-
-			streambody(w, p, c.op, false)
-
-			if s := string(buf.B); s != c.out {
+			if s != c.out {
 				LogUnexpected(t, c.out, s)
 			}
 		})

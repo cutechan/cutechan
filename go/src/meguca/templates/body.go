@@ -3,6 +3,7 @@
 package templates
 
 import (
+	"bytes"
 	"html"
 	"meguca/common"
 	"meguca/util"
@@ -12,6 +13,8 @@ import (
 	"strings"
 
 	"github.com/valyala/quicktemplate"
+	b "github.com/russross/blackfriday"
+	"github.com/microcosm-cc/bluemonday"
 )
 
 // Embeddable URL types
@@ -69,6 +72,71 @@ type bodyContext struct {
 	common.Post
 	OP uint64
 	quicktemplate.Writer
+}
+
+type renderer struct {
+	*b.Html
+}
+
+func (*renderer) BlockQuote(out *bytes.Buffer, text []byte) {
+	out.WriteString("<blockquote>&gt; ")
+	out.Write(text)
+	out.WriteString("</blockquote>")
+}
+
+// Render post body Markdown to sanitized HTML.
+func renderBody(p common.Post, op uint64, index bool) string {
+	input := []byte(p.Body)
+
+	htmlFlags :=
+		b.HTML_SKIP_HTML                 |  // skip preformatted HTML blocks
+		b.HTML_SKIP_STYLE                |  // skip embedded <style> elements
+		b.HTML_SKIP_IMAGES               |  // skip embedded images
+		// b.HTML_SKIP_LINKS                |  // skip all links
+		b.HTML_SAFELINK                  |  // only link to trusted protocols
+		// b.HTML_NOFOLLOW_LINKS            |  // only link with rel="nofollow"
+		// b.HTML_NOREFERRER_LINKS          |  // only link with rel="noreferrer"
+		// b.HTML_HREF_TARGET_BLANK         |  // add a blank target
+		// b.HTML_TOC                       |  // generate a table of contents
+		// b.HTML_OMIT_CONTENTS             |  // skip the main contents (for a standalone table of contents)
+		// b.HTML_COMPLETE_PAGE             |  // generate a complete HTML page
+		// b.HTML_USE_XHTML                 |  // generate XHTML output instead of HTML
+		// b.HTML_USE_SMARTYPANTS           |  // enable smart punctuation substitutions
+		// b.HTML_SMARTYPANTS_FRACTIONS     |  // enable smart fractions (with HTML_USE_SMARTYPANTS)
+		// b.HTML_SMARTYPANTS_DASHES        |  // enable smart dashes (with HTML_USE_SMARTYPANTS)
+		// b.HTML_SMARTYPANTS_LATEX_DASHES  |  // enable LaTeX-style dashes (with HTML_USE_SMARTYPANTS and HTML_SMARTYPANTS_DASHES)
+		// b.HTML_SMARTYPANTS_ANGLED_QUOTES |  // enable angled double quotes (with HTML_USE_SMARTYPANTS) for double quotes rendering
+		// b.HTML_SMARTYPANTS_QUOTES_NBSP   |  // enable "French guillemets" (with HTML_USE_SMARTYPANTS)
+		// b.HTML_FOOTNOTE_RETURN_LINKS     |  // generate a link at the end of a footnote to return to the source
+		0
+
+	extensions :=
+		b.EXTENSION_NO_INTRA_EMPHASIS          |  // ignore emphasis markers inside words
+		// b.EXTENSION_TABLES                     |  // render tables
+		b.EXTENSION_FENCED_CODE                |  // render fenced code blocks
+		b.EXTENSION_AUTOLINK                   |  // detect embedded URLs that are not explicitly marked
+		b.EXTENSION_STRIKETHROUGH              |  // strikethrough text using ~~test~~
+		// b.EXTENSION_LAX_HTML_BLOCKS            |  // loosen up HTML block parsing rules
+		// b.EXTENSION_SPACE_HEADERS              |  // be strict about prefix header rules
+		b.EXTENSION_HARD_LINE_BREAK            |  // translate newlines into line breaks
+		// b.EXTENSION_TAB_SIZE_EIGHT             |  // expand tabs to eight spaces instead of four
+		// b.EXTENSION_FOOTNOTES                  |  // Pandoc-style footnotes
+		// b.EXTENSION_NO_EMPTY_LINE_BEFORE_BLOCK |  // No need to insert an empty line to start a (code, quote, ordered list, unordered list) block
+		// b.EXTENSION_HEADER_IDS                 |  // specify header IDs  with {#id}
+		// b.EXTENSION_TITLEBLOCK                 |  // Titleblock ala pandoc
+		// b.EXTENSION_AUTO_HEADER_IDS            |  // Create the header ID from the text
+		// b.EXTENSION_BACKSLASH_LINE_BREAK       |  // translate trailing backslashes into line breaks
+		// b.EXTENSION_DEFINITION_LISTS           |  // render definition lists
+		// b.EXTENSION_JOIN_LINES                 |  // delete newline and join lines
+		0
+
+	renderer := &renderer{Html: b.HtmlRenderer(htmlFlags, "", "").(*b.Html)}
+	unsafe := b.Markdown(input, renderer, extensions)
+	// NOTE(Kagami): Should't actually be needed because we don't allow
+	// raw HTML in Markdown but force it anyway just to be safe.
+	html := bluemonday.UGCPolicy().SanitizeBytes(unsafe)
+
+	return string(html)
 }
 
 // Render the text body of a post
