@@ -52,6 +52,10 @@ function handleShortcut(event: KeyboardEvent) {
       caught = true
       trigger(HOOKS.selectFile)
       break
+    case options.previewPost:
+      caught = true
+      trigger(HOOKS.previewPost)
+      break
     case options.workMode:
       caught = true
       options.workModeToggle = !options.workModeToggle

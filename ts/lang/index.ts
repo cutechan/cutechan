@@ -7,6 +7,7 @@
 import langs from "langs"
 
 type LanguagePack = {
+  Forms: { [key: string]: string[2] }
   UI: { [key: string]: string }
   Common: CommonLanguagePack
 }
@@ -41,7 +42,7 @@ export const lang: CommonLanguagePack = {
   UI: pack.common.ui,
   ui: pack.common.ui,
 }
-export const ln: LanguagePack = { UI: pack.ui, Common: lang }
+export const ln: LanguagePack = { Forms: pack.forms, UI: pack.ui, Common: lang }
 export default lang
 
 // Very simple implementation.

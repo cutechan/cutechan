@@ -18,6 +18,7 @@ interface Options extends ChangeEmitter {
   newPost: number
   cancelPost: number
   selectFile: number
+  previewPost: number
   workMode: number
   lang: string
 }

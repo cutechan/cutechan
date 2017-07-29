@@ -171,6 +171,7 @@ class Reply extends Component<any, any> {
     hook(HOOKS.openReply, this.focus)
     hook(HOOKS.sendReply, this.handleSend)
     hook(HOOKS.selectFile, this.handleAttach)
+    hook(HOOKS.previewPost, this.handleToggleEditing)
     document.addEventListener(
       "mousemove",
       this.handleGlobalMove,
@@ -189,6 +190,7 @@ class Reply extends Component<any, any> {
     unhook(HOOKS.openReply, this.focus)
     unhook(HOOKS.sendReply, this.handleSend)
     unhook(HOOKS.selectFile, this.handleAttach)
+    unhook(HOOKS.previewPost, this.handleToggleEditing)
     document.removeEventListener(
       "mousemove",
       this.handleGlobalMove,
@@ -659,7 +661,7 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-edit-control"
-          title={ln.UI["preview"]}
+          title={ln.Forms["previewPost"][0]}
           disabled={sending}
           onClick={this.handleToggleEditing}
         >

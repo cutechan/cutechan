@@ -76,6 +76,10 @@
       "Select file",
       "Open file select dialog"
     ],
+    "previewPost": [
+      "Preview post",
+      "Toggle post preview mode"
+    ],
     "notification": [
       "Desktop Notifications",
       "Get desktop notifications when quoted"
@@ -153,7 +157,6 @@
     "bold": "Bold",
     "italic": "Italic",
     "spoiler": "Spoiler",
-    "preview": "Toggle post preview",
     "clickToCancel": "Click to cancel upload",
     "news": "News",
     "sections": "Sections",
