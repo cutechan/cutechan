@@ -70,7 +70,6 @@ export class Post extends Model implements PostData {
       quote: false,
       lastLineEmpty: false,
       code: false,
-      haveSyncwatch: false,
       iDice: 0,
     }
   }

@@ -34,12 +34,11 @@ export type TextState = {
   quote: boolean
   lastLineEmpty: boolean
   code: boolean
-  haveSyncwatch: boolean
   iDice: number // Index of the next dice array item to use
 }
 
 // Types of hash command entries
-const enum commandType { dice, flip, syncWatch, pyu, pcount }
+const enum commandType { dice, flip, pyu, pcount }
 
 // Single hash command result delivered from the server
 export interface Command {

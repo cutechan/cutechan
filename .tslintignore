@@ -9,7 +9,6 @@
 --exclude ts/posts/index.ts
 --exclude ts/posts/embed.ts
 --exclude ts/posts/collection.ts
---exclude ts/posts/syncwatch.ts
 --exclude ts/posts/menu.ts
 --exclude ts/posts/hide.ts
 --exclude ts/posts/posting/threads.ts

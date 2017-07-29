@@ -113,7 +113,6 @@ export default function(data: PostData): string {
     quote: false,
     lastLineEmpty: false,
     code: false,
-    haveSyncwatch: false,
     iDice: 0,
   }
   let html = ""

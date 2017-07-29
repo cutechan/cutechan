@@ -9,15 +9,11 @@ import (
 	"meguca/common"
 	"meguca/config"
 	"meguca/db"
-	"regexp"
 	"strconv"
-	"strings"
 	"time"
 )
 
 var (
-	syncWatchRegexp = regexp.MustCompile(`^sw(\d+:)?(\d+):(\d+)([+-]\d+)?$`)
-
 	errTooManyRolls = errors.New("too many rolls")
 	errDieTooBig    = errors.New("die too big")
 )
@@ -51,13 +47,6 @@ func parseCommand(match []byte, board string) (com common.Command, err error) {
 
 	default:
 		matchStr := string(match)
-
-		// Synchronized time counter
-		if strings.HasPrefix(matchStr, "sw") {
-			com.Type = common.SyncWatch
-			com.SyncWatch = parseSyncWatch(matchStr)
-			return
-		}
 
 		// Dice throw
 		com.Type = common.Dice
@@ -101,39 +90,4 @@ func parseDice(match string) (val []uint16, err error) {
 		}
 	}
 	return
-}
-
-func parseSyncWatch(match string) [5]uint64 {
-	m := syncWatchRegexp.FindStringSubmatch(match)
-	var (
-		hours, min, sec, offset uint64
-		offsetDirection         byte
-	)
-
-	if m[1] != "" {
-		hours, _ = strconv.ParseUint(m[1][:len(m[1])-1], 10, 64)
-	}
-	min, _ = strconv.ParseUint(m[2], 10, 64)
-	sec, _ = strconv.ParseUint(m[3], 10, 64)
-	if m[4] != "" {
-		offsetDirection = m[4][0]
-		offset, _ = strconv.ParseUint(m[4][1:], 10, 64)
-	}
-
-	start := uint64(time.Now().Unix())
-	switch offsetDirection {
-	case '+':
-		start += offset
-	case '-':
-		start -= offset
-	}
-	end := start + sec + (hours*60+min)*60
-
-	return [5]uint64{
-		hours,
-		min,
-		sec,
-		start,
-		end,
-	}
 }

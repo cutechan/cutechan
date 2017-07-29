@@ -19,10 +19,6 @@ const (
 	// Flip is the coin flip command type
 	Flip
 
-	// SyncWatch is the synchronized timer command type for synchronizing
-	// episode time during group anime watching and such
-	SyncWatch
-
 	// Pyu - don't ask
 	Pyu
 
@@ -34,14 +30,12 @@ const (
 // rolls, #flip, etc. The Val field depends on the Type field.
 // Dice: []uint16
 // Flip: bool
-// SyncWatch: [5]uint64
 // Pyu: uint64
 // Pcount: uint64
 type Command struct {
 	Type      CommandType
 	Flip      bool
 	Pyu       uint64
-	SyncWatch [5]uint64
 	Dice      []uint16
 }
 
@@ -64,15 +58,6 @@ func (c Command) MarshalEasyJSON(w *jwriter.Writer) {
 		w.Bool(c.Flip)
 	case Pyu, Pcount:
 		w.Uint64(c.Pyu)
-	case SyncWatch:
-		w.RawByte('[')
-		for i, v := range c.SyncWatch {
-			if i != 0 {
-				w.RawByte(',')
-			}
-			w.Uint64(v)
-		}
-		w.RawByte(']')
 	case Dice:
 		w.RawByte('[')
 		for i, v := range c.Dice {
@@ -110,9 +95,6 @@ func (c *Command) UnmarshalJSON(data []byte) error {
 	case Pcount:
 		c.Type = Pcount
 		err = json.Unmarshal(data, &c.Pyu)
-	case SyncWatch:
-		c.Type = SyncWatch
-		err = json.Unmarshal(data, &c.SyncWatch)
 	case Dice:
 		c.Type = Dice
 		err = json.Unmarshal(data, &c.Dice)

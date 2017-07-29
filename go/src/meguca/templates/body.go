@@ -339,12 +339,6 @@ func (c *bodyContext) parseCommands(bit string) {
 		inner = strconv.AppendUint(inner, val.Pyu, 10)
 		c.state.iDice++
 	default:
-		if strings.HasPrefix(bit, "sw") {
-			c.formatSyncwatch(val.SyncWatch)
-			c.state.iDice++
-			return
-		}
-
 		// Validate dice
 		m := common.DiceRegexp.FindStringSubmatch(bit)
 		if m[1] != "" {
@@ -378,21 +372,6 @@ func (c *bodyContext) parseCommands(bit string) {
 	c.string(` (`)
 	c.N().Z(inner)
 	c.string(`)</strong>`)
-}
-
-// Format a synchronized time counter
-func (c *bodyContext) formatSyncwatch(val [5]uint64) {
-	c.string(`<em><strong class="embed syncwatch" data-hour=`)
-	c.uint64(val[0])
-	c.string(` data-min=`)
-	c.uint64(val[1])
-	c.string(` data-sec=`)
-	c.uint64(val[2])
-	c.string(` data-start=`)
-	c.uint64(val[3])
-	c.string(` data-end=`)
-	c.uint64(val[4])
-	c.string(`>syncwatch</strong></em>`)
 }
 
 func (c *bodyContext) uint64(i uint64) {
