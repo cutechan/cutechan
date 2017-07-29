@@ -93,7 +93,7 @@ function langs() {
     .pipe(concat("langs.js"))
     .pipe(tap(function(file) {
       file.contents = Buffer.concat([
-        new Buffer('define("langs", ["exports"], function(exports) {\n'),
+        new Buffer('define("cc-langs", ["exports"], function(exports) {\n'),
         new Buffer("var langs = {};\n"),
         file.contents,
         new Buffer("\nexports.default = langs;\n"),
@@ -112,7 +112,7 @@ function templates() {
     .pipe(concat("templates.js"))
     .pipe(tap(function(file) {
       file.contents = Buffer.concat([
-        new Buffer('define("templates", ["exports"], function(exports) {\n'),
+        new Buffer('define("cc-templates", ["exports"], function(exports) {\n'),
         new Buffer("var templates = {};\n"),
         file.contents,
         new Buffer("\nexports.default = templates;\n"),

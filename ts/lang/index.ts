@@ -4,7 +4,7 @@
 
 /// <reference path="./index.d.ts" />
 
-import langs from "langs"
+import langs from "cc-langs"
 
 type LanguagePack = {
   Forms: { [key: string]: string[2] }

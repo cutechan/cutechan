@@ -2,7 +2,7 @@
 // Template structs, helper routines and context providers.
 
 import * as Mustache from "mustache"
-import templates from "templates"
+import templates from "cc-templates"
 import { ln, lang } from "../lang"
 import { config } from "../state"
 import { Thread, Post, thumbPath, sourcePath, parseBody } from "../posts"
