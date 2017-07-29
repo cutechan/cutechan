@@ -23,7 +23,7 @@ const notify = require("gulp-notify");
 const livereload = require("gulp-livereload");
 const runSequence = require("run-sequence");
 
-const LANGS_GLOB = "lang/*.json";
+const LANGS_GLOB = "i18n/*.json";
 const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
 const TYPESCRIPT_GLOB = "{app,ts/**/*}.[tj]s?(x)";
 
