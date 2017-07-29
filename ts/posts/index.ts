@@ -2,7 +2,6 @@ export { Thread, Post, Backlinks } from "./model"
 export { default as PostView } from "./view"
 export { getPostModel, postEvent, postSM, postState, FormModel } from "./posting"
 export { thumbPath, sourcePath } from "./images"
-export * from "./render"
 export { default as PostCollection } from "./collection"
 
 import { POST_FILE_TITLE_SEL } from "../vars"

@@ -1,12 +1,15 @@
+/**
+ * Template structs, helper routines and context providers.
+ */
 // MUST BE KEPT IN SYNC WITH go/src/meguca/templates/isomorph.go!
-// Template structs, helper routines and context providers.
 
 import * as Mustache from "mustache"
 import templates from "cc-templates"
 import { ln, lang } from "../lang"
 import { config, page, mine } from "../state"
-import { Thread, Post, thumbPath, sourcePath, parseBody } from "../posts"
+import { Thread, Post, thumbPath, sourcePath } from "../posts"
 import { Dict, makeEl, pad } from "../util"
+import { parseBody } from "."
 
 export class TemplateContext {
   private template: string

@@ -5,9 +5,8 @@ import { config, page, boards, storeMine } from "../../state"
 import API from "../../api"
 import * as signature from "./signature"
 import { showAlert } from "../../alerts"
-import { duration, fileSize } from "../../templates"
+import { duration, fileSize, parseBody } from "../../templates"
 import { PostData } from "../../common"
-import { parseBody } from ".."
 import {
   POST_SEL,
   POST_BODY_SEL,

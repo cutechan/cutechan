@@ -1,11 +1,12 @@
 /**
- * Post formatting renderer. Uses marked with custom rules.
+ * Post formatting renderer.
  */
+// MUST BE KEPT IN SYNC WITH go/src/meguca/templates/body.go!
 
 import * as marked from "marked"
-import { escape } from "../../util"
-import { renderPostLink } from "../../templates"
-import { PostData, PostLink, TextState } from "../../common"
+import { escape } from "../util"
+import { PostData, PostLink, TextState } from "../common"
+import { renderPostLink } from "."  // TODO(Kagami): Avoid circular import
 
 type AnyClass = { new(...args: any[]): any }
 

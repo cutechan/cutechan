@@ -1,3 +1,5 @@
+// Post formatting renderer.
+// MUST BE KEPT IN SYNC WITH ts/templates/body.ts!
 package templates
 
 import (

@@ -1,7 +1,5 @@
-// MUST BE KEPT IN SYNC WITH client/templates/isomorph.ts!
 // Template structs, helper routines and context providers.
-// TODO(Kagami): Move everything common to isomorph package?
-
+// MUST BE KEPT IN SYNC WITH ts/templates/isomorph.ts!
 package templates
 
 import (
