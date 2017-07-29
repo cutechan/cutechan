@@ -3,10 +3,9 @@
  */
 
 import * as marked from "marked"
-import { renderPostLink } from './etc'
-import { PostData, PostLink, TextState } from '../../common'
-import { escape, makeAttrs } from '../../util'
-import { parseEmbeds } from "../embed"
+import { renderPostLink } from "./etc"
+import { escape } from "../../util"
+import { PostData, PostLink, TextState } from "../../common"
 
 type AnyClass = { new(...args: any[]): any }
 
@@ -105,15 +104,6 @@ export function render(post: PostData): string {
   const tokens = lexer.lex(post.body)
   const parser = new CustomParser(options)
   return parser.parse(tokens, post)
-}
-
-// URLs supported for linkification
-const urlPrefixes = {
-  'h': "http",
-  'm': "magnet:?",
-  'i': "irc",
-  'f': "ftp",
-  'b': "bitcoin",
 }
 
 // Render the text body of a post
@@ -256,7 +246,7 @@ function parseFragment(frag: string, data: PostData): string {
     }
 
     // Split leading and trailing punctuation, if any
-    const [leadPunct, word, trailPunct] = splitPunctuation(words[i])
+    const [leadPunct, word, trailPunct] = ["", words[i], ""]
     if (leadPunct) {
       html += leadPunct
     }
@@ -289,11 +279,11 @@ function parseFragment(frag: string, data: PostData): string {
         // Generic HTTP(S) URLs, magnet links and embeds
         // Checking the first byte is much cheaper than a function call.
         // Do that first, as most cases won't match.
-        const pre = urlPrefixes[word[0]]
-        if (pre && word.startsWith(pre)) {
-          html += parseURL(word)
-          matched = true
-        }
+        // const pre = urlPrefixes[word[0]]
+        // if (pre && word.startsWith(pre)) {
+        //   html += parseURL(word)
+        //   matched = true
+        // }
     }
 
     if (!matched) {
@@ -308,33 +298,33 @@ function parseFragment(frag: string, data: PostData): string {
 }
 
 // Render and anchor link that opens in a new tab
-function newTabLink(href: string, text: string): string {
-  const attrs = {
-    rel: "noreferrer",
-    href: escape(href),
-    target: "_blank",
-  }
-  return `<a ${makeAttrs(attrs)}>${escape(text)}</a>`
-}
+// function newTabLink(href: string, text: string): string {
+//   const attrs = {
+//     rel: "noreferrer",
+//     href: escape(href),
+//     target: "_blank",
+//   }
+//   return `<a ${makeAttrs(attrs)}>${escape(text)}</a>`
+// }
 
 // Parse generic URLs and embed, if applicable
-function parseURL(bit: string): string {
-  const embed = parseEmbeds(bit)
-  if (embed) {
-    return embed
-  }
+// function parseURL(bit: string): string {
+//   const embed = parseEmbeds(bit)
+//   if (embed) {
+//     return embed
+//   }
 
-  try {
-    new URL(bit) // Will throw, if invalid URL
-    if (bit[0] == "m") { // Don't open a new tab for magnet links
-      bit = escape(bit)
-      return bit.link(bit)
-    }
-    return newTabLink(bit, bit)
-  } catch (e) {
-    return escape(bit)
-  }
-}
+//   try {
+//     new URL(bit) // Will throw, if invalid URL
+//     if (bit[0] == "m") { // Don't open a new tab for magnet links
+//       bit = escape(bit)
+//       return bit.link(bit)
+//     }
+//     return newTabLink(bit, bit)
+//   } catch (e) {
+//     return escape(bit)
+//   }
+// }
 
 // Parse a hash command
 function parseCommand(bit: string, { commands, state }: PostData): string {
@@ -351,10 +341,6 @@ function parseCommand(bit: string, { commands, state }: PostData): string {
       inner = commands[state.iDice++].val.toString()
       break
     default:
-      if (bit.startsWith("sw")) {
-        return formatSyncwatch(bit, commands[state.iDice++].val, state)
-      }
-
       // Validate dice
       const m = bit.match(/^(\d*)d(\d+)$/)
       if (parseInt(m[1]) > 10 || parseInt(m[2]) > 100) {
@@ -377,69 +363,4 @@ function parseCommand(bit: string, { commands, state }: PostData): string {
   }
 
   return `<strong>#${bit} (${inner})</strong>`
-}
-
-// Format a synchronized time counter
-function formatSyncwatch(bit: string, val: number[], state: TextState): string {
-  state.haveSyncwatch = true
-  const attrs = {
-    class: "embed syncwatch",
-    "data-hour": val[0].toString(),
-    "data-min": val[1].toString(),
-    "data-sec": val[2].toString(),
-    "data-start": val[3].toString(),
-    "data-end": val[4].toString()
-  }
-  return `<em><strong ${makeAttrs(attrs)}>syncwatch</strong></em>`
-}
-
-// Splits off one byte of leading and trailing punctuation, if any, and returns
-// the 3 split parts. If there is no edge punctuation, the respective string
-// is empty.
-function splitPunctuation(word: string): [string, string, string] {
-  const re: [string, string, string] = ["", word, ""]
-  re[1] = word
-
-  // Split leading
-  if (re[1].length < 2) {
-    return re
-  }
-  if (isPunctuation(re[1][0])) {
-    re[0] = re[1][0]
-    re[1] = re[1].slice(1)
-  }
-
-  // Split trailing
-  const l = re[1].length
-  if (l < 2) {
-    return re
-  }
-  if (isPunctuation(re[1][l - 1])) {
-    re[2] = re[1][l - 1]
-    re[1] = re[1].slice(0, -1)
-  }
-
-  return re
-}
-
-// Return if b is a punctuation byte
-function isPunctuation(b: string): boolean {
-  switch (b) {
-    case '!':
-    case '"':
-    case '\'':
-    case '(':
-    case ')':
-    case ',':
-    case '-':
-    case '.':
-    case ':':
-    case ';':
-    case '?':
-    case '[':
-    case ']':
-      return true
-    default:
-      return false
-  }
 }
