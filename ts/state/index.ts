@@ -76,9 +76,10 @@ export let debug: boolean = /[\?&]debug=true/.test(location.href)
 // Read page state by parsing a URL
 // TODO(Kagami): Pass this from server-side.
 export function read(href: string): PageState {
-  const u = new URL(href, location.origin),
-    thread = u.pathname.match(/^\/\w+\/(\d+)/),
-    page = u.search.match(/[&\?]page=(\d+)/)
+  const u = document.createElement("a")
+  u.href = href
+  const thread = u.pathname.match(/^\/\w+\/(\d+)/)
+  const page = u.search.match(/[&\?]page=(\d+)/)
   return {
     href,
     landing: u.pathname === "/",

@@ -159,11 +159,6 @@ define("loader", [
     scripts.push("fetch");
   }
 
-  // URL polyfill.
-  if (!checkFunction("URL")) {
-    scripts.push("url-polyfill.min");
-  }
-
   // Iterable NodeList.
   // TODO(Kagami): Check if still needed.
   if (!window.legacy && !checkFunction("NodeList.prototype[Symbol.iterator]")) {
