@@ -5,7 +5,7 @@ import { config, page, boards, storeMine } from "../../state"
 import API from "../../api"
 import * as signature from "./signature"
 import { showAlert } from "../../alerts"
-import { duration, fileSize, parseBody } from "../../templates"
+import { duration, fileSize, renderBody } from "../../templates"
 import { PostData } from "../../common"
 import {
   POST_SEL,
@@ -586,7 +586,7 @@ class Reply extends Component<any, any> {
       )
     } else {
       const post = {body} as PostData
-      const html = parseBody(post)
+      const html = renderBody(post)
       return (
         <div
           class="reply-body reply-message"

@@ -9,7 +9,7 @@ import { ln, lang } from "../lang"
 import { config, page, mine } from "../state"
 import { Thread, Post, thumbPath, sourcePath } from "../posts"
 import { Dict, makeEl, pad } from "../util"
-import { parseBody } from "."
+import { renderBody } from "."
 
 export class TemplateContext {
   private template: string
@@ -91,7 +91,7 @@ export function makePostContext(t: Thread, p: Post): TemplateContext {
     }).render()
   }
 
-  ctx.Body = parseBody(p)
+  ctx.Body = renderBody(p)
 
   // NOOP because we will need to update already rendered posts so avoid
   // code duplication.

@@ -1,4 +1,4 @@
 /// <reference path="./index.d.ts" />
 
 export * from "./isomorph"
-export { render as parseBody } from "./body"
+export { render as renderBody } from "./body"

@@ -6,7 +6,7 @@ import options from "../options"
 import { THREAD_SEL, POST_BACKLINKS_SEL } from "../vars"
 import {
   TemplateContext, makePostContext,
-  readableTime, relativeTime, renderPostLink, parseBody,
+  readableTime, relativeTime, renderPostLink, renderBody,
 } from "../templates"
 
 /**
@@ -119,6 +119,6 @@ export default class PostView extends View<Post> {
   public reparseBody() {
     const bq = this.el.querySelector("blockquote")
     bq.innerHTML = ""
-    bq.append(makeFrag(parseBody(this.model)))
+    bq.append(makeFrag(renderBody(this.model)))
   }
 }
