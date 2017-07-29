@@ -2,10 +2,10 @@
  * Keyboard shortcuts handling.
  */
 
-import { POST_SEL, BOARD_SEARCH_INPUT_SEL } from "../vars"
+import { POST_SEL } from "../vars"
 import options from "../options"
 import { page } from "../state"
-import { getID, scrollToTop, trigger, HOOKS } from "../util"
+import { getID, trigger, HOOKS } from "../util"
 
 // Bind keyboard event listener to the document.
 export function init() {
@@ -36,14 +36,6 @@ function handleShortcut(event: KeyboardEvent) {
         caught = true
         navigatePost(false)
         break
-      case "s":
-        caught = true
-        navigateSearch()
-        break
-      case "o":
-        caught = true
-        trigger(HOOKS.selectFile)
-        break
       }
     }
   } else if (event.altKey) {
@@ -55,6 +47,10 @@ function handleShortcut(event: KeyboardEvent) {
     case options.cancelPost:
       caught = true
       trigger(HOOKS.closeReply)
+      break
+    case options.selectFile:
+      caught = true
+      trigger(HOOKS.selectFile)
       break
     case options.workMode:
       caught = true
@@ -111,13 +107,5 @@ function navigatePost(reverse: boolean) {
 
   if (current) {
     location.hash = "#" + getID(current)
-  }
-}
-
-function navigateSearch() {
-  const el = document.querySelector(BOARD_SEARCH_INPUT_SEL)
-  if (el) {
-    scrollToTop()
-    el.focus()
   }
 }

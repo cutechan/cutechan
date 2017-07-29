@@ -72,6 +72,10 @@
       "Cancel post",
       "Close reply form"
     ],
+    "selectFile": [
+      "Select file",
+      "Open file select dialog"
+    ],
     "notification": [
       "Desktop Notifications",
       "Get desktop notifications when quoted"

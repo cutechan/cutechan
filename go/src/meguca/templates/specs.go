@@ -185,6 +185,10 @@ var optionSpecs = [...][]inputSpec{
 			Type: _shortcut,
 		},
 		{
+			ID:   "selectFile",
+			Type: _shortcut,
+		},
+		{
 			ID:   "workMode",
 			Type: _shortcut,
 		},
