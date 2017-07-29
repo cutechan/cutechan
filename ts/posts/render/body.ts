@@ -48,6 +48,7 @@ class CustomInlineLexer extends ((marked as any).InlineLexer as AnyClass) {
       link: noop,
       reflink: /^>>\d+()/,
       nolink: noop,
+      del: /^%%(?=\S)([\s\S]*?\S)%%/,
     })
   }
   outputLink(cap: any, link: any) {
