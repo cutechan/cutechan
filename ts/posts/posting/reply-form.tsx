@@ -117,7 +117,7 @@ class FilePreview extends Component<any, any> {
     return s
   }
   render(props: any) {
-    const url = props.info.url
+    const { url } = props.info
     return (
       <div class="reply-file">
         <a class="control reply-remove-file-control" onClick={this.handleRemove}>
@@ -126,6 +126,22 @@ class FilePreview extends Component<any, any> {
         <img class="reply-file-thumb" src={url} />
         <div class="reply-file-info">{this.renderInfo()}</div>
       </div>
+    )
+  }
+}
+
+class BodyPreview extends Component<any, any> {
+  shouldComponentUpdate({ body }: any) {
+    return body !== this.props.body
+  }
+  render({ body }: any) {
+    const post = {body} as PostData
+    const html = renderBody(post)
+    return (
+      <div
+        class="reply-body reply-message"
+        dangerouslySetInnerHTML={{__html: html}}
+      />
     )
   }
 }
@@ -572,28 +588,19 @@ class Reply extends Component<any, any> {
       </div>
     );
   }
-  renderMessage() {
+  renderBody() {
     const { editing, sending, body } = this.state
-    if (editing) {
-      return (
-        <textarea
-          class="reply-body"
-          ref={s(this, "bodyEl")}
-          value={body}
-          disabled={sending}
-          onInput={this.handleBodyChange}
-        />
-      )
-    } else {
-      const post = {body} as PostData
-      const html = renderBody(post)
-      return (
-        <div
-          class="reply-body reply-message"
-          dangerouslySetInnerHTML={{__html: html}}
-        />
-      )
-    }
+    return editing ? (
+      <textarea
+        class="reply-body"
+        ref={s(this, "bodyEl")}
+        value={body}
+        disabled={sending}
+        onInput={this.handleBodyChange}
+      />
+    ) : (
+      <BodyPreview body={body} />
+    )
   }
   renderSideControls() {
     const { float, sending } = this.state
@@ -698,7 +705,7 @@ class Reply extends Component<any, any> {
           <div class="reply-content-wrapper">
             <div class="reply-content">
               {this.renderHeader()}
-              {this.renderMessage()}
+              {this.renderBody()}
             </div>
             {this.renderSideControls()}
           </div>
