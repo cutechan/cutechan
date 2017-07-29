@@ -6,6 +6,8 @@ import API from "../../api"
 import * as signature from "./signature"
 import { showAlert } from "../../alerts"
 import { duration, fileSize } from "../../templates"
+import { PostData } from "../../common"
+import { parseBody } from ".."
 import {
   POST_SEL,
   POST_BODY_SEL,
@@ -149,6 +151,7 @@ class Reply extends Component<any, any> {
     width: page.thread ? REPLY_THREAD_WIDTH_PX : REPLY_BOARD_WIDTH_PX,
     height: REPLY_HEIGHT_PX,
     pos: "i",
+    editing: true,
     sending: false,
     progress: 0,
     board: page.board === "all" ? boards[0].id : page.board,
@@ -295,6 +298,7 @@ class Reply extends Component<any, any> {
     this.setState({float: true, left, top})
   }
   focus = () => {
+    if (!this.bodyEl) return
     this.bodyEl.focus()
     if (page.thread) {
       if (!this.state.float) {
@@ -520,6 +524,10 @@ class Reply extends Component<any, any> {
       }
     }
   }
+  handleToggleEditing = () => {
+    const editing = !this.state.editing
+    this.setState({editing}, this.focus)
+  }
   renderBoards() {
     if (page.board !== "all") return null;
     const { sending, board } = this.state
@@ -563,6 +571,29 @@ class Reply extends Component<any, any> {
       </div>
     );
   }
+  renderMessage() {
+    const { editing, sending, body } = this.state
+    if (editing) {
+      return (
+        <textarea
+          class="reply-body"
+          ref={s(this, "bodyEl")}
+          value={body}
+          disabled={sending}
+          onInput={this.handleBodyChange}
+        />
+      )
+    } else {
+      const post = {body} as PostData
+      const html = parseBody(post)
+      return (
+        <div
+          class="reply-body reply-message"
+          dangerouslySetInnerHTML={{__html: html}}
+        />
+      )
+    }
+  }
   renderSideControls() {
     const { float, sending } = this.state
     return (
@@ -589,7 +620,7 @@ class Reply extends Component<any, any> {
     )
   }
   renderFooterControls() {
-    const { sending, progress } = this.state
+    const { editing, sending, progress } = this.state
     const sendTitle = sending ? `${progress}% (${ln.UI["clickToCancel"]})` : ""
     return (
       <div class="reply-controls reply-footer-controls">
@@ -604,24 +635,35 @@ class Reply extends Component<any, any> {
 
         <button
           class="control reply-footer-control reply-bold-control"
-          disabled={sending}
+          title={ln.UI["bold"]}
+          disabled={!editing || sending}
           onClick={this.makeHandleFormat("**")}
         >
           <i class="fa fa-bold" />
         </button>
         <button
           class="control reply-footer-control reply-italic-control"
-          disabled={sending}
+          title={ln.UI["italic"]}
+          disabled={!editing || sending}
           onClick={this.makeHandleFormat("*")}
         >
           <i class="fa fa-italic" />
         </button>
         <button
           class="control reply-footer-control reply-spoiler-control"
-          disabled={sending}
+          title={ln.UI["spoiler"]}
+          disabled={!editing || sending}
           onClick={this.makeHandleFormat("%%")}
         >
           <i class="fa fa-eye-slash" />
+        </button>
+        <button
+          class="control reply-footer-control reply-edit-control"
+          title={ln.UI["preview"]}
+          disabled={sending}
+          onClick={this.handleToggleEditing}
+        >
+          <i class={cx("fa", editing ? "fa-print" : "fa-pencil")} />
         </button>
 
         <div class="reply-dragger" onMouseDown={this.handleMoveDown} />
@@ -638,7 +680,7 @@ class Reply extends Component<any, any> {
       </div>
     )
   }
-  render({}, { float, sending, progress, body }: any) {
+  render({}, { float }: any) {
     return (
       <div
         class={cx("reply", {"reply_float": float})}
@@ -655,13 +697,7 @@ class Reply extends Component<any, any> {
           <div class="reply-content-wrapper">
             <div class="reply-content">
               {this.renderHeader()}
-              <textarea
-                class="reply-body"
-                ref={s(this, "bodyEl")}
-                value={body}
-                disabled={sending}
-                onInput={this.handleBodyChange}
-              />
+              {this.renderMessage()}
             </div>
             {this.renderSideControls()}
           </div>

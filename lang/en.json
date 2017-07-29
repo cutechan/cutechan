@@ -146,6 +146,10 @@
     ]
   },
   "ui": {
+    "bold": "Bold",
+    "italic": "Italic",
+    "spoiler": "Spoiler",
+    "preview": "Toggle post preview",
     "clickToCancel": "Click to cancel upload",
     "news": "News",
     "sections": "Sections",

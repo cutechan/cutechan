@@ -43,11 +43,13 @@ class CustomInlineLexer extends ((marked as any).InlineLexer as AnyClass) {
     links[""] = {href: "post-link", title: ""}
     super(links, options)
     this.post = post
+    const textSrc = this.rules.text.source
     Object.assign(this.rules, {
       link: noop,
       reflink: /^>>\d+()/,
       nolink: noop,
       del: /^%%(?=\S)([\s\S]*?\S)%%/,
+      text: new RegExp(textSrc.replace("]|", "%]|")),
     })
   }
   outputLink(cap: any, link: any) {
@@ -81,9 +83,9 @@ class CustomRenderer extends marked.Renderer {
   // }
 }
 
-// Render Markdown-like post body to sanitized HTML.
+// Render post body Markdown to sanitized HTML.
 export function render(post: PostData): string {
-  const options = {
+  const options = Object.assign({}, (marked as any).defaults, {
     // gfm: true,
     tables: false,
     breaks: true,
@@ -99,7 +101,7 @@ export function render(post: PostData): string {
     // headerPrefix: '',
     renderer: new CustomRenderer(),
     // xhtml: false
-  }
+  })
   const lexer = new CustomLexer(options)
   const tokens = lexer.lex(post.body)
   const parser = new CustomParser(options)
