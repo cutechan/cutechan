@@ -41,7 +41,6 @@ function quoteText(text: string): string {
   }).join("\n") + "\n";
 }
 
-
 function getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
   return new Promise((resolve, reject) => {
     let url = URL.createObjectURL(file)
@@ -255,7 +254,7 @@ class Reply extends Component<any, any> {
     }
 
     let cited = ""
-    if (!body.includes(postID.toString())) {
+    if (!body.includes(`>>${postID}`)) {
       cited += `>>${postID}\n`
     }
 
@@ -498,6 +497,29 @@ class Reply extends Component<any, any> {
       this.sendAPI.abort()
     }
   }
+  makeHandleFormat = (markup: string) => {
+    return () => {
+      const start = this.bodyEl.selectionStart
+      const end = this.bodyEl.selectionEnd
+      let { body } = this.state
+      if (start < end) {
+        const sel = body.slice(start, end)
+        body = body.slice(0, start) +
+               markup + sel + markup +
+               body.slice(end);
+        this.setState({body}, this.focus)
+      } else {
+        const prevChar = (start > 0) ? body[start - 1] : ""
+        const sep = (body && prevChar !== "\n") ? " " : ""
+        body = body.slice(0, start) + sep + markup + markup + body.slice(end)
+        const caret = start + sep.length + markup.length
+        this.setState({body}, () => {
+          this.focus()
+          this.bodyEl.setSelectionRange(caret, caret)
+        })
+      }
+    }
+  }
   renderBoards() {
     if (page.board !== "all") return null;
     const { sending, board } = this.state
@@ -579,6 +601,29 @@ class Reply extends Component<any, any> {
         >
           <i class="fa fa-file-image-o" />
         </button>
+
+        <button
+          class="control reply-footer-control reply-bold-control"
+          disabled={sending}
+          onClick={this.makeHandleFormat("**")}
+        >
+          <i class="fa fa-bold" />
+        </button>
+        <button
+          class="control reply-footer-control reply-italic-control"
+          disabled={sending}
+          onClick={this.makeHandleFormat("*")}
+        >
+          <i class="fa fa-italic" />
+        </button>
+        <button
+          class="control reply-footer-control reply-spoiler-control"
+          disabled={sending}
+          onClick={this.makeHandleFormat("%%")}
+        >
+          <i class="fa fa-eye-slash" />
+        </button>
+
         <div class="reply-dragger" onMouseDown={this.handleMoveDown} />
         <ShowHide show={!this.invalid}>
           <Progress
