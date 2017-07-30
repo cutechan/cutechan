@@ -1,8 +1,6 @@
 import { handlers, message } from "./messages"
 import { connSM, connEvent, send } from "./state"
-import {
-  getPostModel, postSM, postEvent, postState, FormModel, Post
-} from "../posts"
+import { getPostModel, postSM, postEvent, postState, Post } from "../posts"
 import { page, posts, displayLoading } from "../state"
 import { extend } from "../util"
 import { insertPost } from "../client"
@@ -47,34 +45,6 @@ export function synchronise() {
       postSM.feed(postEvent.abandon)
     }
   }
-}
-
-// Sync open posts to the state they are in on the server's update feed
-// dispatcher
-async function syncOpenPost(
-  id: number,
-  { hasImage, body }: OpenPost,
-) {
-  let model = posts.get(id)
-
-  if (!model) {
-    await fetchMissingPost(id)
-    model = posts.get(id)
-  } else if (model instanceof FormModel && model.editing) {
-    // Don't rerender post form text
-    model.inputBody = model.body = body
-    model.view.onInput()
-    return
-  }
-
-  // if (hasImage && !model.image) {
-  //   model.image = (await fetchPost(id)).image
-  //   model.view.renderImage(false)
-  // }
-  if (body) {
-    model.body = body
-  }
-  model.view.reparseBody()
 }
 
 // Fetch a post not present on the client and render it
@@ -128,13 +98,6 @@ handlers[message.synchronise] = async (data: SyncData) => {
     for (let post of posts) {
       if (post.editing && !(post.id in open)) {
         proms.push(fetchUnclosed(post))
-      }
-    }
-
-    for (let key in open) {
-      const id = parseInt(key)
-      if (id >= minID) {
-        proms.push(syncOpenPost(id, open[key]))
       }
     }
 
