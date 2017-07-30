@@ -38,12 +38,6 @@ export default class FormModel extends Post {
       time: Math.floor(Date.now() / 1000),
       body: "",
       auth: "",
-      state: {
-        spoiler: false,
-        quote: false,
-        lastLineEmpty: false,
-        code: false,
-      },
     })
   }
 

@@ -6,7 +6,7 @@ import { sourcePath } from "./images"
 import { SpliceResponse } from '../client'
 import { mine, seenPosts, storeSeenPost, posts, page } from "../state"
 import { notifyAboutReply } from "../ui"
-import { PostData, TextState, PostLink, ImageData, fileTypes } from "../common"
+import { PostData, PostLink, ImageData, fileTypes } from "../common"
 
 export type Backlinks = { [id: string]: PostBacklinks }
 export type PostBacklinks = { [id: string]: number }
@@ -40,7 +40,6 @@ export class Post extends Model implements PostData {
   public auth: string
   public subject: string
   public board: string
-  public state: TextState
   public backlinks: PostBacklinks
   public links: PostLink[]
 
@@ -61,15 +60,6 @@ export class Post extends Model implements PostData {
     super()
     extend(this, attrs)
     this.seenOnce = seenPosts.has(this.id)
-
-    // All kinds of interesting races can happen, so best ensure a model
-    // always has the state object defined
-    this.state = {
-      spoiler: false,
-      quote: false,
-      lastLineEmpty: false,
-      code: false,
-    }
   }
 
   // Remove the model from its collection, detach all references and allow to

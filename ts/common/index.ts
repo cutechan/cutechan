@@ -22,17 +22,7 @@ export interface PostData {
   body: string
   auth: string
   board?: string
-  state: TextState
   links?: PostLink[]
-}
-
-// State of a post's text. Used for adding enclosing tags to the HTML while
-// parsing
-export type TextState = {
-  spoiler: boolean
-  quote: boolean
-  lastLineEmpty: boolean
-  code: boolean
 }
 
 // Data of an OP post
