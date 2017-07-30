@@ -226,16 +226,7 @@ func (c *bodyContext) parseCode(frag string, fn func(string)) {
 }
 
 func (c *bodyContext) formatCode(frag string, fn func(string)) {
-	if c.state.code {
-		// Strip quotes
-		for len(frag) != 0 && frag[0] == '>' {
-			c.string(`&gt;`)
-			frag = frag[1:]
-		}
-		c.N().Z(highlightSyntax(frag))
-	} else {
-		c.parseSpoilers(frag, fn)
-	}
+	c.parseSpoilers(frag, fn)
 }
 
 // Injects spoiler tags and calls fn on the remaining parts
