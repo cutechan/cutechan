@@ -9,6 +9,7 @@ export const HOVER_CONTAINER_SEL = ".hover-container";
 export const POPUP_CONTAINER_SEL = ".popup-container";
 export const REPLY_CONTAINER_SEL = ".reply-container";
 export const BOARD_SEARCH_INPUT_SEL = ".board-search-input";
+export const BOARD_SORT_SEL = ".board-sort";
 export const THREAD_SEL = ".thread";
 export const POST_SEL = ".post";
 export const POST_LINK_SEL = ".post-link";

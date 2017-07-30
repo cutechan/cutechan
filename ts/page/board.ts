@@ -1,9 +1,9 @@
-import { BOARD_SEARCH_INPUT_SEL } from "../vars"
 import { on } from '../util'
 import { page, posts, loadFromDB } from '../state'
 import { Post } from "../posts"
 import { extractPost, reparseOpenPosts, extractPageData } from "./common"
 import { ThreadData } from "../common"
+import { BOARD_SEARCH_INPUT_SEL, BOARD_SORT_SEL } from "../vars"
 
 type SortFunction = (a: Post, b: Post) => number
 
@@ -14,8 +14,6 @@ const sorts: { [name: string]: SortFunction } = {
   replyCount: subtract("postCtr"),
   fileCount: subtract("imageCtr"),
 }
-
-const threads = document.getElementById("threads")
 
 // Sort threads by embedded data
 function subtract(attr: string): (a: Post, b: Post) => number {
@@ -52,16 +50,27 @@ async function extractThreads() {
   reparseOpenPosts()
 }
 
-// Apply client-side modifications to a board page's HTML
+// Apply client-side modifications to a board page's HTML.
 export async function render() {
   if (page.catalog) {
     await extractCatalogModels()
   } else {
     await extractThreads()
   }
+
+  const container = document.getElementById("threads")
+  on(container, "input", onSearchChange, {
+    passive: true,
+    selector: BOARD_SEARCH_INPUT_SEL,
+  })
+
   if (page.catalog) {
-    (threads.querySelector("select[name=sortMode]") as HTMLSelectElement)
-      .value = localStorage.getItem("catalogSort") || "bump"
+    on(container, "input", onSortChange, {
+      passive: true,
+      selector: BOARD_SORT_SEL,
+    })
+    const select = container.querySelector(BOARD_SORT_SEL) as HTMLSelectElement
+    select.value = localStorage.getItem("catalogSort") || "bump"
     sortThreads(true)
   }
 }
@@ -103,10 +112,10 @@ function getThreads(): [HTMLElement, HTMLElement[]] {
     threadSel: string
   if (page.catalog) {
     contID = "catalog"
-    threadSel = "article"
+    threadSel = ".post"
   } else {
     contID = "index-thread-container"
-    threadSel = ".index-thread"
+    threadSel = ".thread"
   }
   const cont = document.getElementById(contID)
   return [
@@ -145,12 +154,3 @@ function filterThreads(filter: string) {
     el.style.display = matched.has(id) ? "" : "none"
   }
 }
-
-on(threads, "input", onSortChange, {
-  passive: true,
-  selector: "select[name=sortMode]",
-})
-on(threads, "input", onSearchChange, {
-  passive: true,
-  selector: BOARD_SEARCH_INPUT_SEL,
-})
