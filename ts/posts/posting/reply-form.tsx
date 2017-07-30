@@ -734,13 +734,13 @@ class ReplyContainer extends Component<any, any> {
   }
   componentDidMount() {
     hook(HOOKS.openReply, () => {
-      this.setState({show: true, quoted: null})
+      this.setState({show: true})
     })
     hook(HOOKS.closeReply, () => {
       this.setState({show: false})
     })
     on(document, "click", () => {
-      this.setState({show: true, quoted: null})
+      this.setState({show: true})
     }, {selector: TRIGGER_OPEN_REPLY_SEL})
     on(document, "click", e => {
       this.setState({show: true, quoted: e})
