@@ -14,11 +14,13 @@ function noop() {}
 ;(noop as any).exec = noop
 
 // Verify and render a link to other posts.
-function parsePostLink(m: string[], links: PostLink[], thread: number): string {
-  if (!links) return m[0]
+function postLink(m: RegExpMatchArray, links: [PostLink], thread: number): string {
+  if (!links) return escape(m[0])
+
   const id = +m[0].slice(2)
   const link = links.find(l => l[0] === id)
-  if (!link) return m[0]
+  if (!link) return escape(m[0])
+
   return renderPostLink(id, link[1], thread)
 }
 
@@ -55,7 +57,7 @@ class CustomInlineLexer extends ((marked as any).InlineLexer as AnyClass) {
   }
   outputLink(cap: any, link: any) {
     if (link.href === "post-link") {
-      return parsePostLink(cap, this.post.links, this.post.op)
+      return postLink(cap, this.post.links, this.post.op)
     }
     return super.outputLink(cap, link)
   }
@@ -258,17 +260,16 @@ function parseFragment(frag: string, data: PostData): string {
       continue
     }
 
-    let m: RegExpMatchArray,
-      matched = false
+    let matched = false
     switch (word[0]) {
       case ">":
-        // Post links
-        m = word.match(/^>>(>*)(\d+)$/)
-        if (m) {
-          html += parsePostLink(m, data.links, data.op)
-          matched = true
-        }
-        break
+        // // Post links
+        // m = word.match(/^>>(>*)(\d+)$/)
+        // if (m) {
+        //   html += parsePostLink(m, data.links, data.op)
+        //   matched = true
+        // }
+        // break
       default:
         // Generic HTTP(S) URLs, magnet links and embeds
         // Checking the first byte is much cheaper than a function call.
