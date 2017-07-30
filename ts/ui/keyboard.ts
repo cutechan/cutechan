@@ -80,16 +80,14 @@ function handleShortcut(event: KeyboardEvent) {
   }
 }
 
-// Navigate one level up the board tree, if possible
+// Navigate one level up the board tree, if possible.
 function navigateUp() {
-  let url: string
   if (page.thread) {
-    url = `/${page.board}/`
+    location.href = "/all/"
   } else if (page.board !== "all") {
-    url = "/all/"
-  }
-  if (url) {
-    location.href = url
+    location.href = "/all/"
+  } else {
+    location.href = "/"
   }
 }
 
