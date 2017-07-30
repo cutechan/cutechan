@@ -58,7 +58,7 @@ type Post struct {
 	Name     string      `json:"name,omitempty"`
 	Trip     string      `json:"trip,omitempty"`
 	Auth     string      `json:"auth,omitempty"`
-	Links    [][2]uint64 `json:"links,omitempty"`
+	Links    Links       `json:"links,omitempty"`
 	Image    *Image      `json:"image,omitempty"`
 }
 
@@ -70,6 +70,9 @@ type StandalonePost struct {
 	OP    uint64 `json:"op"`
 	Board string `json:"board"`
 }
+
+// Post links
+type Links [][2]uint64
 
 // Map of all backlinks on a page
 type Backlinks map[uint64]map[uint64]uint64

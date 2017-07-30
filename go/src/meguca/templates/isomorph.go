@@ -182,7 +182,7 @@ func (ctx *PostContext) Body() string {
 }
 
 // Render a link to another post. Can optionally be cross-thread.
-func postLink(id uint64, cross, index bool) string {
+func renderPostLink(id uint64, cross, index bool) string {
 	idStr := strconv.FormatUint(id, 10)
 	url := ""
 	if cross || index {
@@ -201,7 +201,7 @@ func (ctx *PostContext) Backlinks() string {
 	if links := ctx.backlinks[ctx.ID]; links != nil {
 		var list []string
 		for id, op := range links {
-			list = append(list, postLink(id, op != ctx.TID, ctx.Index))
+			list = append(list, renderPostLink(id, op != ctx.TID, ctx.Index))
 		}
 		ln := lang.Get()
 		linkCtx := BacklinksContext{
