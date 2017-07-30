@@ -13,7 +13,7 @@ import (
 	"strings"
 
 	"github.com/valyala/quicktemplate"
-	b "github.com/russross/blackfriday"
+	b "github.com/cutechan/blackfriday"
 	"github.com/microcosm-cc/bluemonday"
 )
 
