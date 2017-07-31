@@ -7,25 +7,26 @@ import { importTemplate } from "../util"
 import { View } from "../base"
 import { DEFAULT_NOTIFICATION_IMAGE_URL } from "../vars"
 
-// Notify the user that one of their posts has been replied to
+// Notify the user that one of their posts has been replied to.
 export default function notifyAboutReply(post: Post) {
-  if (seenReplies.has(post.id)) {
-    return
-  }
-  storeSeenReply(post.id, post.op)
-  if (!document.hidden) {
-    return
-  }
+  // Favicon should indicate unseen reply every time.
   repliedToMe(post)
 
-  if (!options.notification
-    || typeof Notification !== "function"
-    || (Notification as any).permission !== "granted"
-  ) {
-    return
-  }
+  // However notification should be shown only on first time.
+  if (seenReplies.has(post.id)) return
+  storeSeenReply(post.id, post.op)
 
-  let icon: string
+  // Check if user can see it on the page.
+  if (!document.hidden && post.view.scrolledPast()) return
+
+  // Check if notifications are available.
+  if (!options.notification
+      || typeof Notification !== "function"
+      || (Notification as any).permission !== "granted"
+  ) return
+
+  // Finally display sticky notification.
+  let icon = ""
   if (!options.workModeToggle) {
     if (post.image) {
       const { thumbType, SHA1 } = post.image
