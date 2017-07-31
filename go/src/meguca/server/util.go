@@ -46,9 +46,10 @@ func checkClientEtag(
 
 // Combine the progress counter and optional configuration hash into a weak etag
 func formatEtag(ctr uint64, hash string, pos auth.ModerationLevel) string {
-	buf := make([]byte, 2, 128)
+	buf := make([]byte, 3, 128)
 	buf[0] = 'W'
 	buf[1] = '/'
+	buf[2] = '"'
 	buf = strconv.AppendUint(buf, ctr, 10)
 
 	addOpt := func(s string) {
@@ -61,6 +62,7 @@ func formatEtag(ctr uint64, hash string, pos auth.ModerationLevel) string {
 	if pos != auth.NotLoggedIn {
 		addOpt(pos.String())
 	}
+	buf = append(buf, '"')
 
 	return string(buf)
 }

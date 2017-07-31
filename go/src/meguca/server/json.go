@@ -1,6 +1,7 @@
 package server
 
 import (
+	"fmt"
 	"database/sql"
 	"encoding/json"
 	"errors"
@@ -55,7 +56,7 @@ func writeJSON(
 	buf []byte,
 ) {
 	if etag == "" {
-		etag = util.HashBuffer(buf)
+		etag = fmt.Sprintf("\"%s\"", util.HashBuffer(buf))
 	}
 	if checkClientEtag(w, r, etag) {
 		return
