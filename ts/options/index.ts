@@ -81,7 +81,7 @@ class OptionModel {
       if (stored === "true") {
         return true
       }
-      const num = parseInt(stored, 10)
+      const num = +stored
       if (num || num === 0) {
         return num
       }
