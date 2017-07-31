@@ -253,6 +253,15 @@ func pluralize(num int, plurals []string) string {
 	return plurals[getPluralFormIndex(langCode, num)]
 }
 
+// Return pluar form for two numbers.
+func pluralize2(n1, n2 int, plurals []string) string {
+	if n1 + n2 == 1 {
+		return plurals[0]
+	} else {
+		return plurals[1]
+	}
+}
+
 func posClass(pos auth.ModerationLevel) string {
 	posStr := pos.String()
 	if posStr == "" {
