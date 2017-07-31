@@ -4,7 +4,7 @@
 
 import API from "../api"
 import options from "../options"
-import { posts, getModel } from "../state"
+import { posts, getModel, storeSeenPost } from "../state"
 import { View } from "../base"
 import { Post } from "./model"
 import PostView from "./view"
@@ -125,6 +125,10 @@ async function renderPostPreview(event: MouseEvent) {
     post = new Post(data)
     new PostView(post, null)
     posts.add(post)
+  }
+
+  if (!post.seen()) {
+    storeSeenPost(post.id, post.op)
   }
 
   const preview = new PostPreview(post, target)

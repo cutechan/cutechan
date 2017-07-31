@@ -145,12 +145,19 @@ export class Post extends Model implements PostData {
   // Returns, if this post has been seen already.
   public seen() {
     if (this.seenOnce) return true
+
+    this.seenOnce = seenPosts.has(this.id)
+    if (this.seenOnce) return true
+
     if (document.hidden) return false
+
     this.seenOnce = this.view.scrolledPast()
     if (this.seenOnce) {
       storeSeenPost(this.id, this.op)
+      return true
     }
-    return this.seenOnce
+
+    return false
   }
 
   // Append a character to the text body.
