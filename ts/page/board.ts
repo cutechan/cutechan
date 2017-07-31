@@ -1,7 +1,7 @@
 import { on } from '../util'
 import { page, posts, loadFromDB } from '../state'
 import { Post } from "../posts"
-import { extractPost, reparseOpenPosts, extractPageData } from "./common"
+import { extractPost, extractPageData } from "./common"
 import { ThreadData } from "../common"
 import { BOARD_SEARCH_INPUT_SEL, BOARD_SORT_SEL } from "../vars"
 
@@ -47,7 +47,6 @@ async function extractThreads() {
       extractPost(post, thread.id, thread.board, backlinks)
     }
   }
-  reparseOpenPosts()
 }
 
 // Apply client-side modifications to a board page's HTML.
