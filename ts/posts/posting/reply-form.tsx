@@ -112,7 +112,7 @@ class FilePreview extends Component<any, any> {
     const { width, height, dur } = this.props.info
     let s = `${width}×${height}, ${fileSize(size)}`
     if (dur) {
-      s += `, ${duration(dur)}`
+      s += `, ${duration(Math.round(dur))}`
     }
     return s
   }

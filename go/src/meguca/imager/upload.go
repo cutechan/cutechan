@@ -18,7 +18,6 @@ import (
 	"meguca/db"
 	"net/http"
 	"strconv"
-	"time"
 
 	"github.com/Soreil/apngdetector"
 	"github.com/bakape/thumbnailer"
@@ -246,7 +245,7 @@ func processFile(
 		img.ThumbType = common.JPEG
 	}
 
-	img.Length = uint32(src.Length / time.Second)
+	img.Length = uint32(src.Length.Seconds() + 0.5)
 	img.Size = len(data)
 	img.Artist = truncString(src.Artist, common.MaxLenFileArist)
 	img.Title = truncString(src.Title, common.MaxLenFileTitle)
