@@ -210,7 +210,11 @@ createTask("css", "less/[^_]*.less", src =>
     .on("error", handleError)
     .pipe(gulpif(!watch, postcss([
       autoprefixer(),
-      cssnano({discardComments: {removeAll: true}}),
+      cssnano({
+        // Avoid renaming counters which should be accessed from JS.
+        reduceIdents: false,
+        discardComments: {removeAll: true},
+      }),
     ])))
     .on("error", handleError)
     .pipe(sourcemaps.write("maps"))
