@@ -415,10 +415,11 @@ class Reply extends Component<any, any> {
   }
   handleFormMove = (e: MouseEvent) => {
     if (this.resizing) return
-    const w = this.state.width
-    const h = this.state.height
-    const ox = e.offsetX
-    const oy = e.offsetY
+    const rect = this.mainEl.getBoundingClientRect()
+    const w = rect.width
+    const h = rect.height
+    const ox = e.clientX - rect.left
+    const oy = e.clientY - rect.top
     const b = 5
     let pos = "i"
     if (ox <= b && oy <= b) {
