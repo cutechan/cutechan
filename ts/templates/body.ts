@@ -81,6 +81,19 @@ class CustomRenderer extends marked.Renderer {
   blockquote(quote: string): string {
     return "<blockquote>&gt; " + quote + "</blockquote>"
   }
+  // Stricter check for protocols.
+  link(href: string, title: string, text: string): string {
+    if (!href.startsWith("http://") && !href.startsWith("https://")) {
+      return href
+    }
+    let out = '<a href="' + href + '"'
+    out += ' rel="noreferrer" target="_blank"'
+    if (title) {
+      out += ' title="' + title + '"'
+    }
+    out += ">" + text + "</a>"
+    return out
+  }
 }
 
 // Render post body Markdown to sanitized HTML.

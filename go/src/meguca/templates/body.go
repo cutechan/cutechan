@@ -19,8 +19,8 @@ const htmlFlags =
 	// b.HTML_SKIP_LINKS                |  // skip all links
 	b.HTML_SAFELINK                  |  // only link to trusted protocols
 	// b.HTML_NOFOLLOW_LINKS            |  // only link with rel="nofollow"
-	// b.HTML_NOREFERRER_LINKS          |  // only link with rel="noreferrer"
-	// b.HTML_HREF_TARGET_BLANK         |  // add a blank target
+	b.HTML_NOREFERRER_LINKS          |  // only link with rel="noreferrer"
+	b.HTML_HREF_TARGET_BLANK         |  // add a blank target
 	// b.HTML_TOC                       |  // generate a table of contents
 	// b.HTML_OMIT_CONTENTS             |  // skip the main contents (for a standalone table of contents)
 	// b.HTML_COMPLETE_PAGE             |  // generate a complete HTML page
@@ -59,7 +59,9 @@ const extensions =
 var policy = func() *bluemonday.Policy {
 	p := bluemonday.UGCPolicy()
 	p.RequireNoFollowOnLinks(false)
+	p.AllowAttrs("rel").Matching(bluemonday.SpaceSeparatedTokens).OnElements("a")
 	p.AllowAttrs("class").Matching(bluemonday.SpaceSeparatedTokens).OnElements("a")
+	p.AllowAttrs("target").Matching(regexp.MustCompile(`^_blank$`)).OnElements("a")
 	p.AllowAttrs("data-id").Matching(bluemonday.Integer).OnElements("a")
 	return p
 }()
