@@ -34,7 +34,7 @@ TODO(Kagami): Fix markup and styles.
 	</nav>
 {% endstripspace %}{% endfunc %}
 
-{% func renderThread(postHTML []byte, id uint64, board, title string, abbrev bool, pos auth.ModerationLevel) %}{% stripspace %}
+{% func renderThread(postHTML []byte, id uint64, board, title string, pos auth.ModerationLevel) %}{% stripspace %}
 	<section class="board" id="threads">
 		<h1 class="page-title">{%s title %}</h1>
 		{%= renderThreadNavigation(true) %}
@@ -48,12 +48,12 @@ TODO(Kagami): Fix markup and styles.
 
 ThreadPosts renders the post content of a thread. Separate function to allow
 caching of generated posts.
-{% func ThreadPosts(t common.Thread, json []byte) %}{% stripspace %}
+{% func ThreadPosts(t common.Thread, json []byte, last100 bool) %}{% stripspace %}
 	{% code idStr := strconv.FormatUint(t.ID, 10) %}
 	{% code bls := extractBacklinks(1<<10, t) %}
 	<section class="threads-container" id="thread-container">
 		<article class="thread thread_single" data-id="{%s idStr %}">
-			{%= renderThreadPosts(t, bls, false, false) %}
+			{%= renderThreadPosts(t, bls, false, false, last100) %}
 		</article>
 		<script id="post-data" type="application/json">
 			{%z= json %}
@@ -66,10 +66,10 @@ caching of generated posts.
 {% endstripspace %}{% endfunc %}
 
 Common functionality between index board pages and threads pages
-{% func renderThreadPosts(t common.Thread, bls common.Backlinks, index bool, all bool) %}{% stripspace %}
+{% func renderThreadPosts(t common.Thread, bls common.Backlinks, index, all, last100 bool) %}{% stripspace %}
 	{%s= MakePostContext(t, t.Post, bls, index, all).Render() %}
-	{% if index %}
-		{%= renderOmit(t) %}
+	{% if index || last100 %}
+		{%= renderOmit(t, last100) %}
 	{% endif %}
 	{% for _, post := range t.Posts %}
 		{%s= MakePostContext(t, post, bls, index, all).Render() %}
@@ -77,7 +77,7 @@ Common functionality between index board pages and threads pages
 {% endstripspace %}{% endfunc %}
 
 Omitted posts and images info
-{% func renderOmit(t common.Thread) %}{% stripspace %}
+{% func renderOmit(t common.Thread, last100 bool) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	{% code omit, imageOmit := CalculateOmit(t) %}
 	{% code idStr := strconv.FormatUint(t.ID, 10) %}
@@ -93,9 +93,13 @@ Omitted posts and images info
 			</div>
 		{% endif %}
 		<a clas="omit-link" href="/{%s t.Board %}/{%s idStr %}">
-			{%s ln.Common.Posts["seeAll"] %}
+			{% if last100 %}
+				{%s ln.Common.Posts["seeAll"] %}
+			{% else %}
+				{%s ln.Common.Posts["goToThread"] %}
+			{% endif %}
 		</a>
-		{% if omit > 97 %}
+		{% if omit > 97 && !last100 %}
 			{% space %}{%= last100Link(t.Board, idStr) %}
 		{% endif %}
 	</div>

@@ -79,7 +79,7 @@ func Thread(
 	postHTML []byte,
 ) []byte {
 	title = fmt.Sprintf("/%s/ — %s", board, title)
-	html := renderThread(postHTML, id, board, title, abbrev, pos)
+	html := renderThread(postHTML, id, board, title, pos)
 	return execIndex(html, title, pos)
 }
 

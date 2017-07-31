@@ -53,7 +53,8 @@ var threadCache = cache.FrontEnd{
 	},
 
 	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
-		return []byte(templates.ThreadPosts(data.(common.Thread), json))
+		last100 := k.LastN == numPostsOnRequest
+		return []byte(templates.ThreadPosts(data.(common.Thread), json, last100))
 	},
 }
 

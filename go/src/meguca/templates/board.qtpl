@@ -146,7 +146,7 @@ IndexThreads renders abbreviated threads for display on board index pages
 		{% for _, t := range threads %}
 			{% code idStr := strconv.FormatUint(t.ID, 10) %}
 			<article class="thread thread_index" data-id="{%s idStr %}">
-				{%= renderThreadPosts(t, bls, true, all) %}
+				{%= renderThreadPosts(t, bls, true, all, false) %}
 				<hr class="separator">
 			</article>
 		{% endfor %}
