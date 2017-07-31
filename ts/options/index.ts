@@ -21,6 +21,7 @@ interface Options extends ChangeEmitter {
   previewPost: number
   workMode: number
   lang: string
+  volume: number
 }
 
 // Central options storage model.

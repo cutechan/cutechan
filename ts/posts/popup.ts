@@ -2,6 +2,7 @@
  * Expand media attachments to the middle of the screen.
  */
 
+import options from "../options"
 import { getModel } from "../state"
 import { Post } from "./model"
 import { on, trigger, HOOKS } from "../util"
@@ -44,14 +45,14 @@ class Popup {
     this.el.style.top = rect.top + "px"
 
     if (post.image.video) {
-      this.itemEl = document.createElement("video") as any
-      this.itemEl.loop = true
-      this.itemEl.autoplay = true
-      this.itemEl.controls = !post.transparentThumb
-      // media.volume = Settings.get("volume")
-      // media.addEventListener("volumechange", function() {
-      //   Settings.set("volume", media.volume)
-      // })
+      const media = this.itemEl = document.createElement("video") as any
+      media.loop = true
+      media.autoplay = true
+      media.controls = !post.transparentThumb
+      media.volume = options.volume
+      media.addEventListener("volumechange", function() {
+        options.volume = media.volume
+      })
     } else {
       this.itemEl = document.createElement("img") as any
     }

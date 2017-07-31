@@ -94,4 +94,7 @@ export const specs: { [id: string]: OptionSpec } = {
     default: 66,
     type: optionType.shortcut,
   },
+  volume: {
+    default: 0,
+  },
 }

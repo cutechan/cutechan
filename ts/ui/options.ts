@@ -33,6 +33,7 @@ export default class OptionsPanel extends TabbedModal {
   // not from the options panel
   private assignValue(id: string, type: optionType, val: any) {
     const el = document.getElementById(id) as HTMLInputElement
+    if (!el) return
 
     switch (type) {
       case optionType.checkbox:
