@@ -736,9 +736,7 @@ class ReplyContainer extends Component<any, any> {
     hook(HOOKS.openReply, () => {
       this.setState({show: true})
     })
-    hook(HOOKS.closeReply, () => {
-      this.setState({show: false})
-    })
+    hook(HOOKS.closeReply, this.handleHide)
     on(document, "click", () => {
       this.setState({show: true})
     }, {selector: TRIGGER_OPEN_REPLY_SEL})
@@ -747,7 +745,7 @@ class ReplyContainer extends Component<any, any> {
     }, {selector: TRIGGER_QUOTE_POST_SEL})
   }
   handleHide = () => {
-    this.setState({show: false})
+    this.setState({show: false, quoted: null})
   }
   render({}, { show, quoted }: any) {
     return (
