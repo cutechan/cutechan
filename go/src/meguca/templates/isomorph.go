@@ -5,6 +5,7 @@ package templates
 import (
 	"fmt"
 	"time"
+	"sort"
 	"strings"
 	"strconv"
 	"meguca/auth"
@@ -198,19 +199,32 @@ func renderPostLink(id uint64, cross, index bool) string {
 }
 
 func (ctx *PostContext) Backlinks() string {
-	if links := ctx.backlinks[ctx.ID]; links != nil {
-		var list []string
-		for id, op := range links {
-			list = append(list, renderPostLink(id, op != ctx.TID, ctx.Index))
-		}
-		ln := lang.Get()
-		linkCtx := BacklinksContext{
-			LReplies: ln.Common.UI["replies"],
-			Backlinks: list,
-		}
-		return renderMustache("post-backlinks", &linkCtx)
+	links := ctx.backlinks[ctx.ID]
+	if links == nil {
+		return ""
 	}
-	return ""
+
+	// Backlink ids always grow.
+	ids := make(sortableUInt64, len(links))
+	i := 0
+	for id := range links {
+		ids[i] = id
+		i++
+	}
+	sort.Sort(ids)
+
+	rendered := make([]string, len(links))
+	for i, id := range ids {
+		op := links[id]
+		rendered[i] = renderPostLink(id, op != ctx.TID, ctx.Index)
+	}
+
+	ln := lang.Get()
+	linkCtx := BacklinksContext{
+		LReplies: ln.Common.UI["replies"],
+		Backlinks: rendered,
+	}
+	return renderMustache("post-backlinks", &linkCtx)
 }
 
 func getPluralFormIndex(langCode string, n int) int {

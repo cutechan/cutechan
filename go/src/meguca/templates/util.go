@@ -83,3 +83,9 @@ func correctTimeZone(t time.Time) time.Time {
 		time.Local,
 	).UTC()
 }
+
+// https://stackoverflow.com/a/38608022
+type sortableUInt64 []uint64
+func (a sortableUInt64) Len() int           { return len(a) }
+func (a sortableUInt64) Swap(i, j int)      { a[i], a[j] = a[j], a[i] }
+func (a sortableUInt64) Less(i, j int) bool { return a[i] < a[j] }
