@@ -10,7 +10,8 @@ import { Post } from "./model"
 import PostView from "./view"
 import * as popup from "./popup"
 import {
-  HOVER_CONTAINER_SEL, POST_LINK_SEL, POST_FILE_THUMB_SEL,
+  HOVER_CONTAINER_SEL, POST_LINK_SEL,
+  POST_FILE_THUMB_SEL, POST_EMBED_SEL,
   HOVER_TRIGGER_TIMEOUT_SECS, POST_HOVER_TIMEOUT_SECS,
 } from "../vars"
 import {
@@ -135,26 +136,45 @@ async function renderPostPreview(event: MouseEvent) {
   postPreviews.push(preview)
 }
 
+function showImage(url: string, width: number, height: number) {
+  const rect = popup.getCenteredRect({width, height})
+  imagePreview = document.createElement("img")
+  imagePreview.className = "media_hover"
+  imagePreview.src = url
+  imagePreview.style.left = rect.left + "px"
+  imagePreview.style.top = rect.top + "px"
+  imagePreview.width = rect.width
+  container.append(imagePreview)
+}
+
+function renderPostImagePreview(thumb: HTMLElement): any {
+  const post = getModel(thumb)
+  if (!post || post.image.video) return
+  const url = post.fileSrc
+  const [width, height] = post.image.dims
+  showImage(url, width, height)
+}
+
+function renderPostEmbedPreview(link: HTMLElement): any {
+  const url = link.dataset.thumbnail_url
+  const width = +link.dataset.thumbnail_width
+  const height = +link.dataset.thumbnail_height
+  showImage(url, width, height)
+}
+
 function renderImagePreview(event: MouseEvent) {
   clearImagePreview()
   if (!options.imageHover) return
   if (popup.isOpen()) return
 
   const target = event.target as HTMLElement
-  if (!target.matches || !target.matches(POST_FILE_THUMB_SEL)) return
+  if (!target.matches) return
 
-  const post = getModel(target)
-  if (!post || post.image.video) return
-
-  const [width, height] = post.image.dims
-  const rect = popup.getCenteredRect({width, height})
-  imagePreview = document.createElement("img")
-  imagePreview.className = "media_hover"
-  imagePreview.src = post.fileSrc
-  imagePreview.style.left = rect.left + "px"
-  imagePreview.style.top = rect.top + "px"
-  imagePreview.width = rect.width
-  container.append(imagePreview)
+  if (target.matches(POST_FILE_THUMB_SEL)) {
+    renderPostImagePreview(target)
+  } else if (target.matches(POST_EMBED_SEL)) {
+    renderPostEmbedPreview(target)
+  }
 }
 
 function clearInactivePostPreviews() {

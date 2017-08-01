@@ -4,6 +4,9 @@ import { fetchJSON } from "../util"
 
 interface OEmbedDoc {
   title: string
+  thumbnail_url: string,
+  thumbnail_width: number,
+  thumbnail_height: number,
 }
 
 function fetchNoEmbed(url: string): Promise<OEmbedDoc> {
@@ -25,6 +28,9 @@ function renderYoutube(link: HTMLLinkElement) {
     const icon = document.createElement("i")
     icon.className = "post-embed-icon fa fa-youtube-play"
     link.firstChild.replaceWith(icon, " " + res.title)
+    link.dataset.thumbnail_url = res.thumbnail_url
+    link.dataset.thumbnail_width = res.thumbnail_width.toString()
+    link.dataset.thumbnail_height = res.thumbnail_height.toString()
   })
 }
 
@@ -88,14 +94,4 @@ export function render(el: HTMLElement) {
 
 //   el.append(frag)
 //   el.classList.add("expanded")
-// }
-
-// export function init() {
-//   on(document, "mouseover", fetchMeta, {
-//     passive: true,
-//     selector: "a.embed",
-//   })
-//   on(document, "click", toggleExpansion, {
-//     selector: "a.embed",
-//   })
 // }
