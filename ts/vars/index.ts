@@ -18,6 +18,7 @@ export const POST_FILE_TITLE_SEL = ".post-file-title";
 export const POST_FILE_LINK_SEL = ".post-file-link";
 export const POST_FILE_THUMB_SEL = ".post-file-thumb";
 export const POST_BACKLINKS_SEL = ".post-backlinks";
+export const POST_EMBED_SEL = ".post-embed";
 
 // Action trigger selectors, might appear multiple times in markup.
 export const TRIGGER_OPEN_REPLY_SEL = ".trigger-open-reply";

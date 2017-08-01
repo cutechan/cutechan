@@ -31,22 +31,31 @@ function xhrToFetchHeaders(xhr: XMLHttpRequest): Headers {
   return headers
 }
 
-// Fetches and decodes a JSON response from the API. Returns a tuple of the
-// fetched resource and error, if any
-export async function fetchJSON<T>(url: string): Promise<[T, string]> {
-  const res = await fetch(url)
-  if (res.status !== 200) {
-    return [null, await res.text()]
-  }
-  return [await res.json(), ""]
-}
-
 // Avoids stale fetches from the browser cache.
 export function uncachedGET(url: string): Promise<Response> {
   return fetch(url, {
     method: "GET",
     credentials: "same-origin",
     headers: {"Cache-Control": "no-cache"},
+  })
+}
+
+// Fetch JSON request.
+export function fetchJSON<T>(url: string): Promise<T> {
+  return fetch(url).then(res => {
+    if (!res.ok) {
+      const type = res.headers.get("Content-Type")
+      if (type === "application/json") {
+        return res.json().then(data => {
+          throw new Error(data.error)
+        })
+      } else {
+        return res.text().then(text => {
+          throw new Error(text)
+        })
+      }
+    }
+    return res.json()
   })
 }
 

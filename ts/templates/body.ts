@@ -77,6 +77,17 @@ class CustomParser extends ((marked as any).Parser as AnyClass) {
   }
 }
 
+// Embeddable links.
+const embeds = {
+  youtube: new RegExp(
+    `^https?://(?:[^\.]+\.)?` +
+    `(` +
+    `youtube\.com/watch/?\?(?:.+&)?v=([^&]+)` +
+    `|` +
+    `(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
+    `)`),
+}
+
 class CustomRenderer extends marked.Renderer {
   blockquote(quote: string): string {
     return "<blockquote>&gt; " + quote + "</blockquote>"
@@ -86,12 +97,16 @@ class CustomRenderer extends marked.Renderer {
     if (!href.startsWith("http://") && !href.startsWith("https://")) {
       return href
     }
-    let out = '<a href="' + href + '"'
-    out += ' rel="noreferrer" target="_blank"'
-    if (title) {
-      out += ' title="' + title + '"'
+    let out = "<a "
+    for (const provider of Object.keys(embeds)) {
+      if (embeds[provider].test(href)) {
+        out += ` class="post-embed post-${provider}-embed"`
+        break
+      }
     }
-    out += ">" + text + "</a>"
+    out += ` href="${href}"`
+    out += ' rel="noreferrer" target="_blank"'
+    out += `>${text}</a>`
     return out
   }
 }

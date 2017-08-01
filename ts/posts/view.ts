@@ -4,6 +4,7 @@ import { View, ViewAttrs } from "../base"
 import { ln } from "../lang"
 import options from "../options"
 import { THREAD_SEL, POST_BACKLINKS_SEL } from "../vars"
+import { render as renderEmbeds } from "./embed"
 import {
   TemplateContext, makePostContext,
   readableTime, relativeTime, renderPostLink, renderBody,
@@ -27,9 +28,10 @@ export default class PostView extends View<Post> {
     }
   }
 
-  // Apply client-specific formatting to a post rendered server-side.
+  // Apply client-specific formatting to post rendered on server-side.
   public afterRender() {
     this.renderTime()
+    renderEmbeds(this.el)
   }
 
   // Renders a time element. Can be either absolute or relative.

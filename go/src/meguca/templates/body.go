@@ -66,42 +66,16 @@ var policy = func() *bluemonday.Policy {
 	return p
 }()
 
-// Types of different embeds by provider.
-const (
-	youTube = iota
-	soundCloud
-	vimeo
-)
-
-// Matching patterns and their respective providers.
-var (
-	providers = map[int]string{
-		youTube:    "Youtube",
-		soundCloud: "SoundCloud",
-		vimeo:      "Vimeo",
-	}
-	embedPatterns = [...]struct {
-		typ  int
-		patt *regexp.Regexp
-	}{
-		{
-			youTube,
-			regexp.MustCompile(`https?:\/\/(?:[^\.]+\.)?youtube\.com\/watch\/?\?(?:.+&)?v=([^&]+)`),
-		},
-		{
-			youTube,
-			regexp.MustCompile(`https?:\/\/(?:[^\.]+\.)?(?:youtu\.be|youtube\.com\/embed)\/([a-zA-Z0-9_-]+)`),
-		},
-		{
-			soundCloud,
-			regexp.MustCompile(`https?:\/\/soundcloud.com\/.*`),
-		},
-		{
-			vimeo,
-			regexp.MustCompile(`https?:\/\/(?:www\.)?vimeo\.com\/.+`),
-		},
-	}
-)
+// Embeddable links.
+var embeds = map[string]*regexp.Regexp{
+	"youtube": regexp.MustCompile(
+		`^https?://(?:[^\.]+\.)?` +
+		`(` +
+		`youtube\.com/watch/?\?(?:.+&)?v=([^&]+)` +
+		`|` +
+		`(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
+		`)`),
+}
 
 type renderer struct {
 	links common.Links
@@ -122,6 +96,22 @@ func (*renderer) BlockHtml(out *bytes.Buffer, text []byte) {
 
 func (*renderer) RawHtmlTag(out *bytes.Buffer, text []byte) {
 	b.AttrEscape(out, text)
+}
+
+func (r *renderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
+	for provider, pattern := range embeds {
+		if pattern.Match(link) {
+			out.WriteString("<a class=\"post-embed post-" + provider + "-embed")
+			out.WriteString("\" href=\"")
+			b.AttrEscape(out, link)
+			out.WriteString("\" rel=\"noreferrer\" target=\"_blank")
+			out.WriteString("\">")
+			b.AttrEscape(out, link)
+			out.WriteString("</a>")
+			return
+		}
+	}
+	r.Html.AutoLink(out, link, kind)
 }
 
 func (r *renderer) PostLink(out *bytes.Buffer, text []byte) {
