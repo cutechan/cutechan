@@ -1,5 +1,6 @@
 // Stores the central state of the web application
 
+import { POST_IDS_EXPIRY_MS } from "../vars"
 import { Post, PostCollection } from '../posts'
 import { getClosestID } from '../util'
 import { readIDs, storeID } from '../db'
@@ -40,8 +41,6 @@ export type PageState = {
   board: string
   href: string
 }
-
-const YEAR = 365 * 24 * 60 * 60 * 1000
 
 // Configuration passed from the server. Some values can be changed during
 // runtime.
@@ -126,7 +125,7 @@ export function storeHidden(id: number, op: number) {
 
 function store(set: Set<number>, key: string, id: number, op: number) {
   set.add(id)
-  storeID(key, id, op, YEAR)
+  storeID(key, id, op, POST_IDS_EXPIRY_MS)
 }
 
 export function setBoardConfig(c: BoardConfig) {

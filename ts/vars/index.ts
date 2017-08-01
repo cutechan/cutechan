@@ -40,3 +40,6 @@ export const REPLY_HEIGHT_PX = 200;
 export const REPLY_MIN_WIDTH_PX = 400;
 export const REPLY_MIN_HEIGHT_PX = 200;
 export const DEFAULT_NOTIFICATION_IMAGE_URL = "/static/img/notification.png";
+const DAY_MS = 24 * 60 * 60 * 1000;
+export const POST_IDS_EXPIRY_MS = 365 * DAY_MS;
+export const EMBED_CACHE_EXPIRY_MS = 30 * DAY_MS;

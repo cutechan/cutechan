@@ -1,4 +1,5 @@
-import { POST_EMBED_SEL } from "../vars"
+import { POST_EMBED_SEL, EMBED_CACHE_EXPIRY_MS } from "../vars"
+import { getEmbed, storeEmbed } from "../db"
 import { fetchJSON } from "../util"
 
 interface OEmbedDoc {
@@ -10,8 +11,17 @@ function fetchNoEmbed(url: string): Promise<OEmbedDoc> {
   return fetchJSON(url)
 }
 
+function cachedFetch(url: string): Promise<OEmbedDoc> {
+  return getEmbed<OEmbedDoc>(url).catch(() => {
+    return fetchNoEmbed(url).then(res => {
+      storeEmbed(url, res, EMBED_CACHE_EXPIRY_MS)
+      return res
+    })
+  })
+}
+
 function renderYoutube(link: HTMLLinkElement) {
-  fetchNoEmbed(link.href).then(res => {
+  cachedFetch(link.href).then(res => {
     const icon = document.createElement("i")
     icon.className = "post-embed-icon fa fa-youtube-play"
     link.firstChild.replaceWith(icon, " " + res.title)
