@@ -80,12 +80,12 @@ class CustomParser extends ((marked as any).Parser as AnyClass) {
 // Embeddable links.
 const embeds = {
   youtube: new RegExp(
-    `^https?://(?:[^\.]+\.)?` +
-    `(` +
-    `youtube\.com/watch/?\?(?:.+&)?v=([^&]+)` +
-    `|` +
-    `(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
-    `)`),
+    String.raw`^https?://(?:[^\.]+\.)?` +
+    String.raw`(` +
+    String.raw`youtube\.com/watch/?\?(?:.+&)?v=([^&]+)` +
+    String.raw`|` +
+    String.raw`(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
+    String.raw`)`),
 }
 
 class CustomRenderer extends marked.Renderer {

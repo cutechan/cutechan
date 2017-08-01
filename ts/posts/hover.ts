@@ -157,6 +157,7 @@ function renderPostImagePreview(thumb: HTMLElement): any {
 
 function renderPostEmbedPreview(link: HTMLElement): any {
   const url = link.dataset.thumbnail_url
+  if (!url) return
   const width = +link.dataset.thumbnail_width
   const height = +link.dataset.thumbnail_height
   showImage(url, width, height)
