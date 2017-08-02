@@ -68,7 +68,7 @@ var policy = func() *bluemonday.Policy {
 }()
 
 // Embeddable links.
-var embeds = map[string]*regexp.Regexp{
+var Embeds = map[string]*regexp.Regexp{
 	"youtube": regexp.MustCompile(
 		`^https?://(?:[^\.]+\.)?` +
 		`(` +
@@ -102,7 +102,7 @@ func (*renderer) RawHtmlTag(out *bytes.Buffer, text []byte) {
 }
 
 func (r *renderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
-	for provider, pattern := range embeds {
+	for provider, pattern := range Embeds {
 		if pattern.Match(link) {
 			out.WriteString("<a class=\"post-embed post-" + provider + "-embed")
 			out.WriteString("\" data-provider=\"" + provider)

@@ -62,6 +62,7 @@ func createRouter() http.Handler {
 	// JSON API
 	api := r.NewGroup("/api")
 	api.GET("/socket", websockets.Handler)
+	api.GET("/embed", serveEmbed)
 	api.GET("/post/:post", servePost)
 	api.POST("/post/token", createPostToken)
 	// TODO(Kagami): Use single route?

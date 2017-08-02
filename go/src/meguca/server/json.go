@@ -15,7 +15,10 @@ import (
 	"strconv"
 )
 
-var errNoImage = errors.New("post has no image")
+var (
+	errNoImage = errors.New("post has no image")
+	errInternal = errors.New("internal server error")
+)
 
 // Request to spoiler an already allocated image that the sender has created
 type spoilerRequest struct {
@@ -23,8 +26,25 @@ type spoilerRequest struct {
 	Password string
 }
 
-// Helper for API functions. Server should always return valid JSON to
-// the clients.
+// API helper. Returns standardly shaped error message.
+// TODO(Kagami): Use APIError struct.
+func serveErrorJSON(w http.ResponseWriter, r *http.Request, err error) {
+	code := 400
+	if err == errInternal {
+		code = 500
+	}
+	data := map[string]string{"error": err.Error()}
+	buf, err := json.Marshal(data)
+	if err != nil {
+		text500(w, r, err)
+		return
+	}
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(code)
+	writeData(w, r, buf)
+}
+
+// API helper. Server should always return valid JSON to the clients.
 func serveEmptyJSON(w http.ResponseWriter, r *http.Request) {
 	res := map[string]int{}
 	serveJSON(w, r, "", res)
@@ -39,7 +59,6 @@ func serveJSON(
 ) {
 	buf, err := json.Marshal(data)
 	if err != nil {
-		// FIXME(Kagami): Don't send Go errors to client!
 		text500(w, r, err)
 		return
 	}
