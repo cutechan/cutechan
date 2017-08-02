@@ -91,6 +91,7 @@ class Popup {
     e.preventDefault()
   }
   handlePopupMouseDown = (e: MouseEvent) => {
+    if (this.isControlsClick(e)) return
     this.moving = true
     this.baseX = e.clientX
     this.baseY = e.clientY
