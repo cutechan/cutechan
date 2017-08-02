@@ -1013,40 +1013,46 @@ html.work-mode {
 //////////////////////////////
 
 .post-message, .reply-message {
+  // Link.
   a {
     color: @postlinkmessage;
   }
 
+  // Spoiler.
   del {
     text-decoration: none;
-    &, em {
+    & {
       background-color: @spoiler;
     }
-    &, em, a {
+    &, a {
       color: @spoiler;
     }
-    &:hover {
+    &:hover, &:hover a {
       color: #fff;
     }
   }
 
+  // Single linebreak.
   p {
     margin: 0;
   }
-
+  // Multiple linebreaks.
   p + p {
     margin-top: 10px;
   }
 
+  // Quote.
   blockquote {
     margin: 0;
     color: @quote;
   }
 
+  // Code.
   pre {
     margin: 0;
   }
 
+  // Quote/linebreak after quote.
   blockquote > p, blockquote > blockquote {
     display: inline;
   }
