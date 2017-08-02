@@ -63,6 +63,7 @@ var policy = func() *bluemonday.Policy {
 	p.AllowAttrs("class").Matching(bluemonday.SpaceSeparatedTokens).OnElements("a")
 	p.AllowAttrs("target").Matching(regexp.MustCompile(`^_blank$`)).OnElements("a")
 	p.AllowAttrs("data-id").Matching(bluemonday.Integer).OnElements("a")
+	p.AllowAttrs("data-provider").Matching(bluemonday.SpaceSeparatedTokens).OnElements("a")
 	return p
 }()
 
@@ -75,6 +76,8 @@ var embeds = map[string]*regexp.Regexp{
 		`|` +
 		`(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
 		`)`),
+	"vlive": regexp.MustCompile(
+		`^https?://(?:(?:www|m)\.)?vlive\.tv/(?:video|embed)/([0-9]+)`),
 }
 
 type renderer struct {
@@ -102,6 +105,7 @@ func (r *renderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
 	for provider, pattern := range embeds {
 		if pattern.Match(link) {
 			out.WriteString("<a class=\"post-embed post-" + provider + "-embed")
+			out.WriteString("\" data-provider=\"" + provider)
 			out.WriteString("\" href=\"")
 			b.AttrEscape(out, link)
 			out.WriteString("\" rel=\"noreferrer\" target=\"_blank")

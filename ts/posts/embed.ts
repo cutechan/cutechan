@@ -9,24 +9,36 @@ interface OEmbedDoc {
   thumbnail_height: number,
 }
 
-function fetchNoEmbed(url: string): Promise<OEmbedDoc> {
-  url = `https://noembed.com/embed?url=${url}`
+const oEmbedHosts = {
+  youtube: "https://noembed.com/embed",
+  vlive: "/api/embed",
+}
+
+const embedIcons = {
+  youtube: "fa fa-youtube-play",
+  vlive: "fa fa-hand-peace-o",
+}
+
+function fetchEmbed(url: string, provider: string): Promise<OEmbedDoc> {
+  url = `${oEmbedHosts[provider]}?url=${url}`
   return fetchJSON(url)
 }
 
-function cachedFetch(url: string): Promise<OEmbedDoc> {
+function cachedFetch(url: string, provider: string): Promise<OEmbedDoc> {
   return getEmbed<OEmbedDoc>(url).catch(() => {
-    return fetchNoEmbed(url).then(res => {
+    return fetchEmbed(url, provider).then(res => {
       storeEmbed(url, res, EMBED_CACHE_EXPIRY_MS)
       return res
     })
   })
 }
 
-function renderYoutube(link: HTMLLinkElement) {
-  cachedFetch(link.href).then(res => {
+// Additional rendering of embedded media link.
+function renderLink(link: HTMLLinkElement) {
+  const provider = link.dataset.provider
+  cachedFetch(link.href, provider).then(res => {
     const icon = document.createElement("i")
-    icon.className = "post-embed-icon fa fa-youtube-play"
+    icon.className = `post-embed-icon ${embedIcons[provider]}`
     link.firstChild.replaceWith(icon, " " + res.title)
     link.dataset.thumbnail_url = res.thumbnail_url
     link.dataset.thumbnail_width = res.thumbnail_width.toString()
@@ -36,11 +48,7 @@ function renderYoutube(link: HTMLLinkElement) {
 
 // Post-render embeddable links.
 export function render(el: HTMLElement) {
-  for (const link of el.querySelectorAll(POST_EMBED_SEL)) {
-    if (link.classList.contains("post-youtube-embed")) {
-      renderYoutube(link as HTMLLinkElement)
-    }
-  }
+  el.querySelectorAll(POST_EMBED_SEL).forEach(renderLink)
 }
 
 // Fetch and render any metadata int the embed on mouseover

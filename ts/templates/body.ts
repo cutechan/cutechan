@@ -90,6 +90,8 @@ const embeds = {
     String.raw`|` +
     String.raw`(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
     String.raw`)`),
+  vlive: new RegExp(
+    String.raw`^https?://(?:(?:www|m)\.)?vlive\.tv/(?:video|embed)/([0-9]+)`),
 }
 
 class CustomRenderer extends marked.Renderer {
@@ -105,6 +107,7 @@ class CustomRenderer extends marked.Renderer {
     for (const provider of Object.keys(embeds)) {
       if (embeds[provider].test(href)) {
         out += ` class="post-embed post-${provider}-embed"`
+        out += ` data-provider="${provider}"`
         break
       }
     }
