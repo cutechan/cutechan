@@ -4,6 +4,7 @@
 // MUST BE KEPT IN SYNC WITH go/src/meguca/templates/body.go!
 
 import * as marked from "marked"
+import { page } from "../state"
 import { escape } from "../util"
 import { PostData, PostLink } from "../common"
 import { renderPostLink } from "."  // TODO(Kagami): Avoid circular import
@@ -14,14 +15,17 @@ function noop() {}
 ;(noop as any).exec = noop
 
 // Verify and render a link to other posts.
-function postLink(m: RegExpMatchArray, links: [PostLink], thread: number): string {
+function postLink(m: RegExpMatchArray, links: [PostLink], tid: number): string {
   if (!links) return escape(m[0])
 
   const id = +m[0].slice(2)
   const link = links.find(l => l[0] === id)
   if (!link) return escape(m[0])
 
-  return renderPostLink(id, link[1], thread)
+  const op = link[1]
+  const cross = op !== tid
+  const index = !page.thread
+  return renderPostLink(id, cross, index)
 }
 
 class CustomLexer extends ((marked as any).Lexer as AnyClass) {

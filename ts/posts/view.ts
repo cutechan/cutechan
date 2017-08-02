@@ -2,6 +2,7 @@ import { Thread, Post } from './model'
 import { makeFrag, getID } from '../util'
 import { View, ViewAttrs } from "../base"
 import { ln } from "../lang"
+import { page } from "../state"
 import options from "../options"
 import { THREAD_SEL, POST_BACKLINKS_SEL } from "../vars"
 import { render as renderEmbeds } from "./embed"
@@ -17,8 +18,10 @@ export default class PostView extends View<Post> {
   constructor(model: Post, el: HTMLElement | null) {
     const attrs: ViewAttrs = { model }
 
-    const thread = new Thread()
-    attrs.el = el || makePostContext(thread, model).renderNode()
+    const thread = new Thread(model)
+    const index = thread.id !== page.thread
+    const all = page.board === "all"
+    attrs.el = el || makePostContext(thread, model, null, index, all).renderNode()
 
     super(attrs)
 
@@ -47,14 +50,17 @@ export default class PostView extends View<Post> {
 
   // Render links to posts linking to this post.
   public renderBacklinks() {
-    const links = Object.keys(this.model.backlinks).map(id =>
-      renderPostLink(+id, this.model.backlinks[id])
-    )
-    if (!links.length) return
+    const index = !page.thread
+    const rendered = Object.keys(this.model.backlinks).map(id => {
+      const op = this.model.backlinks[id]
+      const cross = op !== this.model.op
+      return renderPostLink(+id, cross, index)
+    })
+    if (!rendered.length) return
 
     const html = new TemplateContext("post-backlinks", {
       LReplies: ln.Common.UI["replies"],
-      Backlinks: links,
+      Backlinks: rendered,
     }).render()
 
     const container = this.el.querySelector(POST_BACKLINKS_SEL)

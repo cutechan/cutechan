@@ -16,8 +16,8 @@ export type PostBacklinks = { [id: string]: number }
 export class Thread {
   public id: number
 
-  constructor() {
-    this.id = page.thread
+  constructor(post: Post) {
+    this.id = post.op
   }
 }
 

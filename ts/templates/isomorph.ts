@@ -6,8 +6,8 @@
 import * as Mustache from "mustache"
 import templates from "cc-templates"
 import { ln, lang } from "../lang"
-import { config, page, mine } from "../state"
-import { Thread, Post, thumbPath, sourcePath } from "../posts"
+import { config, mine } from "../state"
+import { Thread, Post, Backlinks, thumbPath, sourcePath } from "../posts"
 import { Dict, makeEl, pad } from "../util"
 import { renderBody } from "."
 
@@ -29,19 +29,22 @@ export class TemplateContext {
   }
 }
 
-export function makePostContext(t: Thread, p: Post): TemplateContext {
+export function makePostContext(
+  t: Thread, p: Post, bls: Backlinks,
+  index: boolean, all: boolean,
+): TemplateContext {
   const ctx: Dict = {
     ID: p.id,
     TID: t.id,
-    Index: false,  // Currently we render only in-thread posts on the client
-    OP: t.id == p.id,
-    Badge: false,
+    Index: index,
+    OP: t.id === p.id,
+    Badge: t.id === p.id && index && all,
     Board: p.board,
     Subject: p.subject,
     Staff: !!p.auth,
     Auth: ln.Common.Posts[p.auth],
-    backlinks: null,
     post: p,
+    backlinks: bls,
   }
 
   ctx.PostClass = () => {
@@ -136,10 +139,7 @@ export function fileSize(size: number): string {
 }
 
 // Render a link to other post.
-export function renderPostLink(id: number, op: number, thread?: number): string {
-  thread = thread || page.thread
-  const cross = op !== thread
-  const index = !page.thread && !page.catalog
+export function renderPostLink(id: number, cross: boolean, index: boolean): string {
   const url = `${(cross || index) ? `/all/${id}` : ""}#${id}`
   return new TemplateContext("post-link", {
     ID: id,
