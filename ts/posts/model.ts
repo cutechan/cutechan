@@ -4,7 +4,7 @@ import Collection from './collection'
 import PostView from './view'
 import { sourcePath } from "./images"
 import { SpliceResponse } from '../client'
-import { mine, seenPosts, storeSeenPost, posts, page } from "../state"
+import { page, posts, seenPosts, mine, storeSeenPost } from "../state"
 import { notifyAboutReply } from "../ui"
 import { PostData, PostLink, ImageData, fileTypes } from "../common"
 
@@ -31,7 +31,6 @@ export class Post extends Model implements PostData {
   public deleted: boolean
   public banned: boolean
   public sticky: boolean
-  protected seenOnce: boolean
   public image: ImageData  // TODO(Kagami): Rename to file
   public time: number
   public body: string
@@ -59,7 +58,6 @@ export class Post extends Model implements PostData {
   constructor(attrs: PostData) {
     super()
     extend(this, attrs)
-    this.seenOnce = seenPosts.has(this.id)
   }
 
   // Remove the model from its collection, detach all references and allow to
@@ -143,20 +141,24 @@ export class Post extends Model implements PostData {
   }
 
   // Returns, if this post has been seen already.
-  public seen() {
-    if (this.seenOnce) return true
+  public seen(): boolean {
+    // Already seen, nothing to do.
+    if (seenPosts.has(this.id)) return true
 
-    this.seenOnce = seenPosts.has(this.id)
-    if (this.seenOnce) return true
+    // My posts are always seen.
+    if (mine.has(this.id)) return true
 
+    // Can't see because in inactive tab.
     if (document.hidden) return false
 
-    this.seenOnce = this.view.scrolledPast()
-    if (this.seenOnce) {
+    // Check if can see on the page.
+    const visible = this.view.scrolledPast()
+    if (visible) {
       storeSeenPost(this.id, this.op)
       return true
     }
 
+    // Should be unseen then.
     return false
   }
 

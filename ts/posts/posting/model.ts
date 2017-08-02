@@ -258,7 +258,7 @@ export default class FormModel extends Post {
     return (id: number) => {
       this.id = id
       this.op = page.thread
-      this.seenOnce = true
+      // this.seenOnce = true
       if (alloc) {
         postSM.feed(postEvent.alloc)
       }

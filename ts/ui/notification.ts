@@ -1,4 +1,4 @@
-import { storeSeenReply, seenReplies } from "../state"
+import { mine, storeSeenReply, seenReplies } from "../state"
 import options from "../options"
 import lang from "../lang"
 import { thumbPath, Post } from "../posts"
@@ -9,10 +9,13 @@ import { DEFAULT_NOTIFICATION_IMAGE_URL } from "../vars"
 
 // Notify the user that one of their posts has been replied to.
 export default function notifyAboutReply(post: Post) {
+  // Ignore my replies to me (lol samefag).
+  if (mine.has(post.id)) return
+
   // Favicon should indicate unseen reply every time.
   repliedToMe(post)
 
-  // However notification should be shown only on first time.
+  // However notification is shown only first time.
   if (seenReplies.has(post.id)) return
   storeSeenReply(post.id, post.op)
 
