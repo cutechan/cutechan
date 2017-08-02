@@ -461,7 +461,7 @@ class Reply extends Component<any, any> {
   }
   handleAttachRemove = () => {
     if (this.state.sending) return
-    this.setState({files: []})
+    this.setState({files: []}, this.focus)
   }
   handleFileLoad = () => {
     const file = this.fileEl.files[0]
@@ -476,7 +476,7 @@ class Reply extends Component<any, any> {
     // Add file only if was able to grab info.
     getFileInfo(file).then((info: Dict) => {
       const files = [{file, info}]
-      this.setState({files})
+      this.setState({files}, this.focus)
     }, () => {
       showAlert(ln.UI["unsupFile"])
     })
@@ -564,12 +564,16 @@ class Reply extends Component<any, any> {
   }
   renderFiles() {
     const { files } = this.state
-    if (!files.length) return null
-    // Only single file is supported at the moment.
-    const file = files[0]
     return (
       <div class="reply-files">
-        <FilePreview {...file} onRemove={this.handleAttachRemove} />
+        {files.map(({ file, info }) =>
+          <FilePreview
+            key={info.url}
+            info={info}
+            file={file}
+            onRemove={this.handleAttachRemove}
+          />
+        )}
       </div>
     );
   }
