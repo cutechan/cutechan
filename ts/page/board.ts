@@ -40,7 +40,7 @@ async function extractThreads() {
     const { posts: threadPosts } = thread;
     delete thread.posts;
     if (extractPost(thread, thread.id, thread.board, backlinks)) {
-      document.querySelector(`section[data-id="${thread.id}"]`).remove();
+      document.getElementById(`thread${thread.id}`).remove();
       continue;
     }
     for (const post of threadPosts) {

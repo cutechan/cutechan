@@ -52,7 +52,7 @@ caching of generated posts.
 	{% code idStr := strconv.FormatUint(t.ID, 10) %}
 	{% code bls := extractBacklinks(1<<10, t) %}
 	<section class="threads-container" id="thread-container">
-		<article class="thread thread_single" data-id="{%s idStr %}"{%= counterStyle(t, last100) %}>
+		<article class="thread thread_single" id="thread{%s idStr %}" data-id="{%s idStr %}"{%= counterStyle(t, last100) %}>
 			{%= renderThreadPosts(t, bls, false, false, last100) %}
 		</article>
 		<script id="post-data" type="application/json">
