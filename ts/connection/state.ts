@@ -1,4 +1,3 @@
-import { debug } from "../state";
 import { FSM } from "../util";
 import { handlers, message } from "./messages";
 import { synchronise } from "./synchronization";
@@ -41,11 +40,9 @@ function connect() {
   socket.onopen = connSM.feeder(connEvent.open);
   socket.onclose = connSM.feeder(connEvent.close);
   socket.onerror = connSM.feeder(connEvent.close);
-  socket.onmessage = ({ data }) =>
+  socket.onmessage = ({ data }) => {
     onMessage(data, false);
-  if (debug) {
-    (window as any).socket = socket;
-  }
+  };
 }
 
 // Strip all handlers and remove references from Websocket instance
@@ -75,10 +72,6 @@ export function send(type: message, msg: any) {
     str += JSON.stringify(msg);
   }
 
-  if (debug) {
-    // tslint:disable-next-line:no-console
-    console.log("<", str);
-  }
   socket.send(str);
 }
 
@@ -95,11 +88,6 @@ function leftPad(type: message): string {
 function onMessage(data: string, extracted: boolean) {
   // First two characters of a message define its type
   const type = parseInt(data.slice(0, 2), 10);
-
-  if (debug) {
-    // tslint:disable-next-line:no-console
-    console.log(extracted ? "\t>" : ">", data);
-  }
 
   // Split several concatenated messages
   if (type === message.concat) {
@@ -180,10 +168,6 @@ connSM.act(connState.syncing, connEvent.sync, () => {
 
 connSM.wildAct(connEvent.close, (event) => {
   clearModuleState();
-  if (debug) {
-    // tslint:disable-next-line:no-console
-    console.error(event);
-  }
   renderStatus(syncStatus.disconnected);
 
   // Wait maxes out at ~1min

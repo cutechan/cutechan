@@ -1,6 +1,5 @@
 // Stores the central state of the web application
 
-import { send } from "../connection";
 import { readIDs, storeID } from "../db";
 import { Post, PostCollection } from "../posts";
 import { getClosestID } from "../util";
@@ -68,9 +67,6 @@ export let seenReplies: Set<number>;
 
 // Explicitly hidden posts and threads
 export let hidden: Set<number>;
-
-// Debug mode with more verbose logging
-export let debug: boolean = /[\?&]debug=true/.test(location.href);
 
 // Read page state by parsing a URL
 // TODO(Kagami): Pass this from server-side.
@@ -149,13 +145,3 @@ export function getModel(el: Element): Post {
   }
   return PostCollection.getFromAll(id);
 }
-
-// Display or hide the loading animation
-export function displayLoading(display: boolean) {
-  /* skip */
-}
-
-(window as any).debugMode = () => {
-  debug = true;
-  (window as any).send = send;
-};

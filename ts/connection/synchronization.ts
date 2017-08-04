@@ -2,7 +2,7 @@ import { showAlert } from "../alerts";
 import API from "../api";
 import { insertPost } from "../client";
 import { getPostModel, Post, postEvent, postSM, postState } from "../posts";
-import { displayLoading, page, posts } from "../state";
+import { page, posts } from "../state";
 import { extend } from "../util";
 import { handlers, message } from "./messages";
 import { connEvent, connSM, send } from "./state";
@@ -136,6 +136,5 @@ handlers[message.synchronise] = async (data: SyncData) => {
     });
   }
 
-  displayLoading(false);
   connSM.feed(connEvent.sync);
 };
