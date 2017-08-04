@@ -1,18 +1,18 @@
 // Contains the FSM and core API for accessing the post authoring system
 
-import FormModel from "./model"
-import FormView from "./view"
-import { connState, connSM, handlers, message } from "../../connection"
-import { FSM } from "../../util"
-import lang from "../../lang"
-import { init as initReplyForm } from "./reply-form"
+import { connSM, connState, handlers, message } from "../../connection";
+import lang from "../../lang";
+import { FSM } from "../../util";
+import FormModel from "./model";
+import { init as initReplyForm } from "./reply-form";
+import FormView from "./view";
 
-export { default as FormModel } from "./model"
+export { default as FormModel } from "./model";
 
 // Sent to the FSM via the "open" and "hijack" events
-export type FormMessage = {
-  model: FormModel,
-  view: FormView,
+export interface FormMessage {
+  model: FormModel;
+  view: FormView;
 }
 
 // type Selection = {
@@ -22,13 +22,13 @@ export type FormMessage = {
 // }
 
 // Current post form view and model instances
-let postForm: FormView,
-  postModel: FormModel,
-  // Store last selected range, so we can access it after a mouse click on
-  // quote links, which cause that link to become selected
-  // lastSelection: Selection,
-  // Specifies, if a captcha solved is needed to allocate a post
-  needCaptcha = false
+let postForm: FormView;
+let postModel: FormModel;
+// Store last selected range, so we can access it after a mouse click on
+// quote links, which cause that link to become selected
+// lastSelection: Selection,
+// Specifies, if a captcha solved is needed to allocate a post
+let needCaptcha = false;
 
 // Post authoring finite state machine
 export const enum postState {
@@ -54,16 +54,16 @@ export const enum postEvent {
   abandon,       // Abandon ownership of any open post
   captchaSolved, // New captcha solved and submitted
 }
-export const postSM = new FSM<postState, postEvent>(postState.none)
+export const postSM = new FSM<postState, postEvent>(postState.none);
 
 export function getPostModel(): FormModel {
-  return postModel
+  return postModel;
 }
 
 // Find the post creation button(s) and style it, if any
 function stylePostControls(fn: (el: HTMLElement) => void) {
   for (const el of document.querySelectorAll(".posting")) {
-    fn(el)
+    fn(el);
   }
 }
 
@@ -71,7 +71,7 @@ function stylePostControls(fn: (el: HTMLElement) => void) {
 // unfinished allocated post.
 function bindNagging() {
   window.onbeforeunload = (event: BeforeUnloadEvent) =>
-    event.returnValue = lang.ui["unfinishedPost"]
+    event.returnValue = lang.ui.unfinishedPost;
 }
 
 // Insert target post's number as a link into the text body. If text in the
@@ -152,84 +152,86 @@ function bindNagging() {
 
 export function init() {
   // Synchronise with connection state machine
-  connSM.on(connState.synced, postSM.feeder(postEvent.sync))
-  connSM.on(connState.dropped, postSM.feeder(postEvent.disconnect))
-  connSM.on(connState.desynced, postSM.feeder(postEvent.error))
+  connSM.on(connState.synced, postSM.feeder(postEvent.sync));
+  connSM.on(connState.dropped, postSM.feeder(postEvent.disconnect));
+  connSM.on(connState.desynced, postSM.feeder(postEvent.error));
 
   // The server notified a captcha will be required on the next post
   handlers[message.captcha] = () =>
-    needCaptcha = true
+    needCaptcha = true;
 
   // Initial synchronization
   postSM.act(postState.none, postEvent.sync, () =>
-    postState.ready)
+    postState.ready);
 
   // Set up client to create new posts
   postSM.on(postState.ready, () => {
-    window.onbeforeunload = postForm = postModel = null
-    stylePostControls(el => {
-      el.style.display = ""
-      el.classList.remove("disabled")
-    })
-  })
+    window.onbeforeunload = postForm = postModel = null;
+    stylePostControls((el) => {
+      el.style.display = "";
+      el.classList.remove("disabled");
+    });
+  });
 
   // Handle connection loss
   postSM.wildAct(postEvent.disconnect, () => {
-    needCaptcha = false
+    needCaptcha = false;
 
     switch (postSM.state) {
       case postState.alloc:       // Pause current allocated post
       case postState.halted:
-        return postState.halted
+        return postState.halted;
       case postState.draft:       // Clear any unallocated postForm
-        postForm.remove()
-        postModel = postForm = null
-        stylePostControls(el =>
-          el.style.display = "")
-        break
+        postForm.remove();
+        postModel = postForm = null;
+        stylePostControls((el) =>
+          el.style.display = "");
+        break;
       case postState.locked:
-        return postState.locked
+        return postState.locked;
     }
 
-    stylePostControls(el =>
-      el.classList.add("disabled"))
+    stylePostControls((el) =>
+      el.classList.add("disabled"));
 
-    return postState.locked
-  })
+    return postState.locked;
+  });
 
   // Regained connectivity, when post is allocated
   postSM.act(postState.halted, postEvent.reclaim, () =>
-    postState.alloc)
+    postState.alloc);
 
   // Regained connectivity too late and post can no longer be reclaimed
   postSM.act(postState.halted, postEvent.abandon, () => {
-    postModel.abandon()
-    return postState.ready
-  })
+    postModel.abandon();
+    return postState.ready;
+  });
 
   // Regained connectivity, when no post open
   postSM.act(postState.locked, postEvent.sync, () =>
-    postState.ready)
+    postState.ready);
 
   // Handle critical errors
   postSM.wildAct(postEvent.error, () => {
-    stylePostControls(el =>
-      el.classList.add("errored"))
-    postForm && postForm.renderError()
-    window.onbeforeunload = null
-    return postState.errored
-  })
+    stylePostControls((el) =>
+      el.classList.add("errored"));
+    if (postForm) {
+      postForm.renderError();
+    }
+    window.onbeforeunload = null;
+    return postState.errored;
+  });
 
   // Reset state during page navigation
   postSM.wildAct(postEvent.reset, () =>
-    postState.ready)
+    postState.ready);
 
   // Transition a draft post into allocated state. All the logic for this is
   // model- and view-side.
   postSM.act(postState.draft, postEvent.alloc, () =>
-    postState.alloc)
+    postState.alloc);
 
-  postSM.on(postState.alloc, bindNagging)
+  postSM.on(postState.alloc, bindNagging);
 
   // Open a new post creation form, if none open
   // postSM.act(postState.ready, postEvent.open, () => {
@@ -244,60 +246,60 @@ export function init() {
 
   // New captcha submitted
   postSM.act(postState.needCaptcha, postEvent.captchaSolved, () => {
-    postModel.needCaptcha = needCaptcha = false
+    postModel.needCaptcha = needCaptcha = false;
     if (postModel.bufferedFile && !postModel.nonLive) {
-      postModel.uploadFile(postModel.bufferedFile)
-      postModel.bufferedFile = null
+      postModel.uploadFile(postModel.bufferedFile);
+      postModel.bufferedFile = null;
     }
-    return postState.draft
-  })
+    return postState.draft;
+  });
 
   // Cancelled, when needing a captcha
   postSM.act(postState.needCaptcha, postEvent.done, () => {
-    postForm.remove()
-    return postState.ready
-  })
+    postForm.remove();
+    return postState.ready;
+  });
 
   // Hide post controls, when a postForm is open
   const hidePostControls = () =>
-    stylePostControls(el =>
-      el.style.display = "none")
-  postSM.on(postState.draft, hidePostControls)
+    stylePostControls((el) =>
+      el.style.display = "none");
+  postSM.on(postState.draft, hidePostControls);
   postSM.on(postState.alloc, () =>
-    hidePostControls())
+    hidePostControls());
 
   // Close unallocated draft
   postSM.act(postState.draft, postEvent.done, (e?: Event) => {
     // Commit a draft made as a non-live post
-    let commitNonLive = false
+    let commitNonLive = false;
     if (e && postModel.nonLive) {
       if (e.target instanceof HTMLInputElement) {
-        commitNonLive = e.target.getAttribute("name") === "done"
+        commitNonLive = e.target.getAttribute("name") === "done";
       }
     }
     if (commitNonLive) {
       if (postModel.needCaptcha) { // New captcha submitted
-        needCaptcha = false
+        needCaptcha = false;
       }
-      postModel.commitNonLive()
-      return postState.sendingNonLive
+      postModel.commitNonLive();
+      return postState.sendingNonLive;
     }
 
-    postForm.remove()
-    return postState.ready
-  })
+    postForm.remove();
+    return postState.ready;
+  });
 
   // Close allocated post
   postSM.act(postState.alloc, postEvent.done, () => {
-    postModel.commitClose()
-    return postState.ready
-  })
+    postModel.commitClose();
+    return postState.ready;
+  });
 
   // Just close the post, after it is committed
   postSM.act(postState.sendingNonLive, postEvent.done, () => {
-    postModel.abandon()
-    return postState.ready
-  })
+    postModel.abandon();
+    return postState.ready;
+  });
 
   // Store last selected range that is not a quote link
   // document.addEventListener("selectionchange", () => {
@@ -317,5 +319,5 @@ export function init() {
   // })
 
   // initDrop()
-  initReplyForm()
+  initReplyForm();
 }
