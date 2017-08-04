@@ -25,7 +25,3 @@
 --exclude ts/page/common.ts
 --exclude ts/alerts/index.tsx
 --exclude ts/common/index.ts
---exclude ts/api/index.ts
---exclude ts/options/specs.ts
---exclude ts/options/index.ts
---exclude ts/state/index.ts
