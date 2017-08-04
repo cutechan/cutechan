@@ -48,7 +48,9 @@ function renderLink(link: HTMLLinkElement) {
 
 // Post-render embeddable links.
 export function render(el: HTMLElement) {
-  el.querySelectorAll(POST_EMBED_SEL).forEach(renderLink)
+  for (const link of el.querySelectorAll(POST_EMBED_SEL)) {
+    renderLink(link as HTMLLinkElement)
+  }
 }
 
 // Fetch and render any metadata int the embed on mouseover

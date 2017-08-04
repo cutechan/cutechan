@@ -77,17 +77,26 @@ export let debug: boolean = /[\?&]debug=true/.test(location.href)
 export function read(href: string): PageState {
   const u = document.createElement("a")
   u.href = href
-  const thread = u.pathname.match(/^\/\w+\/(\d+)/)
+
+  // WTF, IE?
+  // https://stackoverflow.com/a/956376
+  let pathname = u.pathname
+  if (!pathname.startsWith("/")) {
+    pathname = "/" + pathname
+  }
+
+  const thread = pathname.match(/^\/\w+\/(\d+)/)
   const page = u.search.match(/[&\?]page=(\d+)/)
+
   return {
     href,
-    landing: u.pathname === "/",
-    board: u.pathname.match(/^\/(\w+)?\/?/)[1],
+    landing: pathname === "/",
+    board: pathname.match(/^\/(\w+)?\/?/)[1],
     lastN: /[&\?]last=100/.test(u.search) ? 100 : 0,
     page: page ? parseInt(page[1]) : 0,
-    catalog: /^\/\w+\/catalog/.test(u.pathname),
+    catalog: /^\/\w+\/catalog/.test(pathname),
     thread: parseInt(thread && thread[1]) || 0,
-  } as PageState
+  }
 }
 
 // Load post number sets for specific threads from the database
