@@ -34,7 +34,3 @@
 --exclude ts/connection/messages.ts
 --exclude ts/connection/synchronization.ts
 --exclude ts/connection/ui.ts
---exclude ts/templates/isomorph.ts
---exclude ts/templates/index.ts
---exclude ts/templates/index.d.ts
---exclude ts/templates/body.ts
