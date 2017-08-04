@@ -1,4 +1,3 @@
---exclude ts/posts/model.ts
 --exclude ts/posts/popup.ts
 --exclude ts/posts/hover.ts
 --exclude ts/posts/images.ts
