@@ -29,8 +29,3 @@
 --exclude ts/options/specs.ts
 --exclude ts/options/index.ts
 --exclude ts/state/index.ts
---exclude ts/connection/state.ts
---exclude ts/connection/index.ts
---exclude ts/connection/messages.ts
---exclude ts/connection/synchronization.ts
---exclude ts/connection/ui.ts

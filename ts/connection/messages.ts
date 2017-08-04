@@ -46,8 +46,8 @@ export const enum message {
   captcha,
 }
 
-export type MessageHandler = (msg: {}) => void
+export type MessageHandler = (msg: {}) => void;
 
 // Websocket message handlers. Each handler responds to its distinct message
 // type.
-export const handlers: { [type: number]: MessageHandler } = {}
+export const handlers: { [type: number]: MessageHandler } = {};
