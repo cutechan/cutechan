@@ -4,7 +4,7 @@
 
 import API from "../api"
 import options from "../options"
-import { posts, getModel, storeSeenPost } from "../state"
+import { page, posts, getModel, storeSeenPost } from "../state"
 import { View } from "../base"
 import { Post } from "./model"
 import PostView from "./view"
@@ -222,6 +222,7 @@ function onMouseMove(event: MouseEvent) {
 
 export function init() {
   container = document.querySelector(HOVER_CONTAINER_SEL)
+  container.classList.add(page.thread ? "hover-container_thread" : "hover-container_board")
   document.addEventListener("mousemove", onMouseMove, {passive: true})
   mouseMove.onChange("event", renderPostPreview)
   mouseMove.onChange("event", renderImagePreview)
