@@ -57,7 +57,7 @@ deb: clean templates client server
 	mkdir -p deb_dist/usr/bin
 	cp -a cutechan deb_dist/usr/bin
 	chmod -R go+rX deb_dist
-	fakeroot dpkg -b deb_dist cutechan.deb
+	fakeroot dpkg-deb -z0 -b deb_dist cutechan.deb
 
 test:
 	go test -race -p 1 meguca/...
