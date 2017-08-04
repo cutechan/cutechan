@@ -46,11 +46,11 @@ export class Post extends Model implements PostData {
     return this.id == this.op
   }
 
+  // TODO(Kagami): Move to ImageData?
   public get transparentThumb() {
-    return this.image && this.image.thumbType === fileTypes.png
+    return this.image.thumbType === fileTypes.png
   }
 
-  // TODO(Kagami): Move to ImageData?
   public get fileSrc(): string {
     return sourcePath(this.image.fileType, this.image.SHA1)
   }

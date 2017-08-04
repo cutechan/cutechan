@@ -48,7 +48,7 @@ class Popup {
       const media = this.itemEl = document.createElement("video") as any
       media.loop = true
       media.autoplay = true
-      media.controls = !post.transparentThumb
+      media.controls = this.needControls()
       media.volume = options.volume
       media.addEventListener("volumechange", function() {
         options.volume = media.volume
@@ -63,8 +63,15 @@ class Popup {
 
     this.attach()
   }
-  isControlsClick = (e: MouseEvent) => {
-    if (!this.post.image.video || this.post.transparentThumb) return false
+  needControls() {
+    return (
+      this.post.image.video
+      && !this.post.transparentThumb
+      && (this.post.image.audio || this.post.image.length > 3)
+    )
+  }
+  isControlsClick(e: MouseEvent) {
+    if (!this.itemEl.controls) return false
     // <https://stackoverflow.com/a/22928167>.
     const ctrlHeight = 50
     const rect = this.itemEl.getBoundingClientRect()
@@ -91,7 +98,7 @@ class Popup {
     e.preventDefault()
   }
   handlePopupMouseDown = (e: MouseEvent) => {
-    if (this.isControlsClick(e)) return
+    if (e.button !== 0 || this.isControlsClick(e)) return
     this.moving = true
     this.baseX = e.clientX
     this.baseY = e.clientY
