@@ -97,7 +97,7 @@ export function sortThreads(initial: boolean) {
       const id = el.getAttribute("data-id");
       els[id] = el;
       el.remove();
-      return posts.get(parseInt(id, 100));
+      return posts.get(parseInt(id, 10));
     })
     .sort(sorts[sortMode])
     .map(({ id }) =>
@@ -149,7 +149,7 @@ function filterThreads(filter: string) {
   }
 
   for (const el of threads) {
-    const id = parseInt(el.getAttribute("data-id"), 100);
+    const id = parseInt(el.getAttribute("data-id"), 10);
     el.style.display = matched.has(id) ? "" : "none";
   }
 }
