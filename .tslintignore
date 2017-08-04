@@ -19,9 +19,3 @@
 --exclude ts/base/view.ts
 --exclude ts/base/header.ts
 --exclude ts/client/index.ts
---exclude ts/page/thread.ts
---exclude ts/page/index.ts
---exclude ts/page/board.ts
---exclude ts/page/common.ts
---exclude ts/alerts/index.tsx
---exclude ts/common/index.ts
