@@ -5,7 +5,8 @@
   ],
   "jsRules": {},
   "rules": {
-    "curly": [true, "ignore-same-line"]
+    "curly": [true, "ignore-same-line"],
+    "interface-name": false
   },
   "rulesDirectory": []
 }

@@ -5,7 +5,6 @@
 import * as cx from "classnames";
 import { h } from "preact";
 
-// tslint:disable-next-line:interface-name
 interface Props {
   progress: number;
   className?: string;

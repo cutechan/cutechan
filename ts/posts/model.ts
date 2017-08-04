@@ -8,9 +8,7 @@ import Collection from "./collection";
 import { sourcePath } from "./images";
 import PostView from "./view";
 
-// tslint:disable-next-line:interface-name
 export interface Backlinks { [id: string]: PostBacklinks; }
-// tslint:disable-next-line:interface-name
 export interface PostBacklinks { [id: string]: number; }
 
 // Thread model, mirroring common.Thread.

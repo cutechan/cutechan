@@ -7,7 +7,6 @@
 
 import langs from "cc-langs";
 
-// tslint:disable-next-line:interface-name
 interface LanguagePack {
   Forms: { [key: string]: string[2] };
   UI: { [key: string]: string };
@@ -15,7 +14,6 @@ interface LanguagePack {
 }
 
 // TODO(Kagami): Remove lowercase aliases.
-// tslint:disable-next-line:interface-name
 interface CommonLanguagePack {
   Plurals: { [key: string]: [string] };
   Posts: { [key: string]: string };
