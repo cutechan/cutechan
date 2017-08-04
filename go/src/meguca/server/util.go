@@ -15,7 +15,7 @@ import (
 )
 
 const (
-	numPostsAtIndex = 3
+	numPostsAtIndex   = 3
 	numPostsOnRequest = 100
 )
 

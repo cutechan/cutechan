@@ -1,8 +1,8 @@
 package server
 
 import (
-	"errors"
 	"database/sql"
+	"errors"
 	"fmt"
 	"meguca/auth"
 	"meguca/cache"

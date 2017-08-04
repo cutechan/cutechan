@@ -356,7 +356,7 @@ func prepareForPostCreation(t testing.TB) {
 func writeSampleBoard(t testing.TB) {
 	b := db.BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
-			ID:        "a",
+			ID: "a",
 		},
 	}
 	if err := db.WriteBoard(nil, b); err != nil {

@@ -71,6 +71,9 @@ test-custom:
 test-build:
 	go build -o /dev/null meguca
 
+fmt:
+	go fmt meguca/...
+
 tags:
 	ctags -R go/src/meguca ts
 

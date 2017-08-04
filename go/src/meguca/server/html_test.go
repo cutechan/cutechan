@@ -75,7 +75,7 @@ func TestOwnedBoardSelection(t *testing.T) {
 	for _, b := range [...]string{"a", "c"} {
 		err := db.WriteBoard(nil, db.BoardConfigs{
 			BoardConfigs: config.BoardConfigs{
-				ID:        b,
+				ID: b,
 			},
 		})
 		if err != nil {

@@ -17,12 +17,12 @@ func TestReader(t *testing.T) {
 	boards := [...]BoardConfigs{
 		{
 			BoardConfigs: config.BoardConfigs{
-				ID:        "a",
+				ID: "a",
 			},
 		},
 		{
 			BoardConfigs: config.BoardConfigs{
-				ID:        "c",
+				ID: "c",
 			},
 		},
 	}

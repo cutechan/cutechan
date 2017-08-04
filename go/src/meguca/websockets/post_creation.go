@@ -5,7 +5,6 @@ package websockets
 import "C"
 
 import (
-	"unsafe"
 	"errors"
 	"meguca/auth"
 	"meguca/common"
@@ -16,6 +15,7 @@ import (
 	"strings"
 	"time"
 	"unicode/utf8"
+	"unsafe"
 )
 
 var (
@@ -35,17 +35,17 @@ type ThreadCreationRequest struct {
 // ReplyCreationRequest contains common fields for both thread and reply
 // creation
 type ReplyCreationRequest struct {
-	Open bool
-	Image      ImageRequest
+	Open  bool
+	Image ImageRequest
 	auth.SessionCreds
 	auth.Captcha
 	Password, Body string
-	Token, Sign string
+	Token, Sign    string
 }
 
 // ImageRequest contains data for allocating an image
 type ImageRequest struct {
-	Token   string
+	Token string
 }
 
 // CreateThread creates a new tread and writes it to the database.
@@ -231,11 +231,11 @@ func (c *Client) submitCaptcha(data []byte) (err error) {
 
 // Retrieve post-related board configurations
 func getBoardConfig(board string) (conf config.BoardConfigs, err error) {
-	 conf = config.GetBoardConfigs(board).BoardConfigs
-	 if conf.ReadOnly {
-		 err = errReadOnly
-	 }
-	 return
+	conf = config.GetBoardConfigs(board).BoardConfigs
+	if conf.ReadOnly {
+		err = errReadOnly
+	}
+	return
 }
 
 // Check post signature

@@ -4,9 +4,9 @@ package assets
 import (
 	"meguca/common"
 	"meguca/config"
-	"strings"
 	"os"
 	"path/filepath"
+	"strings"
 )
 
 const fileCreationFlags = os.O_WRONLY | os.O_CREATE | os.O_EXCL

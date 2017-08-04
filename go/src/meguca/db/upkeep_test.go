@@ -137,7 +137,7 @@ func testBoardNoThreads(t *testing.T) {
 	err := WriteBoard(nil, BoardConfigs{
 		Created: time.Now().Add(-eightDays),
 		BoardConfigs: config.BoardConfigs{
-			ID:        "l",
+			ID: "l",
 		},
 	})
 	if err != nil {
@@ -156,7 +156,7 @@ func testBoardPruningDisabled(t *testing.T) {
 	err := WriteBoard(nil, BoardConfigs{
 		Created: time.Now().Add(-eightDays),
 		BoardConfigs: config.BoardConfigs{
-			ID:        "x",
+			ID: "x",
 		},
 	})
 	if err != nil {
@@ -178,7 +178,7 @@ func testDeleteUnusedBoards(t *testing.T) {
 		err := WriteBoard(nil, BoardConfigs{
 			Created: expired,
 			BoardConfigs: config.BoardConfigs{
-				ID:        id,
+				ID: id,
 			},
 		})
 		if err != nil {

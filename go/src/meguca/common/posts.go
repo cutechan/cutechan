@@ -48,18 +48,18 @@ type Thread struct {
 // Post is a generic post exposed publically through the JSON API. Either OP or
 // reply.
 type Post struct {
-	Editing  bool        `json:"editing,omitempty"`
-	Banned   bool        `json:"banned,omitempty"`
-	Deleted  bool        `json:"deleted,omitempty"`
-	Sage     bool        `json:"-"`
-	ID       uint64      `json:"id"`
-	Time     int64       `json:"time"`
-	Body     string      `json:"body"`
-	Name     string      `json:"name,omitempty"`
-	Trip     string      `json:"trip,omitempty"`
-	Auth     string      `json:"auth,omitempty"`
-	Links    Links       `json:"links,omitempty"`
-	Image    *Image      `json:"image,omitempty"`
+	Editing bool   `json:"editing,omitempty"`
+	Banned  bool   `json:"banned,omitempty"`
+	Deleted bool   `json:"deleted,omitempty"`
+	Sage    bool   `json:"-"`
+	ID      uint64 `json:"id"`
+	Time    int64  `json:"time"`
+	Body    string `json:"body"`
+	Name    string `json:"name,omitempty"`
+	Trip    string `json:"trip,omitempty"`
+	Auth    string `json:"auth,omitempty"`
+	Links   Links  `json:"links,omitempty"`
+	Image   *Image `json:"image,omitempty"`
 }
 
 // StandalonePost is a post view that includes the "op" and "board" fields,

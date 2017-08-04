@@ -11,11 +11,11 @@ func ClosePost(id, op uint64, body string, links [][2]uint64) (
 	err error,
 ) {
 	msg, err := common.EncodeMessage(common.MessageClosePost, struct {
-		ID       uint64           `json:"id"`
-		Links    [][2]uint64      `json:"links,omitempty"`
+		ID    uint64      `json:"id"`
+		Links [][2]uint64 `json:"links,omitempty"`
 	}{
-		ID:       id,
-		Links:    links,
+		ID:    id,
+		Links: links,
 	})
 	if err != nil {
 		return err

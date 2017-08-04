@@ -4,15 +4,15 @@ import (
 	"errors"
 	"html"
 	"io"
+	"meguca/templates"
+	"net/http"
 	"regexp"
 	"strings"
 	"time"
-	"net/http"
-	"meguca/templates"
 )
 
 var (
-	errNoURL = errors.New("no url")
+	errNoURL           = errors.New("no url")
 	errNotSupportedURL = errors.New("url not supported")
 )
 
@@ -27,10 +27,10 @@ var (
 )
 
 type oEmbedDoc struct {
-	Title string `json:"title"`
-	ThumbnailURL string `json:"thumbnail_url"`
-	ThumbnailWidth int `json:"thumbnail_width"`
-	ThumbnailHeight int `json:"thumbnail_height"`
+	Title           string `json:"title"`
+	ThumbnailURL    string `json:"thumbnail_url"`
+	ThumbnailWidth  int    `json:"thumbnail_width"`
+	ThumbnailHeight int    `json:"thumbnail_height"`
 }
 
 // OEmbed-compatible response for some supported sites.
@@ -49,7 +49,7 @@ func serveEmbed(w http.ResponseWriter, r *http.Request) {
 			break
 		}
 	}
-	if (provider != "vlive") {
+	if provider != "vlive" {
 		serveErrorJSON(w, r, errNotSupportedURL)
 		return
 	}

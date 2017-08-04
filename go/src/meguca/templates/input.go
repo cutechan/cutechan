@@ -252,7 +252,7 @@ func streaminput(qw *quicktemplate.Writer, spec inputSpec, lang lang.Pack) {
 			w.label(spec, nil)
 		}
 	}
-	if (!spec.NoBR) {
+	if !spec.NoBR {
 		w.N().S(`<br>`)
 	}
 }

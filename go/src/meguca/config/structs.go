@@ -26,13 +26,13 @@ type Public struct {
 // BoardConfigs stores board-specific configuration
 type BoardConfigs struct {
 	BoardPublic
-	ID            string   `json:"id"`
+	ID string `json:"id"`
 }
 
 // BoardPublic contains publically accessible board-specific configurations
 type BoardPublic struct {
-	Title      string `json:"title"`
-	ReadOnly   bool   `json:"readOnly"`
+	Title    string `json:"title"`
+	ReadOnly bool   `json:"readOnly"`
 }
 
 // BoardConfContainer contains configurations for an individual board as well

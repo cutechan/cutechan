@@ -1,10 +1,10 @@
 package server
 
 import (
-	"fmt"
 	"database/sql"
 	"encoding/json"
 	"errors"
+	"fmt"
 	"meguca/auth"
 	"meguca/cache"
 	"meguca/common"
@@ -16,7 +16,7 @@ import (
 )
 
 var (
-	errNoImage = errors.New("post has no image")
+	errNoImage  = errors.New("post has no image")
 	errInternal = errors.New("internal server error")
 )
 

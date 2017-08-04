@@ -4,58 +4,58 @@ package templates
 
 import (
 	"fmt"
-	"time"
-	"sort"
-	"strings"
-	"strconv"
 	"meguca/auth"
 	"meguca/common"
 	"meguca/config"
 	"meguca/imager/assets"
 	"meguca/lang"
+	"sort"
+	"strconv"
+	"strings"
+	"time"
 )
 
 type PostContext struct {
-	ID uint64
-	TID uint64
-	Index bool
-	OP bool
-	Badge bool
-	Board string
-	Subject string
-	Staff bool
-	Auth string
-	Time string
-	post common.Post
+	ID        uint64
+	TID       uint64
+	Index     bool
+	OP        bool
+	Badge     bool
+	Board     string
+	Subject   string
+	Staff     bool
+	Auth      string
+	Time      string
+	post      common.Post
 	backlinks common.Backlinks
 }
 
 type FileContext struct {
-	HasArtist bool
-	Artist string
-	HasTitle bool
-	LCopy string
-	Title string
-	HasVideo bool
-	HasAudio bool
-	Length string
-	Size string
-	TWidth uint16
-	THeight uint16
-	Width uint16
-	Height uint16
+	HasArtist  bool
+	Artist     string
+	HasTitle   bool
+	LCopy      string
+	Title      string
+	HasVideo   bool
+	HasAudio   bool
+	Length     string
+	Size       string
+	TWidth     uint16
+	THeight    uint16
+	Width      uint16
+	Height     uint16
 	SourcePath string
-	ThumbPath string
+	ThumbPath  string
 }
 
 type PostLinkContext struct {
-	ID string
-	URL string
+	ID    string
+	URL   string
 	Cross bool
 }
 
 type BacklinksContext struct {
-	LReplies string
+	LReplies  string
 	Backlinks []string
 }
 
@@ -63,17 +63,17 @@ func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index
 	ln := lang.Get()
 	postTime := time.Unix(p.Time, 0)
 	return PostContext{
-		ID: p.ID,
-		TID: t.ID,
-		Index: index,
-		OP: t.ID == p.ID,
-		Badge: t.ID == p.ID && index && all,
-		Board: t.Board,
-		Subject: t.Subject,
-		Staff: p.Auth != "",
-		Auth: ln.Common.Posts[p.Auth],
-		Time: readableTime(postTime),
-		post: p,
+		ID:        p.ID,
+		TID:       t.ID,
+		Index:     index,
+		OP:        t.ID == p.ID,
+		Badge:     t.ID == p.ID && index && all,
+		Board:     t.Board,
+		Subject:   t.Subject,
+		Staff:     p.Auth != "",
+		Auth:      ln.Common.Posts[p.Auth],
+		Time:      readableTime(postTime),
+		post:      p,
 		backlinks: bls,
 	}
 }
@@ -136,7 +136,7 @@ func readableTime(t time.Time) string {
 }
 
 func duration(l uint32) string {
-	return fmt.Sprintf("%02d:%02d", l / 60, l % 60)
+	return fmt.Sprintf("%02d:%02d", l/60, l%60)
 }
 
 // Formats a human-readable representation of file size.
@@ -145,10 +145,10 @@ func fileSize(size int) string {
 	switch {
 	case size < 1024:
 		return fmt.Sprintf("%d%s", size, sizes["b"])
-	case size < 1024 * 1024:
-		return fmt.Sprintf("%.2f%s", float32(size) / 1024, sizes["kb"])
+	case size < 1024*1024:
+		return fmt.Sprintf("%.2f%s", float32(size)/1024, sizes["kb"])
 	default:
-		return fmt.Sprintf("%.2f%s", float32(size) / 1024 / 1024, sizes["mb"])
+		return fmt.Sprintf("%.2f%s", float32(size)/1024/1024, sizes["mb"])
 	}
 }
 
@@ -159,21 +159,21 @@ func (ctx *PostContext) File() string {
 	ln := lang.Get()
 	img := ctx.post.Image
 	fileCtx := FileContext{
-		HasArtist: img.Artist != "",
-		Artist: img.Artist,
-		HasTitle: img.Title != "",
-		LCopy: ln.Common.Posts["clickToCopy"],
-		Title: img.Title,
-		HasVideo: img.Video,
-		HasAudio: img.Audio,
-		Length: duration(img.Length),
-		Size: fileSize(img.Size),
-		Width: img.Dims[0],
-		Height: img.Dims[1],
-		TWidth: img.Dims[2],
-		THeight: img.Dims[3],
+		HasArtist:  img.Artist != "",
+		Artist:     img.Artist,
+		HasTitle:   img.Title != "",
+		LCopy:      ln.Common.Posts["clickToCopy"],
+		Title:      img.Title,
+		HasVideo:   img.Video,
+		HasAudio:   img.Audio,
+		Length:     duration(img.Length),
+		Size:       fileSize(img.Size),
+		Width:      img.Dims[0],
+		Height:     img.Dims[1],
+		TWidth:     img.Dims[2],
+		THeight:    img.Dims[3],
 		SourcePath: assets.SourcePath(img.FileType, img.SHA1),
-		ThumbPath: assets.ThumbPath(img.ThumbType, img.SHA1),
+		ThumbPath:  assets.ThumbPath(img.ThumbType, img.SHA1),
 	}
 	return renderMustache("post-file", &fileCtx)
 }
@@ -191,8 +191,8 @@ func renderPostLink(id uint64, cross, index bool) string {
 	}
 	url += "#" + idStr
 	linkCtx := PostLinkContext{
-		ID: idStr,
-		URL: url,
+		ID:    idStr,
+		URL:   url,
 		Cross: cross,
 	}
 	return renderMustache("post-link", &linkCtx)
@@ -221,7 +221,7 @@ func (ctx *PostContext) Backlinks() string {
 
 	ln := lang.Get()
 	linkCtx := BacklinksContext{
-		LReplies: ln.Common.UI["replies"],
+		LReplies:  ln.Common.UI["replies"],
 		Backlinks: rendered,
 	}
 	return renderMustache("post-backlinks", &linkCtx)
@@ -230,9 +230,9 @@ func (ctx *PostContext) Backlinks() string {
 func getPluralFormIndex(langCode string, n int) int {
 	switch langCode {
 	case "ru":
-		if n%10==1 && n%100!=11 {
+		if n%10 == 1 && n%100 != 11 {
 			return 0
-		} else if n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) {
+		} else if n%10 >= 2 && n%10 <= 4 && (n%100 < 10 || n%100 >= 20) {
 			return 1
 		} else {
 			return 2
@@ -255,7 +255,7 @@ func pluralize(num int, plurals []string) string {
 
 // Return pluar form for two numbers.
 func pluralize2(n1, n2 int, plurals []string) string {
-	if n1 + n2 == 1 {
+	if n1+n2 == 1 {
 		return plurals[0]
 	} else {
 		return plurals[1]

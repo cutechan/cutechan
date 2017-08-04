@@ -4,13 +4,13 @@ package server
 
 import (
 	"errors"
-	"time"
 	"meguca/cache"
 	"meguca/common"
 	"meguca/db"
 	"meguca/templates"
 	"net/http"
 	"strconv"
+	"time"
 )
 
 // Contains data of a board page

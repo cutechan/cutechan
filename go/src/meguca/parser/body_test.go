@@ -79,7 +79,7 @@ func TestParseBody(t *testing.T) {
 func writeSampleBoard(t *testing.T) {
 	b := db.BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
-			ID:        "a",
+			ID: "a",
 		},
 	}
 	if err := db.WriteBoard(nil, b); err != nil {

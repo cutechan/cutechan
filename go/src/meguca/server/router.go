@@ -1,12 +1,12 @@
 package server
 
 import (
+	"github.com/dimfeld/httptreemux"
 	"log"
-	"net/http"
 	"meguca/auth"
 	"meguca/util"
 	"meguca/websockets"
-	"github.com/dimfeld/httptreemux"
+	"net/http"
 )
 
 func startWebServer() (err error) {

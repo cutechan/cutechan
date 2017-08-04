@@ -42,11 +42,11 @@ var (
 
 	// MIME types from thumbnailer  to accept
 	allowedMimeTypes = map[string]bool{
-		"image/jpeg":      true,
-		"image/png":       true,
-		"image/gif":       true,
-		"video/webm":      true,
-		"video/mp4":       true,
+		"image/jpeg": true,
+		"image/png":  true,
+		"image/gif":  true,
+		"video/webm": true,
+		"video/mp4":  true,
 		// "application/pdf": true,
 		// "application/ogg": true,
 		// "audio/mpeg":      true,
@@ -57,9 +57,9 @@ var (
 	}
 
 	errTooLarge = errors.New("file too large")
-	errNoVideo = errors.New("no video track")
+	errNoVideo  = errors.New("no video track")
 
-	isTest      bool
+	isTest bool
 )
 
 // NewImageUpload  handles the clients' image (or other file) upload request
@@ -256,12 +256,12 @@ func processFile(
 	// 	img.Dims = [4]uint16{150, 150, 150, 150}
 	// 	thumb.Data = MustAsset("audio.png")
 	// } else {
-		img.Dims = [4]uint16{
-			uint16(src.Width),
-			uint16(src.Height),
-			uint16(thumb.Width),
-			uint16(thumb.Height),
-		}
+	img.Dims = [4]uint16{
+		uint16(src.Width),
+		uint16(src.Height),
+		uint16(thumb.Width),
+		uint16(thumb.Height),
+	}
 	// }
 
 	sum := md5.Sum(data)

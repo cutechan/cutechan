@@ -7,13 +7,13 @@ package templates
 import (
 	"bytes"
 	"fmt"
+	"github.com/hoisie/mustache"
 	h "html"
-	"strings"
-	"sync"
 	"meguca/auth"
 	"meguca/config"
 	"meguca/lang"
-	"github.com/hoisie/mustache"
+	"strings"
+	"sync"
 )
 
 var (

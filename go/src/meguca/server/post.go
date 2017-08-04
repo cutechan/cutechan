@@ -148,9 +148,9 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	body = strings.Replace(body, "\r\n", "\n", -1)
 
 	req = websockets.ReplyCreationRequest{
-		Body: body,
+		Body:  body,
 		Token: f.Get("token"),
-		Sign: f.Get("sign"),
+		Sign:  f.Get("sign"),
 		Captcha: auth.Captcha{
 			CaptchaID: f.Get("captchaID"),
 			Solution:  f.Get("captcha"),
@@ -161,7 +161,7 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	}
 	if token != "" {
 		req.Image = websockets.ImageRequest{
-			Token:   token,
+			Token: token,
 		}
 	}
 

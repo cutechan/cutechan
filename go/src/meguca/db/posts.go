@@ -2,14 +2,14 @@
 package db
 
 import (
-	"time"
 	"database/sql"
 	"database/sql/driver"
 	"errors"
 	"fmt"
-	"strconv"
-	"meguca/common"
 	"meguca/auth"
+	"meguca/common"
+	"strconv"
+	"time"
 )
 
 const (

@@ -74,7 +74,7 @@ func serveStatic(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveWorker(w http.ResponseWriter, r *http.Request) {
-	serveFile(w, r, filepath.FromSlash(common.WebRoot + "/js/worker.js"))
+	serveFile(w, r, filepath.FromSlash(common.WebRoot+"/js/worker.js"))
 }
 
 // Set the banners of a board

@@ -39,7 +39,7 @@ func TestValidateOp(t *testing.T) {
 func writeSampleBoard(t *testing.T) {
 	b := BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
-			ID:        "a",
+			ID: "a",
 		},
 	}
 	if err := WriteBoard(nil, b); err != nil {

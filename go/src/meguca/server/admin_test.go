@@ -56,7 +56,7 @@ func TestServePrivateBoardConfigs(t *testing.T) {
 	config.ClearBoards()
 	conf := db.BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
-			ID:        "a",
+			ID: "a",
 		},
 	}
 	_, err := config.SetBoardConfigs(conf.BoardConfigs)
@@ -88,7 +88,7 @@ func TestBoardConfiguration(t *testing.T) {
 	}
 	init := db.BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
-			ID:        board,
+			ID: board,
 		},
 	}
 	if err := db.WriteBoard(nil, init); err != nil {
@@ -217,7 +217,7 @@ func TestValidateBoardCreation(t *testing.T) {
 func writeSampleBoard(t testing.TB) {
 	b := db.BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
-			ID:        "a",
+			ID: "a",
 		},
 	}
 	if err := db.WriteBoard(nil, b); err != nil {
@@ -382,7 +382,7 @@ func TestDeletePost(t *testing.T) {
 
 	cConfigs := db.BoardConfigs{
 		BoardConfigs: config.BoardConfigs{
-			ID:        "c",
+			ID: "c",
 		},
 	}
 	err := db.WriteBoard(nil, cConfigs)

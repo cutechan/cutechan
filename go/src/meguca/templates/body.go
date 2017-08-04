@@ -8,19 +8,18 @@ import (
 	"regexp"
 	"strconv"
 
-	"github.com/microcosm-cc/bluemonday"
 	b "github.com/cutechan/blackfriday"
+	"github.com/microcosm-cc/bluemonday"
 )
 
-const htmlFlags =
-	b.HTML_SKIP_HTML                 |  // skip preformatted HTML blocks
-	b.HTML_SKIP_STYLE                |  // skip embedded <style> elements
-	b.HTML_SKIP_IMAGES               |  // skip embedded images
+const htmlFlags = b.HTML_SKIP_HTML | // skip preformatted HTML blocks
+	b.HTML_SKIP_STYLE | // skip embedded <style> elements
+	b.HTML_SKIP_IMAGES | // skip embedded images
 	// b.HTML_SKIP_LINKS                |  // skip all links
-	b.HTML_SAFELINK                  |  // only link to trusted protocols
+	b.HTML_SAFELINK | // only link to trusted protocols
 	// b.HTML_NOFOLLOW_LINKS            |  // only link with rel="nofollow"
-	b.HTML_NOREFERRER_LINKS          |  // only link with rel="noreferrer"
-	b.HTML_HREF_TARGET_BLANK         |  // add a blank target
+	b.HTML_NOREFERRER_LINKS | // only link with rel="noreferrer"
+	b.HTML_HREF_TARGET_BLANK | // add a blank target
 	// b.HTML_TOC                       |  // generate a table of contents
 	// b.HTML_OMIT_CONTENTS             |  // skip the main contents (for a standalone table of contents)
 	// b.HTML_COMPLETE_PAGE             |  // generate a complete HTML page
@@ -34,18 +33,17 @@ const htmlFlags =
 	// b.HTML_FOOTNOTE_RETURN_LINKS     |  // generate a link at the end of a footnote to return to the source
 	0
 
-const extensions =
-	b.EXTENSION_NO_INTRA_EMPHASIS          |  // ignore emphasis markers inside words
+const extensions = b.EXTENSION_NO_INTRA_EMPHASIS | // ignore emphasis markers inside words
 	// b.EXTENSION_TABLES                     |  // render tables
-	b.EXTENSION_FENCED_CODE                |  // render fenced code blocks
-	b.EXTENSION_AUTOLINK                   |  // detect embedded URLs that are not explicitly marked
-	b.EXTENSION_STRIKETHROUGH              |  // strikethrough text using ~~test~~
+	b.EXTENSION_FENCED_CODE | // render fenced code blocks
+	b.EXTENSION_AUTOLINK | // detect embedded URLs that are not explicitly marked
+	b.EXTENSION_STRIKETHROUGH | // strikethrough text using ~~test~~
 	// b.EXTENSION_LAX_HTML_BLOCKS            |  // loosen up HTML block parsing rules
 	// b.EXTENSION_SPACE_HEADERS              |  // be strict about prefix header rules
-	b.EXTENSION_HARD_LINE_BREAK            |  // translate newlines into line breaks
+	b.EXTENSION_HARD_LINE_BREAK | // translate newlines into line breaks
 	// b.EXTENSION_TAB_SIZE_EIGHT             |  // expand tabs to eight spaces instead of four
 	// b.EXTENSION_FOOTNOTES                  |  // Pandoc-style footnotes
-	b.EXTENSION_NO_EMPTY_LINE_BEFORE_BLOCK |  // No need to insert an empty line to start a (code, quote, ordered list, unordered list) block
+	b.EXTENSION_NO_EMPTY_LINE_BEFORE_BLOCK | // No need to insert an empty line to start a (code, quote, ordered list, unordered list) block
 	// b.EXTENSION_HEADER_IDS                 |  // specify header IDs  with {#id}
 	// b.EXTENSION_TITLEBLOCK                 |  // Titleblock ala pandoc
 	// b.EXTENSION_AUTO_HEADER_IDS            |  // Create the header ID from the text
@@ -71,18 +69,18 @@ var policy = func() *bluemonday.Policy {
 var Embeds = map[string]*regexp.Regexp{
 	"youtube": regexp.MustCompile(
 		`^https?://(?:[^\.]+\.)?` +
-		`(` +
-		`youtube\.com/watch/?\?(?:.+&)?v=([^&]+)` +
-		`|` +
-		`(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
-		`)`),
+			`(` +
+			`youtube\.com/watch/?\?(?:.+&)?v=([^&]+)` +
+			`|` +
+			`(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
+			`)`),
 	"vlive": regexp.MustCompile(
 		`^https?://(?:(?:www|m)\.)?vlive\.tv/(?:video|embed)/([0-9]+)`),
 }
 
 type renderer struct {
 	links common.Links
-	op uint64
+	op    uint64
 	index bool
 	*b.Html
 }
@@ -146,9 +144,9 @@ func renderBody(p common.Post, op uint64, index bool) string {
 	input := []byte(p.Body)
 	renderer := &renderer{
 		links: p.Links,
-		op: op,
+		op:    op,
 		index: index,
-		Html: b.HtmlRenderer(htmlFlags, "", "").(*b.Html),
+		Html:  b.HtmlRenderer(htmlFlags, "", "").(*b.Html),
 	}
 	unsafe := b.Markdown(input, renderer, extensions)
 	html := policy.SanitizeBytes(unsafe)

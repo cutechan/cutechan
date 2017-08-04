@@ -27,14 +27,14 @@ const (
 
 // Some hardcoded options
 const (
-	ThumbSize = 200
-	MaxWidth = 12000
-	MaxHeight = 12000
-	JPEGQuality = 90
-	SessionExpiry = 5 * 365  // Days
-	DefaultMaxSize = 20  // Megabytes
-	DefaultLang = "en"
-	DefaultCSS = "light"
+	ThumbSize      = 200
+	MaxWidth       = 12000
+	MaxHeight      = 12000
+	JPEGQuality    = 90
+	SessionExpiry  = 5 * 365 // Days
+	DefaultMaxSize = 20      // Megabytes
+	DefaultLang    = "en"
+	DefaultCSS     = "light"
 )
 
 // Available language packs and themes. Change this, when adding any new ones.
@@ -49,6 +49,6 @@ var (
 
 // Server paths
 var (
-	WebRoot string
+	WebRoot      string
 	ImageWebRoot string
 )

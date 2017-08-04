@@ -41,7 +41,7 @@ var (
 
 	// Defaults contains the default server configuration values
 	Defaults = Configs{
-		RootURL:     "http://localhost",
+		RootURL: "http://localhost",
 		Public: Public{
 			DisableUserBoards: true,
 			MaxSize:           common.DefaultMaxSize,

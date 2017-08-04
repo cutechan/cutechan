@@ -38,7 +38,7 @@ var (
 	boardNameValidation = regexp.MustCompile(`^[a-z0-9]{1,10}$`)
 
 	// TODO(Kagami): Forbid spoofing names like "admin" too?
-	reservedBoards      = [...]string{
+	reservedBoards = [...]string{
 		"html", "json", "api", "static", "uploads", "banners", "all",
 	}
 )
@@ -280,7 +280,7 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 			BoardPublic: config.BoardPublic{
 				Title: msg.Title,
 			},
-			ID:        msg.ID,
+			ID: msg.ID,
 		},
 	})
 	switch {
