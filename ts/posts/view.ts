@@ -1,79 +1,80 @@
-import { Thread, Post } from './model'
-import { makeFrag, getID } from '../util'
-import { View, ViewAttrs } from "../base"
-import { ln } from "../lang"
-import { page } from "../state"
-import options from "../options"
-import { THREAD_SEL, POST_BACKLINKS_SEL } from "../vars"
-import { render as renderEmbeds } from "./embed"
+import { View, ViewAttrs } from "../base";
+import { ln } from "../lang";
+import options from "../options";
+import { page } from "../state";
 import {
-  TemplateContext, makePostContext,
-  readableTime, relativeTime, renderPostLink, renderBody,
-} from "../templates"
+  makePostContext, readableTime,
+  relativeTime, renderBody, renderPostLink, TemplateContext,
+} from "../templates";
+import { getID, makeFrag } from "../util";
+import { POST_BACKLINKS_SEL, THREAD_SEL } from "../vars";
+import { render as renderEmbeds } from "./embed";
+import { Post, Thread } from "./model";
 
 /**
  * Base post view class
  */
 export default class PostView extends View<Post> {
   constructor(model: Post, el: HTMLElement | null) {
-    const attrs: ViewAttrs = { model }
+    const attrs: ViewAttrs = { model };
 
-    const thread = new Thread(model)
-    const index = thread.id !== page.thread
-    const all = page.board === "all"
-    attrs.el = el || makePostContext(thread, model, null, index, all).renderNode()
+    const thread = new Thread(model);
+    const index = thread.id !== page.thread;
+    const all = page.board === "all";
+    attrs.el = el || makePostContext(thread, model, null, index, all).renderNode();
 
-    super(attrs)
+    super(attrs);
 
-    this.model.view = this
+    this.model.view = this;
     if (!el) {
-      this.afterRender()
+      this.afterRender();
     }
   }
 
   // Apply client-specific formatting to post rendered on server-side.
   public afterRender() {
-    this.renderTime()
-    renderEmbeds(this.el)
+    this.renderTime();
+    renderEmbeds(this.el);
   }
 
   // Renders a time element. Can be either absolute or relative.
   public renderTime() {
-    let text = readableTime(this.model.time)
-    const el = this.el.querySelector("time")
+    let text = readableTime(this.model.time);
+    const el = this.el.querySelector("time");
     if (options.relativeTime) {
-      el.setAttribute("title", text)
-      text = relativeTime(this.model.time)
+      el.setAttribute("title", text);
+      text = relativeTime(this.model.time);
     }
-    el.textContent = text
+    el.textContent = text;
   }
 
   // Render links to posts linking to this post.
   public renderBacklinks() {
-    const index = !page.thread
-    const rendered = Object.keys(this.model.backlinks).map(id => {
-      const op = this.model.backlinks[id]
-      const cross = op !== this.model.op
-      return renderPostLink(+id, cross, index)
-    })
-    if (!rendered.length) return
+    const index = !page.thread;
+    const rendered = Object.keys(this.model.backlinks).map((id) => {
+      const op = this.model.backlinks[id];
+      const cross = op !== this.model.op;
+      return renderPostLink(+id, cross, index);
+    });
+    if (!rendered.length) return;
 
     const html = new TemplateContext("post-backlinks", {
-      LReplies: ln.Common.UI["replies"],
       Backlinks: rendered,
-    }).render()
+      LReplies: ln.Common.UI.replies,
+    }).render();
 
-    const container = this.el.querySelector(POST_BACKLINKS_SEL)
-    container.innerHTML = html
+    const container = this.el.querySelector(POST_BACKLINKS_SEL);
+    container.innerHTML = html;
   }
 
   public removeThread() {
-    this.el.closest(THREAD_SEL).remove()
+    this.el.closest(THREAD_SEL).remove();
   }
 
   // Render "USER WAS BANNED FOR THIS POST" message.
   // TODO(Kagami): Remove?
   public renderBanned() {
+    /* skip */
   }
 
   // Render the sticky status of a thread OP.
@@ -93,40 +94,40 @@ export default class PostView extends View<Post> {
   // Inserts PostView back into the thread ordered by id.
   public reposition() {
     // Insert before first post with greater ID.
-    const { id, op } = this.model,
-      sec = document.querySelector(`section[data-id="${op}"]`)
+    const { id, op } = this.model;
+    const sec = document.querySelector(`section[data-id="${op}"]`);
     if (!sec) {
-      return
+      return;
     }
-    for (let el of Array.from(sec.children)) {
+    for (const el of Array.from(sec.children)) {
       switch (el.tagName) {
         case "ARTICLE":
           if (getID(el) > id) {
-            el.before(this.el)
-            return
+            el.before(this.el);
+            return;
           }
-          break
+          break;
         case "ASIDE": // On board pages
-          el.before(this.el)
-          return
+          el.before(this.el);
+          return;
       }
     }
     // This post should be last or no posts in thread.
-    sec.append(this.el)
+    sec.append(this.el);
   }
 
   // Check if we can see the post or have scrolled past it.
   public scrolledPast() {
-    const rect = this.el.getBoundingClientRect()
-    const viewW = document.body.clientWidth
-    const viewH = document.body.clientHeight
-    return rect.bottom < viewH && rect.left > 0 && rect.left < viewW
+    const rect = this.el.getBoundingClientRect();
+    const viewW = document.body.clientWidth;
+    const viewH = document.body.clientHeight;
+    return rect.bottom < viewH && rect.left > 0 && rect.left < viewW;
   }
 
   // Replace the current body with a reparsed fragment.
   public reparseBody() {
-    const bq = this.el.querySelector("blockquote")
-    bq.innerHTML = ""
-    bq.append(makeFrag(renderBody(this.model)))
+    const bq = this.el.querySelector("blockquote");
+    bq.innerHTML = "";
+    bq.append(makeFrag(renderBody(this.model)));
   }
 }

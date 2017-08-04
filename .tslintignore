@@ -6,4 +6,3 @@
 --exclude ts/posts/collection.ts
 --exclude ts/posts/menu.ts
 --exclude ts/posts/hide.ts
---exclude ts/posts/view.ts
