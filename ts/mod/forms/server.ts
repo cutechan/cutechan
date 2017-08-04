@@ -1,38 +1,38 @@
-import { AccountForm } from "./common"
-import { makeFrag } from "../../util"
+import { makeFrag } from "../../util";
+import { AccountForm } from "./common";
 
 // Panel for server administration controls such as global server settings
 export class ServerConfigForm extends AccountForm {
   constructor() {
     super({
-      tag: "form",
       class: "wide-fields", // The panel needs much larger text inputs
-    })
-    this.render()
+      tag: "form",
+    });
+    this.render();
   }
 
   // Request current configuration and render the panel
   protected async render() {
     const res = await fetch("/html/configure-server", {
-      method: "POST",
       credentials: "include",
-    })
+      method: "POST",
+    });
     switch (res.status) {
       case 200:
-        this.el.append(makeFrag(await res.text()))
-        super.render()
-        break
+        this.el.append(makeFrag(await res.text()));
+        super.render();
+        break;
       case 403:
-        this.handle403()
-        break
+        this.handle403();
+        break;
       default:
-        throw await res.text()
+        throw await res.text();
     }
   }
 
   // Extract and send the configuration struct from the form
   protected send() {
-    this.postResponse("/api/configure-server", req =>
-      this.extractForm(req))
+    this.postResponse("/api/configure-server", (req) =>
+      this.extractForm(req));
   }
 }

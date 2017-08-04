@@ -1,18 +1,18 @@
-import { AccountForm } from "./common"
-import { validatePasswordMatch } from "../common"
+import { validatePasswordMatch } from "../common";
+import { AccountForm } from "./common";
 
 // View for changing a password
 export class PasswordChangeForm extends AccountForm {
   constructor() {
-    super({ tag: "form" })
+    super({ tag: "form" });
     this.renderPublicForm("/html/change-password").then(() =>
-      validatePasswordMatch(this.el, "newPassword", "repeat"))
+      validatePasswordMatch(this.el, "newPassword", "repeat"));
   }
 
   protected send() {
-    this.postResponse("/api/change-password", req => {
-      req["old"] = this.inputElement("oldPassword").value
-      req["new"] = this.inputElement("newPassword").value
-    })
+    this.postResponse("/api/change-password", (req) => {
+      req.old = this.inputElement("oldPassword").value;
+      req.new = this.inputElement("newPassword").value;
+    });
   }
 }

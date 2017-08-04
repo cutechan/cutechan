@@ -1,3 +1,3 @@
-export * from "./boards"
-export * from "./password"
-export * from "./server"
+export * from "./boards";
+export * from "./password";
+export * from "./server";
