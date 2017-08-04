@@ -2,14 +2,14 @@
  * IndexedDB database controller.
  */
 
-const DB_VERSION = 2
-let db = null as IDBDatabase
+const DB_VERSION = 2;
+let db = null as IDBDatabase;
 
 // FF IndexedDB implementation is broken in private mode, see:
 // <https://bugzilla.mozilla.org/show_bug.cgi?id=781982>.
 // Catch the error and NOOP all further DB requests.
-const FF_PRIVATE_MODE_MSG = "A mutation operation was attempted on a database that did not allow mutations."
-let ffPrivateMode = false
+const FF_PRIVATE_MODE_MSG = "A mutation operation was attempted on a database that did not allow mutations.";
+let ffPrivateMode = false;
 
 // Expiring post ID object stores.
 const postStores = [
@@ -17,180 +17,182 @@ const postStores = [
   "hidden",    // Posts hidden by client
   "seen",      // Replies to the user's posts that have already been seen
   "seenPost",  // Posts that the user has viewed or scrolled past
-]
+];
 
 // Store for caching embed metadata.
-const embedStore = "embedCache"
+const embedStore = "embedCache";
 
 // Open a connection to the IndexedDB database.
 export function init(): Promise<void> {
   return new Promise<void>((resolve, reject) => {
-    const r = indexedDB.open("cutechan", DB_VERSION)
+    const r = indexedDB.open("cutechan", DB_VERSION);
     // Prepare for operation.
     r.onsuccess = () => {
-      db = r.result
-      db.onerror = logErr
+      db = r.result;
+      db.onerror = logErr;
       // Reload this tab, if another tab requires a DB upgrade.
       db.onversionchange = () => {
-        db.close()
-        location.reload(true)
-      }
+        db.close();
+        location.reload(true);
+      };
       // Delay for quicker starts.
       setTimeout(() => {
 
         // No need to delete IDs because they consume quite a little of
         // disk space and threads might be alive for several years so it
         // doesn't make sense to show old posts as unread again.
-        //for (let name of postStores) {
-        //  deleteExpired(name)
-        //}
+        //
+        // for (let name of postStores) {
+        //   deleteExpired(name)
+        // }
 
         // On the other hand, no need to store embed metadata for a long
         // time, it's just a cache.
-        deleteExpired(embedStore)
+        deleteExpired(embedStore);
 
-      }, 10000)
-      resolve()
-    }
-    r.onupgradeneeded = upgradeDB
+      }, 10000);
+      resolve();
+    };
+    r.onupgradeneeded = upgradeDB;
     r.onerror = () => {
-      reject(r.error)
-    }
-  }).catch(err => {
+      reject(r.error);
+    };
+  }).catch((err) => {
     if (err.message === FF_PRIVATE_MODE_MSG) {
-      ffPrivateMode = true
+      ffPrivateMode = true;
     } else {
-      throw err
+      throw err;
     }
-  })
+  });
 }
 
 // Upgrade or initialize the database.
 function upgradeDB(event: IDBVersionChangeEvent) {
-  db = (event.target as any).result
-  let s = null as IDBObjectStore
+  db = (event.target as any).result;
+  let s = null as IDBObjectStore;
   switch (event.oldVersion) {
   case 0:
     for (const name of postStores) {
-      s = db.createObjectStore(name, {autoIncrement: true})
-      s.createIndex("expires", "expires")
-      s.createIndex("op", "op")
+      s = db.createObjectStore(name, {autoIncrement: true});
+      s.createIndex("expires", "expires");
+      s.createIndex("op", "op");
     }
-    s = db.createObjectStore(embedStore, {keyPath: "url"})
-    s.createIndex("expires", "expires")
-    break
+    s = db.createObjectStore(embedStore, {keyPath: "url"});
+    s.createIndex("expires", "expires");
+    break;
   case 1:
-    s = db.createObjectStore(embedStore, {keyPath: "url"})
-    s.createIndex("expires", "expires")
-    break
+    s = db.createObjectStore(embedStore, {keyPath: "url"});
+    s.createIndex("expires", "expires");
+    break;
   }
 }
 
 // Helper for logging errors with event-based error passing.
 function logErr(err: ErrorEvent) {
-  console.error(err)
+  // tslint:disable-next-line:no-console
+  console.error(err);
 }
 
 // Delete expired records from object store.
 function deleteExpired(name: string) {
   const req = newTransaction(name, true)
     .index("expires")
-    .openCursor(IDBKeyRange.upperBound(Date.now()))
+    .openCursor(IDBKeyRange.upperBound(Date.now()));
 
-  req.onsuccess = event => {
-    const cursor = (event.target as any).result as IDBCursor
-    if (!cursor) return
-    cursor.delete()
-    cursor.continue()
-  }
+  req.onsuccess = (event) => {
+    const cursor = (event.target as any).result as IDBCursor;
+    if (!cursor) return;
+    cursor.delete();
+    cursor.continue();
+  };
 
-  req.onerror = logErr
+  req.onerror = logErr;
 }
 
 // Helper for initiating transactions on a single object store
 function newTransaction(store: string, write: boolean): IDBObjectStore {
-  const t = db.transaction(store, write ? "readwrite" : "readonly")
-  t.onerror = logErr
-  return t.objectStore(store)
+  const t = db.transaction(store, write ? "readwrite" : "readonly");
+  t.onerror = logErr;
+  return t.objectStore(store);
 }
 
 // Read the contents of a postStore for specific threads into an array
 export function readIDs(store: string, ...ops: number[]): Promise<number[]> {
-  if (ffPrivateMode || !ops.length) return Promise.resolve([])
+  if (ffPrivateMode || !ops.length) return Promise.resolve([]);
   ops.sort((a, b) =>
-    a - b)
+    a - b);
   return new Promise<number[]>((resolve, reject) => {
-    const ids: number[] = [],
-      req = newTransaction(store, false)
+    const ids: number[] = [];
+    const req = newTransaction(store, false)
         .index("op")
-        .openCursor(IDBKeyRange.bound(ops[0], ops[ops.length - 1]))
+        .openCursor(IDBKeyRange.bound(ops[0], ops[ops.length - 1]));
 
-    req.onerror = reject
+    req.onerror = reject;
 
-    req.onsuccess = event => {
-      const cursor = (event as any).target.result as IDBCursorWithValue
+    req.onsuccess = (event) => {
+      const cursor = (event as any).target.result as IDBCursorWithValue;
       if (cursor) {
         if (ops.includes(cursor.value.op)) {
-          ids.push(cursor.value.id)
+          ids.push(cursor.value.id);
         }
-        cursor.continue()
+        cursor.continue();
       } else {
-        resolve(ids)
+        resolve(ids);
       }
-    }
-  })
+    };
+  });
 }
 
 // Retrieve an object from a specific object store.
 function getObj<T>(store: string, id: any): Promise<T> {
-  if (ffPrivateMode) return Promise.resolve({} as T)
+  if (ffPrivateMode) return Promise.resolve({} as T);
   return new Promise<T>((resolve, reject) => {
-    const t = newTransaction(store, false)
-    const req = t.get(id)
+    const t = newTransaction(store, false);
+    const req = t.get(id);
     req.onsuccess = () => {
       if (!req.result) {
-        reject(new Error())
-        return
+        reject(new Error());
+        return;
       }
-      resolve(req.result)
-    }
+      resolve(req.result);
+    };
     req.onerror = () => {
-      reject(req.error)
-    }
-  })
+      reject(req.error);
+    };
+  });
 }
 
 // Insert object.
 function addObj(store: string, obj: any) {
-  newTransaction(store, true).add(obj).onerror = logErr
+  newTransaction(store, true).add(obj).onerror = logErr;
 }
 
 // Insert or update object.
 function putObj(store: string, obj: any) {
-  newTransaction(store, true).put(obj).onerror = logErr
+  newTransaction(store, true).put(obj).onerror = logErr;
 }
 
 // Asynchronously insert a new expiring post id object into a postStore.
 export function storeID(store: string, id: number, op: number, expiry: number) {
-  if (ffPrivateMode) return
-  addObj(store, {id, op, expires: Date.now() + expiry })
+  if (ffPrivateMode) return;
+  addObj(store, {id, op, expires: Date.now() + expiry });
 }
 
 // Clear the target object store asynchronously.
 export function clearStore(store: string) {
-  if (ffPrivateMode) return
-  const trans = newTransaction(store, true)
-  const req = trans.clear()
-  req.onerror = logErr
+  if (ffPrivateMode) return;
+  const trans = newTransaction(store, true);
+  const req = trans.clear();
+  req.onerror = logErr;
 }
 
 // TODO(Kagami): Normalize urls, `youtube.com/watch?v=xxx` and
 // `youtu.be/xxx` should be stored under the same key.
 export function getEmbed<T>(url: string): Promise<T> {
-  return getObj<T>(embedStore, url)
+  return getObj<T>(embedStore, url);
 }
 
 export function storeEmbed(url: string, obj: any, expiry: number) {
-  const expires = Date.now() + expiry
-  return putObj(embedStore, {...obj, url, expires})
+  const expires = Date.now() + expiry;
+  return putObj(embedStore, {...obj, url, expires});
 }

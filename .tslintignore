@@ -14,8 +14,3 @@
 --exclude ts/posts/posting/index.ts
 --exclude ts/posts/posting/view.ts
 --exclude ts/posts/view.ts
---exclude ts/db/index.ts
---exclude ts/base/index.ts
---exclude ts/base/view.ts
---exclude ts/base/header.ts
---exclude ts/client/index.ts
