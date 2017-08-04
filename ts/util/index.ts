@@ -145,9 +145,7 @@ export function firstChild(
   el: Element,
   check: (el: Element) => boolean,
 ): HTMLElement | null {
-  // tslint:disable-next-line:prefer-for-of
-  for (let i = 0; i < el.children.length; i++) {
-    const ch = el.children[i];
+  for (const ch of Array.from(el.children)) {
     if (check(ch)) {
       return ch as HTMLElement;
     }

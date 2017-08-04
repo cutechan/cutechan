@@ -95,11 +95,9 @@ export default class PostView extends View<Post> {
   public reposition() {
     // Insert before first post with greater ID.
     const { id, op } = this.model;
-    const sec = document.querySelector(`section[data-id="${op}"]`);
-    if (!sec) {
-      return;
-    }
-    for (const el of Array.from(sec.children)) {
+    const thread = document.getElementById(`thread${op}`);
+    if (!thread) return;
+    for (const el of Array.from(thread.children)) {
       switch (el.tagName) {
         case "ARTICLE":
           if (getID(el) > id) {
@@ -113,7 +111,7 @@ export default class PostView extends View<Post> {
       }
     }
     // This post should be last or no posts in thread.
-    sec.append(this.el);
+    thread.append(this.el);
   }
 
   // Check if we can see the post or have scrolled past it.
