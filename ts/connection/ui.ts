@@ -2,7 +2,7 @@ import { syncStatus } from "./state"
 import { handlers, message } from "./messages"
 
 const syncEl = document.getElementById("sync-status")
-const syncedCount = document.getElementById("sync-counter")
+// const syncedCount = document.getElementById("sync-counter")
 
 function statusToClass(status: syncStatus) {
   switch (status) {
@@ -23,9 +23,9 @@ export function renderStatus(status: syncStatus) {
 
 // Set synced IP count to n
 export function renderSyncCount(n: number) {
-  syncedCount.innerHTML = n
-    ? `${n} <i class="fa fa-user"></i>`
-    : ""
+  // syncedCount.innerHTML = n
+  //   ? `${n} <i class="fa fa-user"></i>`
+  //   : ""
 }
 
 handlers[message.syncCount] = renderSyncCount
