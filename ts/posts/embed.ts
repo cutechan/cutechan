@@ -1,55 +1,55 @@
-import { POST_EMBED_SEL, EMBED_CACHE_EXPIRY_MS } from "../vars"
-import { getEmbed, storeEmbed } from "../db"
-import { fetchJSON } from "../util"
+import { getEmbed, storeEmbed } from "../db";
+import { fetchJSON } from "../util";
+import { EMBED_CACHE_EXPIRY_MS, POST_EMBED_SEL } from "../vars";
 
 interface OEmbedDoc {
-  title: string
-  thumbnail_url: string,
-  thumbnail_width: number,
-  thumbnail_height: number,
+  title: string;
+  thumbnail_url: string;
+  thumbnail_width: number;
+  thumbnail_height: number;
 }
 
 const oEmbedHosts = {
-  youtube: "https://noembed.com/embed",
   vlive: "/api/embed",
-}
+  youtube: "https://noembed.com/embed",
+};
 
 const embedIcons = {
-  youtube: "fa fa-youtube-play",
   vlive: "fa fa-hand-peace-o",
-}
+  youtube: "fa fa-youtube-play",
+};
 
 function fetchEmbed(url: string, provider: string): Promise<OEmbedDoc> {
-  url = `${oEmbedHosts[provider]}?url=${url}`
-  return fetchJSON(url)
+  url = `${oEmbedHosts[provider]}?url=${url}`;
+  return fetchJSON(url);
 }
 
 function cachedFetch(url: string, provider: string): Promise<OEmbedDoc> {
   return getEmbed<OEmbedDoc>(url).catch(() => {
-    return fetchEmbed(url, provider).then(res => {
-      storeEmbed(url, res, EMBED_CACHE_EXPIRY_MS)
-      return res
-    })
-  })
+    return fetchEmbed(url, provider).then((res) => {
+      storeEmbed(url, res, EMBED_CACHE_EXPIRY_MS);
+      return res;
+    });
+  });
 }
 
 // Additional rendering of embedded media link.
 function renderLink(link: HTMLLinkElement) {
-  const provider = link.dataset.provider
-  cachedFetch(link.href, provider).then(res => {
-    const icon = document.createElement("i")
-    icon.className = `post-embed-icon ${embedIcons[provider]}`
-    link.firstChild.replaceWith(icon, " " + res.title)
-    link.dataset.thumbnail_url = res.thumbnail_url
-    link.dataset.thumbnail_width = res.thumbnail_width.toString()
-    link.dataset.thumbnail_height = res.thumbnail_height.toString()
-  })
+  const provider = link.dataset.provider;
+  cachedFetch(link.href, provider).then((res) => {
+    const icon = document.createElement("i");
+    icon.className = `post-embed-icon ${embedIcons[provider]}`;
+    link.firstChild.replaceWith(icon, " " + res.title);
+    link.dataset.thumbnail_url = res.thumbnail_url;
+    link.dataset.thumbnail_width = res.thumbnail_width.toString();
+    link.dataset.thumbnail_height = res.thumbnail_height.toString();
+  });
 }
 
 // Post-render embeddable links.
 export function render(el: HTMLElement) {
   for (const link of el.querySelectorAll(POST_EMBED_SEL)) {
-    renderLink(link as HTMLLinkElement)
+    renderLink(link as HTMLLinkElement);
   }
 }
 

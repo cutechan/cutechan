@@ -1,8 +1,0 @@
---exclude ts/posts/popup.ts
---exclude ts/posts/hover.ts
---exclude ts/posts/images.ts
---exclude ts/posts/index.ts
---exclude ts/posts/embed.ts
---exclude ts/posts/collection.ts
---exclude ts/posts/menu.ts
---exclude ts/posts/hide.ts

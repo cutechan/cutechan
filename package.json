@@ -9,7 +9,7 @@
     "url": "https://github.com/cutechan/cutechan.git"
   },
   "scripts": {
-    "test": "xargs -a .tslintignore tslint '{app,ts/**/*}.ts?(x)'"
+    "test": "tslint '{app,ts/**/*}.ts?(x)'"
   },
   "browserslist": [
     "last 2 versions",
