@@ -52,7 +52,7 @@ caching of generated posts.
 	{% code idStr := strconv.FormatUint(t.ID, 10) %}
 	{% code bls := extractBacklinks(1<<10, t) %}
 	<section class="threads-container" id="thread-container">
-		<article class="thread thread_single" data-id="{%s idStr %}">
+		<article class="thread thread_single" data-id="{%s idStr %}"{%= counterStyle(t, last100) %}>
 			{%= renderThreadPosts(t, bls, false, false, last100) %}
 		</article>
 		<script id="post-data" type="application/json">
@@ -63,6 +63,14 @@ caching of generated posts.
 	<script id="board-configs" type="application/json">
 		{%z= config.GetBoardConfigs(t.Board).JSON %}
 	</script>
+{% endstripspace %}{% endfunc %}
+
+Shift post numbers for incomplete thread (+1 for OP post).
+{% func counterStyle(t common.Thread, last100 bool) %}{% stripspace %}
+	{% if last100 && t.PostCtr > 101 %}
+		{% code shift := int(t.PostCtr - 101) %}
+		{% space %}style="counter-reset: p{% space %}{%d shift %}"
+	{% endif %}
 {% endstripspace %}{% endfunc %}
 
 Common functionality between index board pages and threads pages
