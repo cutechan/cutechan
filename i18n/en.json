@@ -36,6 +36,10 @@
       "Login",
       ""
     ],
+    "popupBackdrop": [
+      "Popup backdrop",
+      "Close popups by clicking on background"
+    ],
     "imageHover": [
       "Media hover expansion",
       "Display media previews on hover"

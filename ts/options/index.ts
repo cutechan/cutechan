@@ -2,15 +2,16 @@
  * User-set settings storage and change handling.
  */
 
+export * from "./specs";
+
 import { page, posts } from "../state";
 import { ChangeEmitter, emitChanges, trigger } from "../util";
 import { RELATIVE_TIME_PERIOD_SECS } from "../vars";
 import { OptionSpec, optionType, specs } from "./specs";
 
-export * from "./specs";
-
 interface Options extends ChangeEmitter {
   theme: string;
+  popupBackdrop: boolean;
   imageHover: boolean;
   relativeTime: boolean;
   notification: boolean;

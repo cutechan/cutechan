@@ -38,6 +38,10 @@ export const specs: { [id: string]: OptionSpec } = {
     },
     type: optionType.checkbox,
   },
+  // Backdrop clicking
+  popupBackdrop: {
+    default: true,
+  },
   // Image hover expansion
   imageHover: {
     default: true,

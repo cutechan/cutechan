@@ -170,6 +170,7 @@ var optionSpecs = [...][]inputSpec{
 			Type:    _select,
 			Options: common.Themes,
 		},
+		{ID: "popupBackdrop"},
 		{ID: "imageHover"},
 		{ID: "relativeTime"},
 		{ID: "notification"},
