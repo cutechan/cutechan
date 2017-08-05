@@ -22,7 +22,12 @@ const embedIcons = {
 
 function fetchEmbed(url: string, provider: string): Promise<OEmbedDoc> {
   url = `${oEmbedHosts[provider]}?url=${url}`;
-  return fetchJSON(url);
+  return fetchJSON<OEmbedDoc>(url).then((res) => {
+    // Should actually fail because of 400+ status code but some
+    // services (e.g. noembed) doesn't set it.
+    if (res.error) throw new Error(res.error);
+    return res;
+  });
 }
 
 function cachedFetch(url: string, provider: string): Promise<OEmbedDoc> {
@@ -32,7 +37,6 @@ function cachedFetch(url: string, provider: string): Promise<OEmbedDoc> {
     return res;
   }).catch(() => {
     return fetchEmbed(url, provider).then((res) => {
-      if (res.error) throw new Error(res.error);
       storeEmbed(url, res, EMBED_CACHE_EXPIRY_MS);
       return res;
     });
