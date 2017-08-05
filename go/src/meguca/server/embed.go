@@ -28,6 +28,9 @@ var (
 
 type oEmbedDoc struct {
 	Title           string `json:"title"`
+	HTML            string `json:"html"`
+	Width           int    `json:"width"`
+	Height          int    `json:"height"`
 	ThumbnailURL    string `json:"thumbnail_url"`
 	ThumbnailWidth  int    `json:"thumbnail_width"`
 	ThumbnailHeight int    `json:"thumbnail_height"`
@@ -63,14 +66,11 @@ func serveEmbed(w http.ResponseWriter, r *http.Request) {
 	serveJSON(w, r, "", doc)
 }
 
-func makeCleanVliveURL(url string) string {
-	videoSeq := proxiedEmbeds["vlive"].FindStringSubmatch(url)[1]
-	return "http://www.vlive.tv/video/" + videoSeq
-}
-
 func getVliveEmbed(url string) (doc oEmbedDoc, err error) {
+	videoSeq := proxiedEmbeds["vlive"].FindStringSubmatch(url)[1]
+	url = "http://www.vlive.tv/video/" + videoSeq
+
 	client := &http.Client{Timeout: time.Second * 5}
-	url = makeCleanVliveURL(url)
 	resp, err := client.Get(url)
 	if err != nil || resp.StatusCode != 200 {
 		err = errInternal
@@ -94,12 +94,19 @@ func getVliveEmbed(url string) (doc oEmbedDoc, err error) {
 	title := string(titleMatch[1])
 	title = strings.TrimPrefix(title, "[V LIVE] ")
 	title = html.UnescapeString(title)
+	doc.Title = title
+
+	doc.HTML = `<iframe src="http://www.vlive.tv/embed/` +
+		videoSeq + `"></iframe>`
+	// TODO(Kagami): This is not quite correct.
+	doc.Width = 1280
+	doc.Height = 720
+
 	thumb := string(thumbMatch[1])
 	thumb = strings.TrimSuffix(thumb, "_play")
-
-	doc.Title = title
 	doc.ThumbnailURL = thumb
 	doc.ThumbnailWidth = 720
 	doc.ThumbnailHeight = 405
+
 	return
 }

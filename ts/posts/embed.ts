@@ -79,7 +79,7 @@ function renderLink(link: HTMLLinkElement) {
     const icon = document.createElement("i");
     icon.className = `post-embed-icon ${embedIcons[provider]}`;
     link.firstChild.replaceWith(icon, " " + res.title);
-    link.dataset.html = res.html.trim();
+    link.dataset.html = res.html;
     link.dataset.width = res.width.toString();
     link.dataset.height = res.height.toString();
     link.dataset.thumbnail_url = res.thumbnail_url;

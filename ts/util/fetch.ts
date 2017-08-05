@@ -44,16 +44,9 @@ export function uncachedGET(url: string): Promise<Response> {
 export function fetchJSON<T>(url: string): Promise<T> {
   return fetch(url).then((res) => {
     if (!res.ok) {
-      const type = res.headers.get("Content-Type");
-      if (type === "application/json") {
-        return res.json().then((data) => {
-          throw new Error(data.error);
-        });
-      } else {
-        return res.text().then((text) => {
-          throw new Error(text);
-        });
-      }
+      return res.text().then((text) => {
+        throw new Error(text);
+      });
     }
     return res.json();
   });

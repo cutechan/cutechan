@@ -17,7 +17,7 @@ type ReqFn = (
 
 function handleErr(res: Response): Promise<Dict> {
   const type = res.headers.get("Content-Type");
-  if (type === "application/json") {
+  if (type.startsWith("application/json")) {
     return res.json().then((data) => {
       throw new Error(data.message || ln.UI.unknownErr);
     });
