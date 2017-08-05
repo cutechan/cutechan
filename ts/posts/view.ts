@@ -4,9 +4,9 @@ import options from "../options";
 import { page } from "../state";
 import {
   makePostContext, readableTime,
-  relativeTime, renderBody, renderPostLink, TemplateContext,
+  relativeTime, renderPostLink, TemplateContext,
 } from "../templates";
-import { getID, makeFrag } from "../util";
+import { getID } from "../util";
 import { POST_BACKLINKS_SEL, THREAD_SEL } from "../vars";
 import { render as renderEmbeds } from "./embed";
 import { Post, Thread } from "./model";
@@ -120,12 +120,5 @@ export default class PostView extends View<Post> {
     const viewW = document.body.clientWidth;
     const viewH = document.body.clientHeight;
     return rect.bottom < viewH && rect.left > 0 && rect.left < viewW;
-  }
-
-  // Replace the current body with a reparsed fragment.
-  public reparseBody() {
-    const bq = this.el.querySelector("blockquote");
-    bq.innerHTML = "";
-    bq.append(makeFrag(renderBody(this.model)));
   }
 }
