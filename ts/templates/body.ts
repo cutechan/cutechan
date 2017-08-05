@@ -88,20 +88,17 @@ const embeds = {
     String.raw`https?://(?:(?:www|m)\.)?vlive\.tv/(?:video|embed)/([0-9]+)`,
   youtube:
     String.raw`https?://(?:[^\.]+\.)?` +
-    String.raw`(` +
-    String.raw`youtube\.com/watch/?\?(?:.+&)?v=([a-zA-Z0-9_-]+)` +
-    String.raw`|` +
-    String.raw`(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
-    String.raw`)`,
+    String.raw`(?:youtube\.com/watch/?\?(?:.+&)?v=|youtu\.be/|youtube\.com/embed/)` +
+    String.raw`([a-zA-Z0-9_-]+)`,
 };
-export const bodyEmbeds = (() => {
+export const bodyEmbeds: { [key: string]: RegExp } = (() => {
   const m = {};
   for (const provider of Object.keys(embeds)) {
     m[provider] = new RegExp(embeds[provider]);
   }
   return m;
 })();
-export const linkEmbeds = (() => {
+export const linkEmbeds: { [key: string]: RegExp } = (() => {
   const m = {};
   for (const provider of Object.keys(embeds)) {
     m[provider] = new RegExp("^" + embeds[provider]);

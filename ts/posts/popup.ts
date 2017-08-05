@@ -43,7 +43,6 @@ class Popup {
 
   constructor(args: PopupArgs) {
     this.args = args;
-    if (args.url === lastUrl) return;
     lastUrl = this.args.url;
 
     const { width, height } = args;
@@ -64,20 +63,20 @@ class Popup {
       media.addEventListener("volumechange", () => {
         options.volume = media.volume;
       });
-      media.width = rect.width;
       media.src = args.url;
     } else if (args.embed) {
-      const html = args.html.replace(/feature=oembed/, "autoplay=1");
-      const iframe = this.itemEl = makeNode(html) as any;
+      const iframe = this.itemEl = makeNode(args.html) as any;
+      iframe.height = rect.height;
       iframe.setAttribute("allowfullscreen", "");
+      iframe.setAttribute("frameborder", "0");
       iframe.setAttribute("referrerpolicy", "no-referrer");
       // Restrict iframe access to the page. Improves privacy.
       iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
     } else {
       this.itemEl = document.createElement("img") as any;
-      this.itemEl.width = rect.width;
       this.itemEl.src = args.url;
     }
+    this.itemEl.width = rect.width;
     this.itemEl.className = "popup-item";
     this.el.appendChild(this.itemEl);
   }
@@ -177,6 +176,7 @@ function open(e: MouseEvent) {
   const target = e.target as HTMLElement;
   if (e.button !== 0) return;
   if (!target.matches) return;
+  e.preventDefault();
 
   const args = {
     video: false,
@@ -214,7 +214,7 @@ function open(e: MouseEvent) {
     return;
   }
 
-  e.preventDefault();
+  if (args.url === lastUrl) return;
   new Popup(args).attach();
 }
 

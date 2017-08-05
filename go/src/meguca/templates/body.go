@@ -70,11 +70,8 @@ var policy = func() *bluemonday.Policy {
 var embeds = map[string]string{
 	"vlive": `https?://(?:(?:www|m)\.)?vlive\.tv/(?:video|embed)/([0-9]+)`,
 	"youtube": `https?://(?:[^\.]+\.)?` +
-		`(` +
-		`youtube\.com/watch/?\?(?:.+&)?v=([a-zA-Z0-9_-]+)` +
-		`|` +
-		`(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
-		`)`,
+		`(?:youtube\.com/watch/?\?(?:.+&)?v=|youtu\.be/|youtube\.com/embed/)` +
+		`([a-zA-Z0-9_-]+)`,
 }
 var BodyEmbeds = func() map[string]*regexp.Regexp {
 	m := make(map[string]*regexp.Regexp, len(embeds))

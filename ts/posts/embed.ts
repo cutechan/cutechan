@@ -1,5 +1,6 @@
 import { getEmbed, storeEmbed } from "../db";
-import { fetchJSON } from "../util";
+import { linkEmbeds } from "../templates";
+import { Dict, fetchJSON } from "../util";
 import { EMBED_CACHE_EXPIRY_MS, POST_EMBED_SEL } from "../vars";
 
 interface OEmbedDoc {
@@ -13,38 +14,63 @@ interface OEmbedDoc {
   thumbnail_height: number;
 }
 
-const oEmbedHosts = {
-  vlive: "/api/embed",
-  youtube: "https://noembed.com/embed",
+// TODO(Kagami): Move to config.
+const YT_KEY = "AIzaSyDr4-0yU43u4WzrPIwAL-IdRtHAlY7dnbc";
+
+const embedUrls: { [key: string]: (url: string) => string } = {
+  vlive: (url) => `/api/embed?url=${url}`,
+  youtube: (url) => {
+    const id = linkEmbeds.youtube.exec(url)[1];
+    const attrs = [
+      `key=${YT_KEY}`,
+      `id=${id}`,
+      `maxWidth=1280`,
+      `maxHeight=720`,
+      `part=snippet,player`,
+    ];
+    return `https://www.googleapis.com/youtube/v3/videos?${attrs.join("&")}`;
+  },
 };
 
-const embedIcons = {
-  vlive: "fa fa-hand-peace-o",
-  youtube: "fa fa-youtube-play",
+const embedResponses: { [key: string]: (res: Dict) => OEmbedDoc } = {
+  vlive: (res) => res as OEmbedDoc,
+  youtube: (res) => {
+    const item = res.items[0];
+    const id = item.id;
+    const player = item.player;
+    const snippet = item.snippet;
+    const thumbs = snippet.thumbnails;
+    const thumb = thumbs.maxres || thumbs.high;
+    return {
+      title: snippet.title,
+      html: `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1"></iframe>`,
+      width: player.embedWidth,
+      height: player.embedHeight,
+      thumbnail_url: thumb.url,
+      thumbnail_width: thumb.width,
+      thumbnail_height: thumb.height,
+    };
+  },
 };
 
 function fetchEmbed(url: string, provider: string): Promise<OEmbedDoc> {
-  url = `${oEmbedHosts[provider]}?url=${url}`;
-  return fetchJSON<OEmbedDoc>(url).then((res) => {
-    // Should actually fail because of 400+ status code but some
-    // services (e.g. noembed) doesn't set it.
-    if (res.error) throw new Error(res.error);
-    return res;
-  });
+  url = embedUrls[provider](url);
+  return fetchJSON<Dict>(url).then(embedResponses[provider]);
 }
 
 function cachedFetch(url: string, provider: string): Promise<OEmbedDoc> {
-  return getEmbed<OEmbedDoc>(url).then((res) => {
-    // TODO(Kagami): Remove after a month.
-    if (res.error) throw new Error(res.error);
-    return res;
-  }).catch(() => {
+  return getEmbed<OEmbedDoc>(url).catch(() => {
     return fetchEmbed(url, provider).then((res) => {
       storeEmbed(url, res, EMBED_CACHE_EXPIRY_MS);
       return res;
     });
   });
 }
+
+const embedIcons = {
+  vlive: "fa fa-hand-peace-o",
+  youtube: "fa fa-youtube-play",
+};
 
 // Additional rendering of embedded media link.
 function renderLink(link: HTMLLinkElement) {
