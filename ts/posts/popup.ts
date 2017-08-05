@@ -96,7 +96,7 @@ class Popup {
     return relY > rect.height - ctrlHeight;
   }
   private handleClick = (e: MouseEvent) => {
-    if (!options.popupBackdrop) return;
+    if (e.button !== 0 || !options.popupBackdrop) return;
     if (e.target !== this.itemEl) {
       this.detach();
     }
