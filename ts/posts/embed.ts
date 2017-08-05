@@ -47,9 +47,11 @@ function renderLink(link: HTMLLinkElement) {
 }
 
 // Post-render embeddable links.
-export function render(el: HTMLElement) {
-  for (const link of el.querySelectorAll(POST_EMBED_SEL)) {
-    renderLink(link as HTMLLinkElement);
+export function render(postEl: HTMLElement) {
+  if (postEl.classList.contains("post_embed")) {
+    for (const link of postEl.querySelectorAll(POST_EMBED_SEL)) {
+      renderLink(link as HTMLLinkElement);
+    }
   }
 }
 

@@ -84,7 +84,7 @@ class CustomParser extends ((marked as any).Parser as AnyClass) {
 }
 
 // Embeddable links.
-const embeds = {
+export const embeds = {
   vlive: new RegExp(
     String.raw`^https?://(?:(?:www|m)\.)?vlive\.tv/(?:video|embed)/([0-9]+)`),
   youtube: new RegExp(

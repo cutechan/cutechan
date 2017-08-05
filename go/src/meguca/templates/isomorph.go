@@ -90,6 +90,12 @@ func (ctx *PostContext) PostClass() string {
 	if ctx.post.Image != nil {
 		classes = append(classes, "post_file")
 	}
+	for _, pattern := range Embeds {
+		if pattern.MatchString(ctx.post.Body) {
+			classes = append(classes, "post_embed")
+			break
+		}
+	}
 	return strings.Join(classes, " ")
 }
 

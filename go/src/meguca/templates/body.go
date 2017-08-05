@@ -12,7 +12,8 @@ import (
 	"github.com/microcosm-cc/bluemonday"
 )
 
-const htmlFlags = b.HTML_SKIP_HTML | // skip preformatted HTML blocks
+const htmlFlags = 0 |
+	b.HTML_SKIP_HTML | // skip preformatted HTML blocks
 	b.HTML_SKIP_STYLE | // skip embedded <style> elements
 	b.HTML_SKIP_IMAGES | // skip embedded images
 	// b.HTML_SKIP_LINKS                |  // skip all links
@@ -33,7 +34,8 @@ const htmlFlags = b.HTML_SKIP_HTML | // skip preformatted HTML blocks
 	// b.HTML_FOOTNOTE_RETURN_LINKS     |  // generate a link at the end of a footnote to return to the source
 	0
 
-const extensions = b.EXTENSION_NO_INTRA_EMPHASIS | // ignore emphasis markers inside words
+const extensions = 0 |
+	b.EXTENSION_NO_INTRA_EMPHASIS | // ignore emphasis markers inside words
 	// b.EXTENSION_TABLES                     |  // render tables
 	b.EXTENSION_FENCED_CODE | // render fenced code blocks
 	b.EXTENSION_AUTOLINK | // detect embedded URLs that are not explicitly marked
