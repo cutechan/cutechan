@@ -9,7 +9,7 @@ import { embeds, renderBody } from ".";
 import { lang, ln } from "../lang";
 import { Backlinks, Post, sourcePath, Thread, thumbPath } from "../posts";
 import { config, mine } from "../state";
-import { Dict, makeEl, pad } from "../util";
+import { Dict, makeNode, pad } from "../util";
 
 export class TemplateContext {
   private template: string;
@@ -25,7 +25,7 @@ export class TemplateContext {
   }
 
   public renderNode(): HTMLElement {
-    return makeEl(this.render());
+    return makeNode(this.render());
   }
 }
 

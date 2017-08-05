@@ -2,8 +2,6 @@
  * Various utility functions.
  */
 
-import { POST_SEL } from "../vars";
-
 export { default as FSM } from "./fsm";
 export { default as Progress } from "./progress";
 export { default as ShowHide } from "./show-hide";
@@ -11,6 +9,8 @@ export * from "./fetch";
 export * from "./hooks";
 export * from "./render";
 export * from "./changes";
+
+import { POST_SEL } from "../vars";
 
 // Any object with an event-based interface for passing to load()
 interface Loader {
@@ -28,11 +28,17 @@ export function getClosestID(el: Element): number {
   return el ? getID(el.closest(POST_SEL)) : 0;
 }
 
+// Parse HTML string to a single Node
+export function makeNode(html: string): HTMLElement {
+  const el = document.createElement("div");
+  el.innerHTML = html;
+  return el.firstChild as HTMLElement;
+}
+
 // Parse HTML string to node array
-export function makeFrag(DOMString: string): DocumentFragment {
-  const el = document.createElement("template") as HTMLTemplateElement;
-  el.innerHTML = DOMString;
-  return el.content;
+// TODO(Kagami): Remove.
+export function makeFrag(html: string): DocumentFragment {
+  return document.createRange().createContextualFragment(html);
 }
 
 export interface OnOptions extends EventListenerOptions {
