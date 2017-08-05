@@ -4,24 +4,36 @@
 
 import options from "../options";
 import { getModel } from "../state";
-import { HOOKS, on, trigger } from "../util";
+import { HOOKS, makeNode, on, trigger } from "../util";
 import {
   HEADER_HEIGHT_PX,
   POPUP_CONTAINER_SEL,
+  POST_EMBED_SEL,
+  POST_FILE_THUMB_SEL,
   TRIGGER_MEDIA_POPUP_SEL,
   ZOOM_STEP_PX,
 } from "../vars";
-import { Post } from "./model";
 
 let container = null as HTMLElement;
 let opened = 0;
 let lastUrl = "";
 
+interface PopupArgs {
+  video: boolean;
+  audio: boolean;
+  embed: boolean;
+  transparent: boolean;
+  url: string;
+  html: string;
+  width: number;
+  height: number;
+  duration: number;
+}
+
 class Popup {
-  private post = null as Post;
+  private args = null as PopupArgs;
   private el = null as HTMLElement;
   private itemEl = null as HTMLVideoElement;
-  private url = "";
   private aspect = 0;
   private moving = false;
   private baseX = 0;
@@ -29,13 +41,12 @@ class Popup {
   private startX = 0;
   private startY = 0;
 
-  constructor(post: Post) {
-    this.post = post;
-    this.url = post.fileSrc;
-    if (this.url === lastUrl) return;
-    lastUrl = this.url;
+  constructor(args: PopupArgs) {
+    this.args = args;
+    if (args.url === lastUrl) return;
+    lastUrl = this.args.url;
 
-    const [width, height] = post.image.dims;
+    const { width, height } = args;
     const rect = getCenteredRect({width, height});
     this.aspect = width / height;
 
@@ -44,7 +55,7 @@ class Popup {
     this.el.style.left = rect.left + "px";
     this.el.style.top = rect.top + "px";
 
-    if (post.image.video) {
+    if (args.video) {
       const media = this.itemEl = document.createElement("video") as any;
       media.loop = true;
       media.autoplay = true;
@@ -53,21 +64,28 @@ class Popup {
       media.addEventListener("volumechange", () => {
         options.volume = media.volume;
       });
+      media.width = rect.width;
+      media.src = args.url;
+    } else if (args.embed) {
+      const html = args.html.replace(/feature=oembed/, "autoplay=1");
+      const iframe = this.itemEl = makeNode(html) as any;
+      iframe.setAttribute("allowfullscreen", "");
+      iframe.setAttribute("referrerpolicy", "no-referrer");
+      // Restrict iframe access to the page. Improves privacy.
+      iframe.setAttribute("sandbox", "allow-scripts allow-same-origin");
     } else {
       this.itemEl = document.createElement("img") as any;
+      this.itemEl.width = rect.width;
+      this.itemEl.src = args.url;
     }
-    this.itemEl.src = this.url;
-    this.itemEl.width = rect.width;
     this.itemEl.className = "popup-item";
     this.el.appendChild(this.itemEl);
-
-    this.attach();
   }
   private needControls() {
     return (
-      this.post.image.video
-      && !this.post.transparentThumb
-      && (this.post.image.audio || this.post.image.length > 3)
+      this.args.video
+      && !this.args.transparent
+      && (this.args.audio || this.args.duration > 3)
     );
   }
   private isControlsClick(e: MouseEvent) {
@@ -132,7 +150,7 @@ class Popup {
     this.el.style.left = l + "px";
     this.el.style.top = t + "px";
   }
-  private attach() {
+  public attach() {
     container.appendChild(this.el);
     document.addEventListener("click", this.handleClick);
     document.addEventListener("keydown", this.handleKey);
@@ -145,25 +163,59 @@ class Popup {
     opened += 1;
     trigger(HOOKS.openPostPopup);
   }
-  private detach() {
+  public detach() {
     document.removeEventListener("mousemove", this.handleMouseMove);
     document.removeEventListener("keydown", this.handleKey);
     document.removeEventListener("click", this.handleClick);
     this.el.remove();
-    if (this.url === lastUrl) lastUrl = "";
+    if (this.args.url === lastUrl) lastUrl = "";
     opened -= 1;
   }
 }
 
 function open(e: MouseEvent) {
+  const target = e.target as HTMLElement;
   if (e.button !== 0) return;
+  if (!target.matches) return;
 
-  const post = getModel(e.target as Element);
-  if (!post) return;
+  const args = {
+    video: false,
+    audio: false,
+    embed: false,
+    transparent: false,
+    url: "",
+    html: "",
+    width: 0,
+    height: 0,
+    duration: 0,
+  };
+
+  if (target.matches(POST_FILE_THUMB_SEL)) {
+    const post = getModel(target);
+    if (!post) return;
+    Object.assign(args, {
+      video: post.image.video,
+      audio: post.image.audio,
+      transparent: post.transparentThumb,
+      url: post.fileSrc,
+      width: post.image.dims[0],
+      height: post.image.dims[1],
+      duration: post.image.length,
+    });
+  } else if (target.matches(POST_EMBED_SEL)) {
+    Object.assign(args, {
+      embed: true,
+      url: (target as HTMLLinkElement).href,
+      html: target.dataset.html,
+      width: +target.dataset.width,
+      height: +target.dataset.height,
+    });
+  } else {
+    return;
+  }
 
   e.preventDefault();
-  // tslint:disable-next-line:no-unused-expression
-  new Popup(post);
+  new Popup(args).attach();
 }
 
 export function isOpen(): boolean {
