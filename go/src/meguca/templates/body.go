@@ -67,18 +67,29 @@ var policy = func() *bluemonday.Policy {
 	return p
 }()
 
-// Embeddable links.
-var Embeds = map[string]*regexp.Regexp{
-	"youtube": regexp.MustCompile(
-		`^https?://(?:[^\.]+\.)?` +
-			`(` +
-			`youtube\.com/watch/?\?(?:.+&)?v=([^&]+)` +
-			`|` +
-			`(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
-			`)`),
-	"vlive": regexp.MustCompile(
-		`^https?://(?:(?:www|m)\.)?vlive\.tv/(?:video|embed)/([0-9]+)`),
+var embeds = map[string]string{
+	"vlive": `https?://(?:(?:www|m)\.)?vlive\.tv/(?:video|embed)/([0-9]+)`,
+	"youtube": `https?://(?:[^\.]+\.)?` +
+		`(` +
+		`youtube\.com/watch/?\?(?:.+&)?v=([a-zA-Z0-9_-]+)` +
+		`|` +
+		`(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
+		`)`,
 }
+var BodyEmbeds = func() map[string]*regexp.Regexp {
+	m := make(map[string]*regexp.Regexp, len(embeds))
+	for provider, patternSrc := range embeds {
+		m[provider] = regexp.MustCompile(patternSrc)
+	}
+	return m
+}()
+var LinkEmbeds = func() map[string]*regexp.Regexp {
+	m := make(map[string]*regexp.Regexp, len(embeds))
+	for provider, patternSrc := range embeds {
+		m[provider] = regexp.MustCompile("^" + patternSrc)
+	}
+	return m
+}()
 
 type renderer struct {
 	links common.Links
@@ -102,7 +113,7 @@ func (*renderer) RawHtmlTag(out *bytes.Buffer, text []byte) {
 }
 
 func (r *renderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
-	for provider, pattern := range Embeds {
+	for provider, pattern := range LinkEmbeds {
 		if pattern.Match(link) {
 			out.WriteString("<a class=\"post-embed post-" + provider + "-embed")
 			out.WriteString("\" data-provider=\"" + provider)

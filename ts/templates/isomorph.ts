@@ -5,7 +5,7 @@
 
 import templates from "cc-templates";
 import * as Mustache from "mustache";
-import { embeds, renderBody } from ".";
+import { bodyEmbeds, renderBody } from ".";
 import { lang, ln } from "../lang";
 import { Backlinks, Post, sourcePath, Thread, thumbPath } from "../posts";
 import { config, mine } from "../state";
@@ -57,8 +57,8 @@ export function makePostContext(
     if (ctx.post.image) {
       classes.push("post_file");
     }
-    for (const provider of Object.keys(embeds)) {
-      if (embeds[provider].test(ctx.post.body)) {
+    for (const provider of Object.keys(bodyEmbeds)) {
+      if (bodyEmbeds[provider].test(ctx.post.body)) {
         classes.push("post_embed");
         break;
       }

@@ -83,18 +83,31 @@ class CustomParser extends ((marked as any).Parser as AnyClass) {
   }
 }
 
-// Embeddable links.
-export const embeds = {
-  vlive: new RegExp(
-    String.raw`^https?://(?:(?:www|m)\.)?vlive\.tv/(?:video|embed)/([0-9]+)`),
-  youtube: new RegExp(
-    String.raw`^https?://(?:[^\.]+\.)?` +
+const embeds = {
+  vlive:
+    String.raw`https?://(?:(?:www|m)\.)?vlive\.tv/(?:video|embed)/([0-9]+)`,
+  youtube:
+    String.raw`https?://(?:[^\.]+\.)?` +
     String.raw`(` +
-    String.raw`youtube\.com/watch/?\?(?:.+&)?v=([^&]+)` +
+    String.raw`youtube\.com/watch/?\?(?:.+&)?v=([a-zA-Z0-9_-]+)` +
     String.raw`|` +
     String.raw`(?:youtu\.be|youtube\.com/embed)/([a-zA-Z0-9_-]+)` +
-    String.raw`)`),
+    String.raw`)`,
 };
+export const bodyEmbeds = (() => {
+  const m = {};
+  for (const provider of Object.keys(embeds)) {
+    m[provider] = new RegExp(embeds[provider]);
+  }
+  return m;
+})();
+export const linkEmbeds = (() => {
+  const m = {};
+  for (const provider of Object.keys(embeds)) {
+    m[provider] = new RegExp("^" + embeds[provider]);
+  }
+  return m;
+})();
 
 // tslint:disable-next-line:max-classes-per-file
 class CustomRenderer extends marked.Renderer {
@@ -107,8 +120,8 @@ class CustomRenderer extends marked.Renderer {
       return href;
     }
     let out = "<a ";
-    for (const provider of Object.keys(embeds)) {
-      if (embeds[provider].test(href)) {
+    for (const provider of Object.keys(linkEmbeds)) {
+      if (linkEmbeds[provider].test(href)) {
         out += ` class="post-embed post-${provider}-embed"`;
         out += ` data-provider="${provider}"`;
         break;

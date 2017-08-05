@@ -2,4 +2,4 @@
 /// <reference path="./index.d.ts" />
 
 export * from "./isomorph";
-export { embeds, render as renderBody } from "./body";
+export { bodyEmbeds, render as renderBody } from "./body";

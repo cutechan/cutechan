@@ -18,7 +18,7 @@ var (
 
 var (
 	proxiedEmbeds = map[string]*regexp.Regexp{
-		"vlive": templates.Embeds["vlive"],
+		"vlive": templates.LinkEmbeds["vlive"],
 	}
 	vliveTitleRe = regexp.MustCompile(
 		`<meta\s+property="og:title"\s+content="([^"]+)"`)
