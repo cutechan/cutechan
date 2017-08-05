@@ -3,6 +3,7 @@ import { fetchJSON } from "../util";
 import { EMBED_CACHE_EXPIRY_MS, POST_EMBED_SEL } from "../vars";
 
 interface OEmbedDoc {
+  error?: string;
   title: string;
   thumbnail_url: string;
   thumbnail_width: number;
@@ -25,8 +26,13 @@ function fetchEmbed(url: string, provider: string): Promise<OEmbedDoc> {
 }
 
 function cachedFetch(url: string, provider: string): Promise<OEmbedDoc> {
-  return getEmbed<OEmbedDoc>(url).catch(() => {
+  return getEmbed<OEmbedDoc>(url).then((res) => {
+    // TODO(Kagami): Remove after a month.
+    if (res.error) throw new Error(res.error);
+    return res;
+  }).catch(() => {
     return fetchEmbed(url, provider).then((res) => {
+      if (res.error) throw new Error(res.error);
       storeEmbed(url, res, EMBED_CACHE_EXPIRY_MS);
       return res;
     });
