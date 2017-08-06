@@ -7,7 +7,7 @@ import { copyToClipboard, on } from "../util";
 import { POST_FILE_TITLE_SEL } from "../vars";
 import { init as initHover } from "./hover";
 import { init as initPopup } from "./popup";
-import { init as initPosting } from "./posting";
+import { init as initReplyForm } from "./reply-form";
 
 function initFileTitle() {
   on(document, "click", (e) => {
@@ -17,7 +17,7 @@ function initFileTitle() {
 }
 
 export function init() {
-  initPosting();
+  initReplyForm();
   initHover();
   initPopup();
   initFileTitle();

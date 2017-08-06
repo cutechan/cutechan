@@ -1,18 +1,18 @@
 import * as cx from "classnames";
 import { Component, h, render } from "preact";
-import { showAlert } from "../../alerts";
-import API from "../../api";
-import { PostData } from "../../common";
-import { ln, printf } from "../../lang";
-import { boards, config, page, storeMine } from "../../state";
-import { duration, fileSize, renderBody } from "../../templates";
+import { showAlert } from "../alerts";
+import API from "../api";
+import { PostData } from "../common";
+import { ln, printf } from "../lang";
+import { boards, config, page, storeMine } from "../state";
+import { duration, fileSize, renderBody } from "../templates";
 import {
   AbortError, Dict,
   FutureAPI, getID, hook,
   HOOKS, on,
   Progress, scrollToTop, ShowHide,
   unhook,
-} from "../../util";
+} from "../util";
 import {
   HEADER_HEIGHT_PX,
   POST_BODY_SEL,
@@ -25,7 +25,7 @@ import {
   REPLY_THREAD_WIDTH_PX,
   TRIGGER_OPEN_REPLY_SEL,
   TRIGGER_QUOTE_POST_SEL,
-} from "../../vars";
+} from "../vars";
 import * as signature from "./signature";
 
 function s(self: any, name: string) {
