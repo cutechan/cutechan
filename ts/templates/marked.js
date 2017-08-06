@@ -21,7 +21,7 @@ var block = {
   html: /^ *(?:comment *(?:\n|\s*$)|closed *(?:\n{2,}|\s*$)|closing *(?:\n{2,}|\s*$))/,
   def: /^ *\[([^\]]+)\]: *<?([^\s>]+)>?(?: +["(]([^\n]+)[")])? *(?:\n+|$)/,
   table: noop,
-  paragraph: /^((?:[^\n]+\n?(?!hr|heading|lheading|blockquote|tag|def))+)\n*/,
+  paragraph: /^((?:[^\n]+?(?!hr|heading|lheading|blockquote|tag|def))+)/,
   text: /^[^\n]+/
 };
 
@@ -973,7 +973,7 @@ Parser.prototype.parseText = function() {
 Parser.prototype.tok = function() {
   switch (this.token.type) {
     case 'space': {
-      return '';
+      return '<br>';
     }
     case 'hr': {
       return this.renderer.hr();

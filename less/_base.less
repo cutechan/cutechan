@@ -1016,10 +1016,6 @@ html.work-mode {
   p {
     margin: 0;
   }
-  // Multiple linebreaks.
-  p + p {
-    margin-top: ~"@{lineHeight}em";
-  }
 
   // Quote.
   blockquote {
@@ -1035,10 +1031,11 @@ html.work-mode {
   // Code.
   pre {
     margin: 0;
+    background: #fff;
   }
 
   // List.
-  ul {
+  ul, ol {
     margin: 0;
     padding-left: 20px;
   }

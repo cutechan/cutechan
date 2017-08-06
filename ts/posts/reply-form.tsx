@@ -282,7 +282,7 @@ class Reply extends Component<any, any> {
     case "w":
       return "ew-resize";
     default:
-      return "default";
+      return "inherit";
     }
   }
   private get style() {
