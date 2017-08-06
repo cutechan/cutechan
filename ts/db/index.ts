@@ -30,14 +30,17 @@ export function init(): Promise<void> {
     r.onsuccess = () => {
       db = r.result;
       db.onerror = logErr;
+
       // Reload this tab, if another tab requires a DB upgrade.
+      // TODO(Kagami): Set onbeforeunload in reply-form in order to
+      // avoid losing typed text.
       db.onversionchange = () => {
         db.close();
         location.reload(true);
       };
+
       // Delay for quicker starts.
       setTimeout(() => {
-
         // No need to delete IDs because they consume quite a little of
         // disk space and threads might be alive for several years so it
         // doesn't make sense to show old posts as unread again.
@@ -49,8 +52,8 @@ export function init(): Promise<void> {
         // On the other hand, no need to store embed metadata for a long
         // time, it's just a cache.
         deleteExpired(embedStore);
-
       }, 10000);
+
       resolve();
     };
     r.onupgradeneeded = upgradeDB;
