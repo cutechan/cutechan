@@ -181,7 +181,6 @@ createTask("loader", "loader.js", src =>
         almond: "node_modules/almond/almond",
         events: "node_modules/events/events",
         mustache: "node_modules/mustache/mustache",
-        marked: "node_modules/marked/lib/marked",
         classnames: "node_modules/classnames/index",
         preact: "node_modules/preact/dist/preact",
       },

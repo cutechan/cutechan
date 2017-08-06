@@ -3,11 +3,11 @@
  */
 // MUST BE KEPT IN SYNC WITH go/src/meguca/templates/body.go!
 
-import * as marked from "marked";
 import { renderPostLink } from ".";  // TODO(Kagami): Avoid circular import
 import { PostData, PostLink } from "../common";
 import { page } from "../state";
 import { escape } from "../util";
+import * as marked from "./marked";
 
 interface AnyClass { new(...args: any[]): any; }
 
@@ -107,7 +107,7 @@ export const linkEmbeds: { [key: string]: RegExp } = (() => {
 })();
 
 // tslint:disable-next-line:max-classes-per-file
-class CustomRenderer extends marked.Renderer {
+class CustomRenderer extends (marked as any).Renderer {
   public blockquote(quote: string): string {
     return "<blockquote>&gt; " + quote + "</blockquote>";
   }

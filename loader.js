@@ -2,7 +2,6 @@ define("loader", [
   "almond",
   "events",
   "mustache",
-  "marked",
   "classnames",
   "preact",
 ], function () {
