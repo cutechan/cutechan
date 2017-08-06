@@ -84,10 +84,14 @@ class CustomParser extends ((marked as any).Parser as AnyClass) {
 
 const embeds = {
   vlive:
-    String.raw`https?://(?:(?:www|m)\.)?vlive\.tv/(?:video|embed)/([0-9]+)`,
+    String.raw`https?://(?:(?:www|m)\.)?vlive\.tv/video/([0-9]+)`,
   youtube:
     String.raw`https?://(?:[^\.]+\.)?` +
-    String.raw`(?:youtube\.com/watch/?\?(?:.+&)?v=|youtu\.be/|youtube\.com/embed/)` +
+    String.raw`(?:youtube\.com/watch\?(?:.+&)?v=|youtu\.be/)` +
+    String.raw`([a-zA-Z0-9_-]+)`,
+  youtubepls:
+    String.raw`https?://(?:[^\.]+\.)?` +
+    String.raw`youtube\.com/playlist\?(?:.+&)?list=` +
     String.raw`([a-zA-Z0-9_-]+)`,
 };
 export const bodyEmbeds: { [key: string]: RegExp } = (() => {

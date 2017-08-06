@@ -30,6 +30,15 @@ const embedUrls: { [key: string]: (url: string) => string } = {
     ];
     return `https://www.googleapis.com/youtube/v3/videos?${attrs.join("&")}`;
   },
+  youtubepls: (url) => {
+    const id = linkEmbeds.youtubepls.exec(url)[1];
+    const attrs = [
+      `key=${YT_KEY}`,
+      `id=${id}`,
+      `part=snippet,contentDetails`,
+    ];
+    return `https://www.googleapis.com/youtube/v3/playlists?${attrs.join("&")}`;
+  },
 };
 
 const embedResponses: { [key: string]: (res: Dict) => OEmbedDoc } = {
@@ -46,6 +55,26 @@ const embedResponses: { [key: string]: (res: Dict) => OEmbedDoc } = {
       html: `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1"></iframe>`,
       width: player.embedWidth,
       height: player.embedHeight,
+      thumbnail_url: thumb.url,
+      thumbnail_width: thumb.width,
+      thumbnail_height: thumb.height,
+    };
+  },
+  youtubepls: (res) => {
+    const item = res.items[0];
+    const id = item.id;
+    const snippet = item.snippet;
+    const count = item.contentDetails.itemCount;
+    const title = `${snippet.title} (${count})`;
+    const thumbs = snippet.thumbnails;
+    const thumb = thumbs.maxres || thumbs.high;
+    return {
+      title,
+      html: `<iframe src="http://www.youtube.com/embed/videoseries?list=${id}&autoplay=1"></iframe>`,
+      // Since playlist contains a lot of videos, there is no single
+      // resolution, so use just common HD res.
+      width: 1280,
+      height: 720,
       thumbnail_url: thumb.url,
       thumbnail_width: thumb.width,
       thumbnail_height: thumb.height,
@@ -70,6 +99,7 @@ function cachedFetch(url: string, provider: string): Promise<OEmbedDoc> {
 const embedIcons = {
   vlive: "fa fa-hand-peace-o",
   youtube: "fa fa-youtube-play",
+  youtubepls: "fa fa-bars",
 };
 
 /** Additional rendering of embedded media link. */
