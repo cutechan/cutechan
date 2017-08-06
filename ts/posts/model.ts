@@ -1,5 +1,4 @@
 import { Model } from "../base";
-import { SpliceResponse } from "../client";
 import { fileTypes, ImageData, PostData, PostLink } from "../common";
 import { mine, page, posts, seenPosts, storeSeenPost } from "../state";
 import { notifyAboutReply } from "../ui";
@@ -108,19 +107,6 @@ export class Post extends Model implements PostData {
     this.view.renderBacklinks();
   }
 
-  // Insert an image into an existing post.
-  public insertImage(img: ImageData) {
-    this.image = img;
-    // this.view.renderImage(false)
-  }
-
-  // Set post as banned.
-  public setBanned() {
-    if (this.banned) return;
-    this.banned = true;
-    this.view.renderBanned();
-  }
-
   // Set post as deleted.
   public setDeleted() {
     if (this.opPost) {
@@ -134,11 +120,6 @@ export class Post extends Model implements PostData {
       posts.remove(this);
       this.view.remove();
     }
-  }
-
-  public removeImage() {
-    this.image = null;
-    // this.view.removeImage()
   }
 
   // Returns, if this post has been seen already.
@@ -161,36 +142,5 @@ export class Post extends Model implements PostData {
 
     // Should be unseen then.
     return false;
-  }
-
-  // Append a character to the text body.
-  // TODO(Kagami): Remove.
-  public append(code: number) {
-    /* skip */
-  }
-
-  // Backspace one character in the current line.
-  // TODO(Kagami): Remove.
-  public backspace() {
-    /* skip */
-  }
-
-  // Splice the current open line of text.
-  // TODO(Kagami): Remove.
-  public splice(msg: SpliceResponse) {
-    /* skip */
-  }
-
-  // Close an open post and reparse its last line.
-  // TODO(Kagami): Remove.
-  public closePost() {
-    this.editing = false;
-    // this.view.closePost()
-  }
-
-  // Extra method for code reuse in post forms.
-  // TODO(Kagami): Remove.
-  protected spliceText(msg: SpliceResponse) {
-    /* skip */
   }
 }

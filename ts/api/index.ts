@@ -4,7 +4,6 @@
 // TODO(Kagami): Port everything to the use of this module.
 
 import { ln } from "../lang";
-import { FormModel, postEvent, postSM, postState } from "../posts";
 import {
   Dict, FutureAPI, postFormProgress,
   postJSON, ProgressFn, uncachedGET,
@@ -57,30 +56,10 @@ const emit = {
   },
 };
 
-// Create post via WebSocket because it's already opened when we are in
-// thread and it's a bit faster than sending HTTP request. So why not?
-function createPostWS({ body }: Dict): Promise<Dict> {
-  return new Promise((resolve, reject) => {
-    postSM.act(postState.ready, postEvent.open, () => {
-      return postState.sendingNonLive;
-    });
-    postSM.act(postState.sendingNonLive, postEvent.done, () => {
-      resolve({});
-      return postState.ready;
-    });
-
-    postSM.feed(postEvent.open);
-    const model = new FormModel();
-    model.parseInput(body);
-    model.commitNonLive();
-  });
-}
-
 export const API = {
   post: {
     create: emit.POST.Form("post"),
     createToken: emit.POST.JSON("post/token"),
-    createWS: createPostWS,
     delete: emit.POST.JSON("delete-post"),
     get: (id: number) => emit.GET.JSON(`post/${id}`)(),
   },

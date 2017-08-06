@@ -1,9 +1,8 @@
 import { showAlert } from "../alerts";
 import API from "../api";
 import { insertPost } from "../client";
-import { getPostModel, Post, postEvent, postSM, postState } from "../posts";
+import { getPostModel, postEvent, postSM, postState } from "../posts";
 import { page, posts } from "../state";
-import { extend } from "../util";
 import { handlers, message } from "./messages";
 import { connEvent, connSM, send } from "./state";
 
@@ -53,13 +52,6 @@ async function fetchMissingPost(id: number) {
   posts.get(id).view.reposition();
 }
 
-// Fetch a post that should be closed, but isn't
-async function fetchUnclosed(post: Post) {
-  extend(post, await API.post.get(post.id));
-  post.propagateLinks();
-  // post.view.render()
-}
-
 // Handle response to a open post reclaim request
 handlers[message.reclaim] = (code: number) => {
   switch (code) {
@@ -92,27 +84,13 @@ handlers[message.synchronise] = async (data: SyncData) => {
 
   // Board pages currently have no sync data
   if (data) {
-    const { open, recent, banned, deleted, deletedImage } = data;
+    const { recent, deleted } = data;
     const proms: Array<Promise<void>> = [];
 
-    for (const post of posts) {
-      if (post.editing && !(post.id in open)) {
-        proms.push(fetchUnclosed(post));
-      }
-    }
-
     for (const id of recent) {
-      // Missing posts, that are open, will be fetched by the loop above
-      if (id >= minID && !posts.get(id) && !open[id]) {
+      if (id >= minID && !posts.has(id)) {
         // FIXME(Kagami): Remove deleted posts from recent.
         proms.push(fetchMissingPost(id).catch(() => { /* skip */ }));
-      }
-    }
-
-    for (const id of banned) {
-      const post = posts.get(id);
-      if (post && !post.banned) {
-        post.setBanned();
       }
     }
 
@@ -123,12 +101,19 @@ handlers[message.synchronise] = async (data: SyncData) => {
       }
     }
 
-    for (const id of deletedImage) {
-      const post = posts.get(id);
-      if (post && post.image) {
-        post.removeImage();
-      }
-    }
+    // for (const id of banned) {
+    //   const post = posts.get(id);
+    //   if (post && !post.banned) {
+    //     post.setBanned();
+    //   }
+    // }
+
+    // for (const id of deletedImage) {
+    //   const post = posts.get(id);
+    //   if (post && post.image) {
+    //     post.removeImage();
+    //   }
+    // }
 
     await Promise.all(proms).catch((e) => {
       showAlert(e.message);

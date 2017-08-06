@@ -71,12 +71,6 @@ export default class PostView extends View<Post> {
     this.el.closest(THREAD_SEL).remove();
   }
 
-  // Render "USER WAS BANNED FOR THIS POST" message.
-  // TODO(Kagami): Remove?
-  public renderBanned() {
-    /* skip */
-  }
-
   // Render the sticky status of a thread OP.
   // TODO(Kagami): Implement.
   public renderSticky() {

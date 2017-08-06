@@ -1,5 +1,4 @@
 import { postEvent, postSM, postState } from ".";
-import { SpliceResponse } from "../../client";
 import { ImageData, PostData } from "../../common";
 import { handlers, message, send } from "../../connection";
 import { loginID, sessionToken } from "../../mod";
@@ -57,11 +56,11 @@ export default class FormModel extends Post {
   }
 
   // Splice the last line of the body
-  public splice(msg: SpliceResponse) {
-    if (this.editing) {
-      this.spliceText(msg);
-    }
-  }
+  // public splice(msg: SpliceResponse) {
+  //   if (this.editing) {
+  //     this.spliceText(msg);
+  //   }
+  // }
 
   // Compare new value to old and generate appropriate commands
   public parseInput(val: string): void {
@@ -128,7 +127,7 @@ export default class FormModel extends Post {
   // period of posting ability loss
   public abandon() {
     this.view.cleanUp();
-    this.closePost();
+    // this.closePost();
   }
 
   // Add a link to the target post in the input
