@@ -40,18 +40,15 @@ export function extractPost(
 
   const model = new Post(post);
   const view = new PostView(model, el);
-  view.afterRender();
   posts.add(model);
 
-  if (page.catalog) {
-    return false;
+  if (!page.catalog) {
+    view.afterRender();
+    model.backlinks = backlinks[post.id];
+    personalizeLinks(model);
+    personalizeBacklinks(model);
+    postAdded(model);
   }
-
-  model.backlinks = backlinks[post.id];
-
-  personalizeLinks(model);
-  personalizeBacklinks(model);
-  postAdded(model);
 
   return false;
 }
