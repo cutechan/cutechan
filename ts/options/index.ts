@@ -15,6 +15,7 @@ interface Options extends ChangeEmitter {
   imageHover: boolean;
   relativeTime: boolean;
   notification: boolean;
+  scrollToBottom: boolean;
   workModeToggle: boolean;
   newPost: number;
   cancelPost: number;

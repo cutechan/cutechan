@@ -1,8 +1,11 @@
-// Core websocket message handlers
+/**
+ * Core websocket message handlers.
+ */
 
 import { showAlert } from "../alerts";
 import { PostData } from "../common";
 import { connEvent, connSM, handlers, message } from "../connection";
+import options from "../options";
 import { Post, PostView } from "../posts";
 import { page, posts } from "../state";
 import { postAdded } from "../ui";
@@ -37,7 +40,7 @@ export function insertPost(data: PostData) {
 
   postAdded(model);
 
-  if (atBottom) {
+  if (options.scrollToBottom && atBottom) {
     scrollToBottom();
   }
 }

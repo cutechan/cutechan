@@ -28,7 +28,6 @@ export interface OptionSpec {
 
 // Specifications of option behavior, where needed. Some properties defined as
 // getters to prevent race with "state" module
-// tslint:disable:object-literal-sort-keys
 export const specs: { [id: string]: OptionSpec } = {
   // Boss key toggle
   workModeToggle: {
@@ -60,6 +59,10 @@ export const specs: { [id: string]: OptionSpec } = {
   },
   // Relative post timestamps
   relativeTime: {
+    default: true,
+  },
+  // Scroll to bottom
+  scrollToBottom: {
     default: true,
   },
   // Change theme
@@ -103,4 +106,3 @@ export const specs: { [id: string]: OptionSpec } = {
     default: 0,
   },
 };
-// tslint:enable:object-literal-sort-keys

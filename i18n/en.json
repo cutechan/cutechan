@@ -120,6 +120,10 @@
       "Relative Timestamps",
       "Relative post timestamps. Ex.: '1 hour ago'"
     ],
+    "scrollToBottom": [
+      "Scroll to bottom",
+      "Scroll to bottom on new post"
+    ],
     "repeat": [
       "Repeat",
       ""
