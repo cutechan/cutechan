@@ -364,20 +364,15 @@ html, body {
   background: @headerBGHover;
 }
 
-.header-item:last-child {
-  border-right: none;
-}
-
 .logo {
   display: inline-block;
   width: 30px;
   height: 30px;
-  background: url(/static/img/logo.png);
+  background: url(/static/img/logo.png) no-repeat;
 }
 
 .header-content {
   flex: 1;
-  border: none;
 }
 
 .header-counter, .header-status {
@@ -387,22 +382,9 @@ html, body {
   }
 }
 
-.header-counter {
-  border-left: @headerBorder;
-  padding-right: 0;
-}
-
-.header-status {
-  border-right: none;
-}
-
 .header-icon {
   width: 40px;
   cursor: pointer;
-}
-
-#header-FAQ {
-  border-left: @headerBorder;
 }
 
 //////////////////////////////
