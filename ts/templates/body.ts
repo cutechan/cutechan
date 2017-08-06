@@ -33,7 +33,6 @@ class CustomLexer extends ((marked as any).Lexer as AnyClass) {
     super(options);
     // TODO(Kagami): Remove def from regexes?
     Object.assign(this.rules, {
-      blockquote: /^( *>[^>\n][^\n]*)/,
       code: noop,
       def: noop,
       heading: noop,
