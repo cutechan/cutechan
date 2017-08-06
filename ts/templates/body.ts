@@ -52,7 +52,7 @@ class CustomInlineLexer extends ((marked as any).InlineLexer as AnyClass) {
     this.post = post;
     const textSrc = this.rules.text.source;
     Object.assign(this.rules, {
-      del: /^%%(?=\S)([\s\S]*?\S)%%/,
+      del: /^%%(?=\S)([\s\S]*?)%%/,
       link: noop,
       nolink: noop,
       reflink: /^>>\d+()/,
