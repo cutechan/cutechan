@@ -56,7 +56,7 @@ class CustomInlineLexer extends ((marked as any).InlineLexer as AnyClass) {
       link: noop,
       nolink: noop,
       reflink: /^>>\d+()/,
-      text: new RegExp(textSrc.replace("]|", "%]|")),
+      text: new RegExp(textSrc.replace("]|", ">%]|")),
     });
   }
   protected outputLink(cap: any, link: any) {
