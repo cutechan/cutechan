@@ -51,11 +51,10 @@ func Board(
 	threadHTML []byte,
 ) []byte {
 	boardConf := config.GetBoardConfigs(b)
-	bTitle := boardConf.Title
+	title := boardConf.Title
 	if b == "all" {
-		bTitle = lang.Get().UI["aggregator"]
+		title = lang.Get().UI["aggregator"]
 	}
-	title := fmt.Sprintf("/%s/ — %s", b, bTitle)
 	html := renderBoard(
 		threadHTML,
 		b, title,
@@ -78,7 +77,6 @@ func Thread(
 	pos auth.ModerationLevel,
 	postHTML []byte,
 ) []byte {
-	title = fmt.Sprintf("/%s/ — %s", board, title)
 	html := renderThread(postHTML, id, board, title, pos)
 	return execIndex(html, title, pos)
 }
