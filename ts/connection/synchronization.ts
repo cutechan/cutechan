@@ -1,7 +1,6 @@
 import { showAlert } from "../alerts";
 import API from "../api";
 import { insertPost } from "../client";
-import { getPostModel, postEvent, postSM, postState } from "../posts";
 import { page, posts } from "../state";
 import { handlers, message } from "./messages";
 import { connEvent, connSM, send } from "./state";
@@ -29,21 +28,6 @@ export function synchronise() {
     board: page.board,
     thread: page.thread,
   });
-
-  // Reclaim a post lost after disconnecting, going on standby, resuming
-  // browser tab, etc.
-  if (page.thread && postSM.state === postState.halted) {
-    // No older than 15 minutes
-    const m = getPostModel();
-    if (m.time > (Date.now() / 1000 - 15 * 60)) {
-      send(message.reclaim, {
-        id: m.id,
-        password: "",
-      });
-    } else {
-      postSM.feed(postEvent.abandon);
-    }
-  }
 }
 
 // Fetch a post not present on the client and render it
@@ -51,18 +35,6 @@ async function fetchMissingPost(id: number) {
   insertPost(await API.post.get(id));
   posts.get(id).view.reposition();
 }
-
-// Handle response to a open post reclaim request
-handlers[message.reclaim] = (code: number) => {
-  switch (code) {
-    case 0:
-      postSM.feed(postEvent.reclaim);
-      break;
-    case 1:
-      postSM.feed(postEvent.abandon);
-      break;
-  }
-};
 
 // Synchronise to the server and start receiving updates on the appropriate
 // channel. If there are any missed messages, fetch them.

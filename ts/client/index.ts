@@ -3,7 +3,7 @@
 import { showAlert } from "../alerts";
 import { PostData } from "../common";
 import { connEvent, connSM, handlers, message } from "../connection";
-import { Post, postEvent, postSM, PostView } from "../posts";
+import { Post, PostView } from "../posts";
 import { page, posts } from "../state";
 import { postAdded } from "../ui";
 import { isAtBottom, scrollToBottom } from "../util";
@@ -56,7 +56,6 @@ export function init() {
       m.setDeleted());
 
   handlers[message.redirect] = (board: string) => {
-    postSM.feed(postEvent.reset);
     location.href = `/${board}/`;
   };
 
