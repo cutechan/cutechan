@@ -223,3 +223,11 @@ export function copyToClipboard(text: string) {
     document.body.removeChild(textarea);
   }
 }
+
+/** Remove item from array in place. */
+export function remove<T>(arr: T[], item: T) {
+  const idx = arr.indexOf(item);
+  if (idx >= 0) {
+    arr.splice(idx, 1);
+  }
+}

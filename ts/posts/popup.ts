@@ -4,7 +4,7 @@
 
 import options from "../options";
 import { getModel } from "../state";
-import { HOOKS, makeNode, on, trigger } from "../util";
+import { HOOKS, makeNode, on, remove, trigger } from "../util";
 import {
   HEADER_HEIGHT_PX,
   POPUP_CONTAINER_SEL,
@@ -15,8 +15,7 @@ import {
 } from "../vars";
 
 let container = null as HTMLElement;
-let opened = 0;
-let lastUrl = "";
+const opened = [] as [Popup];
 
 interface PopupArgs {
   video: boolean;
@@ -31,7 +30,7 @@ interface PopupArgs {
 }
 
 class Popup {
-  private args = null as PopupArgs;
+  public args = null as PopupArgs;
   private el = null as HTMLElement;
   private itemEl = null as HTMLVideoElement;
   private aspect = 0;
@@ -43,7 +42,6 @@ class Popup {
 
   constructor(args: PopupArgs) {
     this.args = args;
-    lastUrl = this.args.url;
 
     const { width, height } = args;
     const rect = getCenteredRect({width, height});
@@ -159,7 +157,7 @@ class Popup {
     this.el.addEventListener("mousedown", this.handlePopupMouseDown);
     this.el.addEventListener("mouseup", this.handlePopupMouseUp);
     this.el.addEventListener("wheel", this.handlePopupWheel);
-    opened += 1;
+    opened.push(this);
     trigger(HOOKS.openPostPopup);
   }
   public detach() {
@@ -167,15 +165,14 @@ class Popup {
     document.removeEventListener("keydown", this.handleKey);
     document.removeEventListener("click", this.handleClick);
     this.el.remove();
-    if (this.args.url === lastUrl) lastUrl = "";
-    opened -= 1;
+    remove(opened, this);
   }
 }
 
 function open(e: MouseEvent) {
   const target = e.target as HTMLElement;
-  if (e.button !== 0) return;
   if (!target.matches) return;
+  if (e.button !== 0) return;
   e.preventDefault();
 
   const args = {
@@ -214,12 +211,20 @@ function open(e: MouseEvent) {
     return;
   }
 
-  if (args.url === lastUrl) return;
+  let dup = false;
+  for (const popup of opened.slice()) {
+    if (popup.args.url === args.url) {
+      dup = true;
+      popup.detach();
+    }
+  }
+  if (dup) return;
+
   new Popup(args).attach();
 }
 
 export function isOpen(): boolean {
-  return opened > 0;
+  return opened.length > 0;
 }
 
 export function getCenteredRect({ width, height }: any) {
