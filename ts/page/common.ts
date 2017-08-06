@@ -1,15 +1,10 @@
 import { PostData } from "../common";
 import lang from "../lang";
 import { Post, PostView } from "../posts";
-import { hidden, mine, page, posts, setBoardConfig } from "../state";
+import { hidden, mine, page, posts } from "../state";
 import { notifyAboutReply, postAdded } from "../ui";
 import { extractJSON } from "../util";
 import { POST_BACKLINKS_SEL } from "../vars";
-
-// Find board configurations in the HTML and apply them
-export function extractConfigs() {
-  setBoardConfig(extractJSON("board-configs"));
-}
 
 // Extract pregenerated rendered post data from DOM
 export function extractPageData<T>(): {

@@ -1,7 +1,6 @@
 {% import "strconv" %}
 {% import "meguca/lang" %}
 {% import "meguca/common" %}
-{% import "meguca/config" %}
 {% import "meguca/auth" %}
 {% import "encoding/json" %}
 
@@ -60,9 +59,6 @@ caching of generated posts.
 		</script>
 		{%= encodeBacklinks(bls) %}
 	</section>
-	<script id="board-configs" type="application/json">
-		{%z= config.GetBoardConfigs(t.Board).JSON %}
-	</script>
 {% endstripspace %}{% endfunc %}
 
 Shift post numbers for incomplete thread (+1 for OP post).

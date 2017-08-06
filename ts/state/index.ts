@@ -18,16 +18,10 @@ interface Config {
   imageRootOverride: string;
 }
 
-// BoardTitle contains a board's ID and title
-export interface BoardTitle {
-  id: string;
-  title: string;
-}
-
 // Board-specific configurations
 export interface BoardConfig {
+  id: string;
   title: string;
-  readOnly: boolean;
 }
 
 // The current state of a board or thread page
@@ -46,9 +40,7 @@ export interface PageState {
 export const config: Config = (window as any).config;
 
 // Currently existing boards
-export let boards: [BoardTitle] = (window as any).boards;
-
-export let boardConfig: BoardConfig = null;
+export let boards: [BoardConfig] = (window as any).boards;
 
 // Load initial page state
 export const page = read(location.href);
@@ -131,10 +123,6 @@ export function storeHidden(id: number, op: number) {
 function store(set: Set<number>, key: string, id: number, op: number) {
   set.add(id);
   storeID(key, id, op, POST_IDS_EXPIRY_MS);
-}
-
-export function setBoardConfig(c: BoardConfig) {
-  boardConfig = c;
 }
 
 // Retrieve model of closest parent post

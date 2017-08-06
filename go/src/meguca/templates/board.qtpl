@@ -91,9 +91,6 @@
 		{%= renderBoardNavigation(page, total, catalog, true) %}
 		<hr class="separator">
 		{%z= threadHTML %}
-		<script id="board-configs" type="application/json">
-			{%z= conf.JSON %}
-		</script>
 		<hr class="separator">
 		{%= renderBoardNavigation(page, total, catalog, false) %}
 	</section>

@@ -14,14 +14,13 @@ import { init as initConnection } from "./ts/connection";
 import { init as initDB } from "./ts/db";
 import { ln } from "./ts/lang";
 import { init as initModeration } from "./ts/mod";
-import { extractConfigs, renderBoard, renderThread } from "./ts/page";
+import { renderBoard, renderThread } from "./ts/page";
 import { init as initPosts } from "./ts/posts";
 import { page } from "./ts/state";
 import { init as initUI } from "./ts/ui";
 
 // Load all stateful modules in dependency order.
 async function init() {
-  extractConfigs();
   await initDB();
 
   initAlerts();
