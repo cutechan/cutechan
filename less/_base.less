@@ -1018,7 +1018,7 @@ html.work-mode {
   }
   // Multiple linebreaks.
   p + p {
-    margin-top: 10px;
+    margin-top: ~"@{lineHeight}em";
   }
 
   // Quote.
@@ -1027,14 +1027,20 @@ html.work-mode {
     color: @quote;
   }
 
+  // Quote/linebreak after quote.
+  blockquote > p, blockquote > blockquote {
+    display: inline;
+  }
+
   // Code.
   pre {
     margin: 0;
   }
 
-  // Quote/linebreak after quote.
-  blockquote > p, blockquote > blockquote {
-    display: inline;
+  // List.
+  ul {
+    margin: 0;
+    padding-left: 20px;
   }
 }
 
