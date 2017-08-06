@@ -7,7 +7,7 @@ import { renderPostLink } from ".";  // TODO(Kagami): Avoid circular import
 import { PostData, PostLink } from "../common";
 import { page } from "../state";
 import { escape } from "../util";
-import * as marked from "./marked";
+import marked from "./marked";
 
 interface AnyClass { new(...args: any[]): any; }
 
