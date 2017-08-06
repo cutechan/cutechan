@@ -2,7 +2,7 @@
  * IndexedDB database controller.
  */
 
-const DB_VERSION = 3;
+const DB_VERSION = 4;
 let db = null as IDBDatabase;
 
 // FF IndexedDB implementation is broken in private mode, see:
@@ -89,6 +89,7 @@ function upgradeDB(event: IDBVersionChangeEvent) {
     s.createIndex("expires", "expires");
     break;
   case 2:
+  case 3:
     s = req.transaction.objectStore(embedStore);
     s.clear();
     break;

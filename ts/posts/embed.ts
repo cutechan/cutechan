@@ -70,7 +70,7 @@ const embedResponses: { [key: string]: (res: Dict) => OEmbedDoc } = {
     const thumb = thumbs.maxres || thumbs.high;
     return {
       title,
-      html: `<iframe src="http://www.youtube.com/embed/videoseries?list=${id}&autoplay=1"></iframe>`,
+      html: `<iframe src="https://www.youtube.com/embed/videoseries?list=${id}&autoplay=1"></iframe>`,
       // Since playlist contains a lot of videos, there is no single
       // resolution, so use just common HD res.
       width: 1280,
