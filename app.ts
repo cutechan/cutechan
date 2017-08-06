@@ -4,6 +4,8 @@
 
 // tslint:disable-next-line:no-reference
 /// <reference path="ts/util/dom4.d.ts" />
+// tslint:disable-next-line:no-reference
+/// <reference path="ts/util/jsx.d.ts" />
 
 // FIXME(Kagami): Circular imports, must go before client module.
 import { init as initOptions } from "./ts/options";

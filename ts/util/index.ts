@@ -236,3 +236,9 @@ export function remove<T>(arr: T[], item: T) {
 export function noop() {
   /* skip */
 }
+
+export function setter(self: any, name: string) {
+  return (el: Element) => {
+    self[name] = el;
+  };
+}

@@ -7,11 +7,8 @@ import { ln, printf } from "../lang";
 import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {
-  AbortError, Dict,
-  FutureAPI, getID, hook,
-  HOOKS, on,
-  Progress, scrollToTop, ShowHide,
-  unhook,
+  AbortError, Dict, FutureAPI, getID, hook, HOOKS, on, Progress, scrollToTop,
+  setter as s, ShowHide, unhook,
 } from "../util";
 import {
   HEADER_HEIGHT_PX,
@@ -27,12 +24,6 @@ import {
   TRIGGER_QUOTE_POST_SEL,
 } from "../vars";
 import * as signature from "./signature";
-
-function s(self: any, name: string) {
-  return (el: Element) => {
-    self[name] = el;
-  };
-}
 
 function quoteText(text: string): string {
   return text.trim().split(/\n/).filter((line) => {
