@@ -15,7 +15,7 @@ function noop() { /* skip */ }
 (noop as any).exec = noop;
 
 // Verify and render a link to other posts.
-function postLink(m: RegExpMatchArray, links: [PostLink], tid: number): string {
+function postLink(m: RegExpMatchArray, links: PostLink[], tid: number): string {
   if (!links) return escape(m[0]);
 
   const id = +m[0].slice(2);

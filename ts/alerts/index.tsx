@@ -16,7 +16,7 @@ interface Alert {
 
 class Alerts extends Component<any, any> {
   public state = {
-    alerts: [] as [Alert],
+    alerts: [] as Alert[],
   };
   private id = 0;
   public componentDidMount() {

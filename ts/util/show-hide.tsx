@@ -4,7 +4,7 @@
 
 interface Props {
   show: boolean;
-  children?: [JSX.Element];
+  children?: JSX.Element[];
 }
 
 export default function({ show, children }: Props): JSX.Element {

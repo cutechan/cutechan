@@ -15,11 +15,11 @@ interface LanguagePack {
 
 // TODO(Kagami): Remove lowercase aliases.
 interface CommonLanguagePack {
-  Plurals: { [key: string]: [string] };
+  Plurals: { [key: string]: string[] };
   Posts: { [key: string]: string };
   Sizes: { [key: string]: string };
   UI: { [key: string]: string };
-  plurals: { [key: string]: [string] };
+  plurals: { [key: string]: string[] };
   posts: { [key: string]: string };
   time: {
     calendar: string[],

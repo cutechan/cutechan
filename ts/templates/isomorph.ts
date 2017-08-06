@@ -120,7 +120,7 @@ const PLURAL_FORMS: { [key: string]: (n: number) => number } = {
 };
 
 // Return pluralize form for various languages.
-export function pluralize(num: number, plurals: [string]): string {
+export function pluralize(num: number, plurals: string[]): string {
   const getForm = PLURAL_FORMS[config.defaultLang] || PLURAL_FORMS.default;
   return plurals[getForm(num)];
 }
@@ -188,7 +188,7 @@ export function relativeTime(then: number): string {
 }
 
 // Renders "56 minutes ago" or "in 56 minutes" like relative time text.
-function ago(time: number, units: [string], isFuture: boolean): string {
+function ago(time: number, units: string[], isFuture: boolean): string {
   const count = `${time} ${pluralize(time, units)}`;
   return isFuture
     ? `${ln.Common.Posts.in} ${count}`

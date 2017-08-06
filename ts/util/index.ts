@@ -42,7 +42,7 @@ export function makeFrag(html: string): DocumentFragment {
 }
 
 export interface OnOptions extends EventListenerOptions {
-  selector?: string | [string];
+  selector?: string | string[];
 }
 
 // Add an event listener that optionally filters targets according to a

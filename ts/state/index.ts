@@ -40,7 +40,7 @@ export interface PageState {
 export const config: Config = (window as any).config;
 
 // Currently existing boards
-export let boards: [BoardConfig] = (window as any).boards;
+export let boards: BoardConfig[] = (window as any).boards;
 
 // Load initial page state
 export const page = read(location.href);

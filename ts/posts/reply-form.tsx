@@ -155,7 +155,7 @@ class Reply extends Component<any, any> {
     thread: page.thread,
     subject: "",
     body: "",
-    files: [] as [{file: File, info: Dict}],
+    files: [] as Array<{file: File, info: Dict}>,
     // tslint:enable:object-literal-sort-keys
   };
   private mainEl: HTMLElement = null;
