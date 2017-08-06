@@ -26,15 +26,12 @@ export default class PostView extends View<Post> {
     super(attrs);
 
     this.model.view = this;
-    if (!el) {
-      this.afterRender();
-    }
   }
 
   // Apply client-specific formatting to post rendered on server-side.
-  public afterRender() {
+  public afterRender(): Promise<void> {
     this.renderTime();
-    renderEmbeds(this.el);
+    return renderEmbeds(this.el);
   }
 
   // Renders a time element. Can be either absolute or relative.

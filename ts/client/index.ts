@@ -28,6 +28,7 @@ export function insertPost(data: PostData) {
   model.board = page.board;
   posts.add(model);
   const view = new PostView(model, null);
+  view.afterRender();
 
   model.propagateLinks();
 

@@ -124,8 +124,8 @@ async function renderPostPreview(event: MouseEvent) {
     // lastN or in a different thread.
     const data = await API.post.get(id);
     post = new Post(data);
-    // tslint:disable-next-line:no-unused-expression
-    new PostView(post, null);
+    const view = new PostView(post, null);
+    await view.afterRender();
     posts.add(post);
   }
 

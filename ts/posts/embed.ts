@@ -1,6 +1,6 @@
 import { getEmbed, storeEmbed } from "../db";
 import { linkEmbeds } from "../templates";
-import { Dict, fetchJSON } from "../util";
+import { Dict, fetchJSON, noop } from "../util";
 import { EMBED_CACHE_EXPIRY_MS, POST_EMBED_SEL } from "../vars";
 
 interface OEmbedDoc {
@@ -72,10 +72,11 @@ const embedIcons = {
   youtube: "fa fa-youtube-play",
 };
 
-// Additional rendering of embedded media link.
-function renderLink(link: HTMLLinkElement) {
+/** Additional rendering of embedded media link. */
+function renderLink(link: HTMLLinkElement): Promise<void> {
   const provider = link.dataset.provider;
-  cachedFetch(link.href, provider).then((res) => {
+  const url = link.href;
+  return cachedFetch(url, provider).then((res) => {
     const icon = document.createElement("i");
     icon.className = `post-embed-icon ${embedIcons[provider]}`;
     link.firstChild.replaceWith(icon, " " + res.title);
@@ -86,14 +87,24 @@ function renderLink(link: HTMLLinkElement) {
     link.dataset.thumbnail_width = res.thumbnail_width.toString();
     link.dataset.thumbnail_height = res.thumbnail_height.toString();
     link.classList.add("trigger-media-popup");
+  }, (err) => {
+    // tslint:disable-next-line:no-console
+    console.error(`Failed to embed ${url}: ${err.message}`);
   });
 }
 
-// Post-render embeddable links.
-export function render(postEl: HTMLElement) {
+/**
+ * Post-render embeddable links.
+ *
+ * Resulting promise is guaranteed to always successfully resolve when
+ * rendering is finished, even if some links failed.
+ */
+export function render(postEl: HTMLElement): Promise<void> {
+  const proms = [];
   if (postEl.classList.contains("post_embed")) {
     for (const link of postEl.querySelectorAll(POST_EMBED_SEL)) {
-      renderLink(link as HTMLLinkElement);
+      proms.push(renderLink(link as HTMLLinkElement));
     }
   }
+  return Promise.all(proms).then(noop);
 }

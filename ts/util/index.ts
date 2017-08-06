@@ -231,3 +231,8 @@ export function remove<T>(arr: T[], item: T) {
     arr.splice(idx, 1);
   }
 }
+
+/** Very cool function! */
+export function noop() {
+  /* skip */
+}

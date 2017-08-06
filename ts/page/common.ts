@@ -40,6 +40,7 @@ export function extractPost(
 
   const model = new Post(post);
   const view = new PostView(model, el);
+  view.afterRender();
   posts.add(model);
 
   if (page.catalog) {
@@ -48,7 +49,6 @@ export function extractPost(
 
   model.backlinks = backlinks[post.id];
 
-  view.afterRender();
   personalizeLinks(model);
   personalizeBacklinks(model);
   postAdded(model);
