@@ -2,9 +2,8 @@
  * User-set settings storage and change handling.
  */
 
-import { config, page, posts } from "../state";
+import { config } from "../state";
 import { ChangeEmitter, emitChanges, trigger } from "../util";
-import { RELATIVE_TIME_PERIOD_SECS } from "../vars";
 
 interface Options extends ChangeEmitter {
   theme: string;
@@ -222,24 +221,10 @@ class OptionModel {
   }
 }
 
-// Rerender all timestamps on posts, if set to relative time.
-function renderTime() {
-  for (const { view } of posts) {
-    view.renderTime();
-  }
-}
-
 export function init() {
   // Populate option model collection and central model
   for (const id of Object.keys(specs)) {
     // tslint:disable-next-line:no-unused-expression
     new OptionModel(id, specs[id]);
   }
-
-  options.onChange("relativeTime", renderTime);
-  setInterval(() => {
-    if (options.relativeTime && !page.catalog) {
-      renderTime();
-    }
-  }, RELATIVE_TIME_PERIOD_SECS * 1000);
 }
