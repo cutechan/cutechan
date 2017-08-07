@@ -106,7 +106,7 @@ class Popup extends Component<PopupProps, PopupState> {
 
   public render({ video, embed }: PopupProps, { left, top }: PopupState) {
     return (
-      <div class="popup" style={{left, top}} onWheel={this.handlePopupWheel}>
+      <div class="popup" style={{left, top}}>
         {video ? this.renderVideo()
                : embed ? this.renderEmbed() : this.renderImage()}
         {embed ? this.renderControls() : null}
@@ -126,6 +126,7 @@ class Popup extends Component<PopupProps, PopupState> {
         onMouseDown={this.handleMediaMouseDown}
         onClick={this.handleMediaClick}
         onMouseUp={this.handleMediaMouseUp}
+        onWheel={this.handleMediaWheel}
         onDragStart={this.handleMediaDrag}
         onVolumeChange={this.handleMediaVolume}
       />
@@ -159,6 +160,7 @@ class Popup extends Component<PopupProps, PopupState> {
         onMouseDown={this.handleMediaMouseDown}
         onClick={this.handleMediaClick}
         onMouseUp={this.handleMediaMouseUp}
+        onWheel={this.handleMediaWheel}
         onDragStart={this.handleMediaDrag}
       />
     );
@@ -244,7 +246,7 @@ class Popup extends Component<PopupProps, PopupState> {
       this.props.onClose();
     }
   }
-  private handlePopupWheel = (e: WheelEvent) => {
+  private handleMediaWheel = (e: WheelEvent) => {
     e.preventDefault();
     const order = e.deltaY < 0 ? 1 : -1;
     const { left, top, width } = this.state;
