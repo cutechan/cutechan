@@ -160,6 +160,7 @@ class Popup extends Component<PopupProps, PopupState> {
         style={{width}}
         src={url}
         draggable={0 as any}
+        onDragStart={this.handleMediaDrag}
         onMouseDown={this.handleMediaDown}
         onWheel={this.handleMediaWheel}
       />
@@ -203,6 +204,15 @@ class Popup extends Component<PopupProps, PopupState> {
     if (e.keyCode === 27) {
       this.props.onClose();
     }
+  }
+  private handleMediaDrag = (e: DragEvent) => {
+    // NOTE(Kagami): Note that both draggable AND ondragstart are
+    // required:
+    // * without draggable Chrome doesn't produce click event after
+    //   "mousedown" -> "mousemove" -> "mouseup" for image
+    // * draggable attr doesn't seem to be working in Firefox so
+    //   dragstart handler required
+    e.preventDefault();
   }
   private handleMediaVolume = () => {
     options.volume = this.itemEl.volume;
