@@ -124,7 +124,6 @@
 		<link rel="icon" href="/static/favicons/default.ico" id="favicon">
 		<link rel="manifest" href="/static/mobile/manifest.json">
 		<link rel="stylesheet" href="/static/css/{%s conf.DefaultCSS %}.css" id="theme-css">
-		<noscript><link rel="stylesheet" href="/static/css/noscript.css"></noscript>
 		<script>
 			{% code boardJSON, _ := json.Marshal(boards) %}
 			var config={%z= confJSON %},boards={%z= boardJSON %},position={%d int(pos) %};
