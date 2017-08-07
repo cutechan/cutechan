@@ -249,14 +249,13 @@ class Popup extends Component<PopupProps, PopupState> {
   private handleMediaWheel = (e: WheelEvent) => {
     e.preventDefault();
     const order = e.deltaY < 0 ? 1 : -1;
-    const { left, top, width } = this.state;
+    let { left, top, width, height } = this.state;
     if (width <= 50 && order < 0) return;
-    this.setState({
-      left: left - (ZOOM_STEP_PX / 2) * order,
-      top: top - (ZOOM_STEP_PX / this.aspect / 2) * order,
-      // TODO(Kagami): Calc height;
-      width: Math.max(50, width + ZOOM_STEP_PX * order),
-    });
+    left = left - (ZOOM_STEP_PX / 2) * order;
+    top = top - (ZOOM_STEP_PX / this.aspect / 2) * order;
+    width = Math.max(50, width + ZOOM_STEP_PX * order);
+    height = Math.ceil(width / this.aspect);
+    this.setState({left, top, width, height});
   }
 }
 
