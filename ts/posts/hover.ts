@@ -223,7 +223,7 @@ function onMouseMove(event: MouseEvent) {
 export function init() {
   container = document.querySelector(HOVER_CONTAINER_SEL);
   container.classList.add(page.thread ? "hover-container_thread" : "hover-container_board");
-  document.addEventListener("mousemove", onMouseMove, {passive: true});
+  document.addEventListener("mouseover", onMouseMove);
   mouseMove.onChange("event", renderPostPreview);
   mouseMove.onChange("event", renderImagePreview);
   hook(HOOKS.openPostPopup, clearImagePreview);
