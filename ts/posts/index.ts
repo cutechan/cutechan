@@ -10,7 +10,7 @@ import { RELATIVE_TIME_PERIOD_SECS } from "../vars";
 import { POST_FILE_TITLE_SEL } from "../vars";
 import { init as initHover } from "./hover";
 import { init as initPopup } from "./popup";
-import { init as initReplyForm } from "./reply-form";
+import { init as initReply } from "./reply";
 
 /** Rerender all post timestamps. */
 function renderTime() {
@@ -40,7 +40,7 @@ export function init() {
     initRenderTime();
   }
   initFileTitle();
-  initReplyForm();
+  initReply();
   initHover();
   initPopup();
 }
