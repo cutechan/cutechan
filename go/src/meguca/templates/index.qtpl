@@ -150,7 +150,7 @@
 				{%= optionsModal() %}
 			</div>
 		</div>
-		<main class="app">$$$</main>
+		<main class="main">$$$</main>
 		<div class="alerts-container"></div>
 		<div class="hover-container"></div>
 		<div class="popup-container"></div>
