@@ -55,6 +55,7 @@ interface PopupState {
   width: number;
   height: number;
   moving: boolean;
+  resizing: boolean;
 }
 
 class Popup extends Component<PopupProps, PopupState> {
@@ -65,6 +66,8 @@ class Popup extends Component<PopupProps, PopupState> {
   private baseY = 0;
   private startX = 0;
   private startY = 0;
+  private startW = 0;
+  private startH = 0;
 
   constructor(props: PopupProps) {
     super(props);
@@ -83,15 +86,16 @@ class Popup extends Component<PopupProps, PopupState> {
       width: rect.width,
       height: rect.height,
       moving: false,
+      resizing: false,
     };
 
   }
   public componentDidMount() {
     opened += 1;
     trigger(HOOKS.openPostPopup);
-    document.addEventListener("click", this.handleGlobalClick);
     document.addEventListener("keydown", this.handleGlobalKey);
     document.addEventListener("mousemove", this.handleGlobalMove);
+    document.addEventListener("click", this.handleGlobalClick);
     if (this.props.video) {
       this.itemEl.volume = options.volume;
       this.itemEl.src = this.props.url;
@@ -99,8 +103,8 @@ class Popup extends Component<PopupProps, PopupState> {
   }
   public componentWillUnmount() {
     opened -= 1;
-    document.removeEventListener("mousemove", this.handleGlobalMove);
     document.removeEventListener("keydown", this.handleGlobalKey);
+    document.removeEventListener("mousemove", this.handleGlobalMove);
     document.removeEventListener("click", this.handleGlobalClick);
   }
 
@@ -123,18 +127,15 @@ class Popup extends Component<PopupProps, PopupState> {
         loop
         autoPlay
         controls={this.needVideoControls()}
-        onMouseDown={this.handleMediaMouseDown}
-        onClick={this.handleMediaClick}
-        onMouseUp={this.handleMediaMouseUp}
+        onMouseDown={this.handleMediaDown}
         onWheel={this.handleMediaWheel}
-        onDragStart={this.handleMediaDrag}
         onVolumeChange={this.handleMediaVolume}
       />
     );
   }
   private renderEmbed() {
-    const { width, height, moving } = this.state;
-    const pointerEvents = moving ? "none" : "auto";
+    const { width, height, moving, resizing } = this.state;
+    const pointerEvents = (moving || resizing) ? "none" : "auto";
     return (
       <iframe
         class="popup-item"
@@ -151,17 +152,16 @@ class Popup extends Component<PopupProps, PopupState> {
   private renderImage() {
     const { url } = this.props;
     const { width } = this.state;
+    // https://github.com/developit/preact/issues/663
     return (
       <img
         class="popup-item"
         ref={s(this, "itemEl")}
         style={{width}}
         src={url}
-        onMouseDown={this.handleMediaMouseDown}
-        onClick={this.handleMediaClick}
-        onMouseUp={this.handleMediaMouseUp}
+        draggable={0 as any}
+        onMouseDown={this.handleMediaDown}
         onWheel={this.handleMediaWheel}
-        onDragStart={this.handleMediaDrag}
       />
     );
   }
@@ -170,16 +170,15 @@ class Popup extends Component<PopupProps, PopupState> {
       <div class="popup-controls" onClick={this.handleControlsClick}>
         <a
           class="control popup-control popup-move-control"
-          onMouseDown={this.handleMediaMouseDown}
-          onMouseUp={this.handleMediaMouseUp}
+          onMouseDown={this.handleMediaDown}
         >
           <i class="fa fa-arrows" />
         </a>
         <a
-          class="control popup-control popup-close-control"
-          onClick={this.props.onClose}
+          class="control popup-control popup-resize-control"
+          onMouseDown={this.handleResizerDown}
         >
-          <i class="fa fa-remove" />
+          <i class="fa fa-expand" />
         </a>
       </div>
     );
@@ -200,28 +199,15 @@ class Popup extends Component<PopupProps, PopupState> {
     const relY = e.clientY - rect.top;
     return relY > rect.height - ctrlHeight;
   }
-  private handleGlobalClick = (e: MouseEvent) => {
-    if (e.button !== 0 || !options.popupBackdrop) return;
-    this.props.onClose();
-  }
   private handleGlobalKey = (e: KeyboardEvent) => {
     if (e.keyCode === 27) {
       this.props.onClose();
     }
   }
-  private handleControlsClick = (e: MouseEvent) => {
-    e.stopPropagation();
-  }
-  private handleMediaClick = (e: MouseEvent) => {
-    e.stopPropagation();
-  }
-  private handleMediaDrag = (e: DragEvent) => {
-    e.preventDefault();
-  }
   private handleMediaVolume = () => {
     options.volume = this.itemEl.volume;
   }
-  private handleMediaMouseDown = (e: MouseEvent) => {
+  private handleMediaDown = (e: MouseEvent) => {
     if (e.button !== 0 || this.isVideoControlsClick(e)) return;
     this.setState({moving: true});
     this.baseX = e.clientX;
@@ -229,22 +215,58 @@ class Popup extends Component<PopupProps, PopupState> {
     this.startX = this.state.left;
     this.startY = this.state.top;
   }
+  private handleResizerDown = (e: MouseEvent) => {
+    if (e.button !== 0) return;
+    e.preventDefault();
+    this.setState({resizing: true});
+    this.baseX = e.clientX;
+    this.baseY = e.clientY;
+    this.startY = this.state.top;
+    this.startW = this.state.width;
+    this.startH = this.state.height;
+  }
   private handleGlobalMove = (e: MouseEvent) => {
     if (this.state.moving) {
       this.setState({
-        left: (this.startX + e.clientX - this.baseX),
-        top: (this.startY + e.clientY - this.baseY),
+        left: this.startX + e.clientX - this.baseX,
+        top: this.startY + e.clientY - this.baseY,
       });
+    } else if (this.state.resizing) {
+      let top = this.startY + e.clientY - this.baseY;
+      let width = this.startW + e.clientX - this.baseX;
+      let height = this.startH - (e.clientY - this.baseY);
+
+      const limit = 200;
+      if (height < limit) {
+        top -= limit - height;
+      }
+      width = Math.max(width, limit);
+      height = Math.max(height, limit);
+
+      this.setState({top, width, height});
     }
   }
-  private handleMediaMouseUp = (e: MouseEvent) => {
-    this.setState({moving: false});
-    if (e.button === 0
-        && e.clientX === this.baseX
-        && e.clientY === this.baseY
-        && !this.isVideoControlsClick(e)) {
-      this.props.onClose();
+  private handleControlsClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    this.setState({moving: false, resizing: false});
+  }
+  private handleGlobalClick = (e: MouseEvent) => {
+    if (e.button === 0) {
+      if (this.state.moving) {
+        if (e.clientX === this.baseX
+            && e.clientY === this.baseY
+            && !this.isVideoControlsClick(e)) {
+          this.props.onClose();
+        }
+      } else if (this.state.resizing) {
+        /* skip */
+      } else {
+        if (options.popupBackdrop) {
+          this.props.onClose();
+        }
+      }
     }
+    this.setState({moving: false, resizing: false});
   }
   private handleMediaWheel = (e: WheelEvent) => {
     e.preventDefault();
