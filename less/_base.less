@@ -329,6 +329,28 @@ html, body {
   user-select: none;
 }
 
+.popup-controls {
+  position: absolute;
+  padding: 0 5px;
+  background: @postBG;
+  opacity: 0;
+  top: 0;
+  right: 0;
+  transition: opacity 0.2s;
+}
+
+.popup {
+  &:hover {
+    .popup-controls {
+      opacity: 0.8;
+    }
+  }
+}
+
+.popup-move-control {
+  margin-right: 5px;
+}
+
 //////////////////////////////
 // HEADER
 //////////////////////////////
@@ -343,7 +365,7 @@ html, body {
   box-shadow: @headerShadow;
   cursor: default;
   user-select: none;
-  pointer-events: all;
+  pointer-events: auto;
 }
 
 .header-item {
@@ -536,7 +558,7 @@ html, body {
   border-width: 0 0 1px;
   border-radius: 0 0 0 9px;
   box-shadow: @modalShadow;
-  pointer-events: all;
+  pointer-events: auto;
 
   input[type=number] {
     width: 5em;
