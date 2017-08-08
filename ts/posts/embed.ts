@@ -130,11 +130,10 @@ function renderLink(link: HTMLLinkElement): Promise<void> {
  * rendering is finished, even if some links failed.
  */
 export function render(postEl: HTMLElement): Promise<void> {
+  if (!postEl.classList.contains("post_embed")) return Promise.resolve();
   const proms = [];
-  if (postEl.classList.contains("post_embed")) {
-    for (const link of postEl.querySelectorAll(POST_EMBED_SEL)) {
-      proms.push(renderLink(link as HTMLLinkElement));
-    }
+  for (const link of postEl.querySelectorAll(POST_EMBED_SEL)) {
+    proms.push(renderLink(link as HTMLLinkElement));
   }
   return Promise.all(proms).then(noop);
 }

@@ -1,6 +1,6 @@
 import { ThreadData } from "../common";
 import { Post } from "../posts";
-import { loadFromDB, page, posts } from "../state";
+import { loadPostStores, page, posts } from "../state";
 import { on } from "../util";
 import { BOARD_SEARCH_INPUT_SEL, BOARD_SEARCH_SORT_SEL } from "../vars";
 import { extractPageData, extractPost } from "./common";
@@ -23,19 +23,14 @@ function subtract(attr: string): (a: Post, b: Post) => number {
 
 async function extractCatalogModels() {
   const { threads, backlinks } = extractPageData<ThreadData[]>();
-  await loadIDStores(threads);
   for (const t of threads) {
     extractPost(t, t.id, t.board, backlinks);
   }
 }
 
-async function loadIDStores(threads: ThreadData[]) {
-  await loadFromDB(...(threads as ThreadData[]).map((t) => t.id));
-}
-
 async function extractThreads() {
   const { threads, backlinks } = extractPageData<ThreadData[]>();
-  await loadIDStores(threads);
+  await loadPostStores(...threads.map((t) => t.id));
   for (const thread of threads) {
     const { posts: threadPosts } = thread;
     delete thread.posts;

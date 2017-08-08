@@ -131,7 +131,7 @@ export function init() {
   connSM.on(connState.dropped, delayedDiscoRender);
   connSM.on(connState.desynced, delayedDiscoRender);
 
-  document.addEventListener("scroll", onScroll, { passive: true });
+  document.addEventListener("scroll", onScroll, {passive: true});
   document.addEventListener("visibilitychange", onScroll);
 }
 

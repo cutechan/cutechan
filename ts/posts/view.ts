@@ -26,6 +26,7 @@ export default class PostView extends View<Post> {
     super(attrs);
 
     this.model.view = this;
+    this.model.seenOnce = !!el;
   }
 
   // Apply client-specific formatting to post rendered on server-side.

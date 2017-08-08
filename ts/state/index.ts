@@ -3,7 +3,6 @@
 import { readIDs, storeID } from "../db";
 import { Post, PostCollection } from "../posts";
 import { getClosestID } from "../util";
-import { POST_IDS_EXPIRY_MS } from "../vars";
 
 // Server-wide global configurations
 interface Config {
@@ -49,16 +48,7 @@ export const page = read(location.href);
 export const posts = new PostCollection();
 
 // Posts I made in any tab
-export let mine: Set<number>;
-
-// Posts that the user has already seen or scrolled past
-export let seenPosts: Set<number>;
-
-// Replies to this user's posts the user has already seen
-export let seenReplies: Set<number>;
-
-// Explicitly hidden posts and threads
-export let hidden: Set<number>;
+export const mine: Set<number> = new Set();
 
 // Read page state by parsing a URL
 // TODO(Kagami): Pass this from server-side.
@@ -88,48 +78,23 @@ export function read(href: string): PageState {
 }
 
 // Load post number sets for specific threads from the database
-export function loadFromDB(...threads: number[]): Promise<Array<Set<number>>> {
-  return Promise.all([
-    readIDs("mine", ...threads).then((ids) =>
-      mine = new Set(ids)),
-    readIDs("seen", ...threads).then((ids) =>
-      seenReplies = new Set(ids)),
-    readIDs("seenPost", ...threads).then((ids) =>
-      seenPosts = new Set(ids)),
-    readIDs("hidden", ...threads).then((ids) =>
-      hidden = new Set(ids)),
-  ]);
+export function loadPostStores(...ops: number[]): Promise<void> {
+  return readIDs("mine", ...ops).then((ids) => {
+    for (const id of ids) {
+      mine.add(id);
+    }
+  });
 }
 
 // Store the ID of a post this client created
 export function storeMine(id: number, op: number) {
-  store(mine, "mine", id, op);
-}
-
-// Store the ID of a post that replied to one of the user's posts
-export function storeSeenReply(id: number, op: number) {
-  store(seenReplies, "seen", id, op);
-}
-
-export function storeSeenPost(id: number, op: number) {
-  store(seenPosts, "seenPost", id, op);
-}
-
-// Store the ID of a post or thread to hide
-export function storeHidden(id: number, op: number) {
-  store(hidden, "hidden", id, op);
-}
-
-function store(set: Set<number>, key: string, id: number, op: number) {
-  set.add(id);
-  storeID(key, id, op, POST_IDS_EXPIRY_MS);
+  mine.add(id);
+  storeID("mine", id, op);
 }
 
 // Retrieve model of closest parent post
 export function getModel(el: Element): Post {
   const id = getClosestID(el);
-  if (!id) {
-    return null;
-  }
+  if (!id) return null;
   return posts.get(id);
 }

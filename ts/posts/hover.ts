@@ -5,7 +5,7 @@
 import API from "../api";
 import { View } from "../base";
 import options from "../options";
-import { getModel, page, posts, storeSeenPost } from "../state";
+import { getModel, page, posts } from "../state";
 import {
   ChangeEmitter, emitChanges,
   getClosestID, getID, hook, HOOKS,
@@ -126,11 +126,8 @@ async function renderPostPreview(event: MouseEvent) {
     post = new Post(data);
     const view = new PostView(post, null);
     await view.afterRender();
+    post.seenOnce = true;
     posts.add(post);
-  }
-
-  if (!post.seen()) {
-    storeSeenPost(post.id, post.op);
   }
 
   const preview = new PostPreview(post, target);

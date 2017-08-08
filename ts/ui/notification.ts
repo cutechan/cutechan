@@ -2,7 +2,7 @@ import { View } from "../base";
 import lang from "../lang";
 import options from "../options";
 import { Post, thumbPath } from "../posts";
-import { mine, seenReplies, storeSeenReply } from "../state";
+import { mine } from "../state";
 import { importTemplate } from "../util";
 import { DEFAULT_NOTIFICATION_IMAGE_URL } from "../vars";
 import { repliedToMe } from "./tab";
@@ -12,15 +12,11 @@ export default function notifyAboutReply(post: Post) {
   // Ignore my replies to me (lol samefag).
   if (mine.has(post.id)) return;
 
-  // Favicon should indicate unseen reply every time.
+  // Check if already seen.
+  if (post.seen()) return;
+
+  // Update favicon status;
   repliedToMe(post);
-
-  // However notification is shown only first time.
-  if (seenReplies.has(post.id)) return;
-  storeSeenReply(post.id, post.op);
-
-  // Check if user can see it on the page.
-  if (!document.hidden && post.view.scrolledPast()) return;
 
   // Check if notifications are available.
   if (!options.notification

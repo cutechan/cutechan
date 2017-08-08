@@ -1,7 +1,7 @@
 import { PostData } from "../common";
 import lang from "../lang";
 import { Post, PostView } from "../posts";
-import { hidden, mine, page, posts } from "../state";
+import { mine, page, posts } from "../state";
 import { notifyAboutReply, postAdded } from "../ui";
 import { extractJSON } from "../util";
 import { POST_BACKLINKS_SEL } from "../vars";
@@ -31,10 +31,10 @@ export function extractPost(
   backlinks: { [id: number]: { [id: number]: number } },
 ): boolean {
   const el = document.getElementById(`post${post.id}`);
-  if (hidden.has(post.id)) {
-    el.remove();
-    return true;
-  }
+  // if (hidden.has(post.id)) {
+  //   el.remove();
+  //   return true;
+  // }
   post.op = op;
   post.board = board;
 

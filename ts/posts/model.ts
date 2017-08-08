@@ -1,6 +1,6 @@
 import { Model } from "../base";
 import { fileTypes, ImageData, PostData, PostLink } from "../common";
-import { mine, page, posts, seenPosts, storeSeenPost } from "../state";
+import { mine, page, posts } from "../state";
 import { notifyAboutReply } from "../ui";
 import { extend } from "../util";
 import Collection from "./collection";
@@ -25,6 +25,7 @@ export class Thread {
 export class Post extends Model implements PostData {
   public collection: Collection;
   public view: PostView;
+  public seenOnce: boolean;
 
   public op: number;
   public editing: boolean;
@@ -125,20 +126,18 @@ export class Post extends Model implements PostData {
   // Returns, if this post has been seen already.
   public seen(): boolean {
     // Already seen, nothing to do.
-    if (seenPosts.has(this.id)) return true;
+    if (this.seenOnce) return true;
 
     // My posts are always seen.
-    if (mine.has(this.id)) return true;
+    this.seenOnce = mine.has(this.id);
+    if (this.seenOnce) return true;
 
     // Can't see because in inactive tab.
     if (document.hidden) return false;
 
     // Check if can see on the page.
-    const visible = this.view.scrolledPast();
-    if (visible) {
-      storeSeenPost(this.id, this.op);
-      return true;
-    }
+    this.seenOnce = this.view.scrolledPast();
+    if (this.seenOnce) return true;
 
     // Should be unseen then.
     return false;
