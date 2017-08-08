@@ -6,7 +6,7 @@
 @import (inline) "node_modules/font-awesome/css/font-awesome.css";
 
 //////////////////////////////
-// MAIN
+// BASE
 //////////////////////////////
 
 body {
@@ -37,14 +37,6 @@ a:hover {
 .post-link_ref {
   text-decoration: none;
   border-bottom: 1px dashed currentColor;
-}
-
-aside {
-  display: table;
-  &.disabled a {
-    color: grey !important;
-    cursor: default;
-  }
 }
 
 table {
@@ -95,12 +87,6 @@ hr {
   td {
     padding: 0.5em;
   }
-}
-
-.sticky svg {
-  width: 1em;
-  height: 1em;
-  fill: @admin;
 }
 
 .full-width {
@@ -188,33 +174,6 @@ html, body {
   height: 100%;
 }
 
-.overlay-container {
-  position: fixed;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
-  pointer-events: none;
-  z-index: 400;
-}
-
-.modal-container {
-  display: flex;
-  flex-direction: column;
-  width: 100%;
-  height: ~"calc(100% - @{headerHeight})";
-  align-items: flex-start;
-  pointer-events: none;
-
-  .modal {
-    display: none;
-    margin-left: auto;
-    &.notification {
-      display: block;
-    }
-  }
-}
-
 .main {
   height: 100%;
   box-sizing: border-box;
@@ -274,95 +233,16 @@ html, body {
 }
 
 //////////////////////////////
-// ALERTS
-//////////////////////////////
-
-.alerts-container {
-  position: fixed;
-  top: 50px;
-  right: 20px;
-  z-index: 500;
-}
-
-// Bootstrap alike.
-.alert {
-  box-sizing: border-box;
-  min-width: 250px;
-  max-width: 500px;
-  margin-bottom: 20px;
-  padding: 10px;
-  border: 1px solid #ebccd1;
-  border-radius: 5px;
-  color: #a94442;
-  background-color: #f2dede;
-  .clearfix;
-}
-
-.alert-close-control {
-  float: right;
-  margin-left: 5px;
-  margin-top: -3px;
-}
-
-.alert-title {
-  font-weight: bold;
-  font-size: larger;
-  margin-bottom: 5px;
-}
-
-.alert-message {
-  word-break: break-word;
-}
-
-//////////////////////////////
-// POPUP
-//////////////////////////////
-
-.popup {
-  position: fixed;
-  z-index: 100;
-}
-
-.popup-item {
-  display: block;
-  outline: none;
-  user-select: none;
-}
-
-.popup-controls {
-  position: absolute;
-  padding-right: 5px;
-  background: @postBG;
-  opacity: 0;
-  left: 0;
-  top: 0;
-  transition: opacity 0.2s;
-  line-height: 18px;
-}
-
-.popup {
-  &:hover {
-    .popup-controls {
-      opacity: 0.8;
-    }
-  }
-}
-
-.popup-control {
-  margin-left: 7px;
-}
-
-.popup-close-control {
-  font-size: 19px;
-}
-
-//////////////////////////////
 // HEADER
 //////////////////////////////
 
 .header {
-  display: flex;
+  position: fixed;
+  left: 0;
+  top: 0;
+  width: 100%;
   height: @headerHeight;
+  display: flex;
   font-size: @headerFontSize;
   box-sizing: border-box;
   border-bottom: @headerBorder;
@@ -370,7 +250,7 @@ html, body {
   box-shadow: @headerShadow;
   cursor: default;
   user-select: none;
-  pointer-events: auto;
+  z-index: 400;
 }
 
 .header-item {
@@ -546,8 +426,122 @@ html, body {
 }
 
 //////////////////////////////
+// ALERTS
+//////////////////////////////
+
+.alerts-container {
+  position: fixed;
+  top: 50px;
+  right: 20px;
+  z-index: 500;
+}
+
+// Bootstrap alike.
+.alert {
+  box-sizing: border-box;
+  min-width: 250px;
+  max-width: 500px;
+  margin-bottom: 20px;
+  padding: 10px;
+  border: 1px solid #ebccd1;
+  border-radius: 5px;
+  color: #a94442;
+  background-color: #f2dede;
+  .clearfix;
+}
+
+.alert-close-control {
+  float: right;
+  margin-left: 5px;
+  margin-top: -3px;
+}
+
+.alert-title {
+  font-weight: bold;
+  font-size: larger;
+  margin-bottom: 5px;
+}
+
+.alert-message {
+  word-break: break-word;
+}
+
+//////////////////////////////
+// HOVER
+//////////////////////////////
+
+.post_hover {
+  position: absolute;
+  padding: 4px 10px;
+  border-radius: 3px;
+  border: @previewBorder;
+  box-shadow: @previewShadow;
+  z-index: 301;
+}
+
+.media_hover {
+  position: fixed;
+  display: block;
+  z-index: 302;
+  pointer-events: none;
+}
+
+//////////////////////////////
+// POPUP
+//////////////////////////////
+
+.popup {
+  position: fixed;
+  z-index: 100;
+}
+
+.popup-item {
+  display: block;
+  outline: none;
+  user-select: none;
+}
+
+.popup-controls {
+  position: absolute;
+  padding-right: 5px;
+  background: @postBG;
+  opacity: 0;
+  left: 0;
+  top: 0;
+  transition: opacity 0.2s;
+  line-height: 18px;
+}
+
+.popup {
+  &:hover {
+    .popup-controls {
+      opacity: 0.8;
+    }
+  }
+}
+
+.popup-control {
+  margin-left: 7px;
+}
+
+.popup-close-control {
+  font-size: 19px;
+}
+
+//////////////////////////////
 // MODALS
 //////////////////////////////
+
+.modal-container {
+  position: fixed;
+  top: @headerHeight;
+  right: 0;
+  z-index: 400;
+
+  .modal {
+    display: none;
+  }
+}
 
 .modal {
   text-align: left;
@@ -563,7 +557,6 @@ html, body {
   border-width: 0 0 1px;
   border-radius: 0 0 0 9px;
   box-shadow: @modalShadow;
-  pointer-events: auto;
 
   input[type=number] {
     width: 5em;
@@ -577,13 +570,6 @@ html, body {
   a:hover, .control:not(:disabled):hover {
     color: @modallinkHover;
   }
-}
-
-.modal.notification {
-  text-align: center;
-  padding: 0.6em;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 .modal, form {
@@ -1171,26 +1157,6 @@ html.pos-notstaff {
 
 .post-catalog-message {
   margin: 5px 0 0;
-}
-
-//////////////////////////////
-// HOVER POST
-//////////////////////////////
-
-.post_hover {
-  position: absolute;
-  padding: 4px 10px;
-  border-radius: 3px;
-  border: @previewBorder;
-  box-shadow: @previewShadow;
-  z-index: 301;
-}
-
-.media_hover {
-  position: fixed;
-  display: block;
-  z-index: 302;
-  pointer-events: none;
 }
 
 //////////////////////////////

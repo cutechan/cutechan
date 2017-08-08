@@ -125,6 +125,7 @@ Renders the tab selection butts in tabbed windows
 	{% code conf := config.Get() %}
 	{% code confJSON, _ := config.GetClient() %}
 	{% code boards := config.GetBoardTitles() %}
+	{% code boardJSON, _ := json.Marshal(boards) %}
 	<!DOCTYPE html>
 	<html class="{%s posClass(pos) %}">
 	<head>
@@ -137,34 +138,27 @@ Renders the tab selection butts in tabbed windows
 		<link rel="manifest" href="/static/mobile/manifest.json">
 		<link rel="stylesheet" href="/static/css/{%s conf.DefaultCSS %}.css" id="theme-css">
 		<script>
-			{% code boardJSON, _ := json.Marshal(boards) %}
 			var config={%z= confJSON %},boards={%z= boardJSON %},position={%d int(pos) %};
 			if (localStorage.theme !== config.DefaultCSS) {
 				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
 			}
 		</script>
 		{% if pos > auth.NotLoggedIn %}
-			<template name="keyValue">
-				{%= keyValueForm("", "") %}
-			</template>
-			<template name="arrayItem">
-				{%= arrayItemForm("") %}
-			</template>
+			<template name="keyValue">{%= keyValueForm("", "") %}</template>
+			<template name="arrayItem">{%= arrayItemForm("") %}</template>
 		{% endif %}
 	</head>
 	<body>
-		<div class="overlay-container">
-			{%= renderHeader(boards) %}
-			<div class="modal-container">
-				{%= faqModal() %}
-				{%= accountModal(pos) %}
-				{%= optionsModal() %}
-			</div>
-		</div>
+		{%= renderHeader(boards) %}
 		<main class="main">$$$</main>
 		<aside class="alerts-container"></aside>
-		<div class="hover-container"></div>
-		<div class="popup-container"></div>
+		<aside class="hover-container"></aside>
+		<aside class="popup-container"></aside>
+		<aside class="modal-container">
+			{%= faqModal() %}
+			{%= accountModal(pos) %}
+			{%= optionsModal() %}
+		</aside>
 		<script src="/static/js/loader.js"></script>
 	</body>
 	</html>
