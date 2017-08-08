@@ -144,6 +144,7 @@ function newTransaction(store: string, write: boolean): IDBObjectStore {
 
 // Retrieve an object from a specific object store.
 function getObj<T>(store: string, id: any): Promise<T> {
+  if (ffPrivateMode) return Promise.reject(new Error("ff private mode"));
   return new Promise((resolve, reject) => {
     const r = newTransaction(store, false).get(id);
 
@@ -175,7 +176,7 @@ function putObj(store: string, obj: any) {
 
 /** Read the contents of a postStore for specific threads into an array. */
 export function getIDs(store: string, ...ops: number[]): Promise<number[]> {
-  if (!ops.length) return Promise.resolve([]);
+  if (ffPrivateMode || !ops.length) return Promise.resolve([]);
   return new Promise((resolve, reject) => {
     const ids = [] as number[];
     // DB API doesn't support queries like `op IN (1, 2, 3)`, so use
