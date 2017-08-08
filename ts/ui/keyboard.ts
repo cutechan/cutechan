@@ -95,19 +95,18 @@ function navigateUp() {
 // Starts with first post if none is selected via current url fragment.
 function navigatePost(reverse: boolean) {
   const all = Array.from(document.querySelectorAll(POST_SEL));
+  if (all.length < 2) return;
   const currentId = location.hash.slice(1);
-  let current = document.getElementById("post" + currentId) || all[0];
+  let current = document.getElementById("post" + currentId)
+    || (reverse ? all[all.length - 1] : all[0]);
   let currentIdx = all.indexOf(current);
 
   while (current) {
-    currentIdx = reverse ? currentIdx - 1 : currentIdx + 1;
+    currentIdx += reverse ? -1 : 1;
     current = all[currentIdx];
     if (current && getComputedStyle(current).display !== "none") {
+      location.hash = "#" + getID(current);
       break;
     }
-  }
-
-  if (current) {
-    location.hash = "#" + getID(current);
   }
 }
