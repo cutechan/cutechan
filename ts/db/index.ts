@@ -86,14 +86,14 @@ function upgradeDB(event: IDBVersionChangeEvent) {
     db.deleteObjectStore("hidden");
 
     const mine = [] as Array<[number, number]>;
-    function migrateMine() {
+    const migrateMine = () => {
       db.deleteObjectStore("mine");
       s = db.createObjectStore("mine", {keyPath: "id"});
       s.createIndex("op", "op");
       for (const [id, op] of mine) {
         s.put({id, op});
       }
-    }
+    };
 
     s = t.objectStore("mine");
     const r = s.openCursor();
