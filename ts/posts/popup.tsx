@@ -128,6 +128,7 @@ class Popup extends Component<PopupProps, PopupState> {
         autoPlay
         controls={this.needVideoControls()}
         onMouseDown={this.handleMediaDown}
+        onClick={this.handleVideoClick}
         onWheel={this.handleMediaWheel}
         onVolumeChange={this.handleMediaVolume}
       />
@@ -269,6 +270,13 @@ class Popup extends Component<PopupProps, PopupState> {
       this.setState({left, top, width, height});
     }
   }
+  private handleVideoClick = (e: MouseEvent) => {
+    if (this.isVideoControlsClick(e)) {
+      e.stopPropagation();
+    } else {
+      e.preventDefault();
+    }
+  }
   private handleControlsClick = (e: MouseEvent) => {
     e.stopPropagation();
     this.setState({moving: false, resizing: false});
@@ -276,9 +284,7 @@ class Popup extends Component<PopupProps, PopupState> {
   private handleGlobalClick = (e: MouseEvent) => {
     if (e.button === 0) {
       if (this.state.moving) {
-        if (e.clientX === this.baseX
-            && e.clientY === this.baseY
-            && !this.isVideoControlsClick(e)) {
+        if (e.clientX === this.baseX && e.clientY === this.baseY) {
           this.props.onClose();
         }
       } else if (this.state.resizing) {
