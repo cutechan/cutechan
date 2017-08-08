@@ -60,9 +60,12 @@ export function init(): Promise<void> {
 function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
   db = (target as IDBRequest).result;
   const t = (target as IDBRequest).transaction;
+  // Helpers because case statements are not blocks.
+  let r = null as IDBRequest;
   let s = null as IDBObjectStore;
 
   switch (oldVersion) {
+  // Clean state.
   case 0:
     for (const name of postStores) {
       s = db.createObjectStore(name, {keyPath: "id"});
@@ -71,15 +74,15 @@ function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
     s = db.createObjectStore(embedStore, {keyPath: "url"});
     s.createIndex("expires", "expires");
     break;
+  // Migrations. Must fall through.
   case 1:
     s = db.createObjectStore(embedStore, {keyPath: "url"});
     s.createIndex("expires", "expires");
-    break;
+    /* fall-through */
   case 2:
   case 3:
-    s = t.objectStore(embedStore);
-    s.clear();
-    break;
+    t.objectStore(embedStore).clear();
+    /* fall-through */
   case 4:
     db.deleteObjectStore("seen");
     db.deleteObjectStore("seenPost");
@@ -95,8 +98,7 @@ function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
       }
     };
 
-    s = t.objectStore("mine");
-    const r = s.openCursor();
+    r = t.objectStore("mine").openCursor();
     r.onsuccess = (e) => {
       const cursor = (e.target as IDBRequest).result;
       if (cursor) {
@@ -106,8 +108,7 @@ function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
         migrateMine();
       }
     };
-
-    break;
+    /* fall-through */
   }
 }
 
