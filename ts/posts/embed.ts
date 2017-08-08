@@ -1,4 +1,4 @@
-import { getEmbed, storeEmbed } from "../db";
+import { getEmbed, setEmbed } from "../db";
 import { linkEmbeds } from "../templates";
 import { Dict, fetchJSON, noop } from "../util";
 import { EMBED_CACHE_EXPIRY_MS, POST_EMBED_SEL } from "../vars";
@@ -90,7 +90,7 @@ function fetchEmbed(url: string, provider: string): Promise<OEmbedDoc> {
 function cachedFetch(url: string, provider: string): Promise<OEmbedDoc> {
   return getEmbed<OEmbedDoc>(url).catch(() => {
     return fetchEmbed(url, provider).then((res) => {
-      storeEmbed(url, res, EMBED_CACHE_EXPIRY_MS);
+      setEmbed(url, res, EMBED_CACHE_EXPIRY_MS);
       return res;
     });
   });

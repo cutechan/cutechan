@@ -173,7 +173,7 @@ function putObj(store: string, obj: any) {
 }
 
 /** Read the contents of a postStore for specific threads into an array. */
-export function readIDs(store: string, ...ops: number[]): Promise<number[]> {
+export function getIDs(store: string, ...ops: number[]): Promise<number[]> {
   if (!ops.length) return Promise.resolve([]);
   return new Promise((resolve, reject) => {
     const ids = [] as number[];
@@ -202,7 +202,7 @@ export function readIDs(store: string, ...ops: number[]): Promise<number[]> {
 }
 
 /** Asynchronously add new post id object into postStore. */
-export function storeID(store: string, id: number, op: number) {
+export function setID(store: string, id: number, op: number) {
   putObj(store, {id, op});
 }
 
@@ -218,7 +218,7 @@ export function getEmbed<T>(url: string): Promise<T> {
   return getObj<T>(embedStore, url);
 }
 
-export function storeEmbed(url: string, obj: any, expiry: number) {
+export function setEmbed(url: string, obj: any, expiry: number) {
   const expires = Date.now() + expiry;
   return putObj(embedStore, {...obj, url, expires});
 }

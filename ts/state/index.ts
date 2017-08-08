@@ -1,6 +1,6 @@
 // Stores the central state of the web application
 
-import { readIDs, storeID } from "../db";
+import { getIDs, setID } from "../db";
 import { Post, PostCollection } from "../posts";
 import { getClosestID } from "../util";
 
@@ -79,7 +79,7 @@ export function read(href: string): PageState {
 
 // Load post number sets for specific threads from the database
 export function loadPostStores(...ops: number[]): Promise<void> {
-  return readIDs("mine", ...ops).then((ids) => {
+  return getIDs("mine", ...ops).then((ids) => {
     for (const id of ids) {
       mine.add(id);
     }
@@ -89,7 +89,7 @@ export function loadPostStores(...ops: number[]): Promise<void> {
 // Store the ID of a post this client created
 export function storeMine(id: number, op: number) {
   mine.add(id);
-  storeID("mine", id, op);
+  setID("mine", id, op);
 }
 
 // Retrieve model of closest parent post
