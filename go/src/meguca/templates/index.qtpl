@@ -3,6 +3,18 @@
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
 
+Renders the tab selection butts in tabbed windows
+{% func tabButts(names []string) %}{% stripspace %}
+	<div class="tab-butts">
+		{% for i, n := range names %}
+			<a class="tab-link{% if i == 0 %}{% space %}tab-sel{% endif %}" data-id="{%d i %}">
+				{%s n %}
+			</a>
+		{% endfor %}
+	</div>
+	<hr>
+{% endstripspace %}{% endfunc %}
+
 {% func faqModal() %}{% stripspace %}
 	<div id="FAQ" class="modal">
 		cutechan is licensed under the{% space %}

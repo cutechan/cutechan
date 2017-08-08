@@ -115,3 +115,10 @@ Omitted posts and images info
 		{%z= buf %}
 	</script>
 {% endstripspace %}{% endfunc %}
+
+{% func last100Link(board, id string) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<a class="thread-link lastN-link" href="/{%s board %}/{%s id %}?last=100">
+		{%s ln.Common.UI["last"] %}{% space %}100
+	</a>
+{% endstripspace %}{% endfunc %}
