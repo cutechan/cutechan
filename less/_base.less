@@ -1077,8 +1077,11 @@ html.pos-notstaff {
 .post_op {
   color: @postop;
 
-  &:not(.post_hover) {
+  &:not(.post_hover):not(.post_catalog) {
     min-width: 1000px;
+  }
+
+  &:not(.post_hover) {
     margin-bottom: 0;
     padding-left: 0;
     background: none;
@@ -1123,7 +1126,6 @@ html.pos-notstaff {
 
 .post_catalog {
   width: 200px;
-  min-width: 200px;
   height: 250px;
   display: inline-block;
   text-align: center;
