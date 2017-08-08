@@ -19,7 +19,7 @@ const postStores = [
 // Store for caching embed metadata.
 const embedStore = "embedCache";
 
-// Open a connection to the IndexedDB database.
+/** Open a connection to the IndexedDB database. */
 export function init(): Promise<void> {
   return new Promise<void>((resolve, reject) => {
     const r = indexedDB.open("cutechan", DB_VERSION);
@@ -57,12 +57,12 @@ export function init(): Promise<void> {
 }
 
 // Upgrade or initialize the database.
-function upgradeDB(event: IDBVersionChangeEvent) {
-  db = (event.target as IDBRequest).result;
-  const t = (event.target as IDBRequest).transaction;
+function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
+  db = (target as IDBRequest).result;
+  const t = (target as IDBRequest).transaction;
   let s = null as IDBObjectStore;
 
-  switch (event.oldVersion) {
+  switch (oldVersion) {
   case 0:
     for (const name of postStores) {
       s = db.createObjectStore(name, {keyPath: "id"});
@@ -119,94 +119,97 @@ function logErr(err: ErrorEvent) {
 
 // Delete expired records from object store.
 function deleteExpired(name: string) {
-  const req = newTransaction(name, true)
+  const r = newTransaction(name, true)
     .index("expires")
     .openCursor(IDBKeyRange.upperBound(Date.now()));
 
-  req.onsuccess = (event) => {
-    const cursor = (event.target as any).result as IDBCursor;
-    if (!cursor) return;
-    cursor.delete();
-    cursor.continue();
+  r.onsuccess = (event) => {
+    const cursor = (event.target as IDBRequest).result;
+    if (cursor) {
+      cursor.delete();
+      cursor.continue();
+    }
   };
 
-  req.onerror = logErr;
+  r.onerror = logErr;
 }
 
-// Helper for initiating transactions on a single object store
+// Helper for initiating transactions on a single object store.
 function newTransaction(store: string, write: boolean): IDBObjectStore {
   const t = db.transaction(store, write ? "readwrite" : "readonly");
   t.onerror = logErr;
   return t.objectStore(store);
 }
 
-// Read the contents of a postStore for specific threads into an array
-export function readIDs(store: string, ...ops: number[]): Promise<number[]> {
-  if (ffPrivateMode || !ops.length) return Promise.resolve([]);
-  ops.sort((a, b) => a - b);
-  return new Promise<number[]>((resolve, reject) => {
-    const ids: number[] = [];
-    const req = newTransaction(store, false)
-        .index("op")
-        .openCursor(IDBKeyRange.bound(ops[0], ops[ops.length - 1]));
-
-    req.onerror = reject;
-
-    req.onsuccess = (event) => {
-      const cursor = (event as any).target.result as IDBCursorWithValue;
-      if (cursor) {
-        if (ops.includes(cursor.value.op)) {
-          ids.push(cursor.value.id);
-        }
-        cursor.continue();
-      } else {
-        resolve(ids);
-      }
-    };
-  });
-}
-
 // Retrieve an object from a specific object store.
 function getObj<T>(store: string, id: any): Promise<T> {
-  if (ffPrivateMode) return Promise.resolve({} as T);
-  return new Promise<T>((resolve, reject) => {
-    const t = newTransaction(store, false);
-    const req = t.get(id);
-    req.onsuccess = () => {
-      if (!req.result) {
-        reject(new Error());
+  return new Promise((resolve, reject) => {
+    const r = newTransaction(store, false).get(id);
+
+    r.onsuccess = () => {
+      if (!r.result) {
+        reject(new Error("empty getObj result"));
         return;
       }
-      resolve(req.result);
+      resolve(r.result);
     };
-    req.onerror = () => {
-      reject(req.error);
+
+    r.onerror = () => {
+      reject(r.error);
     };
   });
 }
 
 // Insert object.
 // function addObj(store: string, obj: any) {
+//   if (ffPrivateMode) return;
 //   newTransaction(store, true).add(obj).onerror = logErr;
 // }
 
 // Insert or update object.
 function putObj(store: string, obj: any) {
+  if (ffPrivateMode) return;
   newTransaction(store, true).put(obj).onerror = logErr;
 }
 
-// Asynchronously add new post id object into postStore.
+/** Read the contents of a postStore for specific threads into an array. */
+export function readIDs(store: string, ...ops: number[]): Promise<number[]> {
+  if (!ops.length) return Promise.resolve([]);
+  return new Promise((resolve, reject) => {
+    const ids = [] as number[];
+    // DB API doesn't support queries like `op IN (1, 2, 3)`, so use
+    // `first_op < op < last_op` instead. Doesn't matter if we will read
+    // more IDs than needed.
+    ops.sort((a, b) => a - b);
+    const r = newTransaction(store, false)
+        .index("op")
+        .openCursor(IDBKeyRange.bound(ops[0], ops[ops.length - 1]));
+
+    r.onsuccess = (e) => {
+      const cursor = (e.target as IDBRequest).result;
+      if (cursor) {
+        ids.push(cursor.value.id);
+        cursor.continue();
+      } else {
+        resolve(ids);
+      }
+    };
+
+    r.onerror = () => {
+      reject(r.error);
+    };
+  });
+}
+
+/** Asynchronously add new post id object into postStore. */
 export function storeID(store: string, id: number, op: number) {
-  if (ffPrivateMode) return;
   putObj(store, {id, op});
 }
 
-// Clear the target object store asynchronously.
+/** Clear the target object store asynchronously. */
 export function clearStore(store: string) {
   if (ffPrivateMode) return;
-  const trans = newTransaction(store, true);
-  const req = trans.clear();
-  req.onerror = logErr;
+  newTransaction(store, true).clear().onerror = logErr;
 }
 
 // TODO(Kagami): Normalize urls, e.g. `youtube.com/watch?v=xxx` and
