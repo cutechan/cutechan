@@ -21,6 +21,9 @@ TODO(Kagami): Fix markup and styles.
 	{% code cls := "thread-nav_top" %}
 	{% code if !top { cls = "thread-nav_bottom" } %}
 	<nav class="thread-nav{% space %}{%s cls %}">
+		{% if !top %}
+			<a name="bottom"></a>
+		{% endif %}
 		<a class="button thread-nav-item thread-nav-back" href="/all/">
 			{%s ln.UI["return"] %}
 		</a>
@@ -118,7 +121,7 @@ Omitted posts and images info
 
 {% func last100Link(board, id string) %}{% stripspace %}
 	{% code ln := lang.Get() %}
-	<a class="thread-link lastN-link" href="/{%s board %}/{%s id %}?last=100">
+	<a class="thread-link lastN-link" href="/{%s board %}/{%s id %}?last=100#bottom">
 		{%s ln.Common.UI["last"] %}{% space %}100
 	</a>
 {% endstripspace %}{% endfunc %}
