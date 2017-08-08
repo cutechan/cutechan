@@ -52,9 +52,9 @@
 	<div class="board-search">
 		<input class="{%s inputClass %}" type="text" placeholder="{%s ln.UI["search"] %}">
 		{% if catalog %}
-			<select class="board-sort" name="sortMode">
+			<select class="board-search-sort" name="sortMode">
 				{% for i, s := range [...]string{"bump", "creation", "replyCount", "fileCount"} %}
-					<option class="board-sort-mode" value="{%s s %}">
+					<option class="board-search-sort-mode" value="{%s s %}">
 						{%s ln.SortModes[i] %}
 					</option>
 				{% endfor %}

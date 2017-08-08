@@ -2,7 +2,7 @@ import { ThreadData } from "../common";
 import { Post } from "../posts";
 import { loadFromDB, page, posts } from "../state";
 import { on } from "../util";
-import { BOARD_SEARCH_INPUT_SEL, BOARD_SORT_SEL } from "../vars";
+import { BOARD_SEARCH_INPUT_SEL, BOARD_SEARCH_SORT_SEL } from "../vars";
 import { extractPageData, extractPost } from "./common";
 
 type SortFunction = (a: Post, b: Post) => number;
@@ -66,9 +66,9 @@ export async function render() {
   if (page.catalog) {
     on(container, "input", onSortChange, {
       passive: true,
-      selector: BOARD_SORT_SEL,
+      selector: BOARD_SEARCH_SORT_SEL,
     });
-    const select = container.querySelector(BOARD_SORT_SEL) as HTMLSelectElement;
+    const select = container.querySelector(BOARD_SEARCH_SORT_SEL) as HTMLSelectElement;
     select.value = localStorage.getItem("catalogSort") || "bump";
     sortThreads(true);
   }
