@@ -15,10 +15,10 @@ import {
   ZOOM_STEP_PX,
 } from "../vars";
 
-let opened = 0;
+const opened: Set<string> = new Set();
 
-export function isOpen(): boolean {
-  return opened > 0;
+export function isOpen(url: string): boolean {
+  return opened.has(url);
 }
 
 export function getCenteredRect({ width, height }: any) {
@@ -91,7 +91,7 @@ class Popup extends Component<PopupProps, PopupState> {
 
   }
   public componentDidMount() {
-    opened += 1;
+    opened.add(this.props.url);
     trigger(HOOKS.openPostPopup);
     document.addEventListener("keydown", this.handleGlobalKey);
     document.addEventListener("mousemove", this.handleGlobalMove);
@@ -102,7 +102,7 @@ class Popup extends Component<PopupProps, PopupState> {
     }
   }
   public componentWillUnmount() {
-    opened -= 1;
+    opened.delete(this.props.url);
     document.removeEventListener("keydown", this.handleGlobalKey);
     document.removeEventListener("mousemove", this.handleGlobalMove);
     document.removeEventListener("click", this.handleGlobalClick);

@@ -138,6 +138,7 @@ async function renderPostPreview(event: MouseEvent) {
 }
 
 function showImage(url: string, width: number, height: number) {
+  if (popup.isOpen(url)) return;
   const rect = popup.getCenteredRect({width, height});
   imagePreview = document.createElement("img");
   imagePreview.className = "media_hover";
@@ -167,7 +168,6 @@ function renderPostEmbedPreview(link: HTMLElement): any {
 function renderImagePreview(event: MouseEvent) {
   clearImagePreview();
   if (!options.imageHover) return;
-  if (popup.isOpen()) return;
 
   const target = event.target as HTMLElement;
   if (!target.matches) return;
