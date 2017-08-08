@@ -181,6 +181,12 @@ class Popup extends Component<PopupProps, PopupState> {
         >
           <i class="fa fa-arrows" />
         </a>
+        <a
+          class="control popup-control popup-close-control"
+          onClick={this.props.onClose}
+        >
+          <i class="fa fa-remove" />
+        </a>
       </div>
     );
   }
