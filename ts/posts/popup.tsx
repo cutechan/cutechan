@@ -170,16 +170,16 @@ class Popup extends Component<PopupProps, PopupState> {
     return (
       <div class="popup-controls" onClick={this.handleControlsClick}>
         <a
+          class="control popup-control popup-resize-control"
+          onMouseDown={this.handleResizerDown}
+        >
+          <i class="fa fa-expand fa-flip-horizontal" />
+        </a>
+        <a
           class="control popup-control popup-move-control"
           onMouseDown={this.handleMediaDown}
         >
           <i class="fa fa-arrows" />
-        </a>
-        <a
-          class="control popup-control popup-resize-control"
-          onMouseDown={this.handleResizerDown}
-        >
-          <i class="fa fa-expand" />
         </a>
       </div>
     );
@@ -231,6 +231,7 @@ class Popup extends Component<PopupProps, PopupState> {
     this.setState({resizing: true});
     this.baseX = e.clientX;
     this.baseY = e.clientY;
+    this.startX = this.state.left;
     this.startY = this.state.top;
     this.startW = this.state.width;
     this.startH = this.state.height;
@@ -242,18 +243,24 @@ class Popup extends Component<PopupProps, PopupState> {
         top: this.startY + e.clientY - this.baseY,
       });
     } else if (this.state.resizing) {
-      let top = this.startY + e.clientY - this.baseY;
-      let width = this.startW + e.clientX - this.baseX;
-      let height = this.startH - (e.clientY - this.baseY);
+      const dx = e.clientX - this.baseX;
+      const dy = e.clientY - this.baseY;
+      let left = this.startX + dx;
+      let top = this.startY + dy;
+      let width = this.startW - dx;
+      let height = this.startH - dy;
 
       const limit = 200;
+      if (width < limit) {
+        left -= limit - width;
+      }
       if (height < limit) {
         top -= limit - height;
       }
       width = Math.max(width, limit);
       height = Math.max(height, limit);
 
-      this.setState({top, width, height});
+      this.setState({left, top, width, height});
     }
   }
   private handleControlsClick = (e: MouseEvent) => {
