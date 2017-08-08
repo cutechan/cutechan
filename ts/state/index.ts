@@ -131,5 +131,5 @@ export function getModel(el: Element): Post {
   if (!id) {
     return null;
   }
-  return PostCollection.getFromAll(id);
+  return posts.get(id);
 }
