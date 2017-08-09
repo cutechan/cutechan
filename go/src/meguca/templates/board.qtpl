@@ -113,9 +113,6 @@ function to allow caching of generated posts.
 					</figure>
 				{% endif %}
 				<div class="post-header">
-					{% if all %}
-						<a class="post-header-item post-board" href="/{%s t.Board %}/">{%s t.Board %}</a>
-					{% endif %}
 					<a class="post-header-item post-id" href="{%s url %}">#{%s idStr %}</a>
 					<h3 class="post-header-item post-subject">{%s t.Subject %}</h3>
 					<span class="post-header-item post-catalog-counter post-posts-counter">
