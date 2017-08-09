@@ -23,10 +23,11 @@ import { init as initUI } from "./ts/ui";
 
 // Load all stateful modules in dependency order.
 async function init() {
+  initAlerts();
+
   await initDB();
   loadPostStores();
 
-  initAlerts();
   initOptions();
 
   if (!page.landing) {
@@ -37,10 +38,9 @@ async function init() {
     } else {
       renderBoard();
     }
-  }
-
-  if (!page.landing && !page.catalog) {
-    initPosts();
+    if (!page.catalog) {
+      initPosts();
+    }
   }
 
   initUI();
