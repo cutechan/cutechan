@@ -1,6 +1,6 @@
 // Stores the central state of the web application
 
-import { getIDs, setID } from "../db";
+import { setID } from "../db";
 import { Post, PostCollection } from "../posts";
 import { getClosestID } from "../util";
 
@@ -32,6 +32,13 @@ export interface PageState {
   page: number;
   board: string;
   href: string;
+}
+
+// Retrieve model of closest parent post
+export function getModel(el: Element): Post {
+  const id = getClosestID(el);
+  if (!id) return null;
+  return posts.get(id);
 }
 
 // Read page state by parsing a URL
@@ -77,24 +84,21 @@ export const posts = new PostCollection();
 // Posts I made in any tab
 export const mine: Set<number> = new Set();
 
-// Load post number sets for specific threads from the database
-export function loadPostStores(...ops: number[]): Promise<void> {
-  return getIDs("mine", ...ops).then((ids) => {
-    for (const id of ids) {
-      mine.add(id);
-    }
-  });
+// Load post number sets
+export function loadPostStores() {
+  const ids = JSON.parse(localStorage.mine);
+  for (const id of ids) {
+    mine.add(id);
+  }
 }
 
 // Store the ID of a post this client created
 export function storeMine(id: number, op: number) {
   mine.add(id);
+  const ids = Array.from(mine);
+  localStorage.mine = JSON.stringify(ids);
+  // Save in second storage just for possible future purposes.
   setID("mine", id, op);
 }
 
-// Retrieve model of closest parent post
-export function getModel(el: Element): Post {
-  const id = getClosestID(el);
-  if (!id) return null;
-  return posts.get(id);
-}
+window.addEventListener("storage", loadPostStores);

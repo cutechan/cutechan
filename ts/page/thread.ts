@@ -1,12 +1,9 @@
 import { ThreadData } from "../common";
-import { loadPostStores, page } from "../state";
 import { extractPageData, extractPost, isBanned } from "./common";
 
 // Render the HTML of a thread page.
-export async function render() {
+export function render() {
   if (isBanned()) return;
-
-  await loadPostStores(page.thread);
 
   const { threads: data, backlinks } = extractPageData<ThreadData>();
   const { posts } = data;

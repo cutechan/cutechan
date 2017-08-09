@@ -2,7 +2,7 @@
  * IndexedDB database controller.
  */
 
-const DB_VERSION = 5;
+const DB_VERSION = 6;
 let db = null as IDBDatabase;
 
 // FF IndexedDB implementation is broken in private mode, see:
@@ -106,6 +106,24 @@ function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
         cursor.continue();
       } else {
         migrateMine();
+      }
+    };
+    /* fall-through */
+  case 5:
+    const mine2 = [] as number[];
+    const migrateMine2 = () => {
+      localStorage.mine = JSON.stringify(mine2);
+      // Keep post store for now.
+    };
+
+    r = t.objectStore("mine").openCursor();
+    r.onsuccess = (e) => {
+      const cursor = (e.target as IDBRequest).result;
+      if (cursor) {
+        mine2.push(cursor.value.id);
+        cursor.continue();
+      } else {
+        migrateMine2();
       }
     };
     /* fall-through */

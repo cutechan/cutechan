@@ -18,23 +18,24 @@ import { ln } from "./ts/lang";
 import { init as initModeration } from "./ts/mod";
 import { renderBoard, renderThread } from "./ts/page";
 import { init as initPosts } from "./ts/posts";
-import { page } from "./ts/state";
+import { loadPostStores, page } from "./ts/state";
 import { init as initUI } from "./ts/ui";
 
 // Load all stateful modules in dependency order.
 async function init() {
   await initDB();
+  loadPostStores();
 
   initAlerts();
   initOptions();
 
   if (!page.landing) {
     if (page.thread) {
-      await renderThread();
+      renderThread();
       initConnection();
       initHandlers();
     } else {
-      await renderBoard();
+      renderBoard();
     }
   }
 

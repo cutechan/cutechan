@@ -1,6 +1,6 @@
 import { ThreadData } from "../common";
 import { Post } from "../posts";
-import { loadPostStores, page, posts } from "../state";
+import { page, posts } from "../state";
 import { on } from "../util";
 import { BOARD_SEARCH_INPUT_SEL, BOARD_SEARCH_SORT_SEL } from "../vars";
 import { extractPageData, extractPost } from "./common";
@@ -21,16 +21,15 @@ function subtract(attr: string): (a: Post, b: Post) => number {
     b[attr] - a[attr];
 }
 
-async function extractCatalogModels() {
+function extractCatalogModels() {
   const { threads, backlinks } = extractPageData<ThreadData[]>();
   for (const t of threads) {
     extractPost(t, t.id, t.board, backlinks);
   }
 }
 
-async function extractThreads() {
+function extractThreads() {
   const { threads, backlinks } = extractPageData<ThreadData[]>();
-  await loadPostStores(...threads.map((t) => t.id));
   for (const thread of threads) {
     const { posts: threadPosts } = thread;
     delete thread.posts;
@@ -45,11 +44,11 @@ async function extractThreads() {
 }
 
 // Apply client-side modifications to a board page's HTML.
-export async function render() {
+export function render() {
   if (page.catalog) {
-    await extractCatalogModels();
+    extractCatalogModels();
   } else {
-    await extractThreads();
+    extractThreads();
   }
 
   const container = document.getElementById("threads");
