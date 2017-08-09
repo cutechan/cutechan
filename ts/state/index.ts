@@ -84,9 +84,17 @@ export const posts = new PostCollection();
 // Posts I made in any tab
 export const mine: Set<number> = new Set();
 
+function loadMine() {
+  try {
+    return JSON.parse(localStorage.mine);
+  } catch (e) {
+    return [];
+  }
+}
+
 // Load post number sets
 export function loadPostStores() {
-  const ids = JSON.parse(localStorage.mine);
+  const ids = loadMine();
   for (const id of ids) {
     mine.add(id);
   }
