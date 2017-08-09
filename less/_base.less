@@ -24,10 +24,9 @@ a {
   color: @link;
   border: none;
   text-decoration: none !important;
-}
-
-a:hover {
-  color: @linkHover;
+  &:hover {
+    color: @linkHover;
+  }
 }
 
 .post-link {
@@ -493,6 +492,12 @@ html, body {
 .popup {
   position: fixed;
   z-index: 100;
+
+  &:hover {
+    .popup-controls {
+      opacity: 0.8;
+    }
+  }
 }
 
 .popup-item {
@@ -510,14 +515,6 @@ html, body {
   top: 0;
   transition: opacity 0.2s;
   line-height: 18px;
-}
-
-.popup {
-  &:hover {
-    .popup-controls {
-      opacity: 0.8;
-    }
-  }
 }
 
 .popup-control {
@@ -997,6 +994,9 @@ html.work-mode {
   // Link.
   a {
     color: @postlinkmessage;
+    &:hover {
+      color: @linkHover;
+    }
   }
 
   // Spoiler.
