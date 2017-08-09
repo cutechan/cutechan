@@ -249,7 +249,7 @@ html, body {
   box-shadow: @headerShadow;
   cursor: default;
   user-select: none;
-  z-index: 400;
+  z-index: 100;
 }
 
 .header-item {
@@ -432,7 +432,7 @@ html, body {
   position: fixed;
   top: 50px;
   right: 20px;
-  z-index: 500;
+  z-index: 600;
 }
 
 // Bootstrap alike.
@@ -475,13 +475,13 @@ html, body {
   border-radius: 3px;
   border: @previewBorder;
   box-shadow: @previewShadow;
-  z-index: 301;
+  z-index: 401;
 }
 
 .media_hover {
   position: fixed;
   display: block;
-  z-index: 302;
+  z-index: 402;
   pointer-events: none;
 }
 
@@ -491,7 +491,7 @@ html, body {
 
 .popup {
   position: fixed;
-  z-index: 100;
+  z-index: 300;
 
   &:hover {
     .popup-controls {
@@ -533,7 +533,7 @@ html, body {
   position: fixed;
   top: @headerHeight;
   right: 0;
-  z-index: 400;
+  z-index: 500;
 
   .modal {
     display: none;
