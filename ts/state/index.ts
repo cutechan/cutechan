@@ -34,25 +34,9 @@ export interface PageState {
   href: string;
 }
 
-// Configuration passed from the server. Some values can be changed during
-// runtime.
-export const config: Config = (window as any).config;
-
-// Currently existing boards
-export let boards: BoardConfig[] = (window as any).boards;
-
-// Load initial page state
-export const page = read(location.href);
-
-// All posts currently displayed
-export const posts = new PostCollection();
-
-// Posts I made in any tab
-export const mine: Set<number> = new Set();
-
 // Read page state by parsing a URL
 // TODO(Kagami): Pass this from server-side.
-export function read(href: string): PageState {
+function getState(href: string): PageState {
   const u = document.createElement("a");
   u.href = href;
 
@@ -76,6 +60,22 @@ export function read(href: string): PageState {
     thread: parseInt(thread && thread[1], 10) || 0,
   };
 }
+
+// Load initial page state
+export const page = getState(location.href);
+
+// Configuration passed from the server. Some values can be changed during
+// runtime.
+export const config: Config = (window as any).config;
+
+// Currently existing boards
+export let boards: BoardConfig[] = (window as any).boards;
+
+// All posts currently displayed
+export const posts = new PostCollection();
+
+// Posts I made in any tab
+export const mine: Set<number> = new Set();
 
 // Load post number sets for specific threads from the database
 export function loadPostStores(...ops: number[]): Promise<void> {
