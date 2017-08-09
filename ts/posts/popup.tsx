@@ -7,7 +7,6 @@ import options from "../options";
 import { getModel } from "../state";
 import { HOOKS, on, setter as s, trigger } from "../util";
 import {
-  HEADER_HEIGHT_PX,
   POPUP_CONTAINER_SEL,
   POST_EMBED_SEL,
   POST_FILE_THUMB_SEL,
@@ -24,7 +23,7 @@ export function isOpen(url: string): boolean {
 export function getCenteredRect({ width, height }: any) {
   const aspect = width / height;
   const pW = document.body.clientWidth;
-  const pH = window.innerHeight - HEADER_HEIGHT_PX;
+  const pH = window.innerHeight;
   width = Math.min(width, pW);
   height = Math.ceil(width / aspect);
   if (height > pH) {
@@ -32,7 +31,7 @@ export function getCenteredRect({ width, height }: any) {
     width = Math.ceil(height * aspect);
   }
   const left = (pW - width) / 2;
-  const top = (pH - height) / 2 + HEADER_HEIGHT_PX;
+  const top = (pH - height) / 2;
   return {width, height, left, top};
 }
 
