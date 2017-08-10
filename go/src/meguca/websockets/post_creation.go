@@ -19,6 +19,7 @@ import (
 )
 
 var (
+	errPostingTooFast    = errors.New("posting too fast")
 	errBadSignature      = errors.New("bad signature")
 	errReadOnly          = errors.New("read only board")
 	errInvalidImageToken = errors.New("invalid image token")
@@ -67,6 +68,12 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 
 	_, err = getBoardConfig(req.Board)
 	if err != nil {
+		return
+	}
+
+	can := db.CanCreateThread(ip)
+	if !can {
+		err = errPostingTooFast
 		return
 	}
 
@@ -130,6 +137,12 @@ func CreatePost(
 
 	_, err = getBoardConfig(board)
 	if err != nil {
+		return
+	}
+
+	can := db.CanCreatePost(ip)
+	if !can {
+		err = errPostingTooFast
 		return
 	}
 

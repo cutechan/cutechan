@@ -376,3 +376,35 @@ func UsePostToken(token string) (err error) {
 	}
 	return
 }
+
+func CanCreateThread(ip string) bool {
+	var unix int64
+	err := prepared["get_last_thread_time_by_ip"].QueryRow(ip).Scan(&unix)
+	switch err {
+	case nil:
+	case sql.ErrNoRows:
+		return true
+	default:
+		return false
+	}
+
+	created := time.Unix(unix, 0)
+	passed := time.Since(created)
+	return passed.Minutes() >= 1.0
+}
+
+func CanCreatePost(ip string) bool {
+	var unix int64
+	err := prepared["get_last_post_time_by_ip"].QueryRow(ip).Scan(&unix)
+	switch err {
+	case nil:
+	case sql.ErrNoRows:
+		return true
+	default:
+		return false
+	}
+
+	created := time.Unix(unix, 0)
+	passed := time.Since(created)
+	return passed.Seconds() >= 1.0
+}
