@@ -142,25 +142,19 @@ func extractPosition(w http.ResponseWriter, r *http.Request) (
 ) {
 	ok = true
 	pos = auth.NotLoggedIn
-	creds := extractLoginCreds(r)
-	if creds.UserID == "" {
-		return
-	}
+	creds, err := extractLoginCreds(r)
 
-	loggedIn, err := db.IsLoggedIn(creds.UserID, creds.Session)
 	switch err {
+	case nil:
+		board := extractParam(r, "board")
+		pos, err = db.FindPosition(board, creds.UserID)
+		if err != nil {
+			text500(w, r, err)
+			ok = false
+			return
+		}
 	case common.ErrInvalidCreds:
 		return
-	case nil:
-		if loggedIn {
-			board := extractParam(r, "board")
-			pos, err = db.FindPosition(board, creds.UserID)
-			if err != nil {
-				text500(w, r, err)
-				ok = false
-				return
-			}
-		}
 	default:
 		text500(w, r, err)
 		ok = false

@@ -32,10 +32,10 @@ func (c *Client) runHandler(typ common.MessageType, msg []byte) error {
 	// 	return c.closePost()
 	// case common.MessageSplice:
 	// 	return c.spliceText(data)
-	case common.MessageInsertPost:
-		return c.insertPost(data)
-	case common.MessageCaptcha:
-		return c.submitCaptcha(data)
+	// case common.MessageInsertPost:
+	// 	return c.insertPost(data)
+	// case common.MessageCaptcha:
+	// 	return c.submitCaptcha(data)
 	// case common.MessageInsertImage:
 	// 	return c.insertImage(data)
 	case common.MessageNOOP:

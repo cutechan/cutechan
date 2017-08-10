@@ -3,19 +3,16 @@
 import { showAlert } from "../alerts";
 import API from "../api";
 import { TabbedModal } from "../base";
-import { ln } from "../lang";
+import lang, { ln } from "../lang";
 import { Post } from "../posts";
 import { getModel, page } from "../state";
 import { FormView } from "../ui";
-import { deleteCookie, on, postJSON } from "../util";
+import { inputElement, on, postJSON } from "../util";
 import { TRIGGER_BAN_BY_POST_SEL, TRIGGER_DELETE_POST_SEL } from "../vars";
-import { validatePasswordMatch } from "./common";
 import {
   BannerForm, BoardConfigForm, BoardCreationForm, BoardDeletionForm,
   PasswordChangeForm, ServerConfigForm, StaffAssignmentForm,
 } from "./forms";
-
-export { loginID, sessionToken } from "./common";
 
 interface Constructable {
   new (): any;
@@ -51,6 +48,19 @@ export function getMyAuth(): string {
   default:
     return "";
   }
+}
+
+// Set a password match validator function for 2 input elements, that are
+// children of the passed element.
+export function validatePasswordMatch(
+  parent: Element, name1: string, name2: string,
+) {
+  const el1 = inputElement(parent, name1);
+  const el2 = inputElement(parent, name2);
+  el1.onchange = el2.onchange = () => {
+    const s = el2.value !== el1.value ? lang.ui.mustMatch : "";
+    el2.setCustomValidity(s);
+  };
 }
 
 // Only active AccountPanel instance
@@ -115,10 +125,25 @@ class AccountPanel extends TabbedModal {
   }
 }
 
+/**
+ * Manage login ID of the current session.
+ * Simple localStorage wrapper.
+ */
+export const LoginID = {
+  get(): string {
+    return localStorage.loginID;
+  },
+  set(id: string) {
+    localStorage.loginID = id;
+  },
+  delete() {
+    delete localStorage.loginID;
+  },
+};
+
 // Reset the views and module to its not-logged-id state
 export function reset() {
-  deleteCookie("loginID");
-  deleteCookie("session");
+  LoginID.delete();
 }
 
 // Terminate the user session(s) server-side and reset the panel
@@ -130,6 +155,7 @@ async function logout(url: string) {
   switch (res.status) {
     case 200:
     case 403: // Does not really matter, if the session already expired
+      reset();
       location.reload(true);
       break;
     default:
@@ -141,6 +167,7 @@ async function logout(url: string) {
 // tslint:disable-next-line:max-classes-per-file
 class LoginForm extends FormView {
   private url: string;
+  private login: boolean;
 
   constructor(id: string, url: string) {
     super({
@@ -148,19 +175,22 @@ class LoginForm extends FormView {
       lazyCaptcha: true,
     });
     this.url = "/api/" + url;
+    this.login = url === "login";
   }
 
   // Extract and send login ID and password and captcha (if any) from a form
   protected async send() {
-    const req: any = {};
-    for (const key of ["id", "password"]) {
-      req[key] = this.inputElement(key).value;
-    }
+    const id = this.inputElement("id").value.trim();
+    const password = this.inputElement("password").value;
+    const req = {id, password};
     this.injectCaptcha(req);
-
     const res = await postJSON(this.url, req);
     switch (res.status) {
       case 200:
+        // TODO(Kagami): Refactor this.
+        if (this.login) {
+          LoginID.set(id);
+        }
         location.reload(true);
       default:
         this.renderFormResponse(await res.text());

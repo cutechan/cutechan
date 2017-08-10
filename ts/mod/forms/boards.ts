@@ -1,6 +1,6 @@
+import { LoginID } from "..";
 import { View, ViewAttrs } from "../../base";
 import { makeFrag, postJSON, uncachedGET } from "../../util";
-import { loginID } from "../common";
 import { AccountForm } from "./common";
 
 // Render the <select> for picking the owned board you want to manipulate
@@ -16,7 +16,7 @@ class OwnedBoardSelection extends View<null> {
   }
 
   private async render() {
-    const res = await uncachedGET(`/html/owned-boards/${loginID()}`);
+    const res = await uncachedGET(`/html/owned-boards/${LoginID.get()}`);
     switch (res.status) {
       case 200:
         this.el.append(makeFrag(await res.text()));

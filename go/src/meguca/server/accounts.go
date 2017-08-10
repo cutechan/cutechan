@@ -82,24 +82,19 @@ func commitLogin(w http.ResponseWriter, r *http.Request, userID string) {
 		return
 	}
 
-	// One hour less, so the cookie expires a bit before the DB session gets
-	// deleted
-	expires := time.Now().
-		Add(time.Duration(common.SessionExpiry)*time.Hour*24 - time.Hour)
-	loginCookie := http.Cookie{
-		Name:    "loginID",
-		Value:   userID,
-		Path:    "/",
-		Expires: expires,
-	}
+	// One hour less, so the cookie expires a bit before the DB session
+	// gets deleted.
+	expiry := time.Duration(common.SessionExpiry)*time.Hour*24 - time.Hour
+	expires := time.Now().Add(expiry)
 	sessionCookie := http.Cookie{
 		Name:    "session",
 		Value:   token,
 		Path:    "/",
 		Expires: expires,
+		Secure:  secureCookie,
+		HttpOnly: true,
 	}
-	http.SetCookie(w, &loginCookie)
-	http.SetCookie(w, &sessionCookie)
+	SetCookie(w, &sessionCookie, SAMESITE_LAX_MODE)
 }
 
 // Log into a registered user account
@@ -136,32 +131,43 @@ func login(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Log out user from session and remove the session key from the database
-func logout(w http.ResponseWriter, r *http.Request) {
-	commitLogout(w, r, func(req auth.SessionCreds) error {
-		return db.LogOut(req.UserID, req.Session)
-	})
-}
-
 // Common part of both logout endpoints
 func commitLogout(
 	w http.ResponseWriter,
 	r *http.Request,
-	fn func(auth.SessionCreds) error,
+	fn func(*auth.SessionCreds) error,
 ) {
 	creds, ok := isLoggedIn(w, r)
 	if !ok {
 		return
 	}
-
 	if err := fn(creds); err != nil {
 		text500(w, r, err)
+		return
 	}
+
+	expires := time.Unix(0, 0)
+	sessionCookie := http.Cookie{
+		Name:    "session",
+		Value:   "0",
+		Path:    "/",
+		Expires: expires,
+		Secure:  secureCookie,
+		HttpOnly: true,
+	}
+	SetCookie(w, &sessionCookie, SAMESITE_LAX_MODE)
+}
+
+// Log out user from session and remove the session key from the database
+func logout(w http.ResponseWriter, r *http.Request) {
+	commitLogout(w, r, func(req *auth.SessionCreds) error {
+		return db.LogOut(req.UserID, req.Session)
+	})
 }
 
 // Log out all sessions of the specific user
 func logoutAll(w http.ResponseWriter, r *http.Request) {
-	commitLogout(w, r, func(req auth.SessionCreds) error {
+	commitLogout(w, r, func(req *auth.SessionCreds) error {
 		return db.LogOutAll(req.UserID)
 	})
 }
@@ -224,44 +230,48 @@ func checkPasswordAndCaptcha(
 	return true
 }
 
-// Assert the user login session ID is valid and returns the login credentials
-func isLoggedIn(w http.ResponseWriter, r *http.Request) (
-	creds auth.SessionCreds, ok bool,
-) {
-	creds = extractLoginCreds(r)
-	if creds.UserID == "" || creds.Session == "" {
-		text403(w, errAccessDenied)
-		return
-	}
-
-	ok, err := db.IsLoggedIn(creds.UserID, creds.Session)
-	switch err {
-	case common.ErrInvalidCreds:
-		text403(w, err)
-	case nil:
-		if !ok {
-			text403(w, errAccessDenied)
-		}
-	default:
-		text500(w, r, err)
-	}
-
-	return
-}
-
-// Extract login credentials from cookies
-func extractLoginCreds(r *http.Request) (creds auth.SessionCreds) {
-	if c, err := r.Cookie("session"); err == nil {
-		creds.Session = c.Value
-	}
-	if c, err := r.Cookie("loginID"); err == nil {
-		creds.UserID = strings.TrimSpace(c.Value)
-	}
-	return
-}
-
 // Trim spaces from loginID. Chainable with other authenticators.
 func trimLoginID(id *string) bool {
 	*id = strings.TrimSpace(*id)
 	return true
+}
+
+// Extract login credentials.
+// Return pointer in order to avoid potential use of unauthenticated
+// user data.
+func extractLoginCreds(r *http.Request) (*auth.SessionCreds, error) {
+	c, err := r.Cookie("session")
+	if err != nil {
+		return nil, common.ErrInvalidCreds
+	}
+	session := c.Value
+	if len(session) != common.LenSession {
+		return nil, common.ErrInvalidCreds
+	}
+
+	// FIXME(Kagami): This might be affected to timing attack.
+	userID, err := db.GetUserID(session)
+	if err != nil {
+		return nil, err
+	}
+
+	creds := auth.SessionCreds{UserID: userID, Session: session}
+	return &creds, nil
+}
+
+// Assert the user login session ID is valid and returns the login
+// credentials.
+func isLoggedIn(w http.ResponseWriter, r *http.Request) (
+	creds *auth.SessionCreds, ok bool,
+) {
+	creds, err := extractLoginCreds(r)
+	switch err {
+	case nil:
+		ok = true
+	case common.ErrInvalidCreds:
+		text403(w, err)
+	default:
+		text500(w, r, err)
+	}
+	return
 }

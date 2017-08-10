@@ -1,4 +1,4 @@
-import { validatePasswordMatch } from "../common";
+import { validatePasswordMatch } from "..";
 import { AccountForm } from "./common";
 
 // View for changing a password

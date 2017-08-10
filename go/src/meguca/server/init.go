@@ -28,6 +28,10 @@ var (
 	// Address is the listening address of the HTTP web server
 	address string
 
+	// Add "secure" flag to auth cookies
+	secureCookie bool
+
+	// Are we running on Windows?
 	isWindows = runtime.GOOS == "windows"
 
 	// Is assigned in ./daemon.go to control/spawn a daemon process. That file
@@ -90,6 +94,12 @@ func Start() {
 		"w",
 		"./dist/static",
 		"site static location",
+	)
+	flag.BoolVar(
+		&secureCookie,
+		"y",
+		false,
+		"use secure cookies",
 	)
 
 	flag.Usage = printUsage

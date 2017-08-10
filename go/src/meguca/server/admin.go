@@ -94,7 +94,7 @@ func canPerform(
 	level auth.ModerationLevel,
 	captcha *auth.Captcha,
 ) (
-	creds auth.SessionCreds, can bool,
+	creds *auth.SessionCreds, can bool,
 ) {
 	if !auth.IsBoard(board) {
 		text400(w, errInvalidBoardName)
@@ -608,8 +608,9 @@ func banList(w http.ResponseWriter, r *http.Request) {
 	serveHTML(w, r, "", html, nil)
 }
 
-// Detect, if a  client can perform moderation on a board. Unlike canPerform,
-// this will not send any errors to the client, if no access rights detected.
+// Detect, if a client can perform moderation on a board. Unlike
+// canPerform, this will not send any errors to the client, if no access
+// rights detected.
 func detectCanPerform(
 	r *http.Request,
 	board string,
@@ -617,16 +618,10 @@ func detectCanPerform(
 ) (
 	can bool,
 ) {
-	creds := extractLoginCreds(r)
-	if creds.UserID == "" || creds.Session == "" {
+	creds, err := extractLoginCreds(r)
+	if err != nil {
 		return
 	}
-
-	ok, err := db.IsLoggedIn(creds.UserID, creds.Session)
-	if err != nil || !ok {
-		return
-	}
-
 	can, err = db.CanPerform(creds.UserID, board, level)
 	return
 }

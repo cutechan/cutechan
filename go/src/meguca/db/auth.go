@@ -14,16 +14,11 @@ var (
 	ErrUserNameTaken = errors.New("user name already taken")
 )
 
-// IsLoggedIn check if the user is logged in with the specified session
-func IsLoggedIn(user, session string) (loggedIn bool, err error) {
-	if len(user) > common.MaxLenUserID || len(session) != common.LenSession {
-		err = common.ErrInvalidCreds
-		return
-	}
-
-	err = prepared["is_logged_in"].QueryRow(user, session).Scan(&loggedIn)
+// Return logged user ID for the specified session
+func GetUserID(session string) (userID string, err error) {
+	err = prepared["get_account_by_session"].QueryRow(session).Scan(&userID)
 	if err == sql.ErrNoRows {
-		err = nil
+		err = common.ErrInvalidCreds
 	}
 	return
 }

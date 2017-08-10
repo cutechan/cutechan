@@ -38,10 +38,10 @@ type ThreadCreationRequest struct {
 type ReplyCreationRequest struct {
 	Open  bool
 	Image ImageRequest
-	auth.SessionCreds
 	auth.Captcha
 	Password, Body string
 	Token, Sign    string
+	Creds          *auth.SessionCreds
 }
 
 // ImageRequest contains data for allocating an image
@@ -183,10 +183,7 @@ func CreatePost(
 
 // Insert a new post into the database
 func (c *Client) insertPost(data []byte) (err error) {
-	// err = c.closePreviousPost()
-	// if err != nil {
-	// 	return
-	// }
+	return
 
 	var req ReplyCreationRequest
 	err = decodeMessage(data, &req)
@@ -309,23 +306,13 @@ func constructPost(
 	}
 
 	// Attach staff position title after validations
-	if req.UserID != "" {
+	if req.Creds != nil {
 		var pos auth.ModerationLevel
-		pos, err = db.FindPosition(board, req.UserID)
+		pos, err = db.FindPosition(board, req.Creds.UserID)
 		if err != nil {
 			return
 		}
 		post.Auth = pos.String()
-
-		var loggedIn bool
-		loggedIn, err = db.IsLoggedIn(req.UserID, req.Session)
-		if err != nil {
-			return
-		}
-		if !loggedIn {
-			err = common.ErrInvalidCreds
-			return
-		}
 	}
 
 	if req.Open {

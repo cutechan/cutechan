@@ -157,7 +157,10 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 		},
 	}
 	if f.Get("staffTitle") == "on" {
-		req.SessionCreds = extractLoginCreds(r)
+		creds, err := extractLoginCreds(r)
+		if err == nil {
+			req.Creds = creds
+		}
 	}
 	if token != "" {
 		req.Image = websockets.ImageRequest{
