@@ -144,7 +144,7 @@ class Popup extends Component<PopupProps, PopupState> {
         allowFullScreen
         frameBorder={0}
         referrerPolicy="no-referrer"
-        sandbox="allow-scripts allow-same-origin"
+        sandbox="allow-scripts allow-same-origin allow-popups"
         src={this.frameUrl}
       />
     );
