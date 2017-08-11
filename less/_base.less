@@ -30,7 +30,7 @@ a {
 }
 
 .post-link {
-  color: @postlink;
+  color: @link;
 }
 
 .post-link_ref {
@@ -993,7 +993,7 @@ html.work-mode {
 .post-message, .reply-message {
   // Link.
   a {
-    color: @postlinkmessage;
+    color: @linkmessage;
     &:hover {
       color: @linkHover;
     }
@@ -1090,6 +1090,10 @@ html.pos-notstaff {
     box-shadow: none;
   }
 
+  a {
+    color: @linkop;
+  }
+
   .post-header {
     font-size: larger;
   }
@@ -1114,10 +1118,6 @@ html.pos-notstaff {
 
   .post-file-info, .post-backlink-pre {
     color: @postinfoop;
-  }
-
-  .post-link {
-    color: @postlinkop;
   }
 }
 
