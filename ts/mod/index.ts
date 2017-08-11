@@ -82,7 +82,7 @@ class AccountPanel extends TabbedModal {
       "#createBoard": this.loadConditional(BoardCreationForm),
       "#deleteBoard": this.loadConditional(BoardDeletionForm),
       "#logout": () => logout("/api/logout"),
-      "#logoutAll": () => logout("/api/logout-all"),
+      "#logoutAll": () => logout("/api/logout/all"),
       "#setBanners": this.loadConditional(BannerForm),
     });
 
@@ -175,6 +175,7 @@ class LoginForm extends FormView {
       lazyCaptcha: true,
     });
     this.url = "/api/" + url;
+    // TODO(Kagami): Refactor this.
     this.login = url === "login";
   }
 
@@ -187,7 +188,6 @@ class LoginForm extends FormView {
     const res = await postJSON(this.url, req);
     switch (res.status) {
       case 200:
-        // TODO(Kagami): Refactor this.
         if (this.login) {
           LoginID.set(id);
         }
