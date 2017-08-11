@@ -92,7 +92,7 @@ export function makePostContext(
       Title: img.title,
       HasVideo: img.video,
       HasAudio: img.audio,
-      Length: duration(img.length),
+      Length: duration(img.length || 0),
       Size: fileSize(img.size),
       Width: img.dims[0],
       Height: img.dims[1],
