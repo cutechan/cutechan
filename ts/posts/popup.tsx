@@ -56,11 +56,13 @@ interface PopupState {
   height: number;
   moving: boolean;
   resizing: boolean;
+  frameLoaded: boolean;
 }
 
 class Popup extends Component<PopupProps, PopupState> {
   private itemEl = null as HTMLVideoElement;
   private frameUrl = "";
+  private httpEmbed = false;
   private aspect = 0;
   private baseX = 0;
   private baseY = 0;
@@ -78,6 +80,7 @@ class Popup extends Component<PopupProps, PopupState> {
 
     if (props.embed) {
       this.frameUrl = props.html.match(/src="(.*)"/)[1];
+      this.httpEmbed = this.frameUrl.startsWith("http:");
     }
 
     this.state = {
@@ -87,6 +90,7 @@ class Popup extends Component<PopupProps, PopupState> {
       height: rect.height,
       moving: false,
       resizing: false,
+      frameLoaded: false,
     };
 
   }
@@ -108,12 +112,11 @@ class Popup extends Component<PopupProps, PopupState> {
     document.removeEventListener("click", this.handleGlobalClick);
   }
 
-  public render({ video, embed }: PopupProps, { left, top }: PopupState) {
+  public render({ video, embed }: PopupProps, { left, top, frameLoaded }: PopupState) {
     const cls = video ? "popup_video" : embed ? "popup_embed" : "popup_image";
-    const httpEmbed = embed && this.frameUrl.startsWith("http:");
     return (
       <div class={cx("popup", cls)} style={{left, top}}>
-        {httpEmbed ? this.renderEmbedHelp() : null}
+        {(this.httpEmbed && !frameLoaded) ? this.renderEmbedHelp() : null}
         {video ? this.renderVideo()
                : embed ? this.renderEmbed() : this.renderImage()}
         {embed ? this.renderControls() : null}
@@ -150,6 +153,7 @@ class Popup extends Component<PopupProps, PopupState> {
         referrerPolicy="no-referrer"
         sandbox="allow-scripts allow-same-origin allow-popups"
         src={this.frameUrl}
+        onLoad={this.handleFrameLoad}
       />
     );
   }
@@ -233,6 +237,12 @@ class Popup extends Component<PopupProps, PopupState> {
     if (e.keyCode === 27) {
       this.props.onClose();
     }
+  }
+  private handleFrameLoad = () => {
+    // There is no error event in case of mixed content (see
+    // <https://bugs.chromium.org/p/chromium/issues/detail?id=449343>),
+    // so need to detect the opposite way.
+    this.setState({frameLoaded: true});
   }
   private handleMediaDrag = (e: DragEvent) => {
     // NOTE(Kagami): Note that both draggable AND ondragstart are
