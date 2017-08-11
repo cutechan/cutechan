@@ -2,6 +2,7 @@
  * Expand media attachments to the middle of the screen.
  */
 
+import * as cx from "classnames";
 import { Component, h, render } from "preact";
 import options from "../options";
 import { getModel } from "../state";
@@ -108,8 +109,9 @@ class Popup extends Component<PopupProps, PopupState> {
   }
 
   public render({ video, embed }: PopupProps, { left, top }: PopupState) {
+    const cls = video ? "popup_video" : embed ? "popup_embed" : "popup_image";
     return (
-      <div class="popup" style={{left, top}}>
+      <div class={cx("popup", cls)} style={{left, top}}>
         {video ? this.renderVideo()
                : embed ? this.renderEmbed() : this.renderImage()}
         {embed ? this.renderControls() : null}
