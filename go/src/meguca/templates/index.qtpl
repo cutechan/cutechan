@@ -68,13 +68,11 @@ Renders the tab selection butts in tabbed windows
 				} %}
 					<a class="form-selection-link" id="{%s l %}">
 						{%s ln.UI[l] %}
-						<br>
 					</a>
 				{% endfor %}
 				{% if pos == auth.Admin %}
 					<a class="form-selection-link" id="configureServer">
 						{%s ln.UI["configureServer"] %}
-						<br>
 					</a>
 				{% endif %}
 			</div>

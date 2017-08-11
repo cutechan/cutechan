@@ -75,20 +75,18 @@ class AccountPanel extends TabbedModal {
     super(document.getElementById("account-panel"));
 
     this.onClick({
-      "#assignStaff": this.loadConditional(StaffAssignmentForm),
-      "#changePassword": this.loadConditional(PasswordChangeForm),
-      "#configureBoard": this.loadConditional(BoardConfigForm),
-      "#configureServer": this.loadConditional(ServerConfigForm),
-      "#createBoard": this.loadConditional(BoardCreationForm),
-      "#deleteBoard": this.loadConditional(BoardDeletionForm),
       "#logout": () => logout("/api/logout"),
       "#logoutAll": () => logout("/api/logout/all"),
+      "#changePassword": this.loadConditional(PasswordChangeForm),
+      "#createBoard": this.loadConditional(BoardCreationForm),
+      "#configureBoard": this.loadConditional(BoardConfigForm),
+      "#assignStaff": this.loadConditional(StaffAssignmentForm),
       "#setBanners": this.loadConditional(BannerForm),
+      "#deleteBoard": this.loadConditional(BoardDeletionForm),
+      "#configureServer": this.loadConditional(ServerConfigForm),
     });
 
-    if (position > ModerationLevel.notStaff) {
-      // new ModPanel()
-    } else {
+    if (position === ModerationLevel.notLoggedIn) {
       this.tabHook = (id) => {
         switch (id) {
           case 0:
@@ -100,10 +98,11 @@ class AccountPanel extends TabbedModal {
         }
       };
       this.showHook = () => {
-        if (position === ModerationLevel.notLoggedIn) {
-          loginForm.initCaptcha();
-        }
+        loginForm.initCaptcha();
       };
+    } else {
+      const logoutItem = document.getElementById("logout");
+      logoutItem.textContent += `, ${LoginID.get()}`;
     }
   }
 
