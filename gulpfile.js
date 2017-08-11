@@ -210,8 +210,11 @@ createTask("css", "less/[^_]*.less", src =>
     .pipe(gulpif(!watch, postcss([
       autoprefixer(),
       cssnano({
+        // Avoid fixing z-index which might be used in animation.
+        zindex: false,
         // Avoid renaming counters which should be accessed from JS.
         reduceIdents: false,
+        // Remove all comments.
         discardComments: {removeAll: true},
       }),
     ])))

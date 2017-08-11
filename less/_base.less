@@ -1146,7 +1146,7 @@ html.pos-notstaff {
   overflow: hidden;
   text-align: center;
   z-index: 0;
-  transition: max-height 0.5s, z-index 0.5s;
+  transition: max-height 0.5s, z-index 0.5s step-end;
 
   &:not(.post_hover) {
     margin: 0;
@@ -1159,7 +1159,8 @@ html.pos-notstaff {
     max-height: 1000px;
     border-style: solid;
     box-shadow: @postShadow;
-    z-index: 10;
+    z-index: 1;
+    transition: max-height 0.5s, z-index 0.5s step-start;
   }
 
   .post-file-link {
