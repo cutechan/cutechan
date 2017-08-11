@@ -1141,12 +1141,12 @@ html.pos-notstaff {
 .post_catalog {
   position: absolute;
   width: 200px;
-  height: 250px;
   min-height: 250px;
   max-height: 250px;
   overflow: hidden;
   text-align: center;
-  transition: max-height 0.5s;
+  z-index: 0;
+  transition: max-height 0.5s, z-index 0.5s;
 
   &:not(.post_hover) {
     margin: 0;
@@ -1156,7 +1156,6 @@ html.pos-notstaff {
   }
 
   &:hover {
-    height: auto;
     max-height: 1000px;
     border-style: solid;
     box-shadow: @postShadow;
