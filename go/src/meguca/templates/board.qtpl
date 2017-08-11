@@ -103,6 +103,7 @@ function to allow caching of generated posts.
 		{% for _, t := range b %}
 			{% code idStr := strconv.FormatUint(t.ID, 10) %}
 			{% code url := fmt.Sprintf("/%s/%s", t.Board, idStr) %}
+			<article class="post-catalog-wrapper">
 			<article class="post post_op post_catalog" id="post{%s idStr %}" data-id="{%s idStr %}">
 				{% if t.Image != nil %}
 					<figure class="post-file">
@@ -125,6 +126,7 @@ function to allow caching of generated posts.
 					{% endif %}
 				</div>
 				<blockquote class="post-catalog-message">{%s t.Body %}</blockquote>
+			</article>
 			</article>
 		{% endfor %}
 		<script id="post-data" type="application/json">

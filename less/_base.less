@@ -191,10 +191,6 @@ html, body {
   flex: 1 auto;
 }
 
-.catalog {
-  text-align: center;
-}
-
 .ban {
   margin-top: 2em;
   padding: 1em;
@@ -1127,26 +1123,43 @@ html.pos-notstaff {
 }
 
 //////////////////////////////
-// CATALOG POST
+// CATALOG
 //////////////////////////////
 
+.catalog {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.post-catalog-wrapper {
+  width: 220px;
+  height: 270px;
+}
+
 .post_catalog {
+  position: absolute;
   width: 200px;
   height: 250px;
-  display: inline-block;
-  text-align: center;
+  min-height: 250px;
+  max-height: 250px;
   overflow: hidden;
-  vertical-align: top;
+  text-align: center;
+  transition: max-height 0.7s;
 
   &:not(.post_hover) {
-    margin: 10px;
+    margin: 0;
     padding: 5px;
     border: @postcatalogBorder;
+    background: @bodyBG;
   }
 
   &:hover {
-    min-height: 250px;
     height: auto;
+    max-height: 1000px;
+    border-style: solid;
+    box-shadow: @postShadow;
+    z-index: 10;
   }
 
   .post-file-link {
