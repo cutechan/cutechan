@@ -110,8 +110,10 @@ class Popup extends Component<PopupProps, PopupState> {
 
   public render({ video, embed }: PopupProps, { left, top }: PopupState) {
     const cls = video ? "popup_video" : embed ? "popup_embed" : "popup_image";
+    const httpEmbed = embed && this.frameUrl.startsWith("http:");
     return (
       <div class={cx("popup", cls)} style={{left, top}}>
+        {httpEmbed ? this.renderEmbedHelp() : null}
         {video ? this.renderVideo()
                : embed ? this.renderEmbed() : this.renderImage()}
         {embed ? this.renderControls() : null}
@@ -189,6 +191,25 @@ class Popup extends Component<PopupProps, PopupState> {
         >
           <i class="fa fa-remove" />
         </a>
+      </div>
+    );
+  }
+  private renderEmbedHelp() {
+    return (
+      <div class="popup-embed-help">
+        <h3 class="help-header">Frame was blocked because it's available only via HTTP</h3>
+        <p class="help-item">
+          <span>To unblock in Chrome see: </span>
+          <a href="https://support.google.com/chrome/answer/1342714">
+            support.google.com/chrome/answer/1342714
+          </a>
+        </p>
+        <p class="help-item">
+          <span>To unblock in Firefox see: </span>
+          <a href="https://support.mozilla.org/en-US/kb/mixed-content-blocking-firefox#w_unblock-mixed-content">
+            support.mozilla.org/en-US/kb/mixed-content-blocking-firefox
+          </a>
+        </p>
       </div>
     );
   }

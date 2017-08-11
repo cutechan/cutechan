@@ -116,6 +116,14 @@ hr {
   font-size: smaller;
 }
 
+.help-header {
+  font-size: 19px;
+}
+
+.help-item {
+  margin: 20px 0 0
+}
+
 //////////////////////////////
 // CONTROLS
 //////////////////////////////
@@ -497,10 +505,12 @@ html, body {
 }
 
 .popup_embed {
+  background: @postBG;
   z-index: 150;
 }
 
 .popup-item {
+  position: relative;
   display: block;
   outline: none;
   user-select: none;
@@ -523,6 +533,18 @@ html, body {
 
 .popup-close-control {
   font-size: 19px;
+}
+
+.popup-embed-help {
+  position: absolute;
+  left: 0;
+  top: 0;
+  display: flex;
+  width: 100%;
+  height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }
 
 //////////////////////////////
