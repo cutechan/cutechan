@@ -1152,6 +1152,9 @@ html.pos-notstaff {
   flex-wrap: wrap;
   justify-content: center;
   align-content: flex-start;
+  // Create stacking context otherwise post wrappers with negative index
+  // would be behind HTML body.
+  z-index: 0;
 }
 
 .post-catalog-wrapper {
@@ -1166,8 +1169,7 @@ html.pos-notstaff {
   max-height: 250px;
   overflow: hidden;
   text-align: center;
-  z-index: 0;
-  transition: max-height 0.5s, z-index 0.5s step-end;
+  transition: max-height 0.5s;
 
   &:not(.post_hover) {
     margin: 0;
@@ -1180,8 +1182,6 @@ html.pos-notstaff {
     max-height: 1000px;
     border-style: solid;
     box-shadow: @postShadow;
-    z-index: 1;
-    transition: max-height 0.5s, z-index 0.5s step-start;
   }
 
   .post-file-link {

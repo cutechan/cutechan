@@ -100,10 +100,10 @@ CatalogThreads renders thread content for a catalog page. Separate
 function to allow caching of generated posts.
 {% func CatalogThreads(b []common.Thread, json []byte, all bool) %}{% stripspace %}
 	<section class="catalog" id="catalog">
-		{% for _, t := range b %}
+		{% for i, t := range b %}
 			{% code idStr := strconv.FormatUint(t.ID, 10) %}
 			{% code url := fmt.Sprintf("/%s/%s", t.Board, idStr) %}
-			<article class="post-catalog-wrapper">
+			<article class="post-catalog-wrapper" style="z-index: {%d -i %}">
 			<article class="post post_op post_catalog" id="post{%s idStr %}" data-id="{%s idStr %}">
 				{% if t.Image != nil %}
 					<figure class="post-file">
