@@ -1,53 +1,47 @@
 import { PostData } from "../common";
 import lang from "../lang";
-import { Post, PostView } from "../posts";
+import { Backlinks, Post, PostView } from "../posts";
 import { mine, page, posts } from "../state";
 import { notifyAboutReply, postAdded } from "../ui";
 import { extractJSON } from "../util";
 import { POST_BACKLINKS_SEL } from "../vars";
 
-// Extract pregenerated rendered post data from DOM
-export function extractPageData<T>(): {
-  threads: T,
-  backlinks: { [id: number]: { [id: number]: number } },
-} {
-  return {
-    backlinks: extractJSON("backlink-data"),
-    threads: extractJSON("post-data"),
-  };
-}
-
-// Check if the rendered page is a ban page
+// Check if the rendered page is a ban page.
 export function isBanned(): boolean {
   return !!document.querySelector(".ban");
 }
 
-// Extract post model and view from the HTML fragment and apply client-specific
-// formatting. Returns whether the element was removed.
-export function extractPost(
-  post: PostData,
-  op: number,
-  board: string,
-  backlinks: { [id: number]: { [id: number]: number } },
-): boolean {
-  const el = document.getElementById(`post${post.id}`);
+// Extract pregenerated rendered post data from DOM.
+export function extractPageData<T>(): {threads: T, backlinks: Backlinks} {
+  return {
+    threads: extractJSON("post-data"),
+    backlinks: extractJSON("backlink-data"),
+  };
+}
+
+// Extract post model and view from the HTML fragment and apply
+// client-specific formatting. Returns whether the element was removed.
+export function extractPost(data: PostData, op: number, board: string, backlinks: Backlinks): boolean {
+  const el = document.getElementById(`post${data.id}`);
   // if (hidden.has(post.id)) {
   //   el.remove();
   //   return true;
   // }
-  post.op = op;
-  post.board = board;
+  data.op = op;
+  data.board = board;
 
-  const model = new Post(post);
-  const view = new PostView(model, el);
-  posts.add(model);
+  const post = new Post(data);
+  posts.add(post);
 
-  if (!page.catalog) {
+  if (page.catalog) {
+    post.seenOnce = true;
+  } else {
+    const view = new PostView(post, el);
     view.afterRender();
-    model.backlinks = backlinks[post.id];
-    personalizeLinks(model);
-    personalizeBacklinks(model);
-    postAdded(model);
+    post.backlinks = backlinks[post.id];
+    personalizeLinks(post);
+    personalizeBacklinks(post);
+    postAdded(post);
   }
 
   return false;

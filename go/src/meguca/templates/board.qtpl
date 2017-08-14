@@ -98,41 +98,45 @@
 
 CatalogThreads renders thread content for a catalog page. Separate
 function to allow caching of generated posts.
-{% func CatalogThreads(b []common.Thread, json []byte, all bool) %}{% stripspace %}
+{% func CatalogThreads(threads []common.Thread, json []byte, all bool) %}{% stripspace %}
 	<section class="catalog" id="catalog">
-		{% for i, t := range b %}
-			{% code idStr := strconv.FormatUint(t.ID, 10) %}
-			{% code url := fmt.Sprintf("/%s/%s", t.Board, idStr) %}
-			<article class="post-catalog-wrapper" style="z-index: {%d -i %}">
-			<article class="post post_op post_catalog" id="post{%s idStr %}" data-id="{%s idStr %}">
-				{% if t.Image != nil %}
-					<figure class="post-file">
-						{% code img := *t.Image %}
-						<a class="post-file-link" href="{%s url %}">
-							<img class="post-file-thumb" src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
-						</a>
-					</figure>
-				{% endif %}
-				<div class="post-header">
-					<a class="post-header-item post-id" href="{%s url %}">#{%s idStr %}</a>
-					<h3 class="post-header-item post-subject">{%s t.Subject %}</h3>
-					<span class="post-header-item post-catalog-counter post-posts-counter">
-						<i class="fa fa-comment">{% space %}{%d int(t.PostCtr) %}</i>
-					</span>
-					{% if t.ImageCtr > 0 %}
-						<span class="post-header-item post-catalog-counter post-files-counter">
-							<i class="fa fa-image">{% space %}{%d int(t.ImageCtr) %}</i>
-						</span>
-					{% endif %}
-				</div>
-				<blockquote class="post-catalog-message">{%s t.Body %}</blockquote>
-			</article>
-			</article>
+		{% for i, t := range threads %}
+			{%= catalogThread(t, i) %}
 		{% endfor %}
 		<script id="post-data" type="application/json">
 			{%z= json %}
 		</script>
 	</section>
+{% endstripspace %}{% endfunc %}
+
+{% func catalogThread(t common.Thread, i int) %}{% stripspace %}
+	{% code idStr := strconv.FormatUint(t.ID, 10) %}
+	{% code url := fmt.Sprintf("/%s/%s", t.Board, idStr) %}
+	<article class="post-catalog-wrapper" style="z-index: {%d -i %}" data-id="{%s idStr %}">
+		<article class="post post_op post_catalog">
+			{% if t.Image != nil %}
+				<figure class="post-file">
+					{% code img := *t.Image %}
+					<a class="post-file-link" href="{%s url %}">
+						<img class="post-file-thumb" src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
+					</a>
+				</figure>
+			{% endif %}
+			<div class="post-header">
+				<a class="post-header-item post-id" href="{%s url %}">#{%s idStr %}</a>
+				<h3 class="post-header-item post-subject">{%s t.Subject %}</h3>
+				<span class="post-header-item post-catalog-counter post-posts-counter">
+					<i class="fa fa-comment">{% space %}{%d int(t.PostCtr) %}</i>
+				</span>
+				{% if t.ImageCtr > 0 %}
+					<span class="post-header-item post-catalog-counter post-files-counter">
+						<i class="fa fa-image">{% space %}{%d int(t.ImageCtr) %}</i>
+					</span>
+				{% endif %}
+			</div>
+			<blockquote class="post-catalog-message">{%s t.Body %}</blockquote>
+		</article>
+	</article>
 {% endstripspace %}{% endfunc %}
 
 IndexThreads renders abbreviated threads for display on board index pages
