@@ -109,11 +109,15 @@ function sortThreads(initial: boolean) {
     .map((el) => {
       const id = getID(el);
       els[id] = el;
-      el.remove();
       return posts.get(id);
     })
     .sort(sorts[sortMode])
-    .map(({ id }) => els[id]);
+    .map(({ id }, i) => {
+      const el = els[id];
+      el.style.zIndex = (-i).toString();
+      el.remove();
+      return el;
+    });
   container.append(...sortedThreads);
 }
 
