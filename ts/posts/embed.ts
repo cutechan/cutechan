@@ -45,6 +45,8 @@ const embedResponses: { [key: string]: (res: Dict) => OEmbedDoc } = {
   vlive: (res) => res as OEmbedDoc,
   youtube: (res) => {
     const item = res.items[0];
+    // TODO(Kagami): Cache fail responses.
+    if (!item) throw new Error("not found");
     const id = item.id;
     const player = item.player;
     const snippet = item.snippet;
@@ -62,6 +64,7 @@ const embedResponses: { [key: string]: (res: Dict) => OEmbedDoc } = {
   },
   youtubepls: (res) => {
     const item = res.items[0];
+    if (!item) throw new Error("not found");
     const id = item.id;
     const snippet = item.snippet;
     const count = item.contentDetails.itemCount;
