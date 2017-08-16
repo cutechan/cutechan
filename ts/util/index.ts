@@ -134,7 +134,7 @@ const escapeMap = {
   "<": "&lt;",
   ">": "&gt;",
   '"': "&quot;",
-  "'": "&#x27;",
+  "'": "&apos;",
 };
 
 const unescapeMap = {
@@ -142,7 +142,7 @@ const unescapeMap = {
   "&lt;": "<",
   "&gt;": ">",
   "&quot;": '"',
-  "&#x27;": "'",
+  "&apos;": "'",
 };
 
 // Escape a user-submitted unsafe string to protect against XSS.
@@ -152,7 +152,7 @@ export function escape(str: string): string {
 
 // Reverse escape() effect.
 export function unescape(html: string): string {
-  return html.replace(/&(amp|lt|gt|quot|#x27);/g, (entity) => unescapeMap[entity]);
+  return html.replace(/&(amp|lt|gt|quot|apos);/g, (entity) => unescapeMap[entity]);
 }
 
 // Find the first child of an element, that matches a check function, if any
