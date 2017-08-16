@@ -12,12 +12,6 @@ export * from "./changes";
 
 import { POST_SEL } from "../vars";
 
-// Any object with an event-based interface for passing to load()
-interface Loader {
-  onload: EventListener;
-  onerror: EventListener;
-}
-
 // Retrieve element id.
 export function getID(el: Element): number {
   return el ? +el.getAttribute("data-id") : 0;
@@ -73,36 +67,6 @@ export function pad(n: number): string {
   return (n < 10 ? "0" : "") + n;
 }
 
-// Template string tag function for HTML. Strips indentation and newlines.
-export function HTML(base: TemplateStringsArray, ...args: string[]): string {
-  let output = base[0];
-  for (let i = 1; i <= args.length; i++) {
-    output += args[i - 1] + base[i];
-  }
-  return output.replace(/[\t\n]+/g, "");
-}
-
-// Generate an HTML element attribute list. If a key has an empty string, it's
-// value will be considered "true"
-export function makeAttrs(attrs: { [key: string]: string }): string {
-  let html = "";
-  for (const key of Object.keys(attrs)) {
-    html += " " + key;
-    const val = attrs[key];
-    if (val) {
-      html += `="${val}"`;
-    }
-  }
-  return html;
-}
-
-// Set attributes from a key-value map to the element
-export function setAttrs(el: Element, attrs: { [key: string]: string }) {
-  for (const key of Object.keys(attrs)) {
-    el.setAttribute(key, attrs[key]);
-  }
-}
-
 // Copy all properties from the source object to the destination object. Nested
 // objects are extended recursively.
 export function extend(dest: {}, source: {}) {
@@ -119,14 +83,6 @@ export function extend(dest: {}, source: {}) {
       dest[key] = val;
     }
   }
-}
-
-// Wraps event style object with onload() method to Promise style
-export function load(loader: Loader): Promise<Event> {
-  return new Promise<Event>((resolve, reject) => {
-    loader.onload = resolve;
-    loader.onerror = reject;
-  });
 }
 
 const escapeMap = {
