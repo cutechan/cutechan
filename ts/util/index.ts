@@ -129,21 +129,30 @@ export function load(loader: Loader): Promise<Event> {
   });
 }
 
-// tslint:disable:object-literal-sort-keys
-const escapeMap: { [key: string]: string } = {
+const escapeMap = {
   "&": "&amp;",
   "<": "&lt;",
   ">": "&gt;",
   '"': "&quot;",
   "'": "&#x27;",
-  "`": "&#x60;",
 };
-// tslint:enable:object-literal-sort-keys
+
+const unescapeMap = {
+  "&amp;": "&",
+  "&lt;": "<",
+  "&gt;": ">",
+  "&quot;": '"',
+  "&#x27;": "'",
+};
 
 // Escape a user-submitted unsafe string to protect against XSS.
 export function escape(str: string): string {
-  return str.replace(/[&<>"'`]/g, (char) =>
-    escapeMap[char]);
+  return str.replace(/[&<>"']/g, (ch) => escapeMap[ch]);
+}
+
+// Reverse escape() effect.
+export function unescape(html: string): string {
+  return html.replace(/&(amp|lt|gt|quot|#x27);/g, (entity) => unescapeMap[entity]);
 }
 
 // Find the first child of an element, that matches a check function, if any

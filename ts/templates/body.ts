@@ -6,7 +6,7 @@
 import { renderPostLink } from ".";  // TODO(Kagami): Avoid circular import
 import { PostData, PostLink } from "../common";
 import { page } from "../state";
-import { escape } from "../util";
+import { escape, unescape } from "../util";
 import marked from "./marked";
 
 interface AnyClass { new(...args: any[]): any; }
@@ -121,7 +121,7 @@ class CustomRenderer extends (marked as any).Renderer {
     }
     let out = "<a ";
     for (const provider of Object.keys(linkEmbeds)) {
-      if (linkEmbeds[provider].test(href)) {
+      if (linkEmbeds[provider].test(unescape(href))) {
         out += ` class="post-embed post-${provider}-embed"`;
         out += ` data-provider="${provider}"`;
         break;
