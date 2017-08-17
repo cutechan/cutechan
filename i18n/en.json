@@ -162,6 +162,9 @@
     ]
   },
   "ui": {
+    "frameBlock": "Frame was blocked because it's available only via HTTP",
+    "frameUnblock": "To access video you need to either open it in new tab or follow instructions:",
+    "frameDetails": "See for details:",
     "bold": "Bold",
     "italic": "Italic",
     "spoiler": "Spoiler",

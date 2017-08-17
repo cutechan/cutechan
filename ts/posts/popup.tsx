@@ -4,9 +4,10 @@
 
 import * as cx from "classnames";
 import { Component, h, render } from "preact";
+import { ln } from "../lang";
 import options from "../options";
 import { getModel } from "../state";
-import { HOOKS, on, setter as s, trigger } from "../util";
+import { HOOKS, on, setter as s, ShowHide, trigger } from "../util";
 import {
   POPUP_CONTAINER_SEL,
   POST_EMBED_SEL,
@@ -199,19 +200,37 @@ class Popup extends Component<PopupProps, PopupState> {
     );
   }
   private renderEmbedHelp() {
+    // https://stackoverflow.com/a/9851769
+    const isChrome = !!(window as any).chrome;
+    const isFirefox = !!(window as any).InstallTrigger;
+    const isOpera = !!(window as any).opr;
+
+    const knownBrowser = isChrome || isFirefox || isOpera;
+    const imageSuffix = isChrome ? "chrome" : isFirefox ? "firefox" : "opera";
+    const imageURL = `/static/img/unblock-mixed-${imageSuffix}.png`;
     return (
-      <div class="popup-embed-help">
-        <h3 class="help-header">Frame was blocked because it's available only via HTTP</h3>
+      <div class="popup-embed-help" onClick={this.handleHelpClick}>
+        <h3 class="help-header">{ln.UI.frameBlock}</h3>
+        <ShowHide show={knownBrowser}>
+          <p class="help-item">{ln.UI.frameUnblock}</p>
+        </ShowHide>
+        <ShowHide show={knownBrowser}>
+          <p class="help-item"><img class="help-image" src={imageURL} /></p>
+        </ShowHide>
+        <p class="help-item">{ln.UI.frameDetails}</p>
         <p class="help-item">
-          <span>To unblock in Chrome see: </span>
-          <a href="https://support.google.com/chrome/answer/1342714">
-            support.google.com/chrome/answer/1342714
+          <a class="help-link" href="https://support.google.com/chrome/answer/1342714">
+            <i class="fa fa-chrome"></i> support.google.com/chrome/answer/1342714
           </a>
-        </p>
-        <p class="help-item">
-          <span>To unblock in Firefox see: </span>
-          <a href="https://support.mozilla.org/en-US/kb/mixed-content-blocking-firefox#w_unblock-mixed-content">
-            support.mozilla.org/en-US/kb/mixed-content-blocking-firefox
+          <a
+            class="help-link"
+            href="https://support.mozilla.org/ru/kb/kak-nebezopasnyj-kontent-mozhet-povliyat-na-moyu-b"
+          >
+            <i class="fa fa-firefox"></i>{" "}
+            support.mozilla.org/ru/kb/kak-nebezopasnyj-kontent-mozhet-povliyat-na-moyu-b
+          </a>
+          <a class="help-link" href="http://help.opera.com/opera/Windows/2393/ru/private.html#blocked">
+            <i class="fa fa-opera"></i> help.opera.com/opera/Windows/2393/ru/private.html#blocked
           </a>
         </p>
       </div>
@@ -312,6 +331,9 @@ class Popup extends Component<PopupProps, PopupState> {
   private handleControlsClick = (e: MouseEvent) => {
     e.stopPropagation();
     this.setState({moving: false, resizing: false});
+  }
+  private handleHelpClick = (e: MouseEvent) => {
+    e.stopPropagation();
   }
   private handleGlobalClick = (e: MouseEvent) => {
     if (e.button === 0) {
