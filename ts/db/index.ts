@@ -4,12 +4,7 @@
 
 const DB_VERSION = 6;
 let db = null as IDBDatabase;
-
-// FF IndexedDB implementation is broken in private mode, see:
-// <https://bugzilla.mozilla.org/show_bug.cgi?id=781982>.
-// Catch the error and NOOP all further DB requests.
-const FF_PRIVATE_MODE_MSG = "A mutation operation was attempted on a database that did not allow mutations.";
-let ffPrivateMode = false;
+let dbDisabled = false;
 
 // Post number sets.
 const postStores = [
@@ -48,11 +43,17 @@ export function init(): Promise<void> {
       reject(r.error);
     };
   }).catch((err) => {
-    if (err.message === FF_PRIVATE_MODE_MSG) {
-      ffPrivateMode = true;
-    } else {
-      throw err;
+    if (
+      // IndexedDB is unavailable in Tor Browser.
+      typeof indexedDB === "undefined"
+      // FF IndexedDB implementation is broken in private mode, see:
+      // <https://bugzilla.mozilla.org/show_bug.cgi?id=781982>.
+      || err.message === "A mutation operation was attempted on a database that did not allow mutations."
+    ) {
+      dbDisabled = true;
+      return;
     }
+    throw err;
   });
 }
 
@@ -162,7 +163,7 @@ function newTransaction(store: string, write: boolean): IDBObjectStore {
 
 // Retrieve an object from a specific object store.
 function getObj<T>(store: string, id: any): Promise<T> {
-  if (ffPrivateMode) return Promise.reject(new Error("ff private mode"));
+  if (dbDisabled) return Promise.reject(new Error("db unavailable"));
   return new Promise((resolve, reject) => {
     const r = newTransaction(store, false).get(id);
 
@@ -180,21 +181,15 @@ function getObj<T>(store: string, id: any): Promise<T> {
   });
 }
 
-// Insert object.
-// function addObj(store: string, obj: any) {
-//   if (ffPrivateMode) return;
-//   newTransaction(store, true).add(obj).onerror = logErr;
-// }
-
 // Insert or update object.
 function putObj(store: string, obj: any) {
-  if (ffPrivateMode) return;
+  if (dbDisabled) return;
   newTransaction(store, true).put(obj).onerror = logErr;
 }
 
 /** Read the contents of a postStore for specific threads into an array. */
 export function getIDs(store: string, ...ops: number[]): Promise<number[]> {
-  if (ffPrivateMode || !ops.length) return Promise.resolve([]);
+  if (dbDisabled || !ops.length) return Promise.resolve([]);
   return new Promise((resolve, reject) => {
     const ids = [] as number[];
     // DB API doesn't support queries like `op IN (1, 2, 3)`, so use
@@ -228,7 +223,7 @@ export function setID(store: string, id: number, op: number) {
 
 /** Clear the target object store asynchronously. */
 export function clearStore(store: string) {
-  if (ffPrivateMode) return;
+  if (dbDisabled) return;
   newTransaction(store, true).clear().onerror = logErr;
 }
 
