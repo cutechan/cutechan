@@ -44,8 +44,9 @@ export function init(): Promise<void> {
     };
   }).catch((err) => {
     if (
-      // IndexedDB is unavailable in Tor Browser.
-      typeof indexedDB === "undefined"
+      // IndexedDB is null in Tor Browser. This also ignores old
+      // browsers without IDB which is fine.
+      !window.indexedDB
       // FF IndexedDB implementation is broken in private mode, see:
       // <https://bugzilla.mozilla.org/show_bug.cgi?id=781982>.
       || err.message === "A mutation operation was attempted on a database that did not allow mutations."
