@@ -55,8 +55,9 @@ const embedResponses: { [key: string]: (res: Dict) => OEmbedDoc } = {
     return {
       title: snippet.title,
       html: `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1"></iframe>`,
-      width: player.embedWidth,
-      height: player.embedHeight,
+      // Sometimes these numbers are missed.
+      width: player.embedWidth || 1280,
+      height: player.embedHeight || 720,
       thumbnail_url: thumb.url,
       thumbnail_width: thumb.width,
       thumbnail_height: thumb.height,

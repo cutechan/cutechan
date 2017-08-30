@@ -2,7 +2,7 @@
  * IndexedDB database controller.
  */
 
-const DB_VERSION = 6;
+const DB_VERSION = 7;
 let db = null as IDBDatabase;
 let dbDisabled = false;
 
@@ -128,6 +128,9 @@ function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
         migrateMine2();
       }
     };
+    /* fall-through */
+  case 6:
+    t.objectStore(embedStore).clear();
     /* fall-through */
   }
 }
