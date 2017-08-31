@@ -112,6 +112,10 @@
       "Read only",
       "Disable post creation"
     ],
+    "modOnly": [
+      "Mod only",
+      "Only for moderators"
+    ],
     "register": [
       "Register",
       ""

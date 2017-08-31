@@ -278,6 +278,14 @@ var upgrades = []func(*sql.Tx) error{
 		)
 		return
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`ALTER TABLE boards
+				ADD COLUMN modOnly boolean NOT NULL DEFAULT FALSE`,
+			`ALTER TABLE boards
+				ALTER COLUMN modOnly DROP DEFAULT`,
+		)
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both

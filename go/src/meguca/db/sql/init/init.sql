@@ -63,7 +63,8 @@ create table boards (
 	id text primary key,
 	created timestamp not null,
 	title varchar(100) not null,
-	readOnly boolean not null
+	readOnly boolean not null,
+	modOnly boolean not null
 );
 
 create table staff (

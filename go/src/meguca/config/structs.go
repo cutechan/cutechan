@@ -26,7 +26,8 @@ type Public struct {
 // BoardConfigs stores board-specific configuration
 type BoardConfigs struct {
 	BoardPublic
-	ID string `json:"id"`
+	ID      string `json:"id"`
+	ModOnly bool   `json:"modOnly"`
 }
 
 // BoardPublic contains publically accessible board-specific configurations
