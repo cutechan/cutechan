@@ -165,7 +165,7 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 			Solution:  f.Get("captcha"),
 		},
 	}
-	if f.Get("staffTitle") == "on" {
+	if f.Get("staffTitle") == "on" || config.IsModOnly(f.Get("board")) {
 		creds, err := extractLoginCreds(r)
 		if err == nil {
 			req.Creds = creds
