@@ -65,6 +65,9 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 	if !assertNotBanned(w, r, b) {
 		return
 	}
+	if !assertNotModOnly(w, r, b) {
+		return
+	}
 
 	html, data, ctr, err := cache.GetHTML(boardCacheArgs(r, b, catalog))
 	switch err {

@@ -189,6 +189,13 @@ func IsBoard(b string) bool {
 	return ok
 }
 
+func IsModOnly(b string) bool {
+	boardMu.RLock()
+	defer boardMu.RUnlock()
+	conf, ok := boardConfigs[b]
+	return ok && conf.ModOnly
+}
+
 // SetBoardConfigs sets configurations for a specific board as well as
 // pregenerates their public JSON and hash. Returns if any changes were made to
 // the configs in result.

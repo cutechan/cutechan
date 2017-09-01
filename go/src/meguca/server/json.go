@@ -136,25 +136,6 @@ func respondToJSONError(w http.ResponseWriter, r *http.Request, err error) {
 	}
 }
 
-// Serve board-specific configuration JSON
-func serveBoardConfigs(
-	w http.ResponseWriter,
-	r *http.Request,
-) {
-	board := extractParam(r, "board")
-	if !auth.IsBoard(board) {
-		text404(w)
-		return
-	}
-
-	conf := config.GetBoardConfigs(board)
-	if conf.ID == "" { // Data race with DB. Board deleted.
-		text404(w)
-		return
-	}
-	writeJSON(w, r, conf.Hash, conf.JSON)
-}
-
 // Serves thread page JSON
 func threadJSON(w http.ResponseWriter, r *http.Request) {
 	id, ok := validateThread(w, r)
@@ -178,6 +159,9 @@ func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 	board := extractParam(r, "board")
 
 	if !assertNotBanned(w, r, board) {
+		return 0, false
+	}
+	if !assertNotModOnly(w, r, board) {
 		return 0, false
 	}
 
@@ -208,6 +192,9 @@ func boardJSON(w http.ResponseWriter, r *http.Request, catalog bool) {
 		return
 	}
 	if !assertNotBanned(w, r, b) {
+		return
+	}
+	if !assertNotModOnly(w, r, b) {
 		return
 	}
 

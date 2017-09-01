@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"log"
 	"meguca/auth"
+	"meguca/config"
 	"meguca/db"
 	"meguca/templates"
 	"net/http"
@@ -149,6 +150,24 @@ func assertNotBanned(
 		text500(w, r, err)
 		return false
 	}
+}
+
+func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string) bool {
+	if !config.IsModOnly(board) {
+		return true
+	}
+
+	pos, ok := extractPosition(w, r)
+	if !ok {
+		return false
+	}
+
+	if pos < auth.Moderator {
+		text404(w)
+		return false
+	}
+
+	return true
 }
 
 // Extract URL paramater from request context
