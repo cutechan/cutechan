@@ -3,6 +3,7 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"meguca/auth"
 	"meguca/config"
@@ -13,6 +14,10 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
+)
+
+var (
+	errInvalidBoard  = errors.New("invalid board")
 )
 
 // Client should get token and solve challenge in order to post.
@@ -57,6 +62,10 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 		text400(w, err)
 		return
 	}
+	if !checkModOnly(r, r.Form.Get("board")) {
+		text400(w, errInvalidBoard)
+		return
+	}
 	post, err := websockets.CreateThread(req, ip)
 	if err != nil {
 		// TODO(Kagami): Write JSON errors instead.
@@ -87,7 +96,7 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	case err != nil:
 		text500(w, r, err)
 		return
-	case !ok:
+	case !ok || !checkModOnly(r, board):
 		text400(w, fmt.Errorf("invalid thread: /%s/%d", board, op))
 		return
 	}

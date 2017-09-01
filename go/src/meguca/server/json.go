@@ -120,6 +120,9 @@ func servePost(w http.ResponseWriter, r *http.Request) {
 
 	switch post, err := db.GetPost(id); err {
 	case nil:
+		if !assertNotModOnly(w, r, post.Board) {
+			return
+		}
 		serveJSON(w, r, "", post)
 	case sql.ErrNoRows:
 		text404(w)
@@ -158,10 +161,10 @@ func threadJSON(w http.ResponseWriter, r *http.Request) {
 func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 	board := extractParam(r, "board")
 
-	if !assertNotBanned(w, r, board) {
+	if !assertNotModOnly(w, r, board) {
 		return 0, false
 	}
-	if !assertNotModOnly(w, r, board) {
+	if !assertNotBanned(w, r, board) {
 		return 0, false
 	}
 
@@ -191,10 +194,10 @@ func boardJSON(w http.ResponseWriter, r *http.Request, catalog bool) {
 		text404(w)
 		return
 	}
-	if !assertNotBanned(w, r, b) {
+	if !assertNotModOnly(w, r, b) {
 		return
 	}
-	if !assertNotModOnly(w, r, b) {
+	if !assertNotBanned(w, r, b) {
 		return
 	}
 

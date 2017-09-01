@@ -152,21 +152,32 @@ func assertNotBanned(
 	}
 }
 
-func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string) bool {
+func checkModOnly(r *http.Request, board string) bool {
 	if !config.IsModOnly(board) {
 		return true
 	}
 
-	pos, ok := extractPosition(w, r)
-	if !ok {
+	creds, err := extractLoginCreds(r)
+	if err != nil {
 		return false
 	}
 
+	pos, err := db.FindPosition(board, creds.UserID)
+	if err != nil {
+		return false
+	}
 	if pos < auth.Moderator {
+		return false
+	}
+
+	return true
+}
+
+func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string) bool {
+	if !checkModOnly(r, board) {
 		text404(w)
 		return false
 	}
-
 	return true
 }
 

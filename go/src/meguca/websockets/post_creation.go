@@ -51,6 +51,7 @@ type ImageRequest struct {
 
 // CreateThread creates a new tread and writes it to the database.
 // open specifies, if the thread OP should stay open after creation.
+// XXX(Kagami): Check for ModOnly is in `server/post.go`.
 func CreateThread(req ThreadCreationRequest, ip string) (
 	post db.Post, err error,
 ) {
@@ -112,6 +113,7 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 
 // CreatePost creates a new post and writes it to the database.
 // open specifies, if the post should stay open after creation.
+// XXX(Kagami): Check for ModOnly is in `server/post.go`.
 func CreatePost(
 	op uint64,
 	board, ip string,
@@ -123,7 +125,6 @@ func CreatePost(
 	if auth.IsBanned(board, ip) {
 		err = errBanned
 		return
-
 	}
 	if needCaptcha {
 		if !auth.AuthenticateCaptcha(req.Captcha) {
@@ -182,6 +183,8 @@ func CreatePost(
 }
 
 // Insert a new post into the database
+// FIXME(Kagami): This is currently disabled and doesn't have a check
+// for a ModOnly board.
 func (c *Client) insertPost(data []byte) (err error) {
 	return
 

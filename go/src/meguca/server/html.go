@@ -62,10 +62,10 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		text404(w)
 		return
 	}
-	if !assertNotBanned(w, r, b) {
+	if !assertNotModOnly(w, r, b) {
 		return
 	}
-	if !assertNotModOnly(w, r, b) {
+	if !assertNotBanned(w, r, b) {
 		return
 	}
 
@@ -277,6 +277,9 @@ func crossRedirect(w http.ResponseWriter, r *http.Request) {
 	board, op, err := db.GetPostParenthood(id)
 	switch err {
 	case nil:
+		if !assertNotModOnly(w, r, board) {
+			return
+		}
 		url := r.URL
 		url.Path = fmt.Sprintf("/%s/%d", board, op)
 		http.Redirect(w, r, url.String(), 301)
