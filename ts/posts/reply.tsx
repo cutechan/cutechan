@@ -235,6 +235,7 @@ class Reply extends Component<any, any> {
         style={this.style}
         onMouseDown={this.handleFormDown}
         onMouseMove={this.handleFormMove}
+        onDrop={this.handleDrop}
       >
 
         {this.renderFiles()}
@@ -258,7 +259,7 @@ class Reply extends Component<any, any> {
           ref={s(this, "fileEl")}
           type="file"
           accept="image/*,video/*"
-          onChange={this.handleFileLoad}
+          onChange={this.handleFileChange}
         />
 
       </div>
@@ -502,16 +503,23 @@ class Reply extends Component<any, any> {
     if (this.state.sending) return;
     this.setState({files: []}, this.focus);
   }
-  private handleFileLoad = () => {
+  private handleDrop = (e: DragEvent) => {
+    e.preventDefault();
+    const files = e.dataTransfer.files;
+    if (files.length) {
+      this.handleFile(files[0]);
+    }
+  }
+  private handleFileChange = () => {
     const file = this.fileEl.files[0];
-    // Allow to select same file again.
-    this.fileEl.value = null;
-
+    this.fileEl.value = null;  // Allow to select same file again
+    this.handleFile(file);
+  }
+  private handleFile = (file: File) => {
     if (file.size > config.maxSize * 1024 * 1024) {
       showAlert(ln.UI.tooBig);
       return;
     }
-
     // Add file only if was able to grab info.
     getFileInfo(file).then((info: Dict) => {
       const files = [{file, info}];
