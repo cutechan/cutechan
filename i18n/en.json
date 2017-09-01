@@ -84,6 +84,18 @@
       "Preview post",
       "Toggle post preview mode"
     ],
+    "bold": [
+      "Bold",
+      "Paste bold markup"
+    ],
+    "italic": [
+      "Italic",
+      "Paste italic markup"
+    ],
+    "spoiler": [
+      "Spoiler",
+      "Paste spoiler markup"
+    ],
     "notification": [
       "Desktop Notifications",
       "Get desktop notifications when quoted"

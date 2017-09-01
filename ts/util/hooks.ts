@@ -13,6 +13,9 @@ export const enum HOOKS {
   openPostPopup,
   selectFile,
   previewPost,
+  boldMarkup,
+  italicMarkup,
+  spoilerMarkup,
 }
 
 const hooks = new EventEmitter();

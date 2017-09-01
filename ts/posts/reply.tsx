@@ -182,6 +182,9 @@ class Reply extends Component<any, any> {
     hook(HOOKS.sendReply, this.handleSend);
     hook(HOOKS.selectFile, this.handleAttach);
     hook(HOOKS.previewPost, this.handleToggleEditing);
+    hook(HOOKS.boldMarkup, this.pasteBold);
+    hook(HOOKS.italicMarkup, this.pasteItalic);
+    hook(HOOKS.spoilerMarkup, this.pasteSpoiler);
     document.addEventListener(
       "mousemove",
       this.handleGlobalMove,
@@ -201,6 +204,9 @@ class Reply extends Component<any, any> {
     unhook(HOOKS.sendReply, this.handleSend);
     unhook(HOOKS.selectFile, this.handleAttach);
     unhook(HOOKS.previewPost, this.handleToggleEditing);
+    unhook(HOOKS.boldMarkup, this.pasteBold);
+    unhook(HOOKS.italicMarkup, this.pasteItalic);
+    unhook(HOOKS.spoilerMarkup, this.pasteSpoiler);
     document.removeEventListener(
       "mousemove",
       this.handleGlobalMove,
@@ -554,6 +560,7 @@ class Reply extends Component<any, any> {
       this.sendAPI.abort();
     }
   }
+
   private makeHandleFormat = (markup: string) => {
     return () => {
       const start = this.bodyEl.selectionStart;
@@ -577,6 +584,10 @@ class Reply extends Component<any, any> {
       }
     };
   }
+  private pasteBold = this.makeHandleFormat("**");
+  private pasteItalic = this.makeHandleFormat("*");
+  private pasteSpoiler = this.makeHandleFormat("%%");
+
   private handleToggleEditing = () => {
     const editing = !this.state.editing;
     this.setState({editing}, this.focus);
@@ -685,7 +696,7 @@ class Reply extends Component<any, any> {
           class="control reply-footer-control reply-bold-control"
           title={ln.UI.bold}
           disabled={!editing || sending}
-          onClick={this.makeHandleFormat("**")}
+          onClick={this.pasteBold}
         >
           <i class="fa fa-bold" />
         </button>
@@ -693,7 +704,7 @@ class Reply extends Component<any, any> {
           class="control reply-footer-control reply-italic-control"
           title={ln.UI.italic}
           disabled={!editing || sending}
-          onClick={this.makeHandleFormat("*")}
+          onClick={this.pasteItalic}
         >
           <i class="fa fa-italic" />
         </button>
@@ -701,7 +712,7 @@ class Reply extends Component<any, any> {
           class="control reply-footer-control reply-spoiler-control"
           title={ln.UI.spoiler}
           disabled={!editing || sending}
-          onClick={this.makeHandleFormat("%%")}
+          onClick={this.pasteSpoiler}
         >
           <i class="fa fa-eye-slash" />
         </button>

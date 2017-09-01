@@ -13,12 +13,14 @@ interface Options extends ChangeEmitter {
   notification: boolean;
   scrollToBottom: boolean;
   workModeToggle: boolean;
+  workMode: number;
   newPost: number;
   cancelPost: number;
   selectFile: number;
   previewPost: number;
-  workMode: number;
-  lang: string;
+  bold: number;
+  italic: number;
+  spoiler: number;
   volume: number;
 }
 
@@ -101,7 +103,11 @@ const specs: { [id: string]: OptionSpec } = {
     noExecOnStart: true,
     type: optionType.menu,
   },
-  // Shortcut keys
+  // Shortcuts.
+  workMode: {
+    default: 65,
+    type: optionType.shortcut,
+  },
   newPost: {
     default: 78,
     type: optionType.shortcut,
@@ -115,13 +121,22 @@ const specs: { [id: string]: OptionSpec } = {
     type: optionType.shortcut,
   },
   previewPost: {
-    default: 80,
+    default: 69,
     type: optionType.shortcut,
   },
-  workMode: {
+  bold: {
     default: 66,
     type: optionType.shortcut,
   },
+  italic: {
+    default: 73,
+    type: optionType.shortcut,
+  },
+  spoiler: {
+    default: 80,
+    type: optionType.shortcut,
+  },
+  // Other settings.
   volume: {
     default: 0,
   },

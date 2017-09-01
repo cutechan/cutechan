@@ -199,5 +199,17 @@ var optionSpecs = [...][]inputSpec{
 			ID:   "previewPost",
 			Type: _shortcut,
 		},
+		{
+			ID:   "bold",
+			Type: _shortcut,
+		},
+		{
+			ID:   "italic",
+			Type: _shortcut,
+		},
+		{
+			ID:   "spoiler",
+			Type: _shortcut,
+		},
 	},
 }

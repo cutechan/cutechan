@@ -56,6 +56,18 @@ function handleShortcut(event: KeyboardEvent) {
       caught = true;
       trigger(HOOKS.previewPost);
       break;
+    case options.bold:
+      caught = true;
+      trigger(HOOKS.boldMarkup);
+      break;
+    case options.italic:
+      caught = true;
+      trigger(HOOKS.italicMarkup);
+      break;
+    case options.spoiler:
+      caught = true;
+      trigger(HOOKS.spoilerMarkup);
+      break;
     case options.workMode:
       caught = true;
       options.workModeToggle = !options.workModeToggle;
