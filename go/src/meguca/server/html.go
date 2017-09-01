@@ -180,24 +180,18 @@ func staticTemplate(
 
 // Serve a form for selecting one of several boards owned by the user
 func ownedBoardSelection(w http.ResponseWriter, r *http.Request) {
-	userID := extractParam(r, "userID")
-	owned, err := db.GetOwnedBoards(userID)
+	creds, ok := isLoggedIn(w, r)
+	if !ok {
+		return
+	}
+
+	owned, err := db.GetOwnedBoards(creds.UserID)
 	if err != nil {
 		text500(w, r, err)
 		return
 	}
 
-	// Retrieve titles of boards
-	ownedTitles := make(config.BoardTitles, 0, len(owned))
-	for _, b := range config.GetBoardTitles() {
-		for _, o := range owned {
-			if b.ID == o {
-				ownedTitles = append(ownedTitles, b)
-				break
-			}
-		}
-	}
-
+	ownedTitles := config.GetBoardTitlesByList(owned)
 	serveHTML(w, r, "", []byte(templates.OwnedBoard(ownedTitles)), nil)
 }
 

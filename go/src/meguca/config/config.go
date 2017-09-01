@@ -137,10 +137,32 @@ func GetBoardTitles() BoardTitles {
 
 	bt := make(BoardTitles, 0, len(boardConfigs))
 	for id, conf := range boardConfigs {
+		if conf.ModOnly {
+			continue
+		}
 		bt = append(bt, BoardTitle{
 			ID:    id,
 			Title: conf.Title,
 		})
+	}
+
+	sort.Sort(bt)
+	return bt
+}
+
+func GetBoardTitlesByList(boards []string) BoardTitles {
+	boardMu.RLock()
+	defer boardMu.RUnlock()
+
+	bt := make(BoardTitles, 0, len(boards))
+	for _, id := range boards {
+		conf, ok := boardConfigs[id]
+		if ok {
+			bt = append(bt, BoardTitle{
+				ID:    id,
+				Title: conf.Title,
+			})
+		}
 	}
 
 	sort.Sort(bt)

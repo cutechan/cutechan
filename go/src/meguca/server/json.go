@@ -222,11 +222,6 @@ func boardJSON(w http.ResponseWriter, r *http.Request, catalog bool) {
 	}
 }
 
-// Serve a JSON array of all available boards and their titles
-func serveBoardList(res http.ResponseWriter, req *http.Request) {
-	serveJSON(res, req, "", config.GetBoardTitles())
-}
-
 // Serve map of internal file type enums to extensions. Needed for
 // version-independent backwards compatibility with external applications.
 func serveExtensionMap(w http.ResponseWriter, r *http.Request) {

@@ -7,30 +7,6 @@
 {% import "meguca/imager/assets" %}
 {% import banners "meguca/assets" %}
 
-{% func renderNoscriptThreadForm(id string, conf config.BoardConfContainer, pos auth.ModerationLevel) %}{% stripspace %}
-	{% code ln := lang.Get() %}
-	<form id="new-thread-form" action="/html/thread" method="POST" enctype="multipart/form-data">
-		{% if id == "all" %}
-			<select name="board" required>
-				{% for _, b := range config.GetBoardTitles() %}
-					<option value="{%s b.ID %}">
-						{%= formatTitle(b.ID, b.Title) %}
-					</option>
-				{% endfor %}
-			</select>
-			<br>
-		{% else %}
-			<input type="text" name="board" value="{%s conf.ID %}" hidden>
-		{% endif %}
-		<input name="subject" placeholder="{%s ln.UI["subject"] %}" required type="text" maxlength="100">
-		<br>
-		{%= noscriptPostCreationFields(pos) %}
-		{%= uploadForm() %}
-		{%= captcha() %}
-		{%= submit(false) %}
-	</form>
-{% endstripspace %}{% endfunc %}
-
 {% func renderBanner(conf config.BoardConfContainer) %}{% stripspace %}
 	{% code bannerID, mime, ok := banners.Banners.Random(conf.ID) %}
 	{% if ok %}

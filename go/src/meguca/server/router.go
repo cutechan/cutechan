@@ -48,7 +48,7 @@ func createRouter() http.Handler {
 	// TODO(Kagami): Remove.
 	html := r.NewGroup("/html")
 	// html.GET("/board-navigation", boardNavigation)
-	html.GET("/owned-boards/:userID", ownedBoardSelection)
+	html.GET("/owned-boards", ownedBoardSelection)
 	html.GET("/create-board", boardCreationForm)
 	html.GET("/change-password", changePasswordForm)
 	html.GET("/captcha", renderCaptcha)
