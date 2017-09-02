@@ -2,7 +2,6 @@ create or replace function insert_thread(
   subject varchar(100),
   imageCtr bigint,
   editing bool,
-  spoiler bool,
   id bigint,
   board text,
   op bigint,
@@ -22,11 +21,11 @@ create or replace function insert_thread(
   )
     values (board, id, 1, imageCtr, now, now, subject);
   insert into posts (
-    editing, spoiler, id, board, op, time, body, name, trip, auth, password,
+    editing, id, board, op, time, body, name, trip, auth, password,
     ip, SHA1, links, commands
   )
     values (
-      editing, spoiler, id, board, op, now, body, name, trip, auth,
+      editing, id, board, op, now, body, name, trip, auth,
       password, ip, SHA1, links, commands
     );
 $$ language sql;

@@ -37,7 +37,6 @@ var Extensions = map[uint8]string{
 
 // Image contains a post's image and thumbnail data
 type Image struct {
-	Spoiler bool `json:"-"`
 	ImageCommon
 }
 

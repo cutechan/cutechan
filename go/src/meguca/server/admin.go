@@ -393,11 +393,6 @@ func deleteImage(w http.ResponseWriter, r *http.Request) {
 	moderatePosts(w, r, auth.Janitor, db.DeleteImage)
 }
 
-// Spoiler image as a moderator
-func modSpoilerImage(w http.ResponseWriter, r *http.Request) {
-	moderatePosts(w, r, auth.Janitor, db.ModSpoilerImage)
-}
-
 // Ban a specific IP from a specific board
 func ban(w http.ResponseWriter, r *http.Request) {
 	var msg struct {

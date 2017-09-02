@@ -93,7 +93,7 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 	hasImage := req.Image.Token != ""
 	if hasImage {
 		img := req.Image
-		post.Image, err = getImage(img.Token, false)
+		post.Image, err = getImage(img.Token)
 		if err != nil {
 			return
 		}
@@ -159,7 +159,7 @@ func CreatePost(
 
 	if hasImage {
 		img := req.Image
-		post.Image, err = getImage(img.Token, false)
+		post.Image, err = getImage(img.Token)
 		if err != nil {
 			return
 		}
@@ -340,7 +340,7 @@ func constructPost(
 }
 
 // Performs some validations and retrieves processed image data by token ID.
-func getImage(token string, spoiler bool) (img *common.Image, err error) {
+func getImage(token string) (img *common.Image, err error) {
 	imgCommon, err := db.UseImageToken(token)
 	switch err {
 	case nil:
@@ -352,6 +352,5 @@ func getImage(token string, spoiler bool) (img *common.Image, err error) {
 
 	return &common.Image{
 		ImageCommon: imgCommon,
-		Spoiler:     spoiler,
 	}, nil
 }

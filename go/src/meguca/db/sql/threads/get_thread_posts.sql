@@ -1,5 +1,5 @@
 with t as (
-  select editing, banned, spoiler, deleted, sage, id, time, body, name, trip,
+  select editing, banned, deleted, sage, id, time, body, name, trip,
     auth, links, commands, images.*
   from posts
   left outer join images

@@ -22,7 +22,6 @@ var (
 			MD5:      "YOQQklgfezKbBXuEAsqopw",
 			Size:     300792,
 		},
-		Spoiler: true,
 	}
 
 	// StdDims contains esulting dimentions after thumbnailing sample images.

@@ -10,7 +10,7 @@ import (
 )
 
 type imageScanner struct {
-	APNG, Audio, Video, Spoiler       sql.NullBool
+	APNG, Audio, Video                sql.NullBool
 	FileType, ThumbType, Length, Size sql.NullInt64
 	Name, SHA1, MD5, Title, Artist    sql.NullString
 	Dims                              pq.Int64Array
@@ -37,7 +37,6 @@ func (i *imageScanner) Val() *common.Image {
 	}
 
 	return &common.Image{
-		Spoiler: i.Spoiler.Bool,
 		ImageCommon: common.ImageCommon{
 			APNG:      i.APNG.Bool,
 			Audio:     i.Audio.Bool,
@@ -57,15 +56,15 @@ func (i *imageScanner) Val() *common.Image {
 
 type postScanner struct {
 	common.Post
-	banned, spoiler, deleted, sage sql.NullBool
-	name, trip, auth               sql.NullString
-	links                          linkRow
-	commands                       commandRow
+	banned, deleted, sage sql.NullBool
+	name, trip, auth      sql.NullString
+	links                 linkRow
+	commands              commandRow
 }
 
 func (p *postScanner) ScanArgs() []interface{} {
 	return []interface{}{
-		&p.Editing, &p.banned, &p.spoiler, &p.deleted, &p.sage, &p.ID, &p.Time,
+		&p.Editing, &p.banned, &p.deleted, &p.sage, &p.ID, &p.Time,
 		&p.Body, &p.name, &p.trip, &p.auth, &p.links, &p.commands,
 	}
 }

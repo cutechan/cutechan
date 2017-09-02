@@ -145,11 +145,6 @@ func DeleteImage(id uint64, by string) error {
 	return moderatePost(id, by, "delete_image", common.DeleteImage)
 }
 
-// Spoiler image as a moderator
-func ModSpoilerImage(id uint64, by string) (err error) {
-	return moderatePost(id, by, "mod_spoiler_image", common.SpoilerImage)
-}
-
 // WriteStaff writes staff positions of a specific board. Old rows are
 // overwritten. tx must not be nil.
 func WriteStaff(tx *sql.Tx, board string, staff map[string][]string) error {
