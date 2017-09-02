@@ -275,7 +275,7 @@ func GetRecentPosts(op uint64) (posts []PostStats, err error) {
 	posts = make([]PostStats, 0, 64)
 	var p PostStats
 	for r.Next() {
-		err = r.Scan(&p.ID, &p.Time, &p.Editing, &p.HasImage, &p.Spoilered)
+		err = r.Scan(&p.ID, &p.Time, &p.Editing)
 		if err != nil {
 			return
 		}

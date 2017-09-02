@@ -133,8 +133,3 @@ func HasImage(id uint64) (has bool, err error) {
 func InsertImage(id uint64, img common.Image) (err error) {
 	return execPrepared("insert_image", id, img.SHA1)
 }
-
-// SpoilerImage spoilers an already allocated image
-func SpoilerImage(id uint64) error {
-	return execPrepared("spoiler_image", id)
-}

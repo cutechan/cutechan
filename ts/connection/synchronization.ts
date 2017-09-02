@@ -17,7 +17,6 @@ interface SyncData {
 
 // State of an open post
 interface OpenPost {
-  hasImage?: boolean;
   body: string;
 }
 
