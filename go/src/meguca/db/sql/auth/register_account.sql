@@ -1,2 +1,2 @@
 insert into accounts (id, password)
-	values ($1, $2)
+  values ($1, $2)

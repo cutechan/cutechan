@@ -1,2 +1,2 @@
 select max(replyTime) from threads
-	where board = $1
+  where board = $1

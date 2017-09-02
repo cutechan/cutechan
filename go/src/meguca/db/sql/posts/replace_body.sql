@@ -1,3 +1,3 @@
 update posts
-	set body = $2
-	where id = $1
+  set body = $2
+  where id = $1

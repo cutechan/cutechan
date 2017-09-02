@@ -1,2 +1,2 @@
 delete from sessions
-	where account = $1
+  where account = $1

@@ -1,2 +1,2 @@
 select board, data, mime
-	from banners
+  from banners

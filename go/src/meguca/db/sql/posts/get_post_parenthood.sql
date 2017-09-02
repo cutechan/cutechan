@@ -1,3 +1,3 @@
 select board, op
-	from posts
-	where id = $1
+  from posts
+  where id = $1

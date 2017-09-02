@@ -1,2 +1,2 @@
 delete from banners
-	where board = $1
+  where board = $1

@@ -1,2 +1,2 @@
 select replyTime from threads
-	where id = $1
+  where id = $1

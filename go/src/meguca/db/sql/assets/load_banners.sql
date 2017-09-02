@@ -1,3 +1,3 @@
 select data, mime
-	from banners
-	where board = $1
+  from banners
+  where board = $1

@@ -1,2 +1,2 @@
 select op from posts
-	where id = $1
+  where id = $1
