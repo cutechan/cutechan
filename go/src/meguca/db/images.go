@@ -113,23 +113,3 @@ func cleanUpFailedAllocation(img common.ImageCommon, err error) error {
 	}
 	return err
 }
-
-// HasImage returns, if the post has an image allocated. Only used in tests.
-func HasImage(id uint64) (has bool, err error) {
-	err = db.
-		QueryRow(`
-			SELECT true FROM posts
-				WHERE id = $1 AND SHA1 IS NOT NULL`,
-			id,
-		).
-		Scan(&has)
-	if err == sql.ErrNoRows {
-		err = nil
-	}
-	return
-}
-
-// InsertImage insert and image into and existing open post
-func InsertImage(id uint64, img common.Image) (err error) {
-	return execPrepared("insert_image", id, img.SHA1)
-}

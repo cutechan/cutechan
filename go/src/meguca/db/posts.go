@@ -248,21 +248,6 @@ func genPostCreationArgs(p Post) []interface{} {
 	}
 }
 
-// WritePost writes a post struct to the database. Only used in tests and
-// migrations.
-func WritePost(tx *sql.Tx, p Post) (err error) {
-	_, err = getExecutor(tx, "write_post").Exec(genPostCreationArgs(p)...)
-	if err != nil {
-		return
-	}
-
-	// if p.Editing {
-	// 	err = SetOpenBody(p.ID, []byte(p.Body))
-	// }
-
-	return
-}
-
 // InsertThread inserts a new thread into the database
 func InsertThread(subject string, p Post) (err error) {
 	imgCtr := 0
@@ -282,42 +267,6 @@ func InsertThread(subject string, p Post) (err error) {
 	// }
 
 	return
-}
-
-// WriteThread writes a thread and it's OP to the database. Only used for tests
-// and migrations.
-func WriteThread(tx *sql.Tx, t Thread, p Post) (err error) {
-	passedTx := tx != nil
-	if !passedTx {
-		tx, err = db.Begin()
-		if err != nil {
-			return err
-		}
-		defer RollbackOnError(tx, &err)
-	}
-
-	_, err = tx.Stmt(prepared["write_op"]).Exec(
-		t.Board,
-		t.ID,
-		t.PostCtr,
-		t.ImageCtr,
-		t.ReplyTime,
-		t.BumpTime,
-		t.Subject,
-	)
-	if err != nil {
-		return err
-	}
-
-	err = WritePost(tx, p)
-	if err != nil {
-		return err
-	}
-
-	if !passedTx {
-		return tx.Commit()
-	}
-	return nil
 }
 
 // GetPostPassword retrieves a post's modification password
