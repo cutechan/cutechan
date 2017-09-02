@@ -300,6 +300,16 @@ var upgrades = []func(*sql.Tx) error{
 		)
 		return
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`CREATE TABLE post_files (
+				post_id BIGINT REFERENCES posts ON DELETE CASCADE,
+				file_hash CHAR(40) REFERENCES images,
+				PRIMARY KEY (post_id, file_hash)
+			)`,
+			`CREATE INDEX post_files_file_hash ON post_files (file_hash)`,
+		)
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both

@@ -136,3 +136,10 @@ create table post_tokens (
   ip inet not null,
   expires timestamp not null
 );
+
+CREATE TABLE post_files (
+  post_id BIGINT REFERENCES posts ON DELETE CASCADE,
+  file_hash CHAR(40) REFERENCES images,
+  PRIMARY KEY (post_id, file_hash)
+);
+CREATE INDEX post_files_file_hash ON post_files (file_hash);
