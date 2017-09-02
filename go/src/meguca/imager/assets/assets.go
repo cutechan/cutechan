@@ -22,7 +22,6 @@ var (
 			MD5:      "YOQQklgfezKbBXuEAsqopw",
 			Size:     300792,
 		},
-		Name:    "sample.jpg",
 		Spoiler: true,
 	}
 

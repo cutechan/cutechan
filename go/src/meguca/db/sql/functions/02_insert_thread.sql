@@ -14,7 +14,6 @@ create or replace function insert_thread(
 	password bytea,
 	ip inet,
 	SHA1 char(40),
-	imageName varchar(200),
 	links bigint[][2],
 	commands json[]
 ) returns void as $$
@@ -24,10 +23,10 @@ create or replace function insert_thread(
 		values (board, id, 1, imageCtr, now, now, subject);
 	insert into posts (
 		editing, spoiler, id, board, op, time, body, name, trip, auth, password,
-		ip, SHA1, imageName, links, commands
+		ip, SHA1, links, commands
 	)
 		values (
 			editing, spoiler, id, board, op, now, body, name, trip, auth,
-			password, ip, SHA1, imageName, links, commands
+			password, ip, SHA1, links, commands
 		);
 $$ language sql;

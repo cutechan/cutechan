@@ -225,8 +225,8 @@ func InsertPost(p Post, sage bool) (err error) {
 func genPostCreationArgs(p Post) []interface{} {
 	// Don't store empty strings in the database. Zero value != NULL.
 	var (
-		name, trip, auth, img, imgName, ip *string
-		spoiler                            bool
+		name, trip, auth, img, ip *string
+		spoiler                   bool
 	)
 	if p.Name != "" {
 		name = &p.Name
@@ -242,13 +242,12 @@ func genPostCreationArgs(p Post) []interface{} {
 	}
 	if p.Image != nil {
 		img = &p.Image.SHA1
-		imgName = &p.Image.Name
 		spoiler = p.Image.Spoiler
 	}
 
 	return []interface{}{
 		p.Editing, spoiler, p.ID, p.Board, p.OP, p.Time, p.Body, name, trip,
-		auth, p.Password, ip, img, imgName,
+		auth, p.Password, ip, img,
 		linkRow(p.Links), commandRow([]Command{}),
 	}
 }

@@ -131,7 +131,7 @@ func HasImage(id uint64) (has bool, err error) {
 
 // InsertImage insert and image into and existing open post
 func InsertImage(id uint64, img common.Image) (err error) {
-	return execPrepared("insert_image", id, img.SHA1, img.Name)
+	return execPrepared("insert_image", id, img.SHA1)
 }
 
 // SpoilerImage spoilers an already allocated image

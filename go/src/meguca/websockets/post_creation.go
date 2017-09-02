@@ -12,7 +12,6 @@ import (
 	"meguca/db"
 	"meguca/parser"
 	"meguca/websockets/feeds"
-	"strings"
 	"time"
 	"unicode/utf8"
 	"unsafe"
@@ -23,7 +22,6 @@ var (
 	errBadSignature      = errors.New("bad signature")
 	errReadOnly          = errors.New("read only board")
 	errInvalidImageToken = errors.New("invalid image token")
-	errImageNameTooLong  = errors.New("image name too long")
 	errNoTextOrImage     = errors.New("no text or image")
 )
 
@@ -95,7 +93,7 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 	hasImage := req.Image.Token != ""
 	if hasImage {
 		img := req.Image
-		post.Image, err = getImage(img.Token, "", false)
+		post.Image, err = getImage(img.Token, false)
 		if err != nil {
 			return
 		}
@@ -161,7 +159,7 @@ func CreatePost(
 
 	if hasImage {
 		img := req.Image
-		post.Image, err = getImage(img.Token, "", false)
+		post.Image, err = getImage(img.Token, false)
 		if err != nil {
 			return
 		}
@@ -342,13 +340,7 @@ func constructPost(
 }
 
 // Performs some validations and retrieves processed image data by token ID.
-// Embeds spoiler and image name in result struct. The last extension is
-// stripped from the name.
-func getImage(token, name string, spoiler bool) (img *common.Image, err error) {
-	if len(name) > 200 {
-		return nil, errImageNameTooLong
-	}
-
+func getImage(token string, spoiler bool) (img *common.Image, err error) {
 	imgCommon, err := db.UseImageToken(token)
 	switch err {
 	case nil:
@@ -358,18 +350,8 @@ func getImage(token, name string, spoiler bool) (img *common.Image, err error) {
 		return nil, err
 	}
 
-	// Trim on the last dot in the file name, but also strip for .tar.gz and
-	// .tar.xz as special cases.
-	if i := strings.LastIndexByte(name, '.'); i != -1 {
-		name = name[:i]
-	}
-	if strings.HasSuffix(name, ".tar") {
-		name = name[:len(name)-4]
-	}
-
 	return &common.Image{
 		ImageCommon: imgCommon,
 		Spoiler:     spoiler,
-		Name:        name,
 	}, nil
 }

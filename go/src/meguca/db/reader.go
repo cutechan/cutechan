@@ -52,14 +52,13 @@ func (i *imageScanner) Val() *common.Image {
 			Title:     i.Title.String,
 			Artist:    i.Artist.String,
 		},
-		Name: i.Name.String,
 	}
 }
 
 type postScanner struct {
 	common.Post
 	banned, spoiler, deleted, sage sql.NullBool
-	name, trip, auth, imageName    sql.NullString
+	name, trip, auth               sql.NullString
 	links                          linkRow
 	commands                       commandRow
 }
@@ -67,7 +66,7 @@ type postScanner struct {
 func (p *postScanner) ScanArgs() []interface{} {
 	return []interface{}{
 		&p.Editing, &p.banned, &p.spoiler, &p.deleted, &p.sage, &p.ID, &p.Time,
-		&p.Body, &p.name, &p.trip, &p.auth, &p.links, &p.commands, &p.imageName,
+		&p.Body, &p.name, &p.trip, &p.auth, &p.links, &p.commands,
 	}
 }
 
@@ -80,11 +79,6 @@ func (p postScanner) Val() (common.Post, error) {
 	p.Auth = p.auth.String
 	p.Links = [][2]uint64(p.links)
 	return p.Post, nil
-}
-
-// Returns if image is spoiled and it's assigned name, if any
-func (p postScanner) Image() (bool, string) {
-	return p.spoiler.Bool, p.imageName.String
 }
 
 // PostStats contains post open status, body and creation time
@@ -195,9 +189,6 @@ func extractPost(ps postScanner, is imageScanner) (p common.Post, err error) {
 		return
 	}
 	p.Image = is.Val()
-	if p.Image != nil {
-		p.Image.Spoiler, p.Image.Name = ps.Image()
-	}
 	return
 }
 
@@ -222,9 +213,6 @@ func GetPost(id uint64) (res common.StandalonePost, err error) {
 		return
 	}
 	res.Image = img.Val()
-	if res.Image != nil {
-		res.Image.Spoiler, res.Image.Name = post.Image()
-	}
 
 	// if res.Editing {
 	// 	res.Body, err = GetOpenBody(res.ID)
