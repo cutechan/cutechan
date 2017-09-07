@@ -128,7 +128,7 @@ Renders the tab selection butts in tabbed windows
 	<html class="{%s posClass(pos) %}">
 	<head>
 		<meta charset="utf-8">
-		<meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
 		<meta name="application-name" content="cutechan">
 		<meta name="description" content="Cute chan">
 		<title>$$$</title>
