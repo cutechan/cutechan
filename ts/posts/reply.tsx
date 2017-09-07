@@ -94,6 +94,14 @@ function getFileInfo(file: File): Promise<Dict> {
   return fn(file, skipCopy);
 }
 
+// Event helpers.
+function getClientX(e: MouseEvent | TouchEvent): number {
+  return (e as any).touches ? (e as any).touches[0].clientX : (e as any).clientX;
+}
+function getClientY(e: MouseEvent | TouchEvent): number {
+  return (e as any).touches ? (e as any).touches[0].clientY : (e as any).clientY;
+}
+
 class FilePreview extends Component<any, any> {
   public render(props: any) {
     const { url } = props.info;
@@ -141,7 +149,6 @@ class BodyPreview extends Component<any, any> {
 // tslint:disable-next-line:max-classes-per-file
 class Reply extends Component<any, any> {
   public state = {
-    // tslint:disable:object-literal-sort-keys
     float: false,
     left: 0,
     top: 0,
@@ -156,7 +163,6 @@ class Reply extends Component<any, any> {
     subject: "",
     body: "",
     files: [] as Array<{file: File, info: Dict}>,
-    // tslint:enable:object-literal-sort-keys
   };
   private mainEl: HTMLElement = null;
   private bodyEl: HTMLInputElement = null;
@@ -185,16 +191,10 @@ class Reply extends Component<any, any> {
     hook(HOOKS.boldMarkup, this.pasteBold);
     hook(HOOKS.italicMarkup, this.pasteItalic);
     hook(HOOKS.spoilerMarkup, this.pasteSpoiler);
-    document.addEventListener(
-      "mousemove",
-      this.handleGlobalMove,
-      {passive: true},
-    );
-    document.addEventListener(
-      "mouseup",
-      this.handleGlobalUp,
-      {passive: true},
-    );
+    document.addEventListener("mousemove", this.handleGlobalMove);
+    document.addEventListener("touchmove", this.handleGlobalMove);
+    document.addEventListener("mouseup", this.handleGlobalUp);
+    document.addEventListener("touchend", this.handleGlobalUp);
     this.focus();
     const caret = this.state.body.length;
     this.bodyEl.setSelectionRange(caret, caret);
@@ -207,16 +207,10 @@ class Reply extends Component<any, any> {
     unhook(HOOKS.boldMarkup, this.pasteBold);
     unhook(HOOKS.italicMarkup, this.pasteItalic);
     unhook(HOOKS.spoilerMarkup, this.pasteSpoiler);
-    document.removeEventListener(
-      "mousemove",
-      this.handleGlobalMove,
-      {passive: true},
-    );
-    document.removeEventListener(
-      "mouseup",
-      this.handleGlobalUp,
-      {passive: true},
-    );
+    document.removeEventListener("mousemove", this.handleGlobalMove);
+    document.removeEventListener("touchmove", this.handleGlobalMove);
+    document.removeEventListener("mouseup", this.handleGlobalUp);
+    document.removeEventListener("touchend", this.handleGlobalUp);
   }
   public componentWillReceiveProps({ quoted }: any) {
     if (quoted !== this.props.quoted) {
@@ -364,31 +358,31 @@ class Reply extends Component<any, any> {
       scrollToTop();
     }
   }
-  private saveCoords(e: MouseEvent) {
-    this.baseX = e.clientX;
-    this.baseY = e.clientY;
+  private saveCoords(e: MouseEvent | TouchEvent) {
+    this.baseX = getClientX(e);
+    this.baseY = getClientY(e);
     const rect = this.mainEl.getBoundingClientRect();
     this.startX = rect.left;
     this.startY = rect.top;
     this.startW = rect.width;
     this.startH = rect.height;
   }
-  private handleMoveDown = (e: MouseEvent) => {
+  private handleMoveDown = (e: MouseEvent | TouchEvent) => {
     e.preventDefault();
     this.moving = true;
     this.saveCoords(e);
   }
-  private handleGlobalMove = (e: MouseEvent) => {
+  private handleGlobalMove = (e: MouseEvent | TouchEvent) => {
     if (this.moving) {
       this.setState({
         float: true,
-        left: this.startX + e.clientX - this.baseX,
-        top: this.startY + e.clientY - this.baseY,
+        left: this.startX + getClientX(e) - this.baseX,
+        top: this.startY + getClientY(e) - this.baseY,
       });
     } else if (this.resizing) {
       const { pos } = this.state;
-      const dx = e.clientX - this.baseX;
-      const dy = e.clientY - this.baseY;
+      const dx = getClientX(e) - this.baseX;
+      const dy = getClientY(e) - this.baseY;
       let { startW: width, startH: height, startX: left, startY: top } = this;
       switch (pos) {
       case "nw":
@@ -682,7 +676,11 @@ class Reply extends Component<any, any> {
             <i class="fa fa-remove" />
           </button>
         </div>
-        <div class="reply-dragger" onMouseDown={this.handleMoveDown} />
+        <div
+          class="reply-dragger"
+          onMouseDown={this.handleMoveDown}
+          onTouchStart={this.handleMoveDown}
+        />
       </div>
     );
   }
@@ -733,7 +731,11 @@ class Reply extends Component<any, any> {
           <i class={cx("fa", editing ? "fa-print" : "fa-pencil")} />
         </button>
 
-        <div class="reply-dragger" onMouseDown={this.handleMoveDown} />
+        <div
+          class="reply-dragger"
+          onMouseDown={this.handleMoveDown}
+          onTouchStart={this.handleMoveDown}
+        />
         <ShowHide show={!this.invalid}>
           <Progress
             className="button reply-send-button"
