@@ -177,10 +177,13 @@ class Reply extends Component<any, any> {
   private startW = 0;
   private startH = 0;
   public componentWillMount() {
-    const { quoted } = this.props;
+    const { quoted, dropped } = this.props;
     if (quoted) {
       this.quote(quoted);
       this.setFloat(quoted);
+    }
+    if (dropped) {
+      this.handleDrop(dropped);
     }
   }
   public componentDidMount() {
@@ -212,12 +215,17 @@ class Reply extends Component<any, any> {
     document.removeEventListener("mouseup", this.handleGlobalUp);
     document.removeEventListener("touchend", this.handleGlobalUp);
   }
-  public componentWillReceiveProps({ quoted }: any) {
+  public componentWillReceiveProps({ quoted, dropped }: any) {
     if (quoted !== this.props.quoted) {
       if (quoted) {
         this.quote(quoted);
       } else {
         this.handleFormPin();
+      }
+    }
+    if (dropped !== this.props.dropped) {
+      if (dropped) {
+        this.handleDrop(dropped);
       }
     }
   }
@@ -229,7 +237,6 @@ class Reply extends Component<any, any> {
         style={this.style}
         onMouseDown={this.handleFormDown}
         onMouseMove={this.handleFormMove}
-        onDrop={this.handleDrop}
       >
 
         {this.renderFiles()}
@@ -498,7 +505,6 @@ class Reply extends Component<any, any> {
     this.setState({files: []}, this.focus);
   }
   private handleDrop = (e: DragEvent) => {
-    e.preventDefault();
     const files = e.dataTransfer.files;
     if (files.length) {
       this.handleFile(files[0]);
@@ -751,33 +757,42 @@ class Reply extends Component<any, any> {
   }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 class ReplyContainer extends Component<any, any> {
   public state = {
-    quoted: null as Element,
     show: false,
+    quoted: null as Element,
+    dropped: null as DragEvent,
   };
   public componentDidMount() {
     hook(HOOKS.openReply, () => {
       this.setState({show: true});
     });
     hook(HOOKS.closeReply, this.handleHide);
+
     on(document, "click", () => {
       this.setState({show: true});
     }, {selector: TRIGGER_OPEN_REPLY_SEL});
     on(document, "click", (e) => {
       this.setState({show: true, quoted: e});
     }, {selector: TRIGGER_QUOTE_POST_SEL});
+
+    on(document, "dragover", (e) => {
+      e.preventDefault();
+    });
+    on(document, "drop", (e) => {
+      e.preventDefault();
+      this.setState({show: true, dropped: e});
+    });
   }
-  public render({}, { show, quoted }: any) {
+  public render({}, { show, quoted, dropped }: any) {
     return (
       <ShowHide show={show}>
-        <Reply quoted={quoted} onHide={this.handleHide} />
+        <Reply quoted={quoted} dropped={dropped} onHide={this.handleHide} />
       </ShowHide>
     );
   }
   private handleHide = () => {
-    this.setState({show: false, quoted: null});
+    this.setState({show: false, quoted: null, dropped: null});
   }
 }
 
