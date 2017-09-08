@@ -25,16 +25,17 @@ const (
 	LenImageToken = 86
 )
 
-// Some hardcoded options
+// Some default options.
 const (
-	ThumbSize      = 200
-	MaxWidth       = 12000
-	MaxHeight      = 12000
-	JPEGQuality    = 90
-	SessionExpiry  = 5 * 365 // Days
-	DefaultMaxSize = 20      // Megabytes
-	DefaultLang    = "en"
-	DefaultCSS     = "light"
+	ThumbSize       = 200
+	MaxWidth        = 12000
+	MaxHeight       = 12000
+	JPEGQuality     = 90
+	SessionExpiry   = 5 * 365 // Days
+	DefaultMaxSize  = 20      // Megabytes
+	DefaultMaxFiles = 4
+	DefaultLang     = "en"
+	DefaultCSS      = "light"
 )
 
 // Available language packs and themes. Change this, when adding any new ones.

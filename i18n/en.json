@@ -60,6 +60,10 @@
       "Image size limit",
       "Maximum size of uploaded images in MB"
     ],
+    "maxFiles": [
+      "Files per post",
+      "Maximum number of files per post"
+    ],
     "moderators": [
       "Moderators",
       "Moderator account IDs. Moderators can delete posts, ban posters and distinguish posters by their mnemonic IDs."

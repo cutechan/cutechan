@@ -9,6 +9,7 @@ interface Config {
   captcha: boolean;
   disableUserBoards: boolean;
   maxSize: number;
+  maxFiles: number;
   pruneThreads: boolean;
   threadExpiryMin: number;
   threadExpiryMax: number;

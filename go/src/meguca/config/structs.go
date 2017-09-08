@@ -18,6 +18,7 @@ type Public struct {
 	ThreadExpiryMin   uint   `json:"threadExpiryMin"`
 	ThreadExpiryMax   uint   `json:"threadExpiryMax"`
 	MaxSize           uint   `json:"maxSize"`
+	MaxFiles          uint   `json:"maxFiles"`
 	DefaultLang       string `json:"defaultLang"`
 	DefaultCSS        string `json:"defaultCSS"`
 	ImageRootOverride string `json:"imageRootOverride"`

@@ -45,6 +45,7 @@ var (
 		Public: Public{
 			DisableUserBoards: true,
 			MaxSize:           common.DefaultMaxSize,
+			MaxFiles:          common.DefaultMaxFiles,
 			DefaultLang:       common.DefaultLang,
 			DefaultCSS:        common.DefaultCSS,
 			BoardExpiry:       100,

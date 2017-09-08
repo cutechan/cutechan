@@ -132,6 +132,12 @@ var specs = map[string][]inputSpec{
 			Min:      1,
 			Required: true,
 		},
+		{
+			ID:       "maxFiles",
+			Type:     _number,
+			Min:      1,
+			Required: true,
+		},
 		{ID: "pruneBoards"},
 		{
 			ID:       "boardExpiry",
