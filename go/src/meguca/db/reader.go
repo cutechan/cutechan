@@ -187,39 +187,37 @@ func extractPost(ps postScanner, is imageScanner) (p common.Post, err error) {
 	if err != nil {
 		return
 	}
-	p.Image = is.Val()
+	img := is.Val()
+	if img != nil {
+		p.Images = append(p.Images, *img)
+	}
 	return
 }
 
 // GetPost reads a single post from the database
-func GetPost(id uint64) (res common.StandalonePost, err error) {
+func GetPost(id uint64) (p common.StandalonePost, err error) {
 	var (
 		args = make([]interface{}, 2, 28)
-		post postScanner
-		img  imageScanner
+		ps postScanner
+		is imageScanner
 	)
-	args[0] = &res.OP
-	args[1] = &res.Board
-	args = append(args, post.ScanArgs()...)
-	args = append(args, img.ScanArgs()...)
+	args[0] = &p.OP
+	args[1] = &p.Board
+	args = append(args, ps.ScanArgs()...)
+	args = append(args, is.ScanArgs()...)
 
 	err = prepared["get_post"].QueryRow(id).Scan(args...)
 	if err != nil {
 		return
 	}
-	res.Post, err = post.Val()
+	p.Post, err = ps.Val()
 	if err != nil {
 		return
 	}
-	res.Image = img.Val()
-
-	// if res.Editing {
-	// 	res.Body, err = GetOpenBody(res.ID)
-	// 	if err != nil {
-	// 		return
-	// 	}
-	// }
-
+	img := is.Val()
+	if img != nil {
+		p.Images = append(p.Images, *img)
+	}
 	return
 }
 

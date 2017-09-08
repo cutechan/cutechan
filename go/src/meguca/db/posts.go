@@ -237,8 +237,8 @@ func genPostCreationArgs(p Post) []interface{} {
 	if p.IP != "" {
 		ip = &p.IP
 	}
-	if p.Image != nil {
-		img = &p.Image.SHA1
+	if len(p.Images) > 0 {
+		img = &p.Images[0].SHA1
 	}
 
 	return []interface{}{
@@ -250,10 +250,7 @@ func genPostCreationArgs(p Post) []interface{} {
 
 // InsertThread inserts a new thread into the database
 func InsertThread(subject string, p Post) (err error) {
-	imgCtr := 0
-	if p.Image != nil {
-		imgCtr = 1
-	}
+	imgCtr := len(p.Images)
 	err = execPrepared(
 		"insert_thread",
 		append([]interface{}{subject, imgCtr}, genPostCreationArgs(p)...)...,

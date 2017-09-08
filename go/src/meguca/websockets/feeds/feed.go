@@ -303,7 +303,7 @@ func (f *Feed) InsertPost(post common.StandalonePost, body, msg []byte) {
 	f.insertPost <- postCreationMessage{
 		open:     post.Editing,
 		id:       post.ID,
-		hasImage: post.Image != nil,
+		hasImage: len(post.Images) > 0,
 		time:     post.Time,
 		body:     body,
 		msg:      msg,

@@ -32,7 +32,7 @@ export class Post extends Model implements PostData {
   public deleted: boolean;
   public banned: boolean;
   public sticky: boolean;
-  public image: ImageData;  // TODO(Kagami): Rename to file
+  public images: ImageData[];  // TODO(Kagami): Rename to file
   public time: number;
   public body: string;
   public name: string;
@@ -49,11 +49,11 @@ export class Post extends Model implements PostData {
 
   // TODO(Kagami): Move to ImageData?
   public get transparentThumb() {
-    return this.image.thumbType === fileTypes.png;
+    return this.images[0].thumbType === fileTypes.png;
   }
 
   public get fileSrc(): string {
-    return sourcePath(this.image.fileType, this.image.SHA1);
+    return sourcePath(this.images[0].fileType, this.images[0].SHA1);
   }
 
   constructor(attrs: PostData) {

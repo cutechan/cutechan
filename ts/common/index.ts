@@ -15,7 +15,7 @@ export interface PostData {
   deleted: boolean;
   banned: boolean;
   sticky: boolean;
-  image?: ImageData;
+  images: ImageData[];
   time: number;
   id: number;
   op: number;

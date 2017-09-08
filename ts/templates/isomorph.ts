@@ -54,7 +54,7 @@ export function makePostContext(
     if (ctx.OP) {
       classes.push("post_op");
     }
-    if (ctx.post.image) {
+    if (ctx.post.images) {
       classes.push("post_file");
     }
     for (const provider of Object.keys(bodyEmbeds)) {
@@ -81,8 +81,8 @@ export function makePostContext(
   ctx.Time = "";
 
   ctx.File = () => {
-    const img = p.image;
-    if (!img) return "";
+    if (!p.images) return "";
+    const img = p.images[0];
     // tslint:disable:object-literal-sort-keys
     return new TemplateContext("post-file", {
       HasArtist: !!img.artist,

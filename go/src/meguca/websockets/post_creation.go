@@ -92,11 +92,12 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 	// Perform this last, so there are less dangling images because of any error
 	hasImage := req.Image.Token != ""
 	if hasImage {
-		img := req.Image
-		post.Image, err = getImage(img.Token)
+		var img *common.Image
+		img, err = getImage(req.Image.Token)
 		if err != nil {
 			return
 		}
+		post.Images = append(post.Images, *img)
 	}
 
 	post.ID, err = db.NewPostID()
@@ -158,11 +159,12 @@ func CreatePost(
 	}
 
 	if hasImage {
-		img := req.Image
-		post.Image, err = getImage(img.Token)
+		var img *common.Image
+		img, err = getImage(req.Image.Token)
 		if err != nil {
 			return
 		}
+		post.Images = append(post.Images, *img)
 	}
 
 	post.OP = op
@@ -211,7 +213,7 @@ func (c *Client) insertPost(data []byte) (err error) {
 	c.feed.InsertPost(post.StandalonePost, c.post.body, msg)
 
 	score := auth.PostCreationScore + auth.CharScore*time.Duration(c.post.len)
-	if post.Image != nil {
+	if len(post.Images) > 0 {
 		score += auth.ImageScore
 	}
 	return c.incrementSpamScore(score)

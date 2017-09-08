@@ -41,22 +41,15 @@ func CalculateOmit(t common.Thread) (int, int) {
 		return 0, 0
 	}
 
-	var (
-		omit    = int(t.PostCtr) - (len(t.Posts) + 1)
-		imgOmit uint32
-	)
+	omit := int(t.PostCtr) - (len(t.Posts) + 1)
+	imgOmit := 0
 	if omit != 0 {
-		imgOmit = t.ImageCtr
-		if t.Image != nil {
-			imgOmit--
-		}
+		imgOmit = int(t.ImageCtr) - len(t.Images)
 		for _, p := range t.Posts {
-			if p.Image != nil {
-				imgOmit--
-			}
+			imgOmit -= len(p.Images)
 		}
 	}
-	return omit, int(imgOmit)
+	return omit, imgOmit
 }
 
 func bold(s string) string {

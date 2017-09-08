@@ -35,6 +35,8 @@ var Extensions = map[uint8]string{
 	TXZ:      "tar.xz",
 }
 
+type Images []Image
+
 // Image contains a post's image and thumbnail data
 type Image struct {
 	ImageCommon

@@ -90,9 +90,9 @@ function to allow caching of generated posts.
 	{% code url := fmt.Sprintf("/%s/%s", t.Board, idStr) %}
 	<article class="post-catalog-wrapper" style="z-index: {%d -i %}" data-id="{%s idStr %}">
 		<article class="post post_op post_catalog">
-			{% if t.Image != nil %}
+			{% if len(t.Images) > 0 %}
 				<figure class="post-file">
-					{% code img := *t.Image %}
+					{% code img := t.Images[0] %}
 					<a class="post-file-link" href="{%s url %}">
 						<img class="post-file-thumb" src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
 					</a>
