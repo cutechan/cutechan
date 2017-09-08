@@ -44,9 +44,9 @@ func CalculateOmit(t common.Thread) (int, int) {
 	omit := int(t.PostCtr) - (len(t.Posts) + 1)
 	imgOmit := 0
 	if omit != 0 {
-		imgOmit = int(t.ImageCtr) - len(t.Images)
+		imgOmit = int(t.ImageCtr) - len(t.Files)
 		for _, p := range t.Posts {
-			imgOmit -= len(p.Images)
+			imgOmit -= len(p.Files)
 		}
 	}
 	return omit, imgOmit

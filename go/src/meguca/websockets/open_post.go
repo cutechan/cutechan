@@ -26,7 +26,7 @@ func (o *openPost) init(p common.StandalonePost) {
 		body:  append(make([]byte, 0, 1<<10), p.Body...),
 	}
 	o.countLines()
-	if len(p.Images) > 0 {
+	if len(p.Files) > 0 {
 		o.hasImage = true
 	}
 }

@@ -59,7 +59,7 @@ type Post struct {
 	Trip    string `json:"trip,omitempty"`
 	Auth    string `json:"auth,omitempty"`
 	Links   Links  `json:"links,omitempty"`
-	Images  Images `json:"images,omitempty"`
+	Files   Files  `json:"files,omitempty"`
 }
 
 // StandalonePost is a post view that includes the "op" and "board" fields,

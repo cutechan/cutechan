@@ -148,9 +148,9 @@ function showImage(url: string, width: number, height: number) {
 
 function renderPostImagePreview(thumb: HTMLElement): any {
   const post = getModel(thumb);
-  if (!post || post.images[0].video) return;
+  if (!post || post.files[0].video) return;
   const url = post.fileSrc;
-  const [width, height] = post.images[0].dims;
+  const [width, height] = post.files[0].dims;
   showImage(url, width, height);
 }
 

@@ -27,8 +27,8 @@ export default function notifyAboutReply(post: Post) {
   // Finally display sticky notification.
   let icon = "";
   if (!options.workModeToggle) {
-    if (post.images) {
-      const { thumbType, SHA1 } = post.images[0];
+    if (post.files) {
+      const { thumbType, SHA1 } = post.files[0];
       icon = thumbPath(thumbType, SHA1);
     } else {
       icon = DEFAULT_NOTIFICATION_IMAGE_URL;

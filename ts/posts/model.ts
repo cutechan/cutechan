@@ -21,7 +21,6 @@ export class Thread {
 }
 
 // Generic post model
-// tslint:disable-next-line:max-classes-per-file
 export class Post extends Model implements PostData {
   public collection: Collection;
   public view: PostView;
@@ -32,7 +31,6 @@ export class Post extends Model implements PostData {
   public deleted: boolean;
   public banned: boolean;
   public sticky: boolean;
-  public images: ImageData[];  // TODO(Kagami): Rename to file
   public time: number;
   public body: string;
   public name: string;
@@ -41,7 +39,8 @@ export class Post extends Model implements PostData {
   public subject: string;
   public board: string;
   public backlinks: PostBacklinks;
-  public links: PostLink[];
+  public links?: PostLink[];
+  public files?: ImageData[];
 
   public get opPost() {
     return this.id === this.op;
@@ -49,11 +48,11 @@ export class Post extends Model implements PostData {
 
   // TODO(Kagami): Move to ImageData?
   public get transparentThumb() {
-    return this.images[0].thumbType === fileTypes.png;
+    return this.files[0].thumbType === fileTypes.png;
   }
 
   public get fileSrc(): string {
-    return sourcePath(this.images[0].fileType, this.images[0].SHA1);
+    return sourcePath(this.files[0].fileType, this.files[0].SHA1);
   }
 
   constructor(attrs: PostData) {

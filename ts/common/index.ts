@@ -15,7 +15,6 @@ export interface PostData {
   deleted: boolean;
   banned: boolean;
   sticky: boolean;
-  images: ImageData[];
   time: number;
   id: number;
   op: number;
@@ -23,6 +22,7 @@ export interface PostData {
   auth: string;
   board?: string;
   links?: PostLink[];
+  files?: ImageData[];
 }
 
 // Data of an OP post

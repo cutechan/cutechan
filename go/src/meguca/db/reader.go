@@ -189,7 +189,7 @@ func extractPost(ps postScanner, is imageScanner) (p common.Post, err error) {
 	}
 	img := is.Val()
 	if img != nil {
-		p.Images = append(p.Images, *img)
+		p.Files = append(p.Files, *img)
 	}
 	return
 }
@@ -216,7 +216,7 @@ func GetPost(id uint64) (p common.StandalonePost, err error) {
 	}
 	img := is.Val()
 	if img != nil {
-		p.Images = append(p.Images, *img)
+		p.Files = append(p.Files, *img)
 	}
 	return
 }

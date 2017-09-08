@@ -87,7 +87,7 @@ func (ctx *PostContext) PostClass() string {
 	if ctx.OP {
 		classes = append(classes, "post_op")
 	}
-	if len(ctx.post.Images) > 0 {
+	if len(ctx.post.Files) > 0 {
 		classes = append(classes, "post_file")
 	}
 	for _, pattern := range BodyEmbeds {
@@ -159,11 +159,11 @@ func fileSize(size int) string {
 }
 
 func (ctx *PostContext) File() string {
-	if len(ctx.post.Images) == 0 {
+	if len(ctx.post.Files) == 0 {
 		return ""
 	}
 	ln := lang.Get()
-	img := ctx.post.Images[0]
+	img := ctx.post.Files[0]
 	fileCtx := FileContext{
 		HasArtist:  img.Artist != "",
 		Artist:     img.Artist,

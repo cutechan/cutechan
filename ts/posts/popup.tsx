@@ -412,13 +412,13 @@ class Popups extends Component<any, PopupsState> {
       const post = getModel(target);
       if (!post) return;
       Object.assign(props, {
-        video: post.images[0].video,
-        audio: post.images[0].audio,
+        video: post.files[0].video,
+        audio: post.files[0].audio,
         transparent: post.transparentThumb,
         url: post.fileSrc,
-        width: post.images[0].dims[0],
-        height: post.images[0].dims[1],
-        duration: post.images[0].length,
+        width: post.files[0].dims[0],
+        height: post.files[0].dims[1],
+        duration: post.files[0].length,
       });
     } else if (target.matches(POST_EMBED_SEL)) {
       Object.assign(props, {

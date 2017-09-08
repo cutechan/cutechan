@@ -97,7 +97,7 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 		if err != nil {
 			return
 		}
-		post.Images = append(post.Images, *img)
+		post.Files = append(post.Files, *img)
 	}
 
 	post.ID, err = db.NewPostID()
@@ -164,7 +164,7 @@ func CreatePost(
 		if err != nil {
 			return
 		}
-		post.Images = append(post.Images, *img)
+		post.Files = append(post.Files, *img)
 	}
 
 	post.OP = op
@@ -213,7 +213,7 @@ func (c *Client) insertPost(data []byte) (err error) {
 	c.feed.InsertPost(post.StandalonePost, c.post.body, msg)
 
 	score := auth.PostCreationScore + auth.CharScore*time.Duration(c.post.len)
-	if len(post.Images) > 0 {
+	if len(post.Files) > 0 {
 		score += auth.ImageScore
 	}
 	return c.incrementSpamScore(score)
