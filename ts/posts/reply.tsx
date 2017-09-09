@@ -7,8 +7,8 @@ import { ln, printf } from "../lang";
 import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {
-  AbortError, Dict, FutureAPI, getID, hook, HOOKS, on, Progress, scrollToTop,
-  setter as s, ShowHide, unhook,
+  AbortError, collect, Dict, FutureAPI, getID, hook, HOOKS, on, Progress,
+  scrollToTop, setter as s, ShowHide, unhook,
 } from "../util";
 import {
   HEADER_HEIGHT_PX,
@@ -35,12 +35,13 @@ function quoteText(text: string): string {
 
 function getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
   return new Promise((resolve, reject) => {
-    let url = URL.createObjectURL(file);
+    const src = URL.createObjectURL(file);
+    let thumb = src;
     const img = new Image();
     img.onload = () => {
       const { width, height } = img;
       if (skipCopy) {
-        resolve({ width, height, url });
+        resolve({ width, height, src, thumb });
         return;
       }
       const c = document.createElement("canvas");
@@ -48,17 +49,18 @@ function getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
       c.width = width;
       c.height = height;
       ctx.drawImage(img, 0, 0, width, height);
-      url = c.toDataURL();
-      resolve({ width, height, url });
+      thumb = c.toDataURL();
+      resolve({ width, height, src, thumb });
     };
     img.onerror = reject;
-    img.src = url;
+    img.src = src;
   });
 }
 
 function getVideoInfo(file: File): Promise<Dict> {
   return new Promise((resolve, reject) => {
     const vid = document.createElement("video");
+    const src = URL.createObjectURL(file);
     vid.muted = true;
     vid.onloadeddata = () => {
       const { videoWidth: width, videoHeight: height, duration: dur } = vid;
@@ -71,11 +73,11 @@ function getVideoInfo(file: File): Promise<Dict> {
       c.width = width;
       c.height = height;
       ctx.drawImage(vid, 0, 0, width, height);
-      const url = c.toDataURL();
-      resolve({ width, height, dur, url });
+      const thumb = c.toDataURL();
+      resolve({ width, height, dur, src, thumb });
     };
     vid.onerror = reject;
-    vid.src = URL.createObjectURL(file);
+    vid.src = src;
   });
 }
 
@@ -104,19 +106,16 @@ function getClientY(e: MouseEvent | TouchEvent): number {
 
 class FilePreview extends Component<any, any> {
   public render(props: any) {
-    const { url } = props.info;
+    const { thumb } = props.info;
     return (
       <div class="reply-file">
-        <a class="control reply-remove-file-control" onClick={this.handleRemove}>
+        <a class="control reply-remove-file-control" onClick={props.onRemove}>
           <i class="fa fa-remove" />
         </a>
-        <img class="reply-file-thumb" src={url} />
+        <img class="reply-file-thumb" src={thumb} />
         <div class="reply-file-info">{this.renderInfo()}</div>
       </div>
     );
-  }
-  private handleRemove = () => {
-    this.props.onRemove();
   }
   private renderInfo(): string {
     const { size } = this.props.file;
@@ -162,7 +161,7 @@ class Reply extends Component<any, any> {
     thread: page.thread,
     subject: "",
     body: "",
-    files: [] as Array<{file: File, info: Dict}>,
+    fwraps: [] as Array<{file: File, info: Dict}>,
   };
   private mainEl: HTMLElement = null;
   private bodyEl: HTMLInputElement = null;
@@ -260,6 +259,7 @@ class Reply extends Component<any, any> {
           ref={s(this, "fileEl")}
           type="file"
           accept="image/*,video/*"
+          multiple
           onChange={this.handleFileChange}
         />
 
@@ -286,16 +286,18 @@ class Reply extends Component<any, any> {
   }
   private get style() {
     const { float, left, top, width, height } = this.state;
-    const o = {width, height, cursor: this.cursor};
+    const o = {width, height, cursor: this.cursor} as Dict;
     if (float) {
-      Object.assign(o, {position: "fixed", left, top});
+      o.position = "fixed";
+      o.left = left;
+      o.top = top;
     }
     return o;
   }
   private get invalid() {
-    const { subject, body, files } = this.state;
+    const { subject, body, fwraps } = this.state;
     const hasSubject = !!subject || !!page.thread;
-    return !hasSubject || (!body && !files.length);
+    return !hasSubject || (!body && !fwraps.length);
   }
   private get disabled() {
     const { sending } = this.state;
@@ -500,48 +502,58 @@ class Reply extends Component<any, any> {
   private handleAttach = () => {
     this.fileEl.click();
   }
-  private handleAttachRemove = () => {
+  private handleAttachRemove = (src: string) => {
     if (this.state.sending) return;
-    this.setState({files: []}, this.focus);
+    const fwraps = this.state.fwraps.filter((f) => f.info.src !== src);
+    this.setState({fwraps}, this.focus);
   }
   private handleDrop = (e: DragEvent) => {
     const files = e.dataTransfer.files;
     if (files.length) {
-      this.handleFile(files[0]);
+      this.handleFiles(files);
     }
   }
   private handleFileChange = () => {
-    const file = this.fileEl.files[0];
+    const files = this.fileEl.files;
+    if (files.length) {
+      this.handleFiles(files);
+    }
     this.fileEl.value = null;  // Allow to select same file again
-    this.handleFile(file);
+  }
+  private handleFiles = (files: FileList) => {
+    // Limit number of selected files.
+    const fslice = Array.prototype.slice.call(files, 0, config.maxFiles);
+    collect(fslice.map(this.handleFile)).then((fwraps) => {
+      fwraps = this.state.fwraps.concat(fwraps);
+      // Skip elder attachments.
+      fwraps = fwraps.slice(Math.max(0, fwraps.length - config.maxFiles));
+      this.setState({fwraps}, this.focus);
+    });
   }
   private handleFile = (file: File) => {
     if (file.size > config.maxSize * 1024 * 1024) {
       showAlert(ln.UI.tooBig);
-      return;
+      return Promise.reject(new Error(ln.UI.tooBig));
     }
-    // Add file only if was able to grab info.
-    getFileInfo(file).then((info: Dict) => {
-      const files = [{file, info}];
-      this.setState({files}, this.focus);
-    }, () => {
+    return getFileInfo(file).then((info: Dict) => {
+      return {file, info};
+    }, (err) => {
       showAlert(ln.UI.unsupFile);
+      throw err;
     });
   }
   private handleSend = () => {
     if (this.disabled) return;
     const { board, thread, subject, body } = this.state;
-    const files = this.state.files.map((f) => f.file);
+    const files = this.state.fwraps.map((f) => f.file);
     const sendFn = page.thread ? API.post.create : API.thread.create;
     this.setState({sending: true});
     API.post.createToken().then(({ id: token }: Dict) => {
       const sign = signature.gen(token);
       return sendFn({
-        // tslint:disable:object-literal-sort-keys
         board, thread,
         subject, body, files,
         token, sign,
-        // tslint:enable:object-literal-sort-keys
       }, this.handleSendProgress, this.sendAPI);
     }).then((res: Dict) => {
       if (page.thread) {
@@ -617,15 +629,15 @@ class Reply extends Component<any, any> {
     );
   }
   private renderFiles() {
-    const { files } = this.state;
+    const { fwraps } = this.state;
     return (
       <div class="reply-files">
-        {files.map(({ file, info }) =>
+        {fwraps.map(({ file, info }) =>
           <FilePreview
-            key={info.url}
+            key={info.src}
             info={info}
             file={file}
-            onRemove={this.handleAttachRemove}
+            onRemove={this.handleAttachRemove.bind(null, info.src)}
           />,
         )}
       </div>

@@ -188,3 +188,10 @@ export function setter(self: any, name: string) {
     self[name] = el;
   };
 }
+
+/** Like `Promise.all` but collect only successful results. */
+export function collect(proms: Array<Promise<any>>): Promise<any[]> {
+  const results = [] as any[];
+  proms = proms.map((p) => p.then((res) => results.push(res), noop));
+  return Promise.all(proms).then(() => results);
+}
