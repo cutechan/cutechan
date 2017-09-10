@@ -1284,9 +1284,10 @@ html.pos-notstaff {
 
 .reply {
   display: flex;
-  flex-wrap: wrap;
+  flex-direction: column;
   max-width: 100%;
   box-sizing: border-box;
+  padding: 5px;
   position: relative;
   border-radius: 3px;
   border: @replyBorder;
@@ -1301,13 +1302,36 @@ html.pos-notstaff {
   z-index: 200;
 }
 
+.reply-inner {
+  flex: 1;
+  display: flex;
+}
+
+.reply-content {
+  flex: 1;
+  display: flex;
+  overflow: hidden;
+}
+
+.reply_multi {
+  .reply-content {
+    flex-direction: column;
+  }
+  .reply-files {
+    margin-bottom: 5px;
+  }
+}
+
 .reply-files {
-  flex: 0;
+  white-space: nowrap;
   user-select: none;
 }
 
 .reply-file {
+  display: inline-block;
   position: relative;
+  margin-right: 5px;
+  vertical-align: bottom;
 }
 
 .reply-remove-file-control {
@@ -1319,9 +1343,8 @@ html.pos-notstaff {
 .reply-file-thumb {
   display: block;
   min-width: 50px;
-  max-width: 200px;
-  max-height: 200px;
-  border-top-left-radius: 3px;
+  max-width: 150px;
+  max-height: 150px;
 }
 
 .reply-file-info {
@@ -1338,19 +1361,7 @@ html.pos-notstaff {
   user-select: none;
 }
 
-.reply-main {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  padding: 5px;
-}
-
-.reply-content-wrapper {
-  flex: 1;
-  display: flex;
-}
-
-.reply-content {
+.reply-content-inner {
   flex: 1;
   display: flex;
   flex-direction: column;

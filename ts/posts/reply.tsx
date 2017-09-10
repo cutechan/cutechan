@@ -17,8 +17,6 @@ import {
   REPLY_BOARD_WIDTH_PX,
   REPLY_CONTAINER_SEL,
   REPLY_HEIGHT_PX,
-  REPLY_MIN_HEIGHT_PX,
-  REPLY_MIN_WIDTH_PX,
   REPLY_THREAD_WIDTH_PX,
   TRIGGER_OPEN_REPLY_SEL,
   TRIGGER_QUOTE_POST_SEL,
@@ -228,31 +226,32 @@ class Reply extends Component<any, any> {
       }
     }
   }
-  public render({}, { float }: any) {
+  public render({}, { float, fwraps }: any) {
+    const multi = fwraps.length > 1;
     return (
       <div
-        class={cx("reply", {reply_float: float})}
+        class={cx("reply", {reply_float: float, reply_multi: multi})}
         ref={s(this, "mainEl")}
         style={this.style}
         onMouseDown={this.handleFormDown}
         onMouseMove={this.handleFormMove}
       >
 
-        {this.renderFiles()}
+        <div class="reply-inner">
 
-        <div class="reply-main">
-
-          <div class="reply-content-wrapper">
-            <div class="reply-content">
+          <div class="reply-content">
+            {this.renderFiles()}
+            <div class="reply-content-inner">
               {this.renderHeader()}
               {this.renderBody()}
             </div>
-            {this.renderSideControls()}
           </div>
 
-          {this.renderFooterControls()}
+          {this.renderSideControls()}
 
         </div>
+
+        {this.renderFooterControls()}
 
         <input
           class="reply-files-input"
@@ -284,8 +283,17 @@ class Reply extends Component<any, any> {
       return "inherit";
     }
   }
+  private get minWidth() {
+    return 400;
+  }
+  private get minHeight() {
+    const multi = this.state.fwraps.length > 1;
+    return multi ? 300 : 200;
+  }
   private get style() {
-    const { float, left, top, width, height } = this.state;
+    const { float, left, top, width } = this.state;
+    // Recalc because it depends on state.
+    const height = Math.max(this.minHeight, this.state.height);
     const o = {width, height, cursor: this.cursor} as Dict;
     if (float) {
       o.position = "fixed";
@@ -431,16 +439,16 @@ class Reply extends Component<any, any> {
       }
 
       // Restore out-of-bound values.
-      if (width < REPLY_MIN_WIDTH_PX
+      if (width < this.minWidth
           && (pos === "nw" || pos === "sw" || pos === "w")) {
-        left -= REPLY_MIN_WIDTH_PX - width;
+        left -= this.minWidth - width;
       }
-      if (height < REPLY_MIN_HEIGHT_PX
+      if (height < this.minHeight
           && (pos === "nw" || pos === "ne" || pos === "n")) {
-        top -= REPLY_MIN_HEIGHT_PX - height;
+        top -= this.minHeight - height;
       }
-      width = Math.max(width, REPLY_MIN_WIDTH_PX);
-      height = Math.max(height, REPLY_MIN_HEIGHT_PX);
+      width = Math.max(width, this.minWidth);
+      height = Math.max(height, this.minHeight);
 
       this.setState({width, height, left, top});
     }
