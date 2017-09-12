@@ -17,7 +17,8 @@ import (
 )
 
 var (
-	errInvalidBoard  = errors.New("invalid board")
+	errInvalidBoard = errors.New("invalid board")
+	errTooManyFiles = errors.New("too many files")
 )
 
 // Client should get token and solve challenge in order to post.
@@ -132,8 +133,13 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	f := r.Form
 	m := r.MultipartForm
 
-	tokens := make([]string, 0)
-	for _, fh := range m.File["files[]"] {
+	fhs := m.File["files[]"]
+	if len(fhs) > int(config.Get().MaxFiles) {
+		text400(w, errTooManyFiles)
+		return
+	}
+	tokens := make([]string, len(fhs))
+	for i, fh := range fhs {
 		var code int
 		var token string
 		code, token, err = imager.Upload(fh)
@@ -141,7 +147,7 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 			imager.LogError(w, r, code, err)
 			return
 		}
-		tokens = append(tokens, token)
+		tokens[i] = token
 	}
 
 	// NOTE(Kagami): Browsers use CRLF newlines in form-data requests,
