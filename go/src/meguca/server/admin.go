@@ -388,11 +388,6 @@ func moderatePosts(
 	serveEmptyJSON(w, r)
 }
 
-// Permanently delete an image from a post
-func deleteImage(w http.ResponseWriter, r *http.Request) {
-	moderatePosts(w, r, auth.Janitor, db.DeleteImage)
-}
-
 // Ban a specific IP from a specific board
 func ban(w http.ResponseWriter, r *http.Request) {
 	var msg struct {

@@ -80,7 +80,6 @@ func createRouter() http.Handler {
 	api.POST("/create-board", createBoard)
 	// api.POST("/delete-board", deleteBoard)
 	api.POST("/delete-post", deletePost)
-	api.POST("/delete-image", deleteImage)
 	api.POST("/ban", ban)
 	api.POST("/unban/:board", unban)
 	api.POST("/assign-staff", assignStaff)

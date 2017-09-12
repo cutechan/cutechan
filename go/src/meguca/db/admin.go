@@ -140,11 +140,6 @@ func DeletePost(id uint64, by string) error {
 	return moderatePost(id, by, "delete_post", common.DeletePost)
 }
 
-// Permanently delete an image from a post
-func DeleteImage(id uint64, by string) error {
-	return moderatePost(id, by, "delete_image", common.DeleteImage)
-}
-
 // WriteStaff writes staff positions of a specific board. Old rows are
 // overwritten. tx must not be nil.
 func WriteStaff(tx *sql.Tx, board string, staff map[string][]string) error {
