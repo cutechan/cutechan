@@ -24,25 +24,23 @@ var (
 	errNoTextOrFiles     = errors.New("no text or files")
 )
 
-// ThreadCreationRequest contains data for creating a new thread
+// ThreadCreationRequest contains data for creating a new thread.
 type ThreadCreationRequest struct {
-	ReplyCreationRequest
+	PostCreationRequest
 	Subject, Board string
 }
 
-// ReplyCreationRequest contains common fields for both thread and reply
-// creation
-type ReplyCreationRequest struct {
-	Open  bool
-	Files FilesRequest
-	auth.Captcha
+// PostCreationRequest contains common fields for both thread and post
+// creation.
+type PostCreationRequest struct {
+	FilesRequest   FilesRequest
 	Password, Body string
 	Token, Sign    string
 	Creds          *auth.SessionCreds
 }
 
 type FilesRequest struct {
-	Token string
+	Tokens []string
 }
 
 // CreateThread creates a new tread and writes it to the database.
@@ -51,15 +49,13 @@ type FilesRequest struct {
 func CreateThread(req ThreadCreationRequest, ip string) (
 	post db.Post, err error,
 ) {
-	switch {
-	case !auth.IsNonMetaBoard(req.Board):
+	if !auth.IsNonMetaBoard(req.Board) {
 		err = errInvalidBoard
 		return
-	case auth.IsBanned(req.Board, ip):
+	}
+
+	if auth.IsBanned(req.Board, ip) {
 		err = errBanned
-		return
-	case !auth.AuthenticateCaptcha(req.Captcha):
-		err = errInValidCaptcha
 		return
 	}
 
@@ -75,13 +71,12 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 	}
 
 	// Post must have either at least one character or an file to be allocated
-	hasFiles := req.Files.Token != ""
-	if req.Body == "" && !hasFiles {
+	if req.Body == "" && len(req.FilesRequest.Tokens) == 0 {
 		err = errNoTextOrFiles
 		return
 	}
 
-	post, err = constructPost(req.ReplyCreationRequest, ip, req.Board)
+	post, err = constructPost(req.PostCreationRequest, ip, req.Board)
 	if err != nil {
 		return
 	}
@@ -92,7 +87,7 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 	}
 
 	// Perform this last, so there are less dangling images because of any error
-	err = setPostFiles(&post, req.Files)
+	err = setPostFiles(&post, req.FilesRequest)
 	if err != nil {
 		return
 	}
@@ -110,26 +105,12 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 // CreatePost creates a new post and writes it to the database.
 // open specifies, if the post should stay open after creation.
 // XXX(Kagami): Check for ModOnly is in `server/post.go`.
-func CreatePost(
-	op uint64,
-	board, ip string,
-	needCaptcha bool,
-	req ReplyCreationRequest,
-) (
+func CreatePost(op uint64, board, ip string, req PostCreationRequest) (
 	post db.Post, msg []byte, err error,
 ) {
 	if auth.IsBanned(board, ip) {
 		err = errBanned
 		return
-	}
-	if needCaptcha {
-		if !auth.AuthenticateCaptcha(req.Captcha) {
-			err = errInValidCaptcha
-			return
-		} else if config.Get().Captcha {
-			// Captcha solved - reset spam score.
-			auth.ResetSpamScore(ip)
-		}
 	}
 
 	_, err = getBoardConfig(board)
@@ -143,8 +124,7 @@ func CreatePost(
 		return
 	}
 
-	hasFiles := req.Files.Token != ""
-	if req.Body == "" && !hasFiles {
+	if req.Body == "" && len(req.FilesRequest.Tokens) == 0 {
 		err = errNoTextOrFiles
 		return
 	}
@@ -154,7 +134,7 @@ func CreatePost(
 		return
 	}
 
-	err = setPostFiles(&post, req.Files)
+	err = setPostFiles(&post, req.FilesRequest)
 	if err != nil {
 		return
 	}
@@ -196,7 +176,7 @@ func checkSign(token, sign string) bool {
 }
 
 // Construct the common parts of the new post for both threads and replies
-func constructPost(req ReplyCreationRequest, ip, board string) (post db.Post, err error) {
+func constructPost(req PostCreationRequest, ip, board string) (post db.Post, err error) {
 	post = db.Post{
 		StandalonePost: common.StandalonePost{
 			Post: common.Post{
@@ -250,10 +230,9 @@ func constructPost(req ReplyCreationRequest, ip, board string) (post db.Post, er
 }
 
 func setPostFiles(post *db.Post, freq FilesRequest) (err error) {
-	hasFiles := freq.Token != ""
-	if hasFiles {
+	for _, token := range freq.Tokens {
 		var img *common.Image
-		img, err = getImage(freq.Token)
+		img, err = getImage(token)
 		if err != nil {
 			return
 		}

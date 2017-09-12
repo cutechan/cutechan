@@ -45,16 +45,16 @@ func createPostToken(w http.ResponseWriter, r *http.Request) {
 
 // Create a thread with a closed OP
 func createThread(w http.ResponseWriter, r *http.Request) {
-	repReq, ok := parsePostCreationForm(w, r)
+	postReq, ok := parsePostCreationForm(w, r)
 	if !ok {
 		return
 	}
 
 	// Map form data to websocket thread creation request
 	req := websockets.ThreadCreationRequest{
-		Subject:              r.Form.Get("subject"),
-		Board:                r.Form.Get("board"),
-		ReplyCreationRequest: repReq,
+		Subject:             r.Form.Get("subject"),
+		Board:               r.Form.Get("board"),
+		PostCreationRequest: postReq,
 	}
 
 	ip, err := auth.GetIP(r)
@@ -106,7 +106,7 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 		text400(w, err)
 		return
 	}
-	post, msg, err := websockets.CreatePost(op, board, ip, true, req)
+	post, msg, err := websockets.CreatePost(op, board, ip, req)
 	if err != nil {
 		text400(w, err)
 		return
@@ -119,7 +119,7 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 
 // ok = false, if failed and caller should return
 func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
-	req websockets.ReplyCreationRequest, ok bool,
+	req websockets.PostCreationRequest, ok bool,
 ) {
 	maxSize := config.Get().MaxSize<<20 + jsonLimit
 	r.Body = http.MaxBytesReader(w, r.Body, int64(maxSize))
@@ -129,7 +129,8 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 		return
 	}
 
-	// Handle image, if any, and extract file name
+	f := r.Form
+
 	var token string
 	_, _, err = r.FormFile("files[]")
 	switch err {
@@ -147,8 +148,6 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 		return
 	}
 
-	f := r.Form
-
 	// NOTE(Kagami): Browsers use CRLF newlines in form-data requests,
 	// see: <https://stackoverflow.com/a/6964163>.
 	// This in particular breaks links formatting, also we need to be
@@ -156,14 +155,10 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	body := f.Get("body")
 	body = strings.Replace(body, "\r\n", "\n", -1)
 
-	req = websockets.ReplyCreationRequest{
+	req = websockets.PostCreationRequest{
 		Body:  body,
 		Token: f.Get("token"),
 		Sign:  f.Get("sign"),
-		Captcha: auth.Captcha{
-			CaptchaID: f.Get("captchaID"),
-			Solution:  f.Get("captcha"),
-		},
 	}
 	if f.Get("staffTitle") == "on" || config.IsModOnly(f.Get("board")) {
 		creds, err := extractLoginCreds(r)
@@ -172,9 +167,7 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 		}
 	}
 	if token != "" {
-		req.Files = websockets.FilesRequest{
-			Token: token,
-		}
+		req.FilesRequest.Tokens = append(req.FilesRequest.Tokens, token)
 	}
 
 	ok = true
