@@ -172,7 +172,7 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 		}
 	}
 	if token != "" {
-		req.Image = websockets.ImageRequest{
+		req.Files = websockets.FilesRequest{
 			Token: token,
 		}
 	}

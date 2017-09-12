@@ -21,7 +21,7 @@ var (
 	errBadSignature      = errors.New("bad signature")
 	errReadOnly          = errors.New("read only board")
 	errInvalidImageToken = errors.New("invalid image token")
-	errNoTextOrImage     = errors.New("no text or image")
+	errNoTextOrFiles     = errors.New("no text or files")
 )
 
 // ThreadCreationRequest contains data for creating a new thread
@@ -34,15 +34,14 @@ type ThreadCreationRequest struct {
 // creation
 type ReplyCreationRequest struct {
 	Open  bool
-	Image ImageRequest
+	Files FilesRequest
 	auth.Captcha
 	Password, Body string
 	Token, Sign    string
 	Creds          *auth.SessionCreds
 }
 
-// ImageRequest contains data for allocating an image
-type ImageRequest struct {
+type FilesRequest struct {
 	Token string
 }
 
@@ -75,10 +74,10 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 		return
 	}
 
-	// Post must have either at least one character or an image to be allocated
-	hasImage := req.Image.Token != ""
-	if req.Body == "" && !hasImage {
-		err = errNoTextOrImage
+	// Post must have either at least one character or an file to be allocated
+	hasFiles := req.Files.Token != ""
+	if req.Body == "" && !hasFiles {
+		err = errNoTextOrFiles
 		return
 	}
 
@@ -93,7 +92,7 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 	}
 
 	// Perform this last, so there are less dangling images because of any error
-	err = setPostImage(&post, req.Image)
+	err = setPostFiles(&post, req.Files)
 	if err != nil {
 		return
 	}
@@ -144,9 +143,9 @@ func CreatePost(
 		return
 	}
 
-	hasImage := req.Image.Token != ""
-	if req.Body == "" && !hasImage {
-		err = errNoTextOrImage
+	hasFiles := req.Files.Token != ""
+	if req.Body == "" && !hasFiles {
+		err = errNoTextOrFiles
 		return
 	}
 
@@ -155,7 +154,7 @@ func CreatePost(
 		return
 	}
 
-	err = setPostImage(&post, req.Image)
+	err = setPostFiles(&post, req.Files)
 	if err != nil {
 		return
 	}
@@ -250,11 +249,11 @@ func constructPost(req ReplyCreationRequest, ip, board string) (post db.Post, er
 	return
 }
 
-func setPostImage(post *db.Post, ireq ImageRequest) (err error) {
-	hasImage := ireq.Token != ""
-	if hasImage {
+func setPostFiles(post *db.Post, freq FilesRequest) (err error) {
+	hasFiles := freq.Token != ""
+	if hasFiles {
 		var img *common.Image
-		img, err = getImage(ireq.Token)
+		img, err = getImage(freq.Token)
 		if err != nil {
 			return
 		}
