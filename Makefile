@@ -20,6 +20,7 @@ deps:
 		github.com/valyala/quicktemplate/qtc \
 		github.com/jteeuwen/go-bindata/... \
 		github.com/mailru/easyjson/...
+	go generate meguca/...
 	go list -f '{{.Deps}}' meguca | tr -d '[]' | xargs go get -v
 
 update-deps:

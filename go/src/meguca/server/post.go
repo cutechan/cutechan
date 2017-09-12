@@ -130,22 +130,18 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	}
 
 	f := r.Form
+	m := r.MultipartForm
 
-	var token string
-	_, _, err = r.FormFile("files[]")
-	switch err {
-	case nil:
+	tokens := make([]string, 0)
+	for _, fh := range m.File["files[]"] {
 		var code int
-		code, token, err = imager.ParseUpload(r)
+		var token string
+		code, token, err = imager.Upload(fh)
 		if err != nil {
 			imager.LogError(w, r, code, err)
 			return
 		}
-	case http.ErrMissingFile:
-		err = nil
-	default:
-		text500(w, r, err)
-		return
+		tokens = append(tokens, token)
 	}
 
 	// NOTE(Kagami): Browsers use CRLF newlines in form-data requests,
@@ -156,18 +152,16 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	body = strings.Replace(body, "\r\n", "\n", -1)
 
 	req = websockets.PostCreationRequest{
-		Body:  body,
-		Token: f.Get("token"),
-		Sign:  f.Get("sign"),
+		FilesRequest: websockets.FilesRequest{tokens},
+		Body:         body,
+		Token:        f.Get("token"),
+		Sign:         f.Get("sign"),
 	}
 	if f.Get("staffTitle") == "on" || config.IsModOnly(f.Get("board")) {
 		creds, err := extractLoginCreds(r)
 		if err == nil {
 			req.Creds = creds
 		}
-	}
-	if token != "" {
-		req.FilesRequest.Tokens = append(req.FilesRequest.Tokens, token)
 	}
 
 	ok = true

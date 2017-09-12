@@ -33,10 +33,11 @@ type ThreadCreationRequest struct {
 // PostCreationRequest contains common fields for both thread and post
 // creation.
 type PostCreationRequest struct {
-	FilesRequest   FilesRequest
-	Password, Body string
-	Token, Sign    string
-	Creds          *auth.SessionCreds
+	FilesRequest FilesRequest
+	Body         string
+	Token        string
+	Sign         string
+	Creds        *auth.SessionCreds
 }
 
 type FilesRequest struct {

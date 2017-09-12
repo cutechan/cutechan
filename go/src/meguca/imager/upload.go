@@ -16,8 +16,8 @@ import (
 	"meguca/common"
 	"meguca/config"
 	"meguca/db"
+	"mime/multipart"
 	"net/http"
-	"strconv"
 
 	"github.com/Soreil/apngdetector"
 	"github.com/bakape/thumbnailer"
@@ -58,32 +58,25 @@ var (
 
 	errTooLarge = errors.New("file too large")
 	errNoVideo  = errors.New("no video track")
-
-	isTest bool
 )
 
 // LogError send the client file upload errors and logs them server-side
 func LogError(w http.ResponseWriter, r *http.Request, code int, err error) {
 	text := err.Error()
 	http.Error(w, text, code)
-	if !isTest {
-		ip, err := auth.GetIP(r)
-		if err != nil {
-			ip = "invalid IP"
-		}
-		log.Printf("upload error: %s: %s\n", ip, text)
+	ip, err := auth.GetIP(r)
+	if err != nil {
+		ip = "invalid IP"
 	}
+	log.Printf("upload error: %s: %s\n", ip, text)
 }
 
-// ParseUpload parses the upload form. Separate function for cleaner error
-// handling and reusability. Returns the HTTP status code of the response and an
-// error, if any.
-func ParseUpload(req *http.Request) (int, string, error) {
-	if err := parseUploadForm(req); err != nil {
-		return 400, "", err
+func Upload(fh *multipart.FileHeader) (int, string, error) {
+	if fh.Size > int64(config.Get().MaxSize<<20) {
+		return 400, "", errTooLarge
 	}
 
-	file, _, err := req.FormFile("files[]")
+	file, err := fh.Open()
 	if err != nil {
 		return 400, "", err
 	}
@@ -115,18 +108,6 @@ func newImageToken(SHA1 string) (int, string, error) {
 		code = 500
 	}
 	return code, token, err
-}
-
-// Parse and validate the form of the upload request
-func parseUploadForm(req *http.Request) error {
-	length, err := strconv.ParseUint(req.Header.Get("Content-Length"), 10, 64)
-	if err != nil {
-		return err
-	}
-	if length > uint64(config.Get().MaxSize<<20) {
-		return errTooLarge
-	}
-	return req.ParseMultipartForm(0)
 }
 
 // Create a new thumbnail, commit its resources to the DB and filesystem, and
