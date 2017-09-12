@@ -33,7 +33,7 @@ func runCleanupTasks() {
 
 func runFiveMinuteTasks() {
 	logPrepared("expire_post_tokens", "expire_image_tokens", "expire_bans")
-	logError("image cleanup", deleteUnusedImages())
+	// logError("image cleanup", deleteUnusedImages())
 }
 
 func runHourTasks() {
