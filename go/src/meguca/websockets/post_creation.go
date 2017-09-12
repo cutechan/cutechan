@@ -11,7 +11,6 @@ import (
 	"meguca/config"
 	"meguca/db"
 	"meguca/parser"
-	"meguca/websockets/feeds"
 	"time"
 	"unicode/utf8"
 	"unsafe"
@@ -181,66 +180,6 @@ func CreatePost(
 	err = db.InsertPost(post, false)
 	return
 }
-
-// Insert a new post into the database
-// FIXME(Kagami): This is currently disabled and doesn't have a check
-// for a ModOnly board.
-func (c *Client) insertPost(data []byte) (err error) {
-	return
-
-	var req ReplyCreationRequest
-	err = decodeMessage(data, &req)
-	if err != nil {
-		return
-	}
-
-	_, op, board := feeds.GetSync(c)
-	post, msg, err := CreatePost(op, board, c.ip, !auth.CanPost(c.ip), req)
-	if err != nil {
-		return
-	}
-
-	// Ensure the client knows the post ID, before the public post insertion
-	// update message is sent
-	err = c.sendMessage(common.MessagePostID, post.ID)
-	if err != nil {
-		return
-	}
-
-	if post.Editing {
-		c.post.init(post.StandalonePost)
-	}
-	c.feed.InsertPost(post.StandalonePost, c.post.body, msg)
-
-	score := auth.PostCreationScore + auth.CharScore*time.Duration(c.post.len)
-	if len(post.Files) > 0 {
-		score += auth.ImageScore
-	}
-	return c.incrementSpamScore(score)
-}
-
-// Reset the IP's spam score, by submitting a captcha
-func (c *Client) submitCaptcha(data []byte) (err error) {
-	var msg auth.Captcha
-	err = decodeMessage(data, &msg)
-	if err != nil {
-		return
-	}
-
-	if !auth.AuthenticateCaptcha(msg) {
-		return errInValidCaptcha
-	}
-	auth.ResetSpamScore(c.ip)
-	return nil
-}
-
-// If the client has a previous post, close it silently
-// func (c *Client) closePreviousPost() error {
-// 	if c.post.id != 0 {
-// 		return c.closePost()
-// 	}
-// 	return nil
-// }
 
 // Retrieve post-related board configurations
 func getBoardConfig(board string) (conf config.BoardConfigs, err error) {
