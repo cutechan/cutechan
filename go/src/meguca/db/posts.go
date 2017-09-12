@@ -208,20 +208,6 @@ func NewPostID() (id uint64, err error) {
 	return id, err
 }
 
-// InsertPost inserts a post into an existing thread
-func InsertPost(p Post, sage bool) (err error) {
-	err = execPrepared("insert_post", append(genPostCreationArgs(p), sage)...)
-	if err != nil {
-		return
-	}
-
-	// if p.Editing {
-	// 	err = SetOpenBody(p.ID, []byte(p.Body))
-	// }
-
-	return
-}
-
 func genPostCreationArgs(p Post) []interface{} {
 	// Don't store empty strings in the database. Zero value != NULL.
 	var name, trip, auth, img, ip *string
@@ -249,30 +235,17 @@ func genPostCreationArgs(p Post) []interface{} {
 }
 
 // InsertThread inserts a new thread into the database
-func InsertThread(subject string, p Post) (err error) {
+func InsertThread(subject string, p Post) error {
 	imgCtr := len(p.Files)
-	err = execPrepared(
+	return execPrepared(
 		"insert_thread",
 		append([]interface{}{subject, imgCtr}, genPostCreationArgs(p)...)...,
 	)
-	if err != nil {
-		return
-	}
-
-	// if p.Editing {
-	// 	err = SetOpenBody(p.ID, []byte(p.Body))
-	// }
-
-	return
 }
 
-// GetPostPassword retrieves a post's modification password
-func GetPostPassword(id uint64) (p []byte, err error) {
-	err = prepared["get_post_password"].QueryRow(id).Scan(&p)
-	if err == sql.ErrNoRows {
-		err = nil
-	}
-	return
+// InsertPost inserts a post into an existing thread
+func InsertPost(p Post, sage bool) error {
+	return execPrepared("insert_post", append(genPostCreationArgs(p), sage)...)
 }
 
 // SetPostCounter sets the post counter. Should only be used in tests.
