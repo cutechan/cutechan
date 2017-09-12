@@ -65,18 +65,13 @@ func createRouter() http.Handler {
 	api.GET("/embed", serveEmbed)
 	api.GET("/post/:post", servePost)
 	api.POST("/post/token", createPostToken)
-	// TODO(Kagami): Use single route?
 	api.POST("/thread", createThread)
 	api.POST("/post", createPost)
-	// TODO(Kagami): Remove.
-	// api.POST("/upload", imager.NewImageUpload)
-	// api.POST("/upload-hash", imager.UploadImageHash)
-	// api.POST("/spoiler-image", modSpoilerImage)
-	// TODO(Kagami): RESTify.
 	api.POST("/register", register)
 	api.POST("/login", login)
 	api.POST("/logout", logout)
 	api.POST("/logout/all", logoutAll)
+	// TODO(Kagami): RESTify.
 	api.POST("/change-password", changePassword)
 	api.POST("/board-config/:board", servePrivateBoardConfigs)
 	api.POST("/configure-board/:board", configureBoard)

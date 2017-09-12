@@ -62,49 +62,6 @@ var (
 	isTest bool
 )
 
-// NewImageUpload  handles the clients' image (or other file) upload request
-func NewImageUpload(w http.ResponseWriter, r *http.Request) {
-	// Limit data received to the maximum uploaded file size limit
-	maxSize := config.Get().MaxSize << 20
-	r.Body = http.MaxBytesReader(w, r.Body, int64(maxSize))
-
-	code, id, err := ParseUpload(r)
-	if err != nil {
-		LogError(w, r, code, err)
-	}
-	w.Write([]byte(id))
-}
-
-// UploadImageHash attempts to skip image upload, if the file has already
-// been thumbnailed and is stored on the server. The client sends and SHA1 hash
-// of the file it wants to upload. The server looks up, if such a file is
-// thumbnailed. If yes, generates and sends a new image allocation token to
-// the client.
-func UploadImageHash(w http.ResponseWriter, req *http.Request) {
-	buf, err := ioutil.ReadAll(http.MaxBytesReader(w, req.Body, 40))
-	if err != nil {
-		LogError(w, req, 500, err)
-		return
-	}
-	hash := string(buf)
-
-	_, err = db.GetImage(hash)
-	switch err {
-	case nil:
-	case sql.ErrNoRows:
-		return
-	default:
-		LogError(w, req, 500, err)
-		return
-	}
-
-	token, err := db.NewImageToken(hash)
-	if err != nil {
-		LogError(w, req, 500, err)
-	}
-	w.Write([]byte(token))
-}
-
 // LogError send the client file upload errors and logs them server-side
 func LogError(w http.ResponseWriter, r *http.Request, code int, err error) {
 	text := err.Error()
