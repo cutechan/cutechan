@@ -75,28 +75,27 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 		return
 	}
 
-	post, err = constructPost(
-		req.ReplyCreationRequest,
-		ip,
-		req.Board,
-	)
+	// Post must have either at least one character or an image to be allocated
+	hasImage := req.Image.Token != ""
+	if req.Body == "" && !hasImage {
+		err = errNoTextOrImage
+		return
+	}
+
+	post, err = constructPost(req.ReplyCreationRequest, ip, req.Board)
 	if err != nil {
 		return
 	}
+
 	subject, err := parser.ParseSubject(req.Subject)
 	if err != nil {
 		return
 	}
 
 	// Perform this last, so there are less dangling images because of any error
-	hasImage := req.Image.Token != ""
-	if hasImage {
-		var img *common.Image
-		img, err = getImage(req.Image.Token)
-		if err != nil {
-			return
-		}
-		post.Files = append(post.Files, *img)
+	err = setPostImage(&post, req.Image)
+	if err != nil {
+		return
 	}
 
 	post.ID, err = db.NewPostID()
@@ -145,7 +144,6 @@ func CreatePost(
 		return
 	}
 
-	// Post must have either at least one character or an image to be allocated
 	hasImage := req.Image.Token != ""
 	if req.Body == "" && !hasImage {
 		err = errNoTextOrImage
@@ -157,13 +155,9 @@ func CreatePost(
 		return
 	}
 
-	if hasImage {
-		var img *common.Image
-		img, err = getImage(req.Image.Token)
-		if err != nil {
-			return
-		}
-		post.Files = append(post.Files, *img)
+	err = setPostImage(&post, req.Image)
+	if err != nil {
+		return
 	}
 
 	post.OP = op
@@ -203,12 +197,7 @@ func checkSign(token, sign string) bool {
 }
 
 // Construct the common parts of the new post for both threads and replies
-func constructPost(
-	req ReplyCreationRequest,
-	ip, board string,
-) (
-	post db.Post, err error,
-) {
+func constructPost(req ReplyCreationRequest, ip, board string) (post db.Post, err error) {
 	post = db.Post{
 		StandalonePost: common.StandalonePost{
 			Post: common.Post{
@@ -257,26 +246,20 @@ func constructPost(
 		post.Auth = pos.String()
 	}
 
-	if req.Open {
-		post.Editing = true
+	post.Links, err = parser.ParseBody([]byte(req.Body), board)
+	return
+}
 
-		// Posts that are committed in one action need not a password, as they
-		// are closed on commit and can not be reclaimed
-		err = parser.VerifyPostPassword(req.Password)
+func setPostImage(post *db.Post, ireq ImageRequest) (err error) {
+	hasImage := ireq.Token != ""
+	if hasImage {
+		var img *common.Image
+		img, err = getImage(ireq.Token)
 		if err != nil {
 			return
 		}
-		post.Password, err = auth.BcryptHash(req.Password, 4)
-		if err != nil {
-			return
-		}
-	} else {
-		post.Links, err = parser.ParseBody([]byte(req.Body), board)
-		if err != nil {
-			return
-		}
+		post.Files = append(post.Files, *img)
 	}
-
 	return
 }
 
