@@ -46,7 +46,6 @@ type FilesRequest struct {
 
 // CreateThread creates a new tread and writes it to the database.
 // open specifies, if the thread OP should stay open after creation.
-// XXX(Kagami): Check for ModOnly is in `server/post.go`.
 func CreateThread(req ThreadCreationRequest, ip string) (
 	post db.Post, err error,
 ) {
@@ -105,7 +104,6 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 
 // CreatePost creates a new post and writes it to the database.
 // open specifies, if the post should stay open after creation.
-// XXX(Kagami): Check for ModOnly is in `server/post.go`.
 func CreatePost(op uint64, board, ip string, req PostCreationRequest) (
 	post db.Post, msg []byte, err error,
 ) {
@@ -151,7 +149,7 @@ func CreatePost(op uint64, board, ip string, req PostCreationRequest) (
 		return
 	}
 
-	err = db.InsertPost(post, false)
+	err = db.InsertPost(post)
 	return
 }
 

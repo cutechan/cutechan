@@ -244,8 +244,8 @@ func InsertThread(subject string, p Post) error {
 }
 
 // InsertPost inserts a post into an existing thread
-func InsertPost(p Post, sage bool) error {
-	return execPrepared("insert_post", append(genPostCreationArgs(p), sage)...)
+func InsertPost(p Post) error {
+	return execPrepared("insert_post", genPostCreationArgs(p)...)
 }
 
 // SetPostCounter sets the post counter. Should only be used in tests.
