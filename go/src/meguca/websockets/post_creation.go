@@ -44,8 +44,7 @@ type FilesRequest struct {
 	Tokens []string
 }
 
-// CreateThread creates a new tread and writes it to the database.
-// open specifies, if the thread OP should stay open after creation.
+// CreateThread creates a new thread and writes it to the database.
 func CreateThread(req ThreadCreationRequest, ip string) (
 	post db.Post, err error,
 ) {
@@ -70,24 +69,12 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 		return
 	}
 
-	// Post must have either at least one character or an file to be allocated
-	if req.Body == "" && len(req.FilesRequest.Tokens) == 0 {
-		err = errNoTextOrFiles
-		return
-	}
-
-	post, err = constructPost(req.PostCreationRequest, ip, req.Board)
-	if err != nil {
-		return
-	}
-
 	subject, err := parser.ParseSubject(req.Subject)
 	if err != nil {
 		return
 	}
 
-	// Perform this last, so there are less dangling images because of any error
-	err = setPostFiles(&post, req.FilesRequest)
+	post, err = constructPost(req.PostCreationRequest, ip, req.Board)
 	if err != nil {
 		return
 	}
@@ -103,7 +90,6 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 }
 
 // CreatePost creates a new post and writes it to the database.
-// open specifies, if the post should stay open after creation.
 func CreatePost(op uint64, board, ip string, req PostCreationRequest) (
 	post db.Post, msg []byte, err error,
 ) {
@@ -123,26 +109,16 @@ func CreatePost(op uint64, board, ip string, req PostCreationRequest) (
 		return
 	}
 
-	if req.Body == "" && len(req.FilesRequest.Tokens) == 0 {
-		err = errNoTextOrFiles
-		return
-	}
-
 	post, err = constructPost(req, ip, board)
 	if err != nil {
 		return
 	}
 
-	err = setPostFiles(&post, req.FilesRequest)
-	if err != nil {
-		return
-	}
-
-	post.OP = op
 	post.ID, err = db.NewPostID()
 	if err != nil {
 		return
 	}
+	post.OP = op
 
 	msg, err = common.EncodeMessage(common.MessageInsertPost, post.Post)
 	if err != nil {
@@ -153,7 +129,7 @@ func CreatePost(op uint64, board, ip string, req PostCreationRequest) (
 	return
 }
 
-// Retrieve post-related board configurations
+// Retrieve post-related board configurations.
 func getBoardConfig(board string) (conf config.BoardConfigs, err error) {
 	conf = config.GetBoardConfigs(board).BoardConfigs
 	if conf.ReadOnly {
@@ -162,20 +138,16 @@ func getBoardConfig(board string) (conf config.BoardConfigs, err error) {
 	return
 }
 
-// Check post signature
-func checkSign(token, sign string) bool {
-	if len(token) != 20 || len(sign) > 100 {
-		return false
-	}
-	cToken := C.CString(token)
-	cSign := C.CString(sign)
-	defer C.free(unsafe.Pointer(cSign))
-	defer C.free(unsafe.Pointer(cToken))
-	return C.check_sign(cToken, cSign) >= 0
-}
-
-// Construct the common parts of the new post for both threads and replies
+// Construct the common parts of the new post for both threads and
+// replies.
 func constructPost(req PostCreationRequest, ip, board string) (post db.Post, err error) {
+	// Post must have either at least one character or an file to be
+	// allocated.
+	if req.Body == "" && len(req.FilesRequest.Tokens) == 0 {
+		err = errNoTextOrFiles
+		return
+	}
+
 	post = db.Post{
 		StandalonePost: common.StandalonePost{
 			Post: common.Post{
@@ -203,18 +175,12 @@ func constructPost(req PostCreationRequest, ip, board string) (post db.Post, err
 		return
 	}
 
-	lines := 0
-	for _, r := range req.Body {
-		if r == '\n' {
-			lines++
-		}
-	}
-	if lines > common.MaxLinesBody {
+	if parser.CountNewlines(req.Body) > common.MaxLinesBody {
 		err = errTooManyLines
 		return
 	}
 
-	// Attach staff position title after validations
+	// Attach staff position title after validation.
 	if req.Creds != nil {
 		var pos auth.ModerationLevel
 		pos, err = db.FindPosition(board, req.Creds.UserID)
@@ -225,7 +191,26 @@ func constructPost(req PostCreationRequest, ip, board string) (post db.Post, err
 	}
 
 	post.Links, err = parser.ParseBody([]byte(req.Body), board)
+	if err != nil {
+		return
+	}
+
+	// Perform this last, so there are less dangling images because of any
+	// error.
+	err = setPostFiles(&post, req.FilesRequest)
 	return
+}
+
+// Check post signature.
+func checkSign(token, sign string) bool {
+	if len(token) != 20 || len(sign) > 100 {
+		return false
+	}
+	cToken := C.CString(token)
+	cSign := C.CString(sign)
+	defer C.free(unsafe.Pointer(cSign))
+	defer C.free(unsafe.Pointer(cToken))
+	return C.check_sign(cToken, cSign) >= 0
 }
 
 func setPostFiles(post *db.Post, freq FilesRequest) (err error) {

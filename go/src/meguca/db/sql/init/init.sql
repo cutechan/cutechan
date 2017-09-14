@@ -100,7 +100,7 @@ create index replyTime on threads (replyTime);
 create index sticky on threads (sticky);
 
 create table posts (
-  editing boolean not null,
+  editing boolean,
   deleted boolean,
   banned boolean,
   sage boolean,

@@ -3,9 +3,7 @@ package db
 import (
 	"database/sql"
 	"meguca/common"
-	// "meguca/util"
 
-	// "github.com/boltdb/bolt"
 	"github.com/lib/pq"
 )
 
@@ -56,20 +54,21 @@ func (i *imageScanner) Val() *common.Image {
 
 type postScanner struct {
 	common.Post
-	banned, deleted, sage sql.NullBool
-	name, trip, auth      sql.NullString
-	links                 linkRow
-	commands              commandRow
+	editing, banned, deleted, sage sql.NullBool
+	name, trip, auth               sql.NullString
+	links                          linkRow
+	commands                       commandRow
 }
 
 func (p *postScanner) ScanArgs() []interface{} {
 	return []interface{}{
-		&p.Editing, &p.banned, &p.deleted, &p.sage, &p.ID, &p.Time,
+		&p.editing, &p.banned, &p.deleted, &p.sage, &p.ID, &p.Time,
 		&p.Body, &p.name, &p.trip, &p.auth, &p.links, &p.commands,
 	}
 }
 
 func (p postScanner) Val() (common.Post, error) {
+	p.Editing = p.editing.Bool
 	p.Banned = p.banned.Bool
 	p.Deleted = p.deleted.Bool
 	p.Sage = p.sage.Bool
@@ -144,22 +143,6 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 		t.Posts = append(t.Posts, p)
 	}
 	err = r.Err()
-	if err != nil {
-		return
-	}
-
-	// Inject bodies into open posts
-	// open := make([]*common.Post, 0, 32)
-	// if t.Editing {
-	// 	open = append(open, &t.Post)
-	// }
-	// for i := range t.Posts {
-	// 	if t.Posts[i].Editing {
-	// 		open = append(open, &t.Posts[i])
-	// 	}
-	// }
-	// err = injectOpenBodies(open)
-
 	return
 }
 
@@ -273,36 +256,13 @@ func GetRecentPosts(op uint64) (posts []PostStats, err error) {
 	posts = make([]PostStats, 0, 64)
 	var p PostStats
 	for r.Next() {
-		err = r.Scan(&p.ID, &p.Time, &p.Editing)
+		err = r.Scan(&p.ID, &p.Time)
 		if err != nil {
 			return
 		}
 		posts = append(posts, p)
 	}
 	err = r.Err()
-	if err != nil {
-		return
-	}
-
-	// Get open post bodies
-	// if len(posts) != 0 {
-	// 	var tx *bolt.Tx
-	// 	tx, err = boltDB.Begin(false)
-	// 	if err != nil {
-	// 		return
-	// 	}
-	// 	defer tx.Rollback()
-
-	// 	buc := tx.Bucket([]byte("open_bodies"))
-	// 	for i, p := range posts {
-	// 		if !p.Editing {
-	// 			continue
-	// 		}
-	// 		// Buffer is only valid for the transaction. Need to copy.
-	// 		posts[i].Body = util.CloneBytes(buc.Get(encodeUint64Heap(p.ID)))
-	// 	}
-	// }
-
 	return
 }
 
@@ -351,18 +311,6 @@ func scanCatalog(table tableScanner) (board common.Board, err error) {
 		board = append(board, t)
 	}
 	err = table.Err()
-	if err != nil {
-		return
-	}
-
-	// open := make([]*common.Post, 0, 16)
-	// for i := range board {
-	// 	if board[i].Editing {
-	// 		open = append(open, &board[i].Post)
-	// 	}
-	// }
-	// err = injectOpenBodies(open)
-
 	return
 }
 
@@ -390,25 +338,6 @@ func scanThreadIDs(table tableScanner) (ids []uint64, err error) {
 
 	return
 }
-
-// Inject open post bodies from the embedded database into the posts
-// func injectOpenBodies(posts []*common.Post) error {
-// 	if len(posts) == 0 {
-// 		return nil
-// 	}
-
-// 	tx, err := boltDB.Begin(false)
-// 	if err != nil {
-// 		return err
-// 	}
-
-// 	buc := tx.Bucket([]byte("open_bodies"))
-// 	for _, p := range posts {
-// 		p.Body = string(buc.Get(encodeUint64Heap(p.ID)))
-// 	}
-
-// 	return tx.Rollback()
-// }
 
 // Retrieve latest news.
 func GetNews() (news []common.NewsEntry, err error) {

@@ -1,31 +1,21 @@
-create or replace function insert_thread(
-  subject varchar(100),
-  imageCtr bigint,
-  editing bool,
-  id bigint,
-  board text,
-  op bigint,
-  now bigint,
-  body varchar(2000),
-  name varchar(50),
-  trip char(10),
-  auth varchar(20),
-  password bytea,
-  ip inet,
-  SHA1 char(40),
-  links bigint[][2],
-  commands json[]
-) returns void as $$
-  insert into threads (
-    board, id, postCtr, imageCtr, replyTime, bumpTime, subject
-  )
-    values (board, id, 1, imageCtr, now, now, subject);
-  insert into posts (
-    editing, id, board, op, time, body, name, trip, auth, password,
-    ip, SHA1, links, commands
-  )
-    values (
-      editing, id, board, op, now, body, name, trip, auth,
-      password, ip, SHA1, links, commands
-    );
-$$ language sql;
+CREATE OR REPLACE FUNCTION insert_thread(
+  id BIGINT,
+  board TEXT,
+  op BIGINT,
+  now BIGINT,
+  body VARCHAR(2000),
+  auth VARCHAR(20),
+  ip INET,
+  SHA1 CHAR(40),
+  links BIGINT[][2],
+  subject VARCHAR(100),
+  imageCtr BIGINT
+) RETURNS VOID AS $$
+
+  INSERT INTO threads (board, id, postCtr, imageCtr, replyTime, bumpTime, subject)
+  VALUES              (board, id, 1,       imageCtr, now,       now,     subject);
+
+  INSERT INTO posts (id, board, op, time, body, auth, ip, SHA1, links)
+  VALUES            (id, board, op, now,  body, auth, ip, SHA1, links);
+
+$$ LANGUAGE SQL;

@@ -4,6 +4,7 @@ package db
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"path/filepath"
 	"sort"
@@ -31,6 +32,10 @@ type tableScanner interface {
 	Close() error
 }
 
+func makeError(id string, err error) error {
+	return fmt.Errorf("Error preparing %s: %v", id, err)
+}
+
 // Generate prepared statements
 func genPrepared() error {
 	names := AssetNames()
@@ -44,7 +49,7 @@ func genPrepared() error {
 		case strings.HasPrefix(id, "functions"):
 			_, err := db.Exec(getQuery(id))
 			if err != nil {
-				return err
+				return makeError(id, err)
 			}
 		default:
 			left = append(left, id)
@@ -56,7 +61,7 @@ func genPrepared() error {
 		k := strings.TrimSuffix(filepath.Base(id), ".sql")
 		prepared[k], err = db.Prepare(getQuery(id))
 		if err != nil {
-			return err
+			return makeError(id, err)
 		}
 	}
 

@@ -69,6 +69,7 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 	}
 	post, err := websockets.CreateThread(req, ip)
 	if err != nil {
+		// TODO(Kagami): Not all errors are 400.
 		// TODO(Kagami): Write JSON errors instead.
 		text400(w, err)
 		return

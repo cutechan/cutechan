@@ -210,13 +210,7 @@ func NewPostID() (id uint64, err error) {
 
 func genPostCreationArgs(p Post) []interface{} {
 	// Don't store empty strings in the database. Zero value != NULL.
-	var name, trip, auth, img, ip *string
-	if p.Name != "" {
-		name = &p.Name
-	}
-	if p.Trip != "" {
-		trip = &p.Trip
-	}
+	var auth, ip, img *string
 	if p.Auth != "" {
 		auth = &p.Auth
 	}
@@ -226,20 +220,17 @@ func genPostCreationArgs(p Post) []interface{} {
 	if len(p.Files) > 0 {
 		img = &p.Files[0].SHA1
 	}
-
 	return []interface{}{
-		p.Editing, p.ID, p.Board, p.OP, p.Time, p.Body, name, trip,
-		auth, p.Password, ip, img,
-		linkRow(p.Links), commandRow([]Command{}),
+		p.ID, p.Board, p.OP, p.Time, p.Body, auth, ip, img, linkRow(p.Links),
 	}
 }
 
 // InsertThread inserts a new thread into the database
 func InsertThread(subject string, p Post) error {
-	imgCtr := len(p.Files)
+	imageCtr := len(p.Files)
 	return execPrepared(
 		"insert_thread",
-		append([]interface{}{subject, imgCtr}, genPostCreationArgs(p)...)...,
+		append(genPostCreationArgs(p), subject, imageCtr)...,
 	)
 }
 

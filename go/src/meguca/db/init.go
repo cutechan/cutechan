@@ -310,6 +310,13 @@ var upgrades = []func(*sql.Tx) error{
 			`CREATE INDEX post_files_file_hash ON post_files (file_hash)`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		_, err = tx.Exec(
+			`ALTER TABLE posts
+				ALTER COLUMN editing DROP NOT NULL`,
+		)
+		return
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both

@@ -54,3 +54,13 @@ func ParseBody(body []byte, board string) (links [][2]uint64, err error) {
 
 	return
 }
+
+func CountNewlines(s string) int {
+	lines := 0
+	for _, r := range s {
+		if r == '\n' {
+			lines++
+		}
+	}
+	return lines
+}
