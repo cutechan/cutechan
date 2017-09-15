@@ -31,7 +31,6 @@ var (
 // Post is for writing new posts to a database. It contains the Password
 // field, which is never exposed publically through Post.
 type Post struct {
-	Deleted bool
 	common.StandalonePost
 	Password []byte
 	IP       string
@@ -196,31 +195,74 @@ func NewPostID() (id uint64, err error) {
 
 func genPostCreationArgs(p Post) []interface{} {
 	// Don't store empty strings in the database. Zero value != NULL.
-	var auth, ip, sha1 *string
+	var auth, ip *string
 	if p.Auth != "" {
 		auth = &p.Auth
 	}
 	if p.IP != "" {
 		ip = &p.IP
 	}
-	if len(p.Files) > 0 {
-		sha1 = &p.Files[0].SHA1
-	}
 	fileCnt := len(p.Files)
 	return []interface{}{
-		p.ID, p.Board, p.OP, p.Time, p.Body, auth, ip, linkRow(p.Links),
-		sha1, fileCnt,
+		p.ID, p.Board, p.OP, p.Time, p.Body, auth, ip, linkRow(p.Links), fileCnt,
 	}
 }
 
 // InsertThread inserts a new thread into the database.
-func InsertThread(subject string, p Post) error {
-	return execPrepared("insert_thread", append(genPostCreationArgs(p), subject)...)
+func InsertThread(subject string, p Post) (err error) {
+	tx, err := StartTransaction()
+	if err != nil {
+		return
+	}
+	defer RollbackOnError(tx, &err)
+
+	args := append(genPostCreationArgs(p), subject)
+	err = execPreparedTx(tx, "insert_thread", args...)
+	if err != nil {
+		return
+	}
+
+	err = InsertFiles(tx, p)
+	if err != nil {
+		return
+	}
+
+	err = tx.Commit()
+	return
 }
 
 // InsertPost inserts a post into an existing thread.
-func InsertPost(p Post) error {
-	return execPrepared("insert_post", genPostCreationArgs(p)...)
+func InsertPost(p Post) (err error) {
+	tx, err := StartTransaction()
+	if err != nil {
+		return
+	}
+	defer RollbackOnError(tx, &err)
+
+	args := genPostCreationArgs(p)
+	err = execPreparedTx(tx, "insert_post", args...)
+	if err != nil {
+		return
+	}
+
+	err = InsertFiles(tx, p)
+	if err != nil {
+		return
+	}
+
+	err = tx.Commit()
+	return
+}
+
+// Write post files in current transaction.
+func InsertFiles(tx *sql.Tx, p Post) (err error) {
+	for _, f := range p.Files {
+		err = execPreparedTx(tx, "insert_post_file", p.ID, f.SHA1)
+		if err != nil {
+			return
+		}
+	}
+	return
 }
 
 // Token operations
