@@ -1,30 +1,35 @@
-create or replace function bump_thread(
-  id bigint,
-  addPost bool,
-  delPost bool,
-  bump bool,
-  image bool
-) returns void as $$
-  update threads
-    set
-      replyTime = floor(extract(epoch from now())),
-      postCtr = case
-        when addPost then postCtr + 1
-        when delPost then postCtr - 1
-        else postCtr
-      end,
-      bumpTime = case when bump
-        then
-          case when postCtr <= 500
-            then floor(extract(epoch from now()))
-            else bumpTime
-          end
-        else bumpTime
-      end,
-      imageCtr = case
-        when addPost AND image then imageCtr + 1
-        when delPost AND image then imageCtr - 1
-        else imageCtr
-      end
-    where id = bump_thread.id;
-$$ language sql;
+CREATE OR REPLACE FUNCTION bump_thread(
+  id BIGINT,
+  addPost BOOL,
+  delPost BOOL,
+  bump BOOL,
+  file_cnt BIGINT
+) RETURNS VOID AS $$
+
+  UPDATE threads SET
+    replyTime = floor(extract(epoch from now())),
+
+    bumpTime = CASE
+      WHEN bump THEN
+        CASE WHEN postCtr <= 500
+          THEN floor(extract(epoch from now()))
+          ELSE bumpTime
+        END
+      ELSE bumpTime
+    END,
+
+    postCtr = CASE
+      WHEN addPost THEN postCtr + 1
+      WHEN delPost THEN postCtr - 1
+      ELSE postCtr
+    END,
+
+    imageCtr = CASE
+      WHEN addPost THEN imageCtr + file_cnt
+      WHEN delPost THEN imageCtr - file_cnt
+      ELSE imageCtr
+    END
+
+  WHERE id = bump_thread.id;
+
+$$ LANGUAGE SQL;

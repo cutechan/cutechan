@@ -1,4 +1,9 @@
-delete from posts
-  where id = $1
-  returning log_moderation(2::smallint, board, id, $2::varchar(20)),
-    bump_thread(op, false, true, false, SHA1 is not null)
+WITH files AS (
+  SELECT count(*) AS cnt FROM post_files WHERE post_id = $1
+)
+
+DELETE FROM posts USING files WHERE id = $1
+
+RETURNING
+  log_moderation(2::SMALLINT, board, id, $2),
+  bump_thread(op, false, true, false, files.cnt)

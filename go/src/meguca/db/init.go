@@ -317,6 +317,13 @@ var upgrades = []func(*sql.Tx) error{
 		)
 		return
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`DROP FUNCTION bump_thread(BIGINT, BOOL, BOOL, BOOL, BOOL)`,
+			`DROP FUNCTION insert_thread(VARCHAR(100), BIGINT, BOOL, BIGINT, TEXT, BIGINT, BIGINT, VARCHAR(2000), VARCHAR(50), CHAR(10), VARCHAR(20), BYTEA, INET, CHAR(40), BIGINT[][2], JSON[])`,
+			`DROP FUNCTION insert_thread(VARCHAR(100), BIGINT, BOOL, BOOL, BIGINT, TEXT, BIGINT, BIGINT, VARCHAR(2000), VARCHAR(50), CHAR(10), VARCHAR(20), BYTEA, INET, CHAR(40), VARCHAR(200), BIGINT[][2], JSON[])`,
+		)
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both
