@@ -1,10 +1,10 @@
 CREATE OR REPLACE FUNCTION bump_thread(
-  id BIGINT,
-  addPost BOOL,
-  delPost BOOL,
-  bump BOOL,
-  file_cnt BIGINT
-) RETURNS VOID AS $$
+  id bigint,
+  addPost bool,
+  delPost bool,
+  bump bool,
+  file_cnt bigint
+) RETURNS void AS $$
 
   UPDATE threads SET
     replyTime = floor(extract(epoch from now())),

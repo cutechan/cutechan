@@ -213,7 +213,7 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 // GetPost reads a single post from the database.
 func GetPost(id uint64) (p common.StandalonePost, err error) {
 	var (
-		args = make([]interface{}, 2, 28)
+		args = make([]interface{}, 2)
 		ps postScanner
 		is imageScanner
 	)

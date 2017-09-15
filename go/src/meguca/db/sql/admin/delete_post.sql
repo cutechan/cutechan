@@ -5,5 +5,5 @@ WITH files AS (
 DELETE FROM posts USING files WHERE id = $1
 
 RETURNING
-  log_moderation(2::SMALLINT, board, id, $2),
+  log_moderation(2::smallint, board, id, $2),
   bump_thread(op, false, true, false, files.cnt)
