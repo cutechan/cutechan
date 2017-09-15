@@ -1,6 +1,5 @@
 with t as (
-  select editing, banned, deleted, sage, id, time, body, name, trip,
-    auth, links, commands, images.*
+  select id, time, body, auth, links, images.*
   from posts
   left outer join images
     on posts.SHA1 = images.SHA1

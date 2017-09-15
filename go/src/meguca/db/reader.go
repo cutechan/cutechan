@@ -54,26 +54,15 @@ func (i *imageScanner) Val() *common.Image {
 
 type postScanner struct {
 	common.Post
-	editing, banned, deleted, sage sql.NullBool
-	name, trip, auth               sql.NullString
-	links                          linkRow
-	commands                       commandRow
+	auth  sql.NullString
+	links linkRow
 }
 
 func (p *postScanner) ScanArgs() []interface{} {
-	return []interface{}{
-		&p.editing, &p.banned, &p.deleted, &p.sage, &p.ID, &p.Time,
-		&p.Body, &p.name, &p.trip, &p.auth, &p.links, &p.commands,
-	}
+	return []interface{}{&p.ID, &p.Time, &p.Body, &p.auth, &p.links}
 }
 
 func (p postScanner) Val() (common.Post, error) {
-	p.Editing = p.editing.Bool
-	p.Banned = p.banned.Bool
-	p.Deleted = p.deleted.Bool
-	p.Sage = p.sage.Bool
-	p.Name = p.name.String
-	p.Trip = p.trip.String
 	p.Auth = p.auth.String
 	p.Links = [][2]uint64(p.links)
 	return p.Post, nil
@@ -81,10 +70,9 @@ func (p postScanner) Val() (common.Post, error) {
 
 // PostStats contains post open status, body and creation time
 type PostStats struct {
-	Editing, HasImage, Spoilered bool
-	ID                           uint64
-	Time                         int64
-	Body                         []byte
+	ID   uint64
+	Time int64
+	Body []byte
 }
 
 // GetThread retrieves public thread data from the database
@@ -125,10 +113,10 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 
 	// Scan replies into []common.Post
 	var (
-		post postScanner
-		img  imageScanner
-		p    common.Post
-		args = append(post.ScanArgs(), img.ScanArgs()...)
+		ps postScanner
+		is imageScanner
+		p  common.Post
+		args = append(ps.ScanArgs(), is.ScanArgs()...)
 	)
 	t.Posts = make([]common.Post, 0, cap)
 	for r.Next() {
@@ -136,7 +124,7 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 		if err != nil {
 			return
 		}
-		p, err = extractPost(post, img)
+		p, err = extractPost(ps, is)
 		if err != nil {
 			return
 		}
@@ -148,20 +136,20 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 
 func scanOP(r rowScanner) (t common.Thread, err error) {
 	var (
-		post postScanner
-		img  imageScanner
+		ps postScanner
+		is imageScanner
 	)
 
 	args := make([]interface{}, 0, 33)
 	args = append(args, threadScanArgs(&t)...)
-	args = append(args, post.ScanArgs()...)
-	args = append(args, img.ScanArgs()...)
+	args = append(args, ps.ScanArgs()...)
+	args = append(args, is.ScanArgs()...)
 	err = r.Scan(args...)
 	if err != nil {
 		return
 	}
 
-	t.Post, err = extractPost(post, img)
+	t.Post, err = extractPost(ps, is)
 	return
 }
 

@@ -135,20 +135,6 @@ func (l linkRow) Value() (driver.Value, error) {
 	return string(b), nil
 }
 
-type Command struct {
-}
-
-// For encoding and decoding hash command results
-type commandRow []Command
-
-func (c *commandRow) Scan(src interface{}) error {
-	return nil
-}
-
-func (c commandRow) Value() (driver.Value, error) {
-	return nil, nil
-}
-
 // ValidateOP confirms the specified thread exists on specific board
 func ValidateOP(id uint64, board string) (valid bool, err error) {
 	err = prepared["validate_op"].QueryRow(id, board).Scan(&valid)
@@ -237,11 +223,7 @@ func InsertPost(p Post) error {
 	return execPrepared("insert_post", genPostCreationArgs(p)...)
 }
 
-// SetPostCounter sets the post counter. Should only be used in tests.
-func SetPostCounter(c uint64) error {
-	_, err := db.Exec(`SELECT setval('post_id', $1)`, c)
-	return err
-}
+// Token operations
 
 func NewPostToken(ip string) (token string, err error) {
 	// Check if client tries to abuse.
