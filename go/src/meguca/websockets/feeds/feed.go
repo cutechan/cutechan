@@ -84,17 +84,9 @@ func (f *Feed) Start() (err error) {
 	for _, p := range recent {
 		f.recent[p.ID] = p.Time
 		f.open[p.ID] = openPostCacheEntry{
-			hasImage:  false,
-			spoilered: false,
-			created:   p.Time,
-			body:      p.Body,
+			created: p.Time,
+			body:    p.Body,
 		}
-	}
-
-	// Read deleted and banned post IDs
-	f.deleted, f.banned, err = db.GetThreadMutations(f.id)
-	if err != nil {
-		return
 	}
 
 	go func() {

@@ -7,6 +7,39 @@ import (
 	"github.com/lib/pq"
 )
 
+type threadScanner struct {
+	common.Thread
+}
+
+func (t *threadScanner) ScanArgs() []interface{} {
+	return []interface{}{
+		&t.Sticky, &t.Board,
+		&t.PostCtr, &t.ImageCtr,
+		&t.ReplyTime, &t.BumpTime,
+		&t.Subject,
+	}
+}
+
+func (t *threadScanner) Val() common.Thread {
+	return t.Thread
+}
+
+type postScanner struct {
+	common.Post
+	auth  sql.NullString
+	links linkRow
+}
+
+func (p *postScanner) ScanArgs() []interface{} {
+	return []interface{}{&p.ID, &p.Time, &p.Body, &p.auth, &p.links}
+}
+
+func (p *postScanner) Val() common.Post {
+	p.Auth = p.auth.String
+	p.Links = [][2]uint64(p.links)
+	return p.Post
+}
+
 type imageScanner struct {
 	APNG, Audio, Video                sql.NullBool
 	FileType, ThumbType, Length, Size sql.NullInt64
@@ -14,8 +47,6 @@ type imageScanner struct {
 	Dims                              pq.Int64Array
 }
 
-// Returns and array of pointers to the struct fields for passing to
-// rowScanner.Scan()
 func (i *imageScanner) ScanArgs() []interface{} {
 	return []interface{}{
 		&i.APNG, &i.Audio, &i.Video, &i.FileType, &i.ThumbType, &i.Dims,
@@ -23,7 +54,6 @@ func (i *imageScanner) ScanArgs() []interface{} {
 	}
 }
 
-// Returns the scanned *common.Image or nil, if none
 func (i *imageScanner) Val() *common.Image {
 	if !i.SHA1.Valid {
 		return nil
@@ -52,30 +82,76 @@ func (i *imageScanner) Val() *common.Image {
 	}
 }
 
-type postScanner struct {
-	common.Post
-	auth  sql.NullString
-	links linkRow
+func scanThread(r rowScanner) (t common.Thread, err error) {
+	var (
+		ts threadScanner
+		ps postScanner
+		is imageScanner
+	)
+
+	args := make([]interface{}, 0)
+	args = append(args, ts.ScanArgs()...)
+	args = append(args, ps.ScanArgs()...)
+	args = append(args, is.ScanArgs()...)
+	err = r.Scan(args...)
+	if err != nil {
+		return
+	}
+
+	t = ts.Val()
+	t.Post, err = scanPost(ps, is)
+	return
 }
 
-func (p *postScanner) ScanArgs() []interface{} {
-	return []interface{}{&p.ID, &p.Time, &p.Body, &p.auth, &p.links}
+func scanPost(ps postScanner, is imageScanner) (p common.Post, err error) {
+	p = ps.Val()
+	img := is.Val()
+	if img != nil {
+		p.Files = append(p.Files, *img)
+	}
+	return
 }
 
-func (p postScanner) Val() (common.Post, error) {
-	p.Auth = p.auth.String
-	p.Links = [][2]uint64(p.links)
-	return p.Post, nil
+func scanCatalog(table tableScanner) (board common.Board, err error) {
+	defer table.Close()
+	board = make(common.Board, 0, 32)
+
+	var t common.Thread
+	for table.Next() {
+		t, err = scanThread(table)
+		if err != nil {
+			return
+		}
+		board = append(board, t)
+	}
+	err = table.Err()
+	return
 }
 
-// PostStats contains post open status, body and creation time
+func scanThreadIDs(table tableScanner) (ids []uint64, err error) {
+	defer table.Close()
+
+	ids = make([]uint64, 0, 64)
+	var id uint64
+	for table.Next() {
+		err = table.Scan(&id)
+		if err != nil {
+			return
+		}
+		ids = append(ids, id)
+	}
+	err = table.Err()
+	return
+}
+
+// PostStats contains post open status, body and creation time.
 type PostStats struct {
 	ID   uint64
 	Time int64
 	Body []byte
 }
 
-// GetThread retrieves public thread data from the database
+// GetThread retrieves public thread data from the database.
 func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 	tx, err := db.Begin()
 	if err != nil {
@@ -88,7 +164,7 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 	}
 
 	// Get thread metadata and OP
-	t, err = scanOP(tx.Stmt(prepared["get_thread"]).QueryRow(id))
+	t, err = scanThread(tx.Stmt(prepared["get_thread"]).QueryRow(id))
 	if err != nil {
 		return
 	}
@@ -124,7 +200,7 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 		if err != nil {
 			return
 		}
-		p, err = extractPost(ps, is)
+		p, err = scanPost(ps, is)
 		if err != nil {
 			return
 		}
@@ -134,38 +210,7 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 	return
 }
 
-func scanOP(r rowScanner) (t common.Thread, err error) {
-	var (
-		ps postScanner
-		is imageScanner
-	)
-
-	args := make([]interface{}, 0, 33)
-	args = append(args, threadScanArgs(&t)...)
-	args = append(args, ps.ScanArgs()...)
-	args = append(args, is.ScanArgs()...)
-	err = r.Scan(args...)
-	if err != nil {
-		return
-	}
-
-	t.Post, err = extractPost(ps, is)
-	return
-}
-
-func extractPost(ps postScanner, is imageScanner) (p common.Post, err error) {
-	p, err = ps.Val()
-	if err != nil {
-		return
-	}
-	img := is.Val()
-	if img != nil {
-		p.Files = append(p.Files, *img)
-	}
-	return
-}
-
-// GetPost reads a single post from the database
+// GetPost reads a single post from the database.
 func GetPost(id uint64) (p common.StandalonePost, err error) {
 	var (
 		args = make([]interface{}, 2, 28)
@@ -181,10 +226,7 @@ func GetPost(id uint64) (p common.StandalonePost, err error) {
 	if err != nil {
 		return
 	}
-	p.Post, err = ps.Val()
-	if err != nil {
-		return
-	}
+	p.Post = ps.Val()
 	img := is.Val()
 	if img != nil {
 		p.Files = append(p.Files, *img)
@@ -192,29 +234,7 @@ func GetPost(id uint64) (p common.StandalonePost, err error) {
 	return
 }
 
-// GetBoardCatalog retrieves all OPs of a single board
-func GetBoardCatalog(board string) (b common.Board, err error) {
-	r, err := prepared["get_board"].Query(board)
-	if err != nil {
-		return
-	}
-	b, err = scanCatalog(r)
-	if err != nil {
-		return
-	}
-	return
-}
-
-// Retrieves all threads IDs on the board in bump order with stickies first
-func GetThreadIDs(board string) ([]uint64, error) {
-	r, err := prepared["get_board_thread_ids"].Query(board)
-	if err != nil {
-		return nil, err
-	}
-	return scanThreadIDs(r)
-}
-
-// GetAllBoardCatalog retrieves all threads for the "/all/" meta-board
+// GetAllBoardCatalog retrieves all OPs for the "/all/" meta-board.
 func GetAllBoardCatalog() (common.Board, error) {
 	r, err := prepared["get_all_board"].Query()
 	if err != nil {
@@ -223,7 +243,16 @@ func GetAllBoardCatalog() (common.Board, error) {
 	return scanCatalog(r)
 }
 
-// Retrieves all threads IDs in bump order
+// GetBoardCatalog retrieves all OPs of a single board.
+func GetBoardCatalog(board string) (common.Board, error) {
+	r, err := prepared["get_board"].Query(board)
+	if err != nil {
+		return nil, err
+	}
+	return scanCatalog(r)
+}
+
+// Retrieves all threads IDs in bump order with stickies first.
 func GetAllThreadsIDs() ([]uint64, error) {
 	r, err := prepared["get_all_thread_ids"].Query()
 	if err != nil {
@@ -232,8 +261,16 @@ func GetAllThreadsIDs() ([]uint64, error) {
 	return scanThreadIDs(r)
 }
 
-// GetRecentPosts retrieves posts created in the thread in the last 15 minutes.
-// Posts that are being editted also have their Body property set.
+// Retrieves threads IDs on the board.
+func GetThreadIDs(board string) ([]uint64, error) {
+	r, err := prepared["get_board_thread_ids"].Query(board)
+	if err != nil {
+		return nil, err
+	}
+	return scanThreadIDs(r)
+}
+
+// GetRecentPosts retrieves recent posts created in the thread.
 func GetRecentPosts(op uint64) (posts []PostStats, err error) {
 	r, err := prepared["get_recent_posts"].Query(op)
 	if err != nil {
@@ -251,79 +288,6 @@ func GetRecentPosts(op uint64) (posts []PostStats, err error) {
 		posts = append(posts, p)
 	}
 	err = r.Err()
-	return
-}
-
-// Retvies mutations, that can happen to posts in a thread, after the post is
-// closed
-func GetThreadMutations(id uint64) (deleted, banned []uint64, err error) {
-	deleted = make([]uint64, 0, 16)
-	banned = make([]uint64, 0, 16)
-	r, err := prepared["get_thread_mutations"].Query(id)
-	if err != nil {
-		return
-	}
-	defer r.Close()
-
-	var (
-		isDeleted, isBanned sql.NullBool
-		postID              uint64
-	)
-	for r.Next() {
-		err = r.Scan(&postID, &isDeleted, &isBanned)
-		if err != nil {
-			return
-		}
-		if isDeleted.Bool {
-			deleted = append(deleted, postID)
-		}
-		if isBanned.Bool {
-			banned = append(banned, postID)
-		}
-	}
-	err = r.Err()
-
-	return
-}
-
-func scanCatalog(table tableScanner) (board common.Board, err error) {
-	defer table.Close()
-	board = make(common.Board, 0, 32)
-
-	var t common.Thread
-	for table.Next() {
-		t, err = scanOP(table)
-		if err != nil {
-			return
-		}
-		board = append(board, t)
-	}
-	err = table.Err()
-	return
-}
-
-// Return arguments for scanning a common.Thread from the DB
-func threadScanArgs(t *common.Thread) []interface{} {
-	return []interface{}{
-		&t.Sticky, &t.Board, &t.PostCtr, &t.ImageCtr, &t.ReplyTime, &t.BumpTime,
-		&t.Subject,
-	}
-}
-
-func scanThreadIDs(table tableScanner) (ids []uint64, err error) {
-	defer table.Close()
-
-	ids = make([]uint64, 0, 64)
-	var id uint64
-	for table.Next() {
-		err = table.Scan(&id)
-		if err != nil {
-			return
-		}
-		ids = append(ids, id)
-	}
-	err = table.Err()
-
 	return
 }
 
@@ -345,6 +309,5 @@ func GetNews() (news []common.NewsEntry, err error) {
 		news = append(news, entry)
 	}
 	err = r.Err()
-
 	return
 }
