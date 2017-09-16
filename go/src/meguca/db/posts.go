@@ -193,7 +193,7 @@ func NewPostID() (id uint64, err error) {
 	return id, err
 }
 
-func genPostCreationArgs(p Post) []interface{} {
+func getPostCreationArgs(p Post) []interface{} {
 	// Don't store empty strings in the database. Zero value != NULL.
 	var auth, ip *string
 	if p.Auth != "" {
@@ -204,7 +204,7 @@ func genPostCreationArgs(p Post) []interface{} {
 	}
 	fileCnt := len(p.Files)
 	return []interface{}{
-		p.ID, p.Board, p.OP, p.Time, p.Body, auth, ip, linkRow(p.Links), fileCnt,
+		p.ID, p.Time, p.Body, auth, linkRow(p.Links), p.OP, p.Board, ip, fileCnt,
 	}
 }
 
@@ -216,7 +216,7 @@ func InsertThread(subject string, p Post) (err error) {
 	}
 	defer RollbackOnError(tx, &err)
 
-	args := append(genPostCreationArgs(p), subject)
+	args := append(getPostCreationArgs(p), subject)
 	err = execPreparedTx(tx, "insert_thread", args...)
 	if err != nil {
 		return
@@ -239,7 +239,7 @@ func InsertPost(p Post) (err error) {
 	}
 	defer RollbackOnError(tx, &err)
 
-	args := genPostCreationArgs(p)
+	args := getPostCreationArgs(p)
 	err = execPreparedTx(tx, "insert_post", args...)
 	if err != nil {
 		return

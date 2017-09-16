@@ -1,12 +1,12 @@
 CREATE OR REPLACE FUNCTION insert_thread(
   id bigint,
-  board text,
-  op bigint,
   now bigint,
   body varchar(2000),
   auth varchar(20),
-  ip inet,
   links bigint[][2],
+  op bigint,
+  board text,
+  ip inet,
   file_cnt bigint,
   subject varchar(100)
 ) RETURNS void AS $$
