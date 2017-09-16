@@ -227,10 +227,10 @@ class Reply extends Component<any, any> {
     }
   }
   public render({}, { float, fwraps }: any) {
-    const multi = fwraps.length > 1;
+    const manyf = fwraps.length > 1;
     return (
       <div
-        class={cx("reply", {reply_float: float, reply_multi: multi})}
+        class={cx("reply", {reply_float: float, reply_files: manyf})}
         ref={s(this, "mainEl")}
         style={this.style}
         onMouseDown={this.handleFormDown}
@@ -287,8 +287,8 @@ class Reply extends Component<any, any> {
     return 400;
   }
   private get minHeight() {
-    const multi = this.state.fwraps.length > 1;
-    return multi ? 300 : 200;
+    const manyf = this.state.fwraps.length > 1;
+    return manyf ? 300 : 200;
   }
   private get style() {
     const { float, left, top, width } = this.state;

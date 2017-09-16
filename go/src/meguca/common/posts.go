@@ -42,8 +42,8 @@ type Thread struct {
 	BumpTime  int64  `json:"bumpTime"`
 	Subject   string `json:"subject"`
 	Board     string `json:"board"`
-	Post
-	Posts []Post `json:"posts"`
+	*Post
+	Posts Posts `json:"posts"`
 }
 
 // Post is a generic post exposed publically through the JSON API.
@@ -72,11 +72,14 @@ type StandalonePost struct {
 	Board string `json:"board"`
 }
 
+// Posts.
+type Posts []*Post
+
 // Post links.
 type Links [][2]uint64
 
 // Post files.
-type Files []Image
+type Files []*Image
 
 // Map of all backlinks on a page.
 type Backlinks map[uint64]map[uint64]uint64

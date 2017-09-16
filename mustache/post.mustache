@@ -12,7 +12,11 @@
   </header>
 
   <section class="post-body">
-    {{{File}}}
+    {{#HasFiles}}
+      <div class="post-files">
+        {{#Files}}{{{.}}}{{/Files}}
+      </div>
+    {{/HasFiles}}
     <blockquote class="post-message">
       {{{Body}}}
     </blockquote>

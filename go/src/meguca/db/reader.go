@@ -115,10 +115,11 @@ func scanCatalogThread(r rowScanner) (t common.Thread, err error) {
 	}
 
 	t = ts.Val()
-	t.Post = ps.Val()
+	p := ps.Val()
+	t.Post = &p
 	img := fs.Val()
 	if img != nil {
-		t.Files = append(t.Files, *img)
+		t.Files = append(t.Files, img)
 	}
 	return
 }
@@ -137,7 +138,8 @@ func scanThread(r rowScanner) (t common.Thread, err error) {
 	}
 
 	t = ts.Val()
-	t.Post = ps.Val()
+	p := ps.Val()
+	t.Post = &p
 	return
 }
 
@@ -229,16 +231,16 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 	// Fill thread posts.
 	var ps postScanner
 	args := ps.ScanArgs()
-	t.Posts = make([]common.Post, 0, postCnt)
+	t.Posts = make([]*common.Post, 0, postCnt)
 	postsById := make(map[uint64]*common.Post, postCnt + 1)  // + OP
-	postsById[t.ID] = &t.Post
+	postsById[t.ID] = t.Post
 	for r.Next() {
 		err = r.Scan(args...)
 		if err != nil {
 			return
 		}
 		p := ps.Val()
-		t.Posts = append(t.Posts, p)
+		t.Posts = append(t.Posts, &p)
 		postsById[p.ID] = &p
 	}
 	err = r.Err()
@@ -265,7 +267,7 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 		}
 		img := fs.Val()
 		if p, ok := postsById[pID]; ok {
-			p.Files = append(p.Files, *img)
+			p.Files = append(p.Files, img)
 		}
 	}
 	err = r2.Err()
@@ -310,7 +312,7 @@ func GetPost(id uint64) (p common.StandalonePost, err error) {
 			return
 		}
 		img := fs.Val()
-		p.Files = append(p.Files, *img)
+		p.Files = append(p.Files, img)
 	}
 	err = r.Err()
 	return

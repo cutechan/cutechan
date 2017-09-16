@@ -26,7 +26,8 @@ type PostContext struct {
 	Staff     bool
 	Auth      string
 	Time      string
-	post      common.Post
+	HasFiles  bool
+	post      *common.Post
 	backlinks common.Backlinks
 }
 
@@ -57,7 +58,7 @@ type BacklinksContext struct {
 	Backlinks []string
 }
 
-func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index bool, all bool) PostContext {
+func MakePostContext(t common.Thread, p *common.Post, bls common.Backlinks, index bool, all bool) PostContext {
 	ln := lang.Get()
 	postTime := time.Unix(p.Time, 0)
 	return PostContext{
@@ -71,6 +72,7 @@ func MakePostContext(t common.Thread, p common.Post, bls common.Backlinks, index
 		Staff:     p.Auth != "",
 		Auth:      ln.Common.Posts[p.Auth],
 		Time:      readableTime(postTime),
+		HasFiles:  len(p.Files) > 0,
 		post:      p,
 		backlinks: bls,
 	}
@@ -87,6 +89,9 @@ func (ctx *PostContext) PostClass() string {
 	}
 	if len(ctx.post.Files) > 0 {
 		classes = append(classes, "post_file")
+		if len(ctx.post.Files) > 1 {
+			classes = append(classes, "post_files")
+		}
 	}
 	for _, pattern := range BodyEmbeds {
 		if pattern.MatchString(ctx.post.Body) {
@@ -156,12 +161,18 @@ func fileSize(size int) string {
 	}
 }
 
-func (ctx *PostContext) File() string {
+func (ctx *PostContext) Files() (files []string) {
 	if len(ctx.post.Files) == 0 {
-		return ""
+		return
 	}
+	for _, img := range ctx.post.Files {
+		files = append(files, renderFile(img))
+	}
+	return
+}
+
+func renderFile(img *common.Image) string {
 	ln := lang.Get()
-	img := ctx.post.Files[0]
 	fileCtx := FileContext{
 		HasTitle:   img.Title != "",
 		LCopy:      ln.Common.Posts["clickToCopy"],

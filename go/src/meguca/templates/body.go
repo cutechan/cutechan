@@ -153,7 +153,7 @@ func (r *renderer) PostLink(out *bytes.Buffer, text []byte) {
 }
 
 // Render post body Markdown to sanitized HTML.
-func renderBody(p common.Post, op uint64, index bool) string {
+func renderBody(p *common.Post, op uint64, index bool) string {
 	input := []byte(p.Body)
 	renderer := &renderer{
 		links: p.Links,

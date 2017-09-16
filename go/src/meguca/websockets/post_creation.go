@@ -220,7 +220,7 @@ func setPostFiles(post *db.Post, freq FilesRequest) (err error) {
 		if err != nil {
 			return
 		}
-		post.Files = append(post.Files, *img)
+		post.Files = append(post.Files, img)
 	}
 	return
 }

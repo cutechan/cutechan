@@ -4,6 +4,7 @@
 import templates from "cc-templates";
 import * as Mustache from "mustache";
 import { bodyEmbeds, renderBody } from ".";
+import { ImageData } from "../common";
 import { lang, ln } from "../lang";
 import { Backlinks, Post, sourcePath, Thread, thumbPath } from "../posts";
 import { config, mine } from "../state";
@@ -31,7 +32,6 @@ export function makePostContext(
   t: Thread, p: Post, bls: Backlinks,
   index: boolean, all: boolean,
 ): TemplateContext {
-  // tslint:disable:object-literal-sort-keys
   const ctx: Dict = {
     ID: p.id,
     TID: t.id,
@@ -42,10 +42,10 @@ export function makePostContext(
     Subject: p.subject,
     Staff: !!p.auth,
     Auth: ln.Common.Posts[p.auth],
+    HasFiles: !!p.files,
     post: p,
     backlinks: bls,
   };
-  // tslint:enable:object-literal-sort-keys
 
   ctx.PostClass = () => {
     const classes = ["post"];
@@ -54,6 +54,9 @@ export function makePostContext(
     }
     if (ctx.post.files) {
       classes.push("post_file");
+      if (ctx.post.files.length > 1) {
+        classes.push("post_files");
+      }
     }
     for (const provider of Object.keys(bodyEmbeds)) {
       if (bodyEmbeds[provider].test(ctx.post.body)) {
@@ -78,27 +81,7 @@ export function makePostContext(
   // NOOP because we need to re-render based on relativeTime setting.
   ctx.Time = "";
 
-  ctx.File = () => {
-    if (!p.files) return "";
-    const img = p.files[0];
-    // tslint:disable:object-literal-sort-keys
-    return new TemplateContext("post-file", {
-      HasTitle: !!img.title,
-      LCopy: ln.Common.Posts.clickToCopy,
-      Title: img.title,
-      HasVideo: img.video,
-      HasAudio: img.audio,
-      Length: duration(img.length || 0),
-      Size: fileSize(img.size),
-      Width: img.dims[0],
-      Height: img.dims[1],
-      TWidth: img.dims[2],
-      THeight: img.dims[3],
-      SourcePath: sourcePath(img.fileType, img.SHA1),
-      ThumbPath: thumbPath(img.thumbType, img.SHA1),
-    }).render();
-    // tslint:enable:object-literal-sort-keys
-  };
+  ctx.Files = (p.files || []).map(renderFile);
 
   ctx.Body = renderBody(p);
 
@@ -107,6 +90,24 @@ export function makePostContext(
   ctx.Backlinks = "";
 
   return new TemplateContext("post", ctx);
+}
+
+function renderFile(img: ImageData): string {
+  return new TemplateContext("post-file", {
+    HasTitle: !!img.title,
+    LCopy: ln.Common.Posts.clickToCopy,
+    Title: img.title,
+    HasVideo: img.video,
+    HasAudio: img.audio,
+    Length: duration(img.length || 0),
+    Size: fileSize(img.size),
+    Width: img.dims[0],
+    Height: img.dims[1],
+    TWidth: img.dims[2],
+    THeight: img.dims[3],
+    SourcePath: sourcePath(img.fileType, img.SHA1),
+    ThumbPath: thumbPath(img.thumbType, img.SHA1),
+  }).render();
 }
 
 const PLURAL_FORMS: { [key: string]: (n: number) => number } = {

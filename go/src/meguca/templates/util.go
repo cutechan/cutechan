@@ -11,7 +11,7 @@ const numBanners = 4
 // Extract reverse links to linked posts on a page
 func extractBacklinks(cap int, threads ...common.Thread) common.Backlinks {
 	bls := make(common.Backlinks, cap)
-	register := func(p common.Post, op uint64) {
+	register := func(p *common.Post, op uint64) {
 		for _, l := range p.Links {
 			m, ok := bls[l[0]]
 			if !ok {
