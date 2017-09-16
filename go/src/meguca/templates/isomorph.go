@@ -31,8 +31,6 @@ type PostContext struct {
 }
 
 type FileContext struct {
-	HasArtist  bool
-	Artist     string
 	HasTitle   bool
 	LCopy      string
 	Title      string
@@ -165,8 +163,6 @@ func (ctx *PostContext) File() string {
 	ln := lang.Get()
 	img := ctx.post.Files[0]
 	fileCtx := FileContext{
-		HasArtist:  img.Artist != "",
-		Artist:     img.Artist,
 		HasTitle:   img.Title != "",
 		LCopy:      ln.Common.Posts["clickToCopy"],
 		Title:      img.Title,

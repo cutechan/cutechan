@@ -1,19 +1,20 @@
 //go:generate easyjson --all --no_std_marshalers $GOFILE
 
-// Package common contains common shared types, variables and constants used
-// throughout the project
+// Package common contains common shared types, variables and constants
+// used throughout the project.
 package common
 
 import (
 	"time"
 )
 
-// ParseBody forwards parser.ParseBody to avoid cyclic imports in db/upkeep
+// ParseBody forwards parser.ParseBody to avoid cyclic imports in
+// db/upkeep.
 var ParseBody func([]byte, string) ([][2]uint64, error)
 
 //easyjson:json
-// Board is defined to enable marshalling optimizations and sorting by sticky
-// threads
+// Board is defined to enable marshalling optimizations and sorting by
+// sticky threads.
 type Board []Thread
 
 func (b Board) Len() int {
@@ -25,7 +26,7 @@ func (b Board) Swap(i, j int) {
 }
 
 func (b Board) Less(i, j int) bool {
-	// So it gets sorted with sticky threads first
+	// So it gets sorted with sticky threads first.
 	return b[i].Sticky
 }
 
@@ -45,36 +46,39 @@ type Thread struct {
 	Posts []Post `json:"posts"`
 }
 
-// Post is a generic post exposed publically through the JSON API. Either OP or
-// reply.
+// Post is a generic post exposed publically through the JSON API.
+// Either OP or reply.
 type Post struct {
-	Editing bool   `json:"editing,omitempty"`
-	Banned  bool   `json:"banned,omitempty"`
-	Deleted bool   `json:"deleted,omitempty"`
+	Editing bool   `json:"-"`
+	Banned  bool   `json:"-"`
+	Deleted bool   `json:"-"`
 	Sage    bool   `json:"-"`
+	Name    string `json:"-"`
+	Trip    string `json:"-"`
 	ID      uint64 `json:"id"`
 	Time    int64  `json:"time"`
 	Body    string `json:"body"`
-	Name    string `json:"name,omitempty"`
-	Trip    string `json:"trip,omitempty"`
 	Auth    string `json:"auth,omitempty"`
 	Links   Links  `json:"links,omitempty"`
 	Files   Files  `json:"files,omitempty"`
 }
 
-// StandalonePost is a post view that includes the "op" and "board" fields,
-// which are not exposed though Post, but are required for retrieving a post
-// with unknown parenthood.
+// StandalonePost is a post view that includes the "op" and "board"
+// fields, which are not exposed though Post, but are required for
+// retrieving a post with unknown parenthood.
 type StandalonePost struct {
 	Post
 	OP    uint64 `json:"op"`
 	Board string `json:"board"`
 }
 
-// Post links
+// Post links.
 type Links [][2]uint64
 
-// Map of all backlinks on a page
+// Post files.
+type Files []Image
+
+// Map of all backlinks on a page.
 type Backlinks map[uint64]map[uint64]uint64
 
 // Single news entry.

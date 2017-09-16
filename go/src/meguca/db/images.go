@@ -31,15 +31,6 @@ func GetImage(SHA1 string) (common.ImageCommon, error) {
 	return scanImage(prepared["get_image"].QueryRow(SHA1))
 }
 
-func scanImage(rs rowScanner) (img common.ImageCommon, err error) {
-	var scanner imageScanner
-	err = rs.Scan(scanner.ScanArgs()...)
-	if err != nil {
-		return
-	}
-	return scanner.Val().ImageCommon, nil
-}
-
 // NewImageToken inserts a new image allocation token into the DB and returns
 // it's ID
 func NewImageToken(SHA1 string) (token string, err error) {

@@ -1,6 +1,4 @@
-/**
- * Template structs, helper routines and context providers.
- */
+/** Template structs, helper routines and context providers. */
 // MUST BE KEPT IN SYNC WITH go/src/meguca/templates/isomorph.go!
 
 import templates from "cc-templates";
@@ -85,8 +83,6 @@ export function makePostContext(
     const img = p.files[0];
     // tslint:disable:object-literal-sort-keys
     return new TemplateContext("post-file", {
-      HasArtist: !!img.artist,
-      Artist: img.artist,
       HasTitle: !!img.title,
       LCopy: ln.Common.Posts.clickToCopy,
       Title: img.title,

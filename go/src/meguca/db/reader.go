@@ -40,21 +40,21 @@ func (p *postScanner) Val() common.Post {
 	return p.Post
 }
 
-type imageScanner struct {
+type fileScanner struct {
 	APNG, Audio, Video                sql.NullBool
 	FileType, ThumbType, Length, Size sql.NullInt64
 	Name, SHA1, MD5, Title, Artist    sql.NullString
 	Dims                              pq.Int64Array
 }
 
-func (i *imageScanner) ScanArgs() []interface{} {
+func (i *fileScanner) ScanArgs() []interface{} {
 	return []interface{}{
 		&i.APNG, &i.Audio, &i.Video, &i.FileType, &i.ThumbType, &i.Dims,
 		&i.Length, &i.Size, &i.MD5, &i.SHA1, &i.Title, &i.Artist,
 	}
 }
 
-func (i *imageScanner) Val() *common.Image {
+func (i *fileScanner) Val() *common.Image {
 	if !i.SHA1.Valid {
 		return nil
 	}
@@ -82,65 +82,69 @@ func (i *imageScanner) Val() *common.Image {
 	}
 }
 
+func scanCatalog(r tableScanner) (b common.Board, err error) {
+	defer r.Close()
+	b = make(common.Board, 0, 32)
+	for r.Next() {
+		var t common.Thread
+		t, err = scanThread(r)
+		if err != nil {
+			return
+		}
+		b = append(b, t)
+	}
+	err = r.Err()
+	return
+}
+
 func scanThread(r rowScanner) (t common.Thread, err error) {
 	var (
 		ts threadScanner
 		ps postScanner
-		is imageScanner
+		fs fileScanner
+		args = append(ts.ScanArgs(), ps.ScanArgs()...)
 	)
-
-	args := make([]interface{}, 0)
-	args = append(args, ts.ScanArgs()...)
-	args = append(args, ps.ScanArgs()...)
-	args = append(args, is.ScanArgs()...)
+	args = append(args, fs.ScanArgs()...)
 	err = r.Scan(args...)
 	if err != nil {
 		return
 	}
-
 	t = ts.Val()
-	t.Post, err = scanPost(ps, is)
+	t.Post, err = scanPost(ps, fs)
 	return
 }
 
-func scanPost(ps postScanner, is imageScanner) (p common.Post, err error) {
+func scanPost(ps postScanner, fs fileScanner) (p common.Post, err error) {
 	p = ps.Val()
-	img := is.Val()
+	img := fs.Val()
 	if img != nil {
 		p.Files = append(p.Files, *img)
 	}
 	return
 }
 
-func scanCatalog(table tableScanner) (board common.Board, err error) {
-	defer table.Close()
-	board = make(common.Board, 0, 32)
-
-	var t common.Thread
-	for table.Next() {
-		t, err = scanThread(table)
-		if err != nil {
-			return
-		}
-		board = append(board, t)
+func scanImage(r rowScanner) (img common.ImageCommon, err error) {
+	var fs fileScanner
+	err = r.Scan(fs.ScanArgs()...)
+	if err != nil {
+		return
 	}
-	err = table.Err()
+	img = fs.Val().ImageCommon
 	return
 }
 
-func scanThreadIDs(table tableScanner) (ids []uint64, err error) {
-	defer table.Close()
-
+func scanThreadIDs(r tableScanner) (ids []uint64, err error) {
+	defer r.Close()
 	ids = make([]uint64, 0, 64)
-	var id uint64
-	for table.Next() {
-		err = table.Scan(&id)
+	for r.Next() {
+		var id uint64
+		err = r.Scan(&id)
 		if err != nil {
 			return
 		}
 		ids = append(ids, id)
 	}
-	err = table.Err()
+	err = r.Err()
 	return
 }
 
@@ -149,6 +153,24 @@ type PostStats struct {
 	ID   uint64
 	Time int64
 	Body []byte
+}
+
+// GetAllBoardCatalog retrieves all OPs for the "/all/" meta-board.
+func GetAllBoardCatalog() (common.Board, error) {
+	r, err := prepared["get_all_board"].Query()
+	if err != nil {
+		return nil, err
+	}
+	return scanCatalog(r)
+}
+
+// GetBoardCatalog retrieves all OPs of a single board.
+func GetBoardCatalog(board string) (common.Board, error) {
+	r, err := prepared["get_board"].Query(board)
+	if err != nil {
+		return nil, err
+	}
+	return scanCatalog(r)
 }
 
 // GetThread retrieves public thread data from the database.
@@ -190,9 +212,9 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 	// Scan replies into []common.Post
 	var (
 		ps postScanner
-		is imageScanner
+		fs fileScanner
 		p  common.Post
-		args = append(ps.ScanArgs(), is.ScanArgs()...)
+		args = append(ps.ScanArgs(), fs.ScanArgs()...)
 	)
 	t.Posts = make([]common.Post, 0, cap)
 	for r.Next() {
@@ -200,7 +222,7 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 		if err != nil {
 			return
 		}
-		p, err = scanPost(ps, is)
+		p, err = scanPost(ps, fs)
 		if err != nil {
 			return
 		}
@@ -213,43 +235,23 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 // GetPost reads a single post from the database.
 func GetPost(id uint64) (p common.StandalonePost, err error) {
 	var (
-		args = make([]interface{}, 2)
 		ps postScanner
-		is imageScanner
+		fs fileScanner
+		args = []interface{}{&p.OP, &p.Board}
 	)
-	args[0] = &p.OP
-	args[1] = &p.Board
 	args = append(args, ps.ScanArgs()...)
-	args = append(args, is.ScanArgs()...)
+	args = append(args, fs.ScanArgs()...)
 
 	err = prepared["get_post"].QueryRow(id).Scan(args...)
 	if err != nil {
 		return
 	}
 	p.Post = ps.Val()
-	img := is.Val()
+	img := fs.Val()
 	if img != nil {
 		p.Files = append(p.Files, *img)
 	}
 	return
-}
-
-// GetAllBoardCatalog retrieves all OPs for the "/all/" meta-board.
-func GetAllBoardCatalog() (common.Board, error) {
-	r, err := prepared["get_all_board"].Query()
-	if err != nil {
-		return nil, err
-	}
-	return scanCatalog(r)
-}
-
-// GetBoardCatalog retrieves all OPs of a single board.
-func GetBoardCatalog(board string) (common.Board, error) {
-	r, err := prepared["get_board"].Query(board)
-	if err != nil {
-		return nil, err
-	}
-	return scanCatalog(r)
 }
 
 // Retrieves all threads IDs in bump order with stickies first.
