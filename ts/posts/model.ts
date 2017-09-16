@@ -2,9 +2,8 @@ import { Model } from "../base";
 import { fileTypes, ImageData, PostData, PostLink } from "../common";
 import { mine, page, posts } from "../state";
 import { notifyAboutReply } from "../ui";
-import { extend } from "../util";
 import Collection from "./collection";
-import { sourcePath } from "./images";
+import { sourcePath, thumbPath } from "./images";
 import PostView from "./view";
 
 export interface Backlinks { [id: string]: PostBacklinks; }
@@ -20,7 +19,7 @@ export class Thread {
   }
 }
 
-// Generic post model
+// Generic post model.
 export class Post extends Model implements PostData {
   public collection: Collection;
   public view: PostView;
@@ -42,22 +41,23 @@ export class Post extends Model implements PostData {
   public links?: PostLink[];
   public files?: ImageData[];
 
-  public get opPost() {
-    return this.id === this.op;
-  }
-
-  // TODO(Kagami): Move to ImageData?
-  public get transparentThumb() {
-    return this.files[0].thumbType === fileTypes.png;
-  }
-
-  public get fileSrc(): string {
-    return sourcePath(this.files[0].fileType, this.files[0].SHA1);
-  }
-
   constructor(attrs: PostData) {
     super();
-    extend(this, attrs);
+    Object.assign(this, attrs);
+  }
+
+  public getFileByIndex(i: number): File {
+    return new File(this.files[i]);
+  }
+
+  public getFileByThumb(thumb: string): File {
+    // http://example.com/uploads/thumb/12/3456...jpg
+    const sha1 = thumb.split(/[/.]/).slice(-3, -1).join("");
+    return new File(this.files.find((f) => f.SHA1 === sha1));
+  }
+
+  public isOP() {
+    return this.id === this.op;
   }
 
   // Remove the model from its collection, detach all references and allow to
@@ -109,7 +109,7 @@ export class Post extends Model implements PostData {
 
   // Set post as deleted.
   public setDeleted() {
-    if (this.opPost) {
+    if (this.isOP()) {
       if (page.thread) {
         location.href = "/all/";
       } else {
@@ -140,5 +140,35 @@ export class Post extends Model implements PostData {
 
     // Should be unseen then.
     return false;
+  }
+}
+
+// Wrapper around image data with few useful methods.
+export class File implements ImageData {
+  public SHA1: string;
+  public size: number;
+  public video: boolean;
+  public audio: boolean;
+  public apng: boolean;
+  public fileType: fileTypes;
+  public thumbType: fileTypes;
+  public length?: number;
+  public title?: string;
+  public dims: [number, number, number, number];
+
+  public get thumb(): string {
+    return thumbPath(this.thumbType, this.SHA1);
+  }
+
+  public get src(): string {
+    return sourcePath(this.fileType, this.SHA1);
+  }
+
+  public get transparent(): boolean {
+    return this.thumbType === fileTypes.png;
+  }
+
+  constructor(file: ImageData) {
+    Object.assign(this, file);
   }
 }

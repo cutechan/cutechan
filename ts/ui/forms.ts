@@ -1,5 +1,5 @@
 import { View, ViewAttrs } from "../base";
-import { extend, importTemplate } from "../util";
+import { importTemplate } from "../util";
 import CaptchaView from "./captcha";
 
 interface FormAttrs extends ViewAttrs {
@@ -68,7 +68,7 @@ abstract class FormView extends View<null> {
   // Inject captcha data into the request struct, if any
   protected injectCaptcha(req: {}) {
     if (this.captcha) {
-      extend(req, this.captcha.data());
+      Object.assign(req, this.captcha.data());
     }
   }
 

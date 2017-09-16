@@ -67,24 +67,6 @@ export function pad(n: number): string {
   return (n < 10 ? "0" : "") + n;
 }
 
-// Copy all properties from the source object to the destination object. Nested
-// objects are extended recursively.
-export function extend(dest: {}, source: {}) {
-  for (const key of Object.keys(source)) {
-    const val = source[key];
-    if (typeof val === "object" && val !== null) {
-      const d = dest[key];
-      if (d) {
-        extend(d, val);
-      } else {
-        dest[key] = val;
-      }
-    } else {
-      dest[key] = val;
-    }
-  }
-}
-
 const escapeMap = {
   "&": "&amp;",
   "<": "&lt;",

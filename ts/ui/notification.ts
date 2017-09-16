@@ -1,7 +1,7 @@
 import { View } from "../base";
 import lang from "../lang";
 import options from "../options";
-import { Post, thumbPath } from "../posts";
+import { Post } from "../posts";
 import { mine } from "../state";
 import { importTemplate } from "../util";
 import { DEFAULT_NOTIFICATION_IMAGE_URL } from "../vars";
@@ -28,8 +28,7 @@ export default function notifyAboutReply(post: Post) {
   let icon = "";
   if (!options.workModeToggle) {
     if (post.files) {
-      const { thumbType, SHA1 } = post.files[0];
-      icon = thumbPath(thumbType, SHA1);
+      icon = post.getFileByIndex(0).thumb;
     } else {
       icon = DEFAULT_NOTIFICATION_IMAGE_URL;
     }

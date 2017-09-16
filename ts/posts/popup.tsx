@@ -410,15 +410,15 @@ class Popups extends Component<any, PopupsState> {
 
     if (target.matches(POST_FILE_THUMB_SEL)) {
       const post = getModel(target);
-      if (!post) return;
+      const file = post.getFileByThumb((target as HTMLImageElement).src);
       Object.assign(props, {
-        video: post.files[0].video,
-        audio: post.files[0].audio,
-        transparent: post.transparentThumb,
-        url: post.fileSrc,
-        width: post.files[0].dims[0],
-        height: post.files[0].dims[1],
-        duration: post.files[0].length,
+        video: file.video,
+        audio: file.audio,
+        transparent: file.transparent,
+        url: file.src,
+        width: file.dims[0],
+        height: file.dims[1],
+        duration: file.length,
       });
     } else if (target.matches(POST_EMBED_SEL)) {
       Object.assign(props, {

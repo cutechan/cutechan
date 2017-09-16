@@ -146,12 +146,12 @@ function showImage(url: string, width: number, height: number) {
   container.append(imagePreview);
 }
 
-function renderPostImagePreview(thumb: HTMLElement): any {
+function renderPostImagePreview(thumb: HTMLImageElement): any {
   const post = getModel(thumb);
-  if (!post || post.files[0].video) return;
-  const url = post.fileSrc;
-  const [width, height] = post.files[0].dims;
-  showImage(url, width, height);
+  const file = post.getFileByThumb(thumb.src);
+  if (file.video) return;
+  const [width, height] = file.dims;
+  showImage(file.src, width, height);
 }
 
 function renderPostEmbedPreview(link: HTMLElement): any {
@@ -170,7 +170,7 @@ function renderImagePreview(event: MouseEvent) {
   if (!target.matches) return;
 
   if (target.matches(POST_FILE_THUMB_SEL)) {
-    renderPostImagePreview(target);
+    renderPostImagePreview(target as HTMLImageElement);
   } else if (target.matches(POST_EMBED_SEL)) {
     renderPostEmbedPreview(target);
   }
