@@ -47,14 +47,7 @@ type Thread struct {
 }
 
 // Post is a generic post exposed publically through the JSON API.
-// TODO(Kagami): Remove unneeded fields.
 type Post struct {
-	Editing bool   `json:"-"`
-	Banned  bool   `json:"-"`
-	Deleted bool   `json:"-"`
-	Sage    bool   `json:"-"`
-	Name    string `json:"-"`
-	Trip    string `json:"-"`
 	ID      uint64 `json:"id"`
 	Time    int64  `json:"time"`
 	Body    string `json:"body"`

@@ -293,7 +293,6 @@ func (f *Feed) sendIPCount() {
 // and propagate to listeners
 func (f *Feed) InsertPost(post common.StandalonePost, body, msg []byte) {
 	f.insertPost <- postCreationMessage{
-		open:     post.Editing,
 		id:       post.ID,
 		hasImage: len(post.Files) > 0,
 		time:     post.Time,

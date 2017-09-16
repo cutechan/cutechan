@@ -22,6 +22,7 @@ var (
 	errReadOnly          = errors.New("read only board")
 	errInvalidImageToken = errors.New("invalid image token")
 	errNoTextOrFiles     = errors.New("no text or files")
+	errTooManyLines      = errors.New("too many lines in post body")
 )
 
 // ThreadCreationRequest contains data for creating a new thread.
