@@ -68,8 +68,8 @@ func genPrepared() error {
 	return nil
 }
 
-// StartTransaction initiates a new DB transaction. It is the responsibility of
-// the caller to commit or rollback the transaction.
+// StartTransaction initiates a new DB transaction. It is the
+// responsibility of the caller to commit or rollback the transaction.
 func StartTransaction() (*sql.Tx, error) {
 	return db.Begin()
 }

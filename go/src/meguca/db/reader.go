@@ -118,7 +118,7 @@ func scanCatalogThread(r rowScanner) (t common.Thread, err error) {
 	t.Post = ps.Val()
 	img := fs.Val()
 	if img != nil {
-		t.Post.Files = append(t.Post.Files, *img)
+		t.Files = append(t.Files, *img)
 	}
 	return
 }
@@ -194,11 +194,11 @@ func GetBoardCatalog(board string) (common.Board, error) {
 // GetThread retrieves public thread data from the database.
 func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 	// Read all data in single transaction.
-	tx, err := db.Begin()
+	tx, err := StartTransaction()
 	if err != nil {
 		return
 	}
-	defer tx.Commit()
+	defer tx.Rollback()
 	err = setReadOnly(tx)
 	if err != nil {
 		return
@@ -254,7 +254,7 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 	}
 	defer r2.Close()
 
-	// Fill post files.
+	// Fill posts files.
 	var fs fileScanner
 	var pID uint64
 	args = append([]interface{}{&pID}, fs.ScanArgs()...)
@@ -274,24 +274,45 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 
 // GetPost reads a single post from the database.
 func GetPost(id uint64) (p common.StandalonePost, err error) {
-	var (
-		ps postScanner
-		fs fileScanner
-	)
-	args := []interface{}{&p.OP, &p.Board}
-	args = append(args, ps.ScanArgs()...)
-	args = append(args, fs.ScanArgs()...)
-
-	err = prepared["get_post"].QueryRow(id).Scan(args...)
+	// Read all data in single transaction.
+	tx, err := StartTransaction()
+	if err != nil {
+		return
+	}
+	defer tx.Rollback()
+	err = setReadOnly(tx)
 	if err != nil {
 		return
 	}
 
+	// Get post.
+	var ps postScanner
+	args := append(ps.ScanArgs(), &p.OP, &p.Board)
+	err = tx.Stmt(prepared["get_post"]).QueryRow(id).Scan(args...)
+	if err != nil {
+		return
+	}
 	p.Post = ps.Val()
-	img := fs.Val()
-	if img != nil {
+
+	// Get post files.
+	r, err := tx.Stmt(prepared["get_post_files"]).Query(id)
+	if err != nil {
+		return
+	}
+	defer r.Close()
+
+	// Fill post files.
+	var fs fileScanner
+	args = fs.ScanArgs()
+	for r.Next() {
+		err = r.Scan(args...)
+		if err != nil {
+			return
+		}
+		img := fs.Val()
 		p.Files = append(p.Files, *img)
 	}
+	err = r.Err()
 	return
 }
 
