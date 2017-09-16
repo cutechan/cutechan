@@ -30,9 +30,9 @@ func (b Board) Less(i, j int) bool {
 	return b[i].Sticky
 }
 
-// Thread is a transport/export wrapper that stores both the thread metadata,
-// its opening post data and its contained posts. The composite type itself is
-// not stored in the database.
+// Thread is a transport/export wrapper that stores both the thread
+// metadata, its opening post data and its contained posts. The
+// composite type itself is not stored in the database.
 type Thread struct {
 	Abbrev    bool   `json:"abbrev,omitempty"`
 	Sticky    bool   `json:"sticky,omitempty"`
@@ -47,7 +47,7 @@ type Thread struct {
 }
 
 // Post is a generic post exposed publically through the JSON API.
-// Either OP or reply.
+// TODO(Kagami): Remove unneeded fields.
 type Post struct {
 	Editing bool   `json:"-"`
 	Banned  bool   `json:"-"`

@@ -87,7 +87,7 @@ func scanCatalog(r tableScanner) (b common.Board, err error) {
 	b = make(common.Board, 0, 32)
 	for r.Next() {
 		var t common.Thread
-		t, err = scanThread(r)
+		t, err = scanCatalogThread(r)
 		if err != nil {
 			return
 		}
@@ -97,29 +97,47 @@ func scanCatalog(r tableScanner) (b common.Board, err error) {
 	return
 }
 
-func scanThread(r rowScanner) (t common.Thread, err error) {
+// Thread with one post and image (if any) attached.
+func scanCatalogThread(r rowScanner) (t common.Thread, err error) {
 	var (
 		ts threadScanner
 		ps postScanner
 		fs fileScanner
-		args = append(ts.ScanArgs(), ps.ScanArgs()...)
 	)
+	args := make([]interface{}, 0)
+	args = append(args, ts.ScanArgs()...)
+	args = append(args, ps.ScanArgs()...)
 	args = append(args, fs.ScanArgs()...)
+
 	err = r.Scan(args...)
 	if err != nil {
 		return
 	}
+
 	t = ts.Val()
-	t.Post, err = scanPost(ps, fs)
+	t.Post = ps.Val()
+	img := fs.Val()
+	if img != nil {
+		t.Post.Files = append(t.Post.Files, *img)
+	}
 	return
 }
 
-func scanPost(ps postScanner, fs fileScanner) (p common.Post, err error) {
-	p = ps.Val()
-	img := fs.Val()
-	if img != nil {
-		p.Files = append(p.Files, *img)
+// Just a thread with post attached.
+func scanThread(r rowScanner) (t common.Thread, err error) {
+	var (
+		ts threadScanner
+		ps postScanner
+	)
+	args := append(ts.ScanArgs(), ps.ScanArgs()...)
+
+	err = r.Scan(args...)
+	if err != nil {
+		return
 	}
+
+	t = ts.Val()
+	t.Post = ps.Val()
 	return
 }
 
@@ -175,6 +193,7 @@ func GetBoardCatalog(board string) (common.Board, error) {
 
 // GetThread retrieves public thread data from the database.
 func GetThread(id uint64, lastN int) (t common.Thread, err error) {
+	// Read all data in single transaction.
 	tx, err := db.Begin()
 	if err != nil {
 		return
@@ -185,50 +204,71 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 		return
 	}
 
-	// Get thread metadata and OP
+	// Get thread info and OP post.
 	t, err = scanThread(tx.Stmt(prepared["get_thread"]).QueryRow(id))
 	if err != nil {
 		return
 	}
-	t.Abbrev = lastN != 0
 
-	// Get replies
-	var (
-		cap   int
-		limit *int
-	)
+	// Partial thread routines.
+	t.Abbrev = lastN != 0
+	postCnt := int(t.PostCtr)
+	var limit *int
 	if lastN != 0 {
-		cap = lastN
+		postCnt = lastN
 		limit = &lastN
-	} else {
-		cap = int(t.PostCtr)
 	}
+
+	// Get thread posts.
 	r, err := tx.Stmt(prepared["get_thread_posts"]).Query(id, limit)
 	if err != nil {
 		return
 	}
 	defer r.Close()
 
-	// Scan replies into []common.Post
-	var (
-		ps postScanner
-		fs fileScanner
-		p  common.Post
-		args = append(ps.ScanArgs(), fs.ScanArgs()...)
-	)
-	t.Posts = make([]common.Post, 0, cap)
+	// Fill thread posts.
+	var ps postScanner
+	args := ps.ScanArgs()
+	t.Posts = make([]common.Post, 0, postCnt)
+	postsById := make(map[uint64]*common.Post, postCnt + 1)  // + OP
+	postsById[t.ID] = &t.Post
 	for r.Next() {
 		err = r.Scan(args...)
 		if err != nil {
 			return
 		}
-		p, err = scanPost(ps, fs)
+		p := ps.Val()
+		t.Posts = append(t.Posts, p)
+		postsById[p.ID] = &p
+	}
+	err = r.Err()
+	if err != nil {
+		return
+	}
+
+	// Get thread files.
+	// FIXME(Kagami): Limit number of files for abbrev threads.
+	r2, err := tx.Stmt(prepared["get_thread_files"]).Query(id)
+	if err != nil {
+		return
+	}
+	defer r2.Close()
+
+	// Fill post files.
+	var fs fileScanner
+	var pID uint64
+	args = append([]interface{}{&pID}, fs.ScanArgs()...)
+	for r2.Next() {
+		err = r2.Scan(args...)
 		if err != nil {
 			return
 		}
-		t.Posts = append(t.Posts, p)
+		img := fs.Val()
+		if p, ok := postsById[pID]; ok {
+			p.Files = append(p.Files, *img)
+		}
 	}
-	err = r.Err()
+	err = r2.Err()
 	return
 }
 
@@ -237,8 +277,8 @@ func GetPost(id uint64) (p common.StandalonePost, err error) {
 	var (
 		ps postScanner
 		fs fileScanner
-		args = []interface{}{&p.OP, &p.Board}
 	)
+	args := []interface{}{&p.OP, &p.Board}
 	args = append(args, ps.ScanArgs()...)
 	args = append(args, fs.ScanArgs()...)
 
@@ -246,6 +286,7 @@ func GetPost(id uint64) (p common.StandalonePost, err error) {
 	if err != nil {
 		return
 	}
+
 	p.Post = ps.Val()
 	img := fs.Val()
 	if img != nil {

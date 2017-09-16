@@ -1,11 +1,8 @@
-with t as (
-  select id, time, body, auth, links, images.*
-  from posts
-  left outer join images
-    on posts.SHA1 = images.SHA1
-  where op = $1 and id != $1
-  order by id desc
-  limit $2
+WITH t AS (
+  SELECT id, time, body, auth, links
+  FROM posts
+  WHERE op = $1 AND id != $1
+  ORDER BY id DESC
+  LIMIT $2
 )
-select * from t
-  order by id asc
+SELECT * FROM t ORDER BY id ASC
