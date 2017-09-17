@@ -1064,14 +1064,16 @@ html.work-mode {
   // Spoiler.
   del {
     text-decoration: none;
-    & {
-      background-color: @spoiler;
+    background-color: @spoiler;
+    &:not(:hover) {
+      &, a, .post-embed-icon {
+        color: @spoiler;
+      }
     }
-    &, a {
-      color: @spoiler;
-    }
-    &:hover, &:hover a {
-      color: #fff;
+    &:hover {
+      &, a {
+        color: #fff;
+      }
     }
   }
 
