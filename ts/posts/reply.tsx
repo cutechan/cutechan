@@ -324,11 +324,10 @@ class Reply extends Component<any, any> {
     }
 
     let cited = "";
-    if (!body.includes(`>>${postID}`)) {
+    const sel = window.getSelection();
+    if (sel.isCollapsed || !body.includes(`>>${postID}`)) {
       cited += `>>${postID}\n`;
     }
-
-    const sel = window.getSelection();
     if (!sel.isCollapsed
         && postBody.contains(sel.anchorNode)
         && postBody.contains(sel.focusNode)) {
