@@ -323,6 +323,42 @@ var upgrades = []func(*sql.Tx) error{
 				ADD COLUMN id bigserial UNIQUE`,
 		)
 	},
+	// Migrate post images to support multiple files per post.
+	func(tx *sql.Tx) (err error) {
+		type File struct {id uint64; sha1 string}
+		files := make([]File, 0)
+
+		// Keep old scheme values just in case.
+		r, err := tx.Query("SELECT id, sha1 FROM posts WHERE sha1 IS NOT NULL ORDER BY id")
+		if err != nil {
+			return
+		}
+		for r.Next() {
+			var id uint64
+			var sha1 string
+			err = r.Scan(&id, &sha1)
+			if err != nil {
+				return
+			}
+			files = append(files, File{id, sha1})
+		}
+		err = r.Err()
+		if err != nil {
+			return
+		}
+
+		// Fill new scheme.
+		for _, f := range files {
+			_, err = tx.Exec(
+				"INSERT INTO post_files (post_id, file_hash) VALUES ($1, $2)",
+				f.id, f.sha1,
+			)
+			if err != nil {
+				return
+			}
+		}
+		return
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both
