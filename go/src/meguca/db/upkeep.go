@@ -33,13 +33,13 @@ func runCleanupTasks() {
 
 func runFiveMinuteTasks() {
 	logPrepared("expire_post_tokens", "expire_image_tokens", "expire_bans")
-	// logError("image cleanup", deleteUnusedImages())
+	logError("file cleanup", deleteUnusedFiles())
 }
 
 func runHourTasks() {
 	logPrepared("expire_user_sessions", "remove_identity_info")
-	logError("thread cleanup", deleteOldThreads())
-	logError("board cleanup", deleteUnusedBoards())
+	// logError("thread cleanup", deleteOldThreads())
+	// logError("board cleanup", deleteUnusedBoards())
 	// logError("vaccum database", func() error {
 	// 	_, err := db.Exec(`vacuum`)
 	// 	return err
@@ -58,8 +58,8 @@ func logError(prefix string, err error) {
 	}
 }
 
-// Delete boards that are older than N days and have not had any new posts for
-// N days.
+// Delete boards that are older than N days and have not had any new
+// posts for N days..
 func deleteUnusedBoards() error {
 	conf := config.Get()
 	if !conf.PruneBoards {
@@ -69,9 +69,9 @@ func deleteUnusedBoards() error {
 	return execPrepared("delete_unused_boards", min)
 }
 
-// Delete stale threads. Thread retention measured in a bumptime threshold, that
-// is calculated as a function of post count till bump limit with an N days
-// floor and ceiling.
+// Delete stale threads. Thread retention measured in a bumptime
+// threshold, that is calculated as a function of post count till bump
+// limit with an N days floor and ceiling.
 func deleteOldThreads() (err error) {
 	conf := config.Get()
 	if !conf.PruneThreads {
@@ -128,15 +128,16 @@ func deleteOldThreads() (err error) {
 	return tx.Commit()
 }
 
-// DeleteBoard deletes a board and all of its contained threads and posts
+// DeleteBoard deletes a board and all of its contained threads and
+// posts.
 func DeleteBoard(board string) error {
 	_, err := prepared["delete_board"].Exec(board)
 	return err
 }
 
-// Delete images not used in any posts
-func deleteUnusedImages() (err error) {
-	r, err := prepared["delete_unused_images"].Query()
+// Delete files not used in any posts.
+func deleteUnusedFiles() (err error) {
+	r, err := prepared["delete_unused_files"].Query()
 	if err != nil {
 		return
 	}

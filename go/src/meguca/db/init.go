@@ -333,6 +333,7 @@ var upgrades = []func(*sql.Tx) error{
 		if err != nil {
 			return
 		}
+		defer r.Close()
 		for r.Next() {
 			var id uint64
 			var sha1 string
