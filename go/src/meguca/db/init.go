@@ -360,6 +360,12 @@ var upgrades = []func(*sql.Tx) error{
 		}
 		return
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`DROP FUNCTION insert_thread(id bigint, now bigint, body character varying, auth character varying, links bigint[], op bigint, board text, ip inet, file_cnt bigint, subject character varying)`,
+			`ALTER TABLE posts ALTER COLUMN body TYPE text`,
+		)
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both

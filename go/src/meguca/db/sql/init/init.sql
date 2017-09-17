@@ -112,7 +112,7 @@ create table posts (
   auth varchar(20),
   SHA1 char(40) references images on delete set null,
   name varchar(50),
-  body varchar(2000) not null,
+  body text not null,
   password bytea,
   ip inet,
   links bigint[][2],

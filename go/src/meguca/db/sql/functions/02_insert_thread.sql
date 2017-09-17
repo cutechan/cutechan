@@ -1,7 +1,7 @@
 CREATE OR REPLACE FUNCTION insert_thread(
   id bigint,
   now bigint,
-  body varchar(2000),
+  body text,
   auth varchar(20),
   links bigint[][2],
   op bigint,

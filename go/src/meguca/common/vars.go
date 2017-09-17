@@ -6,7 +6,7 @@ const (
 	MaxLenAuth         = 50
 	MaxLenPostPassword = 100
 	MaxLenSubject      = 100
-	MaxLenBody         = 2000
+	MaxLenBody         = 4000
 	MaxLinesBody       = 100
 	MaxLenPassword     = 50
 	MaxLenFileArist    = 100
