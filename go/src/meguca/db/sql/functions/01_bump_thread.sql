@@ -10,11 +10,7 @@ CREATE OR REPLACE FUNCTION bump_thread(
     replyTime = floor(extract(epoch from now())),
 
     bumpTime = CASE
-      WHEN bump THEN
-        CASE WHEN postCtr <= 500
-          THEN floor(extract(epoch from now()))
-          ELSE bumpTime
-        END
+      WHEN bump AND postCtr <= 500 THEN floor(extract(epoch from now()))
       ELSE bumpTime
     END,
 

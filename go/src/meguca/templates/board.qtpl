@@ -102,7 +102,7 @@ function to allow caching of generated posts.
 				<a class="post-header-item post-id" href="{%s url %}">#{%s idStr %}</a>
 				<h3 class="post-header-item post-subject">{%s t.Subject %}</h3>
 				<span class="post-header-item post-catalog-counter post-posts-counter">
-					<i class="fa fa-comment">{% space %}{%d int(t.PostCtr) %}</i>
+					<i class="fa fa-comment">{% space %}{%d int(t.PostCtr-1) %}</i>
 				</span>
 				{% if t.ImageCtr > 0 %}
 					<span class="post-header-item post-catalog-counter post-files-counter">
