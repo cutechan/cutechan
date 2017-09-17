@@ -140,7 +140,6 @@ create table post_tokens (
 CREATE TABLE post_files (
   post_id bigint REFERENCES posts ON DELETE CASCADE,
   file_hash char(40) REFERENCES images,
-  id bigserial UNIQUE,
-  PRIMARY KEY (post_id, file_hash)
+  id bigserial PRIMARY KEY
 );
 CREATE INDEX post_files_file_hash ON post_files (file_hash);

@@ -366,6 +366,13 @@ var upgrades = []func(*sql.Tx) error{
 			`ALTER TABLE posts ALTER COLUMN body TYPE text`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`ALTER TABLE post_files DROP CONSTRAINT post_files_pkey`,
+			`ALTER TABLE post_files DROP CONSTRAINT post_files_id_key`,
+			`ALTER TABLE post_files ADD PRIMARY KEY (id)`,
+		)
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both
