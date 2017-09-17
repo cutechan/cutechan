@@ -514,8 +514,7 @@ class Reply extends Component<any, any> {
     const fwraps = this.state.fwraps.filter((f) => f.info.src !== src);
     this.setState({fwraps}, this.focus);
   }
-  private handleDrop = (e: DragEvent) => {
-    const files = e.dataTransfer.files;
+  private handleDrop = (files: FileList) => {
     if (files.length) {
       this.handleFiles(files);
     }
@@ -780,7 +779,7 @@ class ReplyContainer extends Component<any, any> {
   public state = {
     show: false,
     quoted: null as Element,
-    dropped: null as DragEvent,
+    dropped: null as FileList,
   };
   public componentDidMount() {
     hook(HOOKS.openReply, () => {
@@ -798,9 +797,9 @@ class ReplyContainer extends Component<any, any> {
     on(document, "dragover", (e) => {
       e.preventDefault();
     });
-    on(document, "drop", (e) => {
+    on(document, "drop", (e: DragEvent) => {
       e.preventDefault();
-      this.setState({show: true, dropped: e});
+      this.setState({show: true, dropped: e.dataTransfer.files});
     });
   }
   public render({}, { show, quoted, dropped }: any) {
