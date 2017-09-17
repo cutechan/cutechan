@@ -5,6 +5,7 @@
 *.qtpl.go
 bin_data.go
 *_easyjson.go
+/smiles-pp/
 /mustache-pp/
 /go/src/*
 !/go/src/meguca/

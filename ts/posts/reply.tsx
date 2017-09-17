@@ -1,5 +1,6 @@
 import * as cx from "classnames";
 import { Component, h, render } from "preact";
+import smiles from "../../smiles-pp/smiles";
 import { showAlert } from "../alerts";
 import API from "../api";
 import { PostData } from "../common";
@@ -22,6 +23,9 @@ import {
   TRIGGER_QUOTE_POST_SEL,
 } from "../vars";
 import * as signature from "./signature";
+
+// tslint:disable-next-line:no-unused-expression
+smiles;
 
 function quoteText(text: string): string {
   return text.trim().split(/\n/).filter((line) => {

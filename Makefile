@@ -10,9 +10,9 @@ else
 	export GOPATH:=$(GOPATH):$(PWD)/go
 endif
 
-.PHONY: client tags
+.PHONY: smiles tags
 
-all: deps templates client server
+all: deps templates smiles client server
 
 deps:
 	npm install --progress=false
@@ -39,6 +39,9 @@ templates:
 	$(HTMLMIN) --collapse-whitespace --collapse-inline-tag-whitespace \
 		--input-dir mustache --output-dir mustache-pp
 
+smiles:
+	$(GULP) smiles
+
 client:
 	$(GULP)
 
@@ -49,7 +52,7 @@ server:
 	go generate meguca/...
 	go build -v -o cutechan meguca
 
-deb: clean templates client server
+deb: clean templates smiles client server
 	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 cutechan
 	mkdir deb_dist
 	cp -a DEBIAN deb_dist
@@ -78,10 +81,13 @@ fmt:
 tags:
 	ctags -R go/src/meguca ts
 
-clean: templates-clean client-clean server-clean deb-clean test-clean
+clean: templates-clean smiles-clean client-clean server-clean deb-clean test-clean
 
 templates-clean:
 	rm -rf mustache-pp
+
+smiles-clean:
+	rm -rf smiles-pp
 
 client-clean:
 	rm -rf dist

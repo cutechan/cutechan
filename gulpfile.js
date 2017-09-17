@@ -1,11 +1,10 @@
 "use strict";
 
+const fs = require("fs");
 const path = require("path");
 const del = require("del");
 const merge = require("merge-stream");
 const stripAnsi = require("strip-ansi");
-const autoprefixer = require("autoprefixer");
-const cssnano = require("cssnano");
 const uglifyes = require("uglify-es");
 const gulp = require("gulp");
 const gutil = require("gulp-util");
@@ -15,6 +14,7 @@ const tap = require("gulp-tap");
 const sourcemaps = require("gulp-sourcemaps");
 const ts = require("gulp-typescript");
 const rjsOptimize = require("gulp-requirejs-optimize");
+const spritesmith = require("gulp.spritesmith");
 const less = require("gulp-less");
 const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
@@ -25,12 +25,14 @@ const runSequence = require("run-sequence");
 
 const LANGS_GLOB = "i18n/*.json";
 const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
+const SMILESJS_GLOB = "smiles-pp/smiles.js";
 const TYPESCRIPT_GLOB = "{app,ts/**/*}.[tj]s?(x)";
 
 const DIST_DIR = "dist";
 const STATIC_DIR = path.join(DIST_DIR, "static");
 const JS_DIR = path.join(STATIC_DIR, "js");
 const CSS_DIR = path.join(STATIC_DIR, "css");
+const IMG_DIR = path.join(STATIC_DIR, "img");
 const FONTS_DIR = path.join(STATIC_DIR, "fonts");
 
 // Keep script alive and rebuild on file changes.
@@ -147,7 +149,12 @@ function buildES6() {
 
   // Recompile on source update, if running with the `-w` flag.
   if (watch) {
-    gulp.watch([LANGS_GLOB, TEMPLATES_GLOB, TYPESCRIPT_GLOB], [name])
+    gulp.watch([
+      LANGS_GLOB,
+      TEMPLATES_GLOB,
+      SMILESJS_GLOB,
+      TYPESCRIPT_GLOB,
+    ], [name]);
   }
 }
 
@@ -162,6 +169,34 @@ function buildES5() {
       .pipe(gulp.dest(JS_DIR))
   );
 }
+
+// Special task, run separately.
+gulp.task("smiles", () =>
+  gulp.src("smiles/*.png")
+    .pipe(spritesmith({
+      imgName: "smiles.png",
+      cssName: "smiles.css",
+      imgPath: "/static/img/smiles.png",
+      cssOpts: {
+        cssSelector: s => ".smile-" + s.name,
+      },
+    }))
+    .pipe(gulp.dest("smiles-pp"))
+    .on("end", () => {
+      const smiles = fs
+        .readdirSync("smiles")
+        .filter(s => /^[a-z0-9_]+\.png$/.test(s))
+        .map(s => '"' + s.slice(0, -4) + '"')
+        .join(",");
+
+      const jsModule = `
+        export default new Set([
+          ${smiles}
+        ]);
+      `;
+      fs.writeFileSync("smiles-pp/smiles.js", jsModule);
+    })
+);
 
 gulp.task("clean", () => {
   return del(DIST_DIR);
@@ -208,8 +243,9 @@ createTask("css", "less/[^_]*.less", src =>
     .pipe(less())
     .on("error", handleError)
     .pipe(gulpif(!watch, postcss([
-      autoprefixer(),
-      cssnano({
+      // NOTE(Kagami): Takes ~1sec to just require them.
+      require("autoprefixer")(),
+      require("cssnano")({
         // Avoid fixing z-index which might be used in animation.
         zindex: false,
         // Avoid renaming counters which should be accessed from JS.
@@ -222,12 +258,15 @@ createTask("css", "less/[^_]*.less", src =>
     .pipe(sourcemaps.write("maps"))
     .pipe(gulp.dest(CSS_DIR))
     .pipe(gulpif("**/*.css", livereload()))
-, "less/*.less");
+, ["less/*.less", "smiles-pp/smiles.css"]);
 
 // Static assets.
-createTask("assets", "assets/**/*", src =>
+createTask("assets", ["assets/**/*", "smiles-pp/smiles.png"], src =>
   src
-    .pipe(gulp.dest(STATIC_DIR))
+    .pipe(gulpif("smiles.png",
+      gulp.dest(IMG_DIR),
+      gulp.dest(STATIC_DIR)
+    ))
 );
 
 // Fonts.
@@ -238,7 +277,9 @@ createTask("fonts", "node_modules/font-awesome/fonts/fontawesome-webfont.*",
 );
 
 // Build everything.
-gulp.task("default", runSequence("clean", tasks));
+gulp.task("default", cb => {
+  runSequence("clean", tasks, cb)
+});
 
 if (watch) {
   livereload.listen({quiet: true})

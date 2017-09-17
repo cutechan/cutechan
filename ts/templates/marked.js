@@ -4,6 +4,8 @@
  * https://github.com/chjj/marked
  */
 
+import smiles from "smiles-pp/smiles";
+
 /**
  * Block-Level Grammar
  */
@@ -458,7 +460,8 @@ var inline = {
   code: /^(`+)\s*([\s\S]*?[^`])\s*\1(?!`)/,
   br: /^ {2,}\n(?!\s*$)/,
   del: noop,
-  text: /^[\s\S]+?(?=[\\<!\[_*`]| {2,}\n|$)/
+  smile: /^:([a-z0-9_]+):/,
+  text: /^[\s\S]+?(?=[\\<!\[_*`:]| {2,}\n|$)/
 };
 
 inline._inside = /(?:\[[^\]]*\]|[^\[\]]|\](?=[^\[]*\]))*/;
@@ -677,6 +680,15 @@ InlineLexer.prototype.output = function(src) {
       continue;
     }
 
+    // smile (cutechan)
+    if (cap = this.rules.smile.exec(src)) {
+      if (smiles.has(cap[1])) {
+        src = src.substring(cap[0].length);
+        out += this.renderer.smile(cap[1]);
+        continue;
+      }
+    }
+
     // text
     if (cap = this.rules.text.exec(src)) {
       src = src.substring(cap[0].length);
@@ -860,6 +872,10 @@ Renderer.prototype.br = function() {
 
 Renderer.prototype.del = function(text) {
   return '<del>' + text + '</del>';
+};
+
+Renderer.prototype.smile = function(id) {
+  return `<i class="smile smile-${id}"></i>`;
 };
 
 Renderer.prototype.link = function(href, title, text) {
