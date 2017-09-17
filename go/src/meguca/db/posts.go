@@ -188,8 +188,8 @@ func ThreadCounter(id uint64) (uint64, error) {
 }
 
 // NewPostID reserves a new post ID
-func NewPostID() (id uint64, err error) {
-	err = prepared["new_post_id"].QueryRow().Scan(&id)
+func NewPostID(tx *sql.Tx) (id uint64, err error) {
+	err = getStatement(tx, "new_post_id").QueryRow().Scan(&id)
 	return id, err
 }
 
@@ -209,48 +209,24 @@ func getPostCreationArgs(p Post) []interface{} {
 }
 
 // InsertThread inserts a new thread into the database.
-func InsertThread(subject string, p Post) (err error) {
-	tx, err := StartTransaction()
-	if err != nil {
-		return
-	}
-	defer RollbackOnError(tx, &err)
-
+func InsertThread(tx *sql.Tx, p Post, subject string) (err error) {
 	args := append(getPostCreationArgs(p), subject)
 	err = execPreparedTx(tx, "insert_thread", args...)
 	if err != nil {
 		return
 	}
-
 	err = InsertFiles(tx, p)
-	if err != nil {
-		return
-	}
-
-	err = tx.Commit()
 	return
 }
 
 // InsertPost inserts a post into an existing thread.
-func InsertPost(p Post) (err error) {
-	tx, err := StartTransaction()
-	if err != nil {
-		return
-	}
-	defer RollbackOnError(tx, &err)
-
+func InsertPost(tx *sql.Tx, p Post) (err error) {
 	args := getPostCreationArgs(p)
 	err = execPreparedTx(tx, "insert_post", args...)
 	if err != nil {
 		return
 	}
-
 	err = InsertFiles(tx, p)
-	if err != nil {
-		return
-	}
-
-	err = tx.Commit()
 	return
 }
 

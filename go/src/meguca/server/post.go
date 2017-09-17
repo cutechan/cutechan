@@ -18,6 +18,8 @@ import (
 
 var (
 	errInvalidBoard = errors.New("invalid board")
+	errReadOnly     = errors.New("read only board")
+	errBanned       = errors.New("you are banned")
 	errTooManyFiles = errors.New("too many files")
 )
 
@@ -44,29 +46,43 @@ func createPostToken(w http.ResponseWriter, r *http.Request) {
 	serveJSON(w, r, "", res)
 }
 
-// Create a thread with a closed OP
+// Create thread.
 func createThread(w http.ResponseWriter, r *http.Request) {
 	postReq, ok := parsePostCreationForm(w, r)
 	if !ok {
 		return
 	}
 
-	// Map form data to websocket thread creation request
+	// Map form data to websocket thread creation request.
+	subject := r.Form.Get("subject")
+	board := r.Form.Get("board")
 	req := websockets.ThreadCreationRequest{
-		Subject:             r.Form.Get("subject"),
-		Board:               r.Form.Get("board"),
 		PostCreationRequest: postReq,
+		Subject:             subject,
+		Board:               board,
 	}
 
+	// Check board.
+	if !auth.IsNonMetaBoard(board) || !checkModOnly(r, board) {
+		text400(w, errInvalidBoard)
+		return
+	}
+	if !checkReadOnly(board) {
+		text403(w, errInvalidBoard)
+		return
+	}
+
+	// Check IP.
 	ip, err := auth.GetIP(r)
 	if err != nil {
 		text400(w, err)
 		return
 	}
-	if !checkModOnly(r, r.Form.Get("board")) {
-		text400(w, errInvalidBoard)
+	if auth.IsBanned(board, ip) {
+		text403(w, errBanned)
 		return
 	}
+
 	post, err := websockets.CreateThread(req, ip)
 	if err != nil {
 		// TODO(Kagami): Not all errors are 400.
@@ -79,20 +95,21 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 	serveJSON(w, r, "", res)
 }
 
-// Create a closed reply post
+// Create post.
 func createPost(w http.ResponseWriter, r *http.Request) {
 	req, ok := parsePostCreationForm(w, r)
 	if !ok {
 		return
 	}
 
-	// Validate thread
-	op, err := strconv.ParseUint(r.Form.Get("thread"), 10, 64)
+	// Check board and thread.
+	board := r.Form.Get("board")
+	thread := r.Form.Get("thread")
+	op, err := strconv.ParseUint(thread, 10, 64)
 	if err != nil {
 		text400(w, err)
 		return
 	}
-	board := r.Form.Get("board")
 	ok, err = db.ValidateOP(op, board)
 	switch {
 	case err != nil:
@@ -102,13 +119,23 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 		text400(w, fmt.Errorf("invalid thread: /%s/%d", board, op))
 		return
 	}
+	if !checkReadOnly(board) {
+		text403(w, errInvalidBoard)
+		return
+	}
 
+	// Check IP.
 	ip, err := auth.GetIP(r)
 	if err != nil {
 		text400(w, err)
 		return
 	}
-	post, msg, err := websockets.CreatePost(op, board, ip, req)
+	if auth.IsBanned(board, ip) {
+		text403(w, errBanned)
+		return
+	}
+
+	post, msg, err := websockets.CreatePost(req, ip, op, board)
 	if err != nil {
 		text400(w, err)
 		return
@@ -119,7 +146,7 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	serveJSON(w, r, "", res)
 }
 
-// ok = false, if failed and caller should return
+// ok = false if failed and caller should return.
 func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	req websockets.PostCreationRequest, ok bool,
 ) {

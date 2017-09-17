@@ -152,6 +152,14 @@ func assertNotBanned(
 	}
 }
 
+func checkReadOnly(board string) bool {
+	conf := config.GetBoardConfigs(board).BoardConfigs
+	if conf.ReadOnly {
+		return false
+	}
+	return true
+}
+
 func checkModOnly(r *http.Request, board string) bool {
 	if !config.IsModOnly(board) {
 		return true

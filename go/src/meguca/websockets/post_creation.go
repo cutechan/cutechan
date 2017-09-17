@@ -1,3 +1,5 @@
+// FIXME(Kagami): Move to server package.
+
 package websockets
 
 // #include "stdlib.h"
@@ -5,10 +7,10 @@ package websockets
 import "C"
 
 import (
+	"database/sql"
 	"errors"
 	"meguca/auth"
 	"meguca/common"
-	"meguca/config"
 	"meguca/db"
 	"meguca/parser"
 	"time"
@@ -19,7 +21,6 @@ import (
 var (
 	errPostingTooFast    = errors.New("posting too fast")
 	errBadSignature      = errors.New("bad signature")
-	errReadOnly          = errors.New("read only board")
 	errInvalidImageToken = errors.New("invalid image token")
 	errNoTextOrFiles     = errors.New("no text or files")
 	errTooManyLines      = errors.New("too many lines in post body")
@@ -49,73 +50,65 @@ type FilesRequest struct {
 func CreateThread(req ThreadCreationRequest, ip string) (
 	post db.Post, err error,
 ) {
-	if !auth.IsNonMetaBoard(req.Board) {
-		err = errInvalidBoard
-		return
-	}
-
-	if auth.IsBanned(req.Board, ip) {
-		err = errBanned
-		return
-	}
-
-	_, err = getBoardConfig(req.Board)
-	if err != nil {
-		return
-	}
-
-	can := db.CanCreateThread(ip)
-	if !can {
+	ok := db.CanCreateThread(ip)
+	if !ok {
 		err = errPostingTooFast
 		return
 	}
+
+	tx, err := db.StartTransaction()
+	if err != nil {
+		return
+	}
+	defer db.RollbackOnError(tx, &err)
 
 	subject, err := parser.ParseSubject(req.Subject)
 	if err != nil {
 		return
 	}
 
-	post, err = constructPost(req.PostCreationRequest, ip, req.Board)
+	post, err = constructPost(tx, req.PostCreationRequest, ip, req.Board)
 	if err != nil {
 		return
 	}
 
-	post.ID, err = db.NewPostID()
+	post.ID, err = db.NewPostID(tx)
 	if err != nil {
 		return
 	}
 	post.OP = post.ID
 
-	err = db.InsertThread(subject, post)
+	err = db.InsertThread(tx, post, subject)
+	if err != nil {
+		return
+	}
+
+	err = tx.Commit()
 	return
 }
 
 // CreatePost creates a new post and writes it to the database.
-func CreatePost(op uint64, board, ip string, req PostCreationRequest) (
+func CreatePost(req PostCreationRequest, ip string,  op uint64, board string) (
 	post db.Post, msg []byte, err error,
 ) {
-	if auth.IsBanned(board, ip) {
-		err = errBanned
-		return
-	}
-
-	_, err = getBoardConfig(board)
-	if err != nil {
-		return
-	}
-
-	can := db.CanCreatePost(ip)
-	if !can {
+	ok := db.CanCreatePost(ip)
+	if !ok {
 		err = errPostingTooFast
 		return
 	}
 
-	post, err = constructPost(req, ip, board)
+	tx, err := db.StartTransaction()
+	if err != nil {
+		return
+	}
+	defer db.RollbackOnError(tx, &err)
+
+	post, err = constructPost(tx, req, ip, board)
 	if err != nil {
 		return
 	}
 
-	post.ID, err = db.NewPostID()
+	post.ID, err = db.NewPostID(tx)
 	if err != nil {
 		return
 	}
@@ -126,24 +119,19 @@ func CreatePost(op uint64, board, ip string, req PostCreationRequest) (
 		return
 	}
 
-	err = db.InsertPost(post)
-	return
-}
-
-// Retrieve post-related board configurations.
-func getBoardConfig(board string) (conf config.BoardConfigs, err error) {
-	conf = config.GetBoardConfigs(board).BoardConfigs
-	if conf.ReadOnly {
-		err = errReadOnly
+	err = db.InsertPost(tx, post)
+	if err != nil {
+		return
 	}
+
+	err = tx.Commit()
 	return
 }
 
-// Construct the common parts of the new post for both threads and
-// replies.
-func constructPost(req PostCreationRequest, ip, board string) (post db.Post, err error) {
-	// Post must have either at least one character or an file to be
-	// allocated.
+// Construct the common parts of the new post.
+func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
+	post db.Post, err error,
+) {
 	if req.Body == "" && len(req.FilesRequest.Tokens) == 0 {
 		err = errNoTextOrFiles
 		return
@@ -161,7 +149,6 @@ func constructPost(req PostCreationRequest, ip, board string) (post db.Post, err
 	}
 
 	// Check token and its signature.
-	// TODO(Kagami): Rollback token on failure to allow to cache it?
 	err = db.UsePostToken(req.Token)
 	if err != nil {
 		return
@@ -198,7 +185,7 @@ func constructPost(req PostCreationRequest, ip, board string) (post db.Post, err
 
 	// Perform this last, so there are less dangling images because of any
 	// error.
-	err = setPostFiles(&post, req.FilesRequest)
+	err = setPostFiles(tx, &post, req.FilesRequest)
 	return
 }
 
@@ -214,10 +201,10 @@ func checkSign(token, sign string) bool {
 	return C.check_sign(cToken, cSign) >= 0
 }
 
-func setPostFiles(post *db.Post, freq FilesRequest) (err error) {
+func setPostFiles(tx *sql.Tx, post *db.Post, freq FilesRequest) (err error) {
 	for _, token := range freq.Tokens {
 		var img *common.Image
-		img, err = getImage(token)
+		img, err = getImage(tx, token)
 		if err != nil {
 			return
 		}
@@ -226,18 +213,16 @@ func setPostFiles(post *db.Post, freq FilesRequest) (err error) {
 	return
 }
 
-// Performs some validations and retrieves processed image data by token ID.
-func getImage(token string) (img *common.Image, err error) {
-	imgCommon, err := db.UseImageToken(token)
+func getImage(tx *sql.Tx, token string) (img *common.Image, err error) {
+	imgCommon, err := db.UseImageToken(tx, token)
 	switch err {
 	case nil:
 	case db.ErrInvalidToken:
-		return nil, errInvalidImageToken
+		err = errInvalidImageToken
+		return
 	default:
-		return nil, err
+		return
 	}
-
-	return &common.Image{
-		ImageCommon: imgCommon,
-	}, nil
+	img = &common.Image{ImageCommon: imgCommon}
+	return
 }

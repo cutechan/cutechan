@@ -13,7 +13,7 @@ import (
 var (
 	errInvalidBoard  = errors.New("invalid board")
 	errInvalidThread = errors.New("invalid thread")
-	errBanned        = errors.New("you are banned from this board")
+	errBanned        = errors.New("you are banned")
 )
 
 type syncRequest struct {
