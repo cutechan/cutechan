@@ -114,7 +114,6 @@ func createRouter() http.Handler {
 	r.GET("/banners/:board/:id", serveBanner)
 	r.GET("/uploads/*path", serveImages)
 	r.GET("/static/*path", serveStatic)
-	// r.GET("/worker.js", serveWorker)
 
 	h := http.Handler(r)
 	return h

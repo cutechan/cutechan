@@ -73,10 +73,6 @@ func serveStatic(w http.ResponseWriter, r *http.Request) {
 	serveFile(w, r, cleanJoin(common.WebRoot, extractParam(r, "path")))
 }
 
-func serveWorker(w http.ResponseWriter, r *http.Request) {
-	serveFile(w, r, filepath.FromSlash(common.WebRoot+"/js/worker.js"))
-}
-
 // Set the banners of a board
 func setBanners(w http.ResponseWriter, r *http.Request) {
 	r.Body = http.MaxBytesReader(
