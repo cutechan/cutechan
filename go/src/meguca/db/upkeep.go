@@ -1,4 +1,4 @@
-// Various periodic cleanup scripts and such
+// Various periodic cleanup scripts and such.
 
 package db
 
@@ -11,10 +11,11 @@ import (
 	"time"
 )
 
-// Run database clean up tasks at server start and regular intervals. Must be
-// launched in separate goroutine.
+// Run database clean up tasks at server start and regular intervals.
+// Must be launched in separate goroutine.
 func runCleanupTasks() {
-	// To ensure even the once an hour tasks are run shortly after server start
+	// To ensure even the once an hour tasks are run shortly after server
+	// start.
 	time.Sleep(time.Minute)
 	runFiveMinuteTasks()
 	runHourTasks()
