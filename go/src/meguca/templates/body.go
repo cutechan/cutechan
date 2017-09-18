@@ -10,6 +10,7 @@ import (
 
 	b "github.com/cutechan/blackfriday"
 	"github.com/microcosm-cc/bluemonday"
+	"smiles"
 )
 
 const htmlFlags = 0 |
@@ -64,6 +65,8 @@ var policy = func() *bluemonday.Policy {
 	p.AllowAttrs("target").Matching(regexp.MustCompile(`^_blank$`)).OnElements("a")
 	p.AllowAttrs("data-id").Matching(bluemonday.Integer).OnElements("a")
 	p.AllowAttrs("data-provider").Matching(bluemonday.SpaceSeparatedTokens).OnElements("a")
+	p.AllowAttrs("class").Matching(bluemonday.SpaceSeparatedTokens).OnElements("i")
+	p.AllowAttrs("title").Matching(regexp.MustCompile(`^[\w:]+$`)).OnElements("i")
 	return p
 }()
 
@@ -150,6 +153,19 @@ func (r *renderer) PostLink(out *bytes.Buffer, text []byte) {
 	}
 
 	out.WriteString(renderPostLink(id, op != r.op, r.index))
+}
+
+func (r *renderer) Smile(out *bytes.Buffer, text []byte, id string) {
+	if !smiles.Smiles[id] {
+		b.AttrEscape(out, text)
+		return
+	}
+
+	out.WriteString("<i class=\"smile smile-")
+	out.WriteString(id)
+	out.WriteString("\" title=\":")
+	out.WriteString(id)
+	out.WriteString(":\"></i>")
 }
 
 // Render post body Markdown to sanitized HTML.
