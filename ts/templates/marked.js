@@ -4,7 +4,7 @@
  * https://github.com/chjj/marked
  */
 
-import smiles from "smiles-pp/smiles";
+import smiles from "../../smiles-pp/smiles";
 
 /**
  * Block-Level Grammar
