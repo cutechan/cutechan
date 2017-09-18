@@ -875,7 +875,7 @@ Renderer.prototype.del = function(text) {
 };
 
 Renderer.prototype.smile = function(id) {
-  return `<i class="smile smile-${id}"></i>`;
+  return `<i class="smile smile-${id}" title=":${id}:"></i>`;
 };
 
 Renderer.prototype.link = function(href, title, text) {

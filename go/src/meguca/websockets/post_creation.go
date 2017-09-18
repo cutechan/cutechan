@@ -183,8 +183,6 @@ func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
 		return
 	}
 
-	// Perform this last, so there are less dangling images because of any
-	// error.
 	err = setPostFiles(tx, &post, req.FilesRequest)
 	return
 }
