@@ -84,10 +84,6 @@
       "Select file",
       "Open file select dialog"
     ],
-    "previewPost": [
-      "Preview post",
-      "Toggle post preview mode"
-    ],
     "bold": [
       "Bold",
       "Paste bold markup"
@@ -99,6 +95,14 @@
     "spoiler": [
       "Spoiler",
       "Paste spoiler markup"
+    ],
+    "smile": [
+      "Paste smile",
+      ""
+    ],
+    "previewPost": [
+      "Preview post",
+      "Toggle post preview mode"
     ],
     "notification": [
       "Desktop Notifications",
@@ -185,9 +189,6 @@
     "frameBlock": "Frame was blocked because it's available only via HTTP",
     "frameUnblock": "To access video you need to either open it in new tab or follow instructions:",
     "frameDetails": "See for details:",
-    "bold": "Bold",
-    "italic": "Italic",
-    "spoiler": "Spoiler",
     "clickToCancel": "Click to cancel upload",
     "news": "News",
     "sections": "Sections",

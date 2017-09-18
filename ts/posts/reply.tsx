@@ -24,9 +24,6 @@ import {
 } from "../vars";
 import * as signature from "./signature";
 
-// tslint:disable-next-line:no-unused-expression
-smiles;
-
 function quoteText(text: string): string {
   return text.trim().split(/\n/).filter((line) => {
     return line.length > 0;
@@ -130,7 +127,6 @@ class FilePreview extends Component<any, any> {
   }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 class BodyPreview extends Component<any, any> {
   public shouldComponentUpdate({ body }: any) {
     return body !== this.props.body;
@@ -147,7 +143,6 @@ class BodyPreview extends Component<any, any> {
   }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 class Reply extends Component<any, any> {
   public state = {
     float: false,
@@ -163,6 +158,7 @@ class Reply extends Component<any, any> {
     thread: page.thread,
     subject: "",
     body: "",
+    smileBox: false,
     fwraps: [] as Array<{file: File, info: Dict}>,
   };
   private mainEl: HTMLElement = null;
@@ -256,6 +252,7 @@ class Reply extends Component<any, any> {
         </div>
 
         {this.renderFooterControls()}
+        {this.renderSmileBox()}
 
         <input
           class="reply-files-input"
@@ -590,38 +587,45 @@ class Reply extends Component<any, any> {
       this.sendAPI.abort();
     }
   }
-
-  private makeHandleFormat = (markup: string) => {
-    return () => {
-      const start = this.bodyEl.selectionStart;
-      const end = this.bodyEl.selectionEnd;
-      let { body } = this.state;
-      if (start < end) {
-        const sel = body.slice(start, end);
-        body = body.slice(0, start) +
-               markup + sel + markup +
-               body.slice(end);
-        this.setState({body}, this.focus);
-      } else {
-        const prevChar = (start > 0) ? body[start - 1] : "";
-        const sep = (body && prevChar !== "\n") ? " " : "";
-        body = body.slice(0, start) + sep + markup + markup + body.slice(end);
-        const caret = start + sep.length + markup.length;
-        this.setState({body}, () => {
-          this.focus();
-          this.bodyEl.setSelectionRange(caret, caret);
-        });
-      }
-    };
-  }
-  private pasteBold = this.makeHandleFormat("**");
-  private pasteItalic = this.makeHandleFormat("*");
-  private pasteSpoiler = this.makeHandleFormat("%%");
-
   private handleToggleEditing = () => {
     const editing = !this.state.editing;
     this.setState({editing}, this.focus);
   }
+  private handleToggleSmileBox = () => {
+    const smileBox = !this.state.smileBox;
+    this.setState({smileBox});
+  }
+  private handleSmileClick = (id: string) => {
+    this.setState({smileBox: false});
+    this.pasteMarkup(`:${id}:`, true);
+  }
+
+  private pasteMarkup = (markup: string, mono?: boolean) => {
+    const start = this.bodyEl.selectionStart;
+    const end = this.bodyEl.selectionEnd;
+    let { body } = this.state;
+    if (start < end && !mono) {
+      const sel = body.slice(start, end);
+      body = body.slice(0, start) +
+             markup + sel + markup +
+             body.slice(end);
+      this.setState({body}, this.focus);
+    } else {
+      const prevCh = (start > 0) ? body[start - 1] : "";
+      const sep = (body && prevCh !== "\n") ? " " : "";
+      const sndMarkup = mono ? "" : markup;
+      body = body.slice(0, start) + sep + markup + sndMarkup + body.slice(end);
+      const caret = start + sep.length + markup.length;
+      this.setState({body}, () => {
+        this.focus();
+        this.bodyEl.setSelectionRange(caret, caret);
+      });
+    }
+  }
+  private pasteBold = () => this.pasteMarkup("**");
+  private pasteItalic = () => this.pasteMarkup("*");
+  private pasteSpoiler = () => this.pasteMarkup("%%");
+
   private renderBoards() {
     if (page.board !== "all") return null;
     const { sending, board } = this.state;
@@ -728,7 +732,7 @@ class Reply extends Component<any, any> {
 
         <button
           class="control reply-footer-control reply-bold-control"
-          title={ln.UI.bold}
+          title={ln.Forms.bold[0]}
           disabled={!editing || sending}
           onClick={this.pasteBold}
         >
@@ -736,7 +740,7 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-italic-control"
-          title={ln.UI.italic}
+          title={ln.Forms.italic[0]}
           disabled={!editing || sending}
           onClick={this.pasteItalic}
         >
@@ -744,11 +748,19 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-spoiler-control"
-          title={ln.UI.spoiler}
+          title={ln.Forms.spoiler[0]}
           disabled={!editing || sending}
           onClick={this.pasteSpoiler}
         >
           <i class="fa fa-eye-slash" />
+        </button>
+        <button
+          class="control reply-footer-control reply-smile-control"
+          title={ln.Forms.smile[0]}
+          disabled={!editing || sending}
+          onClick={this.handleToggleSmileBox}
+        >
+          <i class="reply-smile-icon" />
         </button>
         <button
           class="control reply-footer-control reply-edit-control"
@@ -774,6 +786,26 @@ class Reply extends Component<any, any> {
             {sending ? "" : ln.UI.submit}
           </Progress>
         </ShowHide>
+      </div>
+    );
+  }
+  private renderSmileBox() {
+    const { smileBox } = this.state;
+    if (!smileBox) return null;
+    const smileList = Array.from(smiles).sort();
+    return (
+      <div class="reply-smile-box">
+        <div class="reply-smiles">
+          {smileList.map((id) =>
+            <div class="reply-smiles-item">
+              <i
+                class={cx("smile", `smile-${id}`, "reply-smile")}
+                title={`:${id}:`}
+                onClick={this.handleSmileClick.bind(null, id)}
+              />
+            </div>,
+          )}
+        </div>
       </div>
     );
   }
