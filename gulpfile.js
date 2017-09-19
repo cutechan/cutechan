@@ -250,6 +250,7 @@ createTask("loader", "loader.js", src =>
         mustache: "node_modules/mustache/mustache",
         classnames: "node_modules/classnames/index",
         preact: "node_modules/preact/dist/preact",
+        "textarea-caret": "node_modules/textarea-caret/index",
       },
     }))
     .pipe(gulpif(!watch, uglify()))

@@ -162,7 +162,7 @@ class Reply extends Component<any, any> {
     fwraps: [] as Array<{file: File, info: Dict}>,
   };
   private mainEl: HTMLElement = null;
-  private bodyEl: HTMLInputElement = null;
+  private bodyEl: HTMLTextAreaElement = null;
   private fileEl: HTMLInputElement = null;
   private sendAPI: FutureAPI = {};
   private moving = false;

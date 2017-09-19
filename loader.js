@@ -4,6 +4,7 @@ define("loader", [
   "mustache",
   "classnames",
   "preact",
+  "textarea-caret",
 ], function () {
   var scriptCount = 0;
   var scripts = [];

@@ -30,6 +30,7 @@
     "normalize.css": "^7.0.0",
     "preact": "^8.2.1",
     "proxy-polyfill": "^0.1.6",
+    "textarea-caret": "^3.0.2",
     "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {
