@@ -1,6 +1,5 @@
 import * as cx from "classnames";
 import { Component, h, render } from "preact";
-import smiles from "../../smiles-pp/smiles";
 import { showAlert } from "../alerts";
 import API from "../api";
 import { PostData } from "../common";
@@ -23,6 +22,7 @@ import {
   TRIGGER_QUOTE_POST_SEL,
 } from "../vars";
 import * as signature from "./signature";
+import SmileBox, { shouldAutocomplete } from "./smile-box";
 
 function quoteText(text: string): string {
   return text.trim().split(/\n/).filter((line) => {
@@ -159,6 +159,7 @@ class Reply extends Component<any, any> {
     subject: "",
     body: "",
     smileBox: false,
+    smileBoxAC: false,
     fwraps: [] as Array<{file: File, info: Dict}>,
   };
   private mainEl: HTMLElement = null;
@@ -195,8 +196,6 @@ class Reply extends Component<any, any> {
     document.addEventListener("touchmove", this.handleGlobalMove);
     document.addEventListener("mouseup", this.handleGlobalUp);
     document.addEventListener("touchend", this.handleGlobalUp);
-    document.addEventListener("keydown", this.handleGlobalKey);
-    document.addEventListener("click", this.handleGlobalClick);
     this.focus();
     const caret = this.state.body.length;
     this.bodyEl.setSelectionRange(caret, caret);
@@ -213,8 +212,6 @@ class Reply extends Component<any, any> {
     document.removeEventListener("touchmove", this.handleGlobalMove);
     document.removeEventListener("mouseup", this.handleGlobalUp);
     document.removeEventListener("touchend", this.handleGlobalUp);
-    document.removeEventListener("keydown", this.handleGlobalKey);
-    document.removeEventListener("click", this.handleGlobalClick);
   }
   public componentWillReceiveProps({ quoted, dropped }: any) {
     if (quoted !== this.props.quoted) {
@@ -388,15 +385,6 @@ class Reply extends Component<any, any> {
     this.startW = rect.width;
     this.startH = rect.height;
   }
-  private toggleSmileBox() {
-    const smileBox = !this.state.smileBox;
-    this.setState({smileBox});
-  }
-  private hideSmileBox() {
-    if (this.state.smileBox) {
-      this.setState({smileBox: false});
-    }
-  }
   private pasteMarkup(markup: string, mono?: boolean) {
     const start = this.bodyEl.selectionStart;
     const end = this.bodyEl.selectionEnd;
@@ -491,16 +479,6 @@ class Reply extends Component<any, any> {
     this.moving = false;
     this.resizing = false;
   }
-  private handleGlobalKey = (e: KeyboardEvent) => {
-    if (e.keyCode === 27) {
-      this.hideSmileBox();
-    }
-  }
-  private handleGlobalClick = (e: MouseEvent) => {
-    if (e.button === 0) {
-      this.hideSmileBox();
-    }
-  }
 
   private handleMoveDown = (e: MouseEvent | TouchEvent) => {
     e.preventDefault();
@@ -555,7 +533,9 @@ class Reply extends Component<any, any> {
     this.setState({board: e.target.value});
   }
   private handleBodyChange = (e: any) => {
-    this.setState({body: e.target.value});
+    const smileBox = shouldAutocomplete(this.bodyEl);
+    const smileBoxAC = smileBox;
+    this.setState({body: e.target.value, smileBox, smileBoxAC});
   }
   private handleAttach = () => {
     this.fileEl.click();
@@ -641,15 +621,17 @@ class Reply extends Component<any, any> {
     const editing = !this.state.editing;
     this.setState({editing}, this.focus);
   }
-  private handleSmileBoxClick = (e: MouseEvent) => {
+  private handleToggleSmileBox = (e: MouseEvent) => {
+    // Needed because of https://github.com/developit/preact/issues/838
     e.stopPropagation();
+    const smileBox = !this.state.smileBox;
+    this.setState({smileBox, smileBoxAC: false});
   }
-  private handleSmileControlClick = (e: MouseEvent) => {
-    e.stopPropagation();
-    this.toggleSmileBox();
+  private handleHideSmileBox = () => {
+    this.setState({smileBox: false});
   }
-  private handleSmileClick = (id: string) => {
-    this.hideSmileBox();
+  private handleSmileSelect = (id: string) => {
+    this.setState({smileBox: false});
     this.pasteMarkup(`:${id}:`, true);
   }
 
@@ -785,7 +767,7 @@ class Reply extends Component<any, any> {
           class="control reply-footer-control reply-smile-control"
           title={ln.Forms.smile[0]}
           disabled={!editing || sending}
-          onClick={this.handleSmileControlClick}
+          onClick={this.handleToggleSmileBox}
         >
           <i class="reply-smile-icon" />
         </button>
@@ -817,23 +799,15 @@ class Reply extends Component<any, any> {
     );
   }
   private renderSmileBox() {
-    const { smileBox } = this.state;
+    const { smileBox, smileBoxAC } = this.state;
     if (!smileBox) return null;
-    const smileList = Array.from(smiles).sort();
     return (
-      <div class="reply-smile-box" onClick={this.handleSmileBoxClick}>
-        <div class="reply-smiles">
-          {smileList.map((id) =>
-            <div class="reply-smiles-item">
-              <i
-                class={cx("smile", `smile-${id}`, "reply-smile")}
-                title={`:${id}:`}
-                onClick={this.handleSmileClick.bind(null, id)}
-              />
-            </div>,
-          )}
-        </div>
-      </div>
+      <SmileBox
+        textarea={this.bodyEl}
+        autocomplete={smileBoxAC}
+        onSelect={this.handleSmileSelect}
+        onClose={this.handleHideSmileBox}
+      />
     );
   }
 }

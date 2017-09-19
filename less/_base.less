@@ -1507,32 +1507,52 @@ html.pos-notstaff {
   }
 }
 
-.reply-smile-box {
+//////////////////////////////
+// SMILE BOX
+//////////////////////////////
+
+.smile-box {
   position: absolute;
   padding: 5px;
-  left: 105px;
-  bottom: 35px;
-  width: 375px;
   border-radius: 3px;
   border: @replyBorder;
   background: @replyBG;
   box-shadow: @replyShadow;
 }
 
-.reply-smiles {
+.smiles {
   display: flex;
-  flex-wrap: wrap;
-  height: 200px;
-  overflow-y: scroll;
 }
 
-.reply-smiles-item {
+.smile-box_full {
+  left: 105px;
+  bottom: 35px;
+  width: 375px;
+
+  .smiles {
+    overflow-y: scroll;
+    flex-wrap: wrap;
+    height: 200px;
+  }
+}
+
+.smile-box_autocomplete {
+  width: 85px;
+  height: 40px;
+  padding: 3px 6px;
+
+  .smiles {
+    overflow-x: auto;
+  }
+}
+
+.smiles-item {
   width: 40px;
   height: 40px;
   text-align: center;
 }
 
-.reply-smile {
+.smiles-icon {
   cursor: pointer;
 }
 
