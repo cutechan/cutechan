@@ -612,7 +612,7 @@ class Reply extends Component<any, any> {
       this.setState({body}, this.focus);
     } else {
       const prevCh = (start > 0) ? body[start - 1] : "";
-      const sep = (body && prevCh !== "\n") ? " " : "";
+      const sep = (!prevCh || prevCh === "\n" || prevCh === " ") ? "" : " ";
       const sndMarkup = mono ? "" : markup;
       body = body.slice(0, start) + sep + markup + sndMarkup + body.slice(end);
       const caret = start + sep.length + markup.length;
