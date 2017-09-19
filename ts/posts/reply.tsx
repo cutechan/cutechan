@@ -195,6 +195,8 @@ class Reply extends Component<any, any> {
     document.addEventListener("touchmove", this.handleGlobalMove);
     document.addEventListener("mouseup", this.handleGlobalUp);
     document.addEventListener("touchend", this.handleGlobalUp);
+    document.addEventListener("keydown", this.handleGlobalKey);
+    document.addEventListener("click", this.handleGlobalClick);
     this.focus();
     const caret = this.state.body.length;
     this.bodyEl.setSelectionRange(caret, caret);
@@ -211,6 +213,8 @@ class Reply extends Component<any, any> {
     document.removeEventListener("touchmove", this.handleGlobalMove);
     document.removeEventListener("mouseup", this.handleGlobalUp);
     document.removeEventListener("touchend", this.handleGlobalUp);
+    document.removeEventListener("keydown", this.handleGlobalKey);
+    document.removeEventListener("click", this.handleGlobalClick);
   }
   public componentWillReceiveProps({ quoted, dropped }: any) {
     if (quoted !== this.props.quoted) {
@@ -384,11 +388,41 @@ class Reply extends Component<any, any> {
     this.startW = rect.width;
     this.startH = rect.height;
   }
-  private handleMoveDown = (e: MouseEvent | TouchEvent) => {
-    e.preventDefault();
-    this.moving = true;
-    this.saveCoords(e);
+  private toggleSmileBox() {
+    const smileBox = !this.state.smileBox;
+    this.setState({smileBox});
   }
+  private hideSmileBox() {
+    if (this.state.smileBox) {
+      this.setState({smileBox: false});
+    }
+  }
+  private pasteMarkup(markup: string, mono?: boolean) {
+    const start = this.bodyEl.selectionStart;
+    const end = this.bodyEl.selectionEnd;
+    let { body } = this.state;
+    if (start < end && !mono) {
+      const sel = body.slice(start, end);
+      body = body.slice(0, start) +
+             markup + sel + markup +
+             body.slice(end);
+      this.setState({body}, this.focus);
+    } else {
+      const prevCh = (start > 0) ? body[start - 1] : "";
+      const sep = (!prevCh || prevCh === "\n" || prevCh === " ") ? "" : " ";
+      const sndMarkup = mono ? "" : markup;
+      body = body.slice(0, start) + sep + markup + sndMarkup + body.slice(end);
+      const caret = start + sep.length + markup.length;
+      this.setState({body}, () => {
+        this.focus();
+        this.bodyEl.setSelectionRange(caret, caret);
+      });
+    }
+  }
+  private pasteBold = () => this.pasteMarkup("**");
+  private pasteItalic = () => this.pasteMarkup("*");
+  private pasteSpoiler = () => this.pasteMarkup("%%");
+
   private handleGlobalMove = (e: MouseEvent | TouchEvent) => {
     if (this.moving) {
       this.setState({
@@ -456,6 +490,22 @@ class Reply extends Component<any, any> {
   private handleGlobalUp = () => {
     this.moving = false;
     this.resizing = false;
+  }
+  private handleGlobalKey = (e: KeyboardEvent) => {
+    if (e.keyCode === 27) {
+      this.hideSmileBox();
+    }
+  }
+  private handleGlobalClick = (e: MouseEvent) => {
+    if (e.button === 0) {
+      this.hideSmileBox();
+    }
+  }
+
+  private handleMoveDown = (e: MouseEvent | TouchEvent) => {
+    e.preventDefault();
+    this.moving = true;
+    this.saveCoords(e);
   }
   private handleFormDown = (e: MouseEvent) => {
     if (this.state.pos === "i") return;
@@ -591,40 +641,17 @@ class Reply extends Component<any, any> {
     const editing = !this.state.editing;
     this.setState({editing}, this.focus);
   }
-  private handleToggleSmileBox = () => {
-    const smileBox = !this.state.smileBox;
-    this.setState({smileBox});
+  private handleSmileBoxClick = (e: MouseEvent) => {
+    e.stopPropagation();
+  }
+  private handleSmileControlClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    this.toggleSmileBox();
   }
   private handleSmileClick = (id: string) => {
-    this.setState({smileBox: false});
+    this.hideSmileBox();
     this.pasteMarkup(`:${id}:`, true);
   }
-
-  private pasteMarkup = (markup: string, mono?: boolean) => {
-    const start = this.bodyEl.selectionStart;
-    const end = this.bodyEl.selectionEnd;
-    let { body } = this.state;
-    if (start < end && !mono) {
-      const sel = body.slice(start, end);
-      body = body.slice(0, start) +
-             markup + sel + markup +
-             body.slice(end);
-      this.setState({body}, this.focus);
-    } else {
-      const prevCh = (start > 0) ? body[start - 1] : "";
-      const sep = (!prevCh || prevCh === "\n" || prevCh === " ") ? "" : " ";
-      const sndMarkup = mono ? "" : markup;
-      body = body.slice(0, start) + sep + markup + sndMarkup + body.slice(end);
-      const caret = start + sep.length + markup.length;
-      this.setState({body}, () => {
-        this.focus();
-        this.bodyEl.setSelectionRange(caret, caret);
-      });
-    }
-  }
-  private pasteBold = () => this.pasteMarkup("**");
-  private pasteItalic = () => this.pasteMarkup("*");
-  private pasteSpoiler = () => this.pasteMarkup("%%");
 
   private renderBoards() {
     if (page.board !== "all") return null;
@@ -758,7 +785,7 @@ class Reply extends Component<any, any> {
           class="control reply-footer-control reply-smile-control"
           title={ln.Forms.smile[0]}
           disabled={!editing || sending}
-          onClick={this.handleToggleSmileBox}
+          onClick={this.handleSmileControlClick}
         >
           <i class="reply-smile-icon" />
         </button>
@@ -794,7 +821,7 @@ class Reply extends Component<any, any> {
     if (!smileBox) return null;
     const smileList = Array.from(smiles).sort();
     return (
-      <div class="reply-smile-box">
+      <div class="reply-smile-box" onClick={this.handleSmileBoxClick}>
         <div class="reply-smiles">
           {smileList.map((id) =>
             <div class="reply-smiles-item">
