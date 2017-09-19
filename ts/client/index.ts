@@ -41,7 +41,7 @@ export function insertPost(data: PostData) {
 
   postAdded(model);
 
-  if (options.scrollToBottom && atBottom && !document.hidden) {
+  if (options.scrollToBottom && atBottom) {
     scrollToBottom();
   }
 }
