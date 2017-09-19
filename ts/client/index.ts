@@ -6,7 +6,7 @@ import { showAlert } from "../alerts";
 import { PostData } from "../common";
 import { connEvent, connSM, handlers, message } from "../connection";
 import options from "../options";
-import { Post, PostView } from "../posts";
+import { isHoverActive, Post, PostView } from "../posts";
 import { page, posts } from "../state";
 import { postAdded } from "../ui";
 import { isAtBottom, scrollToBottom } from "../util";
@@ -41,7 +41,7 @@ export function insertPost(data: PostData) {
 
   postAdded(model);
 
-  if (options.scrollToBottom && atBottom) {
+  if (options.scrollToBottom && atBottom && !isHoverActive()) {
     scrollToBottom();
   }
 }

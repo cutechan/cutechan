@@ -217,6 +217,10 @@ function onMouseMove(event: MouseEvent) {
   }
 }
 
+export function isOpen(): boolean {
+  return !!imagePreview || !!postPreviews.length;
+}
+
 export function init() {
   container = document.querySelector(HOVER_CONTAINER_SEL);
   container.classList.add(page.thread ? "hover-container_thread" : "hover-container_board");

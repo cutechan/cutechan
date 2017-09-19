@@ -2,6 +2,7 @@ export { Thread, Post, Backlinks } from "./model";
 export { default as PostView } from "./view";
 export { thumbPath, sourcePath } from "./images";
 export { default as PostCollection } from "./collection";
+export { isOpen as isHoverActive } from "./hover";
 
 import options from "../options";
 import { page, posts } from "../state";
