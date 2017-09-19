@@ -1563,6 +1563,18 @@ html.pos-notstaff {
 // SMILES
 //////////////////////////////
 
+// Preload sprites in order to avoid broken smiles when updated image is
+// being requested _after_ the page (and CSS) were loaded.
+body:after {
+  content: url(/static/img/smiles.png) url(/static/img/smileso.png);
+  display: none;
+}
+@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
+  body:after {
+    content: url(/static/img/smiles@2x.png) url(/static/img/smileso.png);
+  }
+}
+
 .smile {
   display: inline-block;
 }
