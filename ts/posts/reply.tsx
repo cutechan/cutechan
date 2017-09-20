@@ -819,6 +819,7 @@ class Reply extends Component<any, any> {
       <SmileBox
         body={body}
         acList={smileBoxAC}
+        wrapper={this.mainEl}
         textarea={this.bodyEl}
         onSelect={this.handleSmileSelect}
         onClose={this.handleHideSmileBox}

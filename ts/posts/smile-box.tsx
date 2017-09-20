@@ -109,8 +109,20 @@ export default class extends Component<any, any> {
     if (this.props.acList) {
       const el = this.props.textarea;
       let { left, top } = getCaretCoordinates(el, el.selectionEnd);
-      left += 10;
-      top -= 30;
+      left += 5;
+      top -= 35;
+
+      // TODO(Kagami): Shift autocomplete box against its wrapper
+      // element (with position=relative). Things to fix:
+      //   * Fix full box shift
+      //   * Put <SmileBox> as sibling of <textarea>
+      //   * Remove overflow=hidden on .reply-content
+      //     (fix multi file reply markup for that)
+      const wrect = this.props.wrapper.getBoundingClientRect();
+      const rect = el.getBoundingClientRect();
+      left += rect.left - wrect.left;
+      top += rect.top - wrect.top;
+
       this.setState({left, top});
     }
   }
