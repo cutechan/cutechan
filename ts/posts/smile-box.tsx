@@ -82,7 +82,7 @@ export default class extends Component<any, any> {
   public state = {
     left: 0,
     top: 0,
-    cur: -1,
+    cur: 0,
   };
   private listEl: HTMLElement = null;
   public componentWillMount() {
@@ -102,7 +102,7 @@ export default class extends Component<any, any> {
     }
     // Reset smile selection.
     if (acList !== this.props.acList) {
-      this.setState({cur: -1});
+      this.setState({cur: 0});
     }
   }
   private setAutocompletePos() {
@@ -154,15 +154,15 @@ export default class extends Component<any, any> {
     if (acList) {
       if (e.keyCode === KEY_LEFT) {
         e.preventDefault();
-        cur = cur < 0 ? last : cur - 1;
+        cur -= 1;
         cur = cur < 0 ? last : cur;
         this.setState({cur}, this.scrollToSmile);
       } else if (e.keyCode === KEY_RIGHT) {
         e.preventDefault();
-        cur = cur < 0 ? 0 : cur + 1;
+        cur += 1;
         cur = cur > last ? 0 : cur;
         this.setState({cur}, this.scrollToSmile);
-      } else if (e.keyCode === KEY_ENTER && cur >= 0) {
+      } else if (e.keyCode === KEY_ENTER) {
         e.preventDefault();
         this.props.onSelect(acList[cur]);
       } else if (
@@ -185,6 +185,7 @@ export default class extends Component<any, any> {
   }
   public render({ acList }: any, { left, top, cur }: any) {
     const style = acList ? { left, top } : null;
+    cur = acList ? cur : -1;
     return (
       <div
         class={cx("smile-box", {
