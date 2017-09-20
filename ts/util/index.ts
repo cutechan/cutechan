@@ -177,3 +177,12 @@ export function collect(proms: Array<Promise<any>>): Promise<any[]> {
   proms = proms.map((p) => p.then((res) => results.push(res), noop));
   return Promise.all(proms).then(() => results);
 }
+
+/** Simple string reverse. */
+export function reverse(s: string): string {
+  let s2 = "";
+  for (let i = s.length - 1; i >= 0; i--) {
+    s2 += s[i];
+  }
+  return s2;
+}

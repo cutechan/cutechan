@@ -1513,7 +1513,6 @@ html.pos-notstaff {
 
 .smile-box {
   position: absolute;
-  padding: 5px;
   border-radius: 3px;
   border: @replyBorder;
   background: @replyBG;
@@ -1524,10 +1523,20 @@ html.pos-notstaff {
   display: flex;
 }
 
+.smiles-item {
+  min-width: 40px;
+  text-align: center;
+}
+
+.smiles-icon {
+  cursor: pointer;
+}
+
 .smile-box_full {
+  width: 375px;
   left: 105px;
   bottom: 35px;
-  width: 375px;
+  padding: 5px;
 
   .smiles {
     overflow-y: scroll;
@@ -1537,23 +1546,12 @@ html.pos-notstaff {
 }
 
 .smile-box_autocomplete {
-  width: 85px;
-  height: 40px;
-  padding: 3px 6px;
+  max-width: 160px;
+  padding: 2px;
 
   .smiles {
     overflow-x: auto;
   }
-}
-
-.smiles-item {
-  width: 40px;
-  height: 40px;
-  text-align: center;
-}
-
-.smiles-icon {
-  cursor: pointer;
 }
 
 //////////////////////////////

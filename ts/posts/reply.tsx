@@ -22,7 +22,7 @@ import {
   TRIGGER_QUOTE_POST_SEL,
 } from "../vars";
 import * as signature from "./signature";
-import SmileBox, { shouldAutocomplete } from "./smile-box";
+import SmileBox, { autocomplete } from "./smile-box";
 
 function quoteText(text: string): string {
   return text.trim().split(/\n/).filter((line) => {
@@ -159,7 +159,7 @@ class Reply extends Component<any, any> {
     subject: "",
     body: "",
     smileBox: false,
-    smileBoxAC: false,
+    smileBoxAC: null as string[],
     fwraps: [] as Array<{file: File, info: Dict}>,
   };
   private mainEl: HTMLElement = null;
@@ -533,8 +533,8 @@ class Reply extends Component<any, any> {
     this.setState({board: e.target.value});
   }
   private handleBodyChange = (e: any) => {
-    const smileBox = shouldAutocomplete(this.bodyEl);
-    const smileBoxAC = smileBox;
+    const smileBoxAC = autocomplete(this.bodyEl);
+    const smileBox = !!smileBoxAC;
     this.setState({body: e.target.value, smileBox, smileBoxAC});
   }
   private handleAttach = () => {
@@ -624,8 +624,8 @@ class Reply extends Component<any, any> {
   private handleToggleSmileBox = (e: MouseEvent) => {
     // Needed because of https://github.com/developit/preact/issues/838
     e.stopPropagation();
-    const smileBox = !this.state.smileBox;
-    this.setState({smileBox, smileBoxAC: false});
+    const smileBox = !!this.state.smileBoxAC || !this.state.smileBox;
+    this.setState({smileBox, smileBoxAC: null});
   }
   private handleHideSmileBox = () => {
     this.setState({smileBox: false});
@@ -799,12 +799,13 @@ class Reply extends Component<any, any> {
     );
   }
   private renderSmileBox() {
-    const { smileBox, smileBoxAC } = this.state;
+    const { body, smileBox, smileBoxAC } = this.state;
     if (!smileBox) return null;
     return (
       <SmileBox
+        body={body}
+        acList={smileBoxAC}
         textarea={this.bodyEl}
-        autocomplete={smileBoxAC}
         onSelect={this.handleSmileSelect}
         onClose={this.handleHideSmileBox}
       />
