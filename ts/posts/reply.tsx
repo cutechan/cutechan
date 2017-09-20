@@ -386,8 +386,8 @@ class Reply extends Component<any, any> {
     this.startH = rect.height;
   }
   private pasteMarkup(markup: string, opts?: Dict) {
-    const { mono, nosep } = opts || {} as Dict;
-    const start = this.bodyEl.selectionStart;
+    const { mono, nosep, offset } = opts || {} as Dict;
+    const start = this.bodyEl.selectionStart - (offset || 0);
     const end = this.bodyEl.selectionEnd;
     let { body } = this.state;
     if (start < end && !mono) {
@@ -634,20 +634,19 @@ class Reply extends Component<any, any> {
   private handleSmileSelect = (id: string) => {
     this.setState({smileBox: false});
 
-    // Remove already typed prefix.
-    let markup = `:${id}:`;
+    // Remove already typed smile chunk.
     const ac = !!this.state.smileBoxAC;
+    let offset = 0;
     if (ac) {
       let i = this.bodyEl.selectionEnd - 1;
-      let prefix = 0;
       while (i >= 0 && this.state.body[i] !== ":") {
         i--;
-        prefix++;
+        offset++;
       }
-      markup = markup.slice(prefix + 1);
+      offset++;
     }
 
-    this.pasteMarkup(markup, {mono: true, nosep: ac});
+    this.pasteMarkup(`:${id}:`, {mono: true, nosep: ac, offset});
   }
 
   private renderBoards() {
