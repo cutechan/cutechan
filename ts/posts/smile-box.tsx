@@ -6,7 +6,7 @@ import * as cx from "classnames";
 import { Component, h } from "preact";
 import * as getCaretCoordinates from "textarea-caret";
 import smiles from "../../smiles-pp/smiles";
-import { reverse } from "../util";
+import { reverse, setter } from "../util";
 
 const smileList = Array.from(smiles).sort();
 
@@ -19,6 +19,13 @@ const KEY_CLN = 58;
 const KEY_SPC = 32;
 const KEY_NL = 10;
 const KEY_ESC = 27;
+const KEY_LEFT = 37;
+const KEY_RIGHT = 39;
+const KEY_UP = 38;
+const KEY_DOWN = 40;
+const KEY_HOME = 36;
+const KEY_END = 35;
+const KEY_ENTER = 13;
 
 function isSmileID(c: number): boolean {
   return (
@@ -75,7 +82,9 @@ export default class extends Component<any, any> {
   public state = {
     left: 0,
     top: 0,
+    cur: -1,
   };
+  private listEl: HTMLElement = null;
   public componentWillMount() {
     this.setAutocompletePos();
   }
@@ -87,9 +96,13 @@ export default class extends Component<any, any> {
     document.removeEventListener("keydown", this.handleGlobalKey);
     document.removeEventListener("click", this.handleGlobalClick);
   }
-  public componentWillReceiveProps({ body }: any) {
+  public componentWillReceiveProps({ body, acList }: any) {
     if (body !== this.props.body) {
       this.setAutocompletePos();
+    }
+    // Reset smile selection.
+    if (acList !== this.props.acList) {
+      this.setState({cur: -1});
     }
   }
   private setAutocompletePos() {
@@ -101,14 +114,55 @@ export default class extends Component<any, any> {
       this.setState({left, top});
     }
   }
+  private scrollToSmile() {
+    const l = this.listEl;
+    // XXX(Kagami): Might be wrong if Preact adds some junk node.
+    const s = l.children[this.state.cur] as HTMLElement;
+    if (s.offsetLeft < l.scrollLeft
+        || s.offsetLeft + s.offsetWidth > l.offsetWidth + l.scrollLeft) {
+      l.scrollLeft = s.offsetLeft;
+    }
+  }
   private handleGlobalKey = (e: KeyboardEvent) => {
     if (e.keyCode === KEY_ESC) {
       this.props.onClose();
+    } else if (e.target === this.props.textarea) {
+      this.handleBodyKey(e);
     }
   }
   private handleGlobalClick = (e: MouseEvent) => {
     if (e.button === 0) {
       this.props.onClose();
+    }
+  }
+  public handleBodyKey = (e: KeyboardEvent) => {
+    const { acList } = this.props;
+    const last = acList.length - 1;
+    let { cur } = this.state;
+    if (acList) {
+      if (e.keyCode === KEY_LEFT) {
+        e.preventDefault();
+        cur = cur < 0 ? last : cur - 1;
+        cur = cur < 0 ? last : cur;
+        this.setState({cur}, this.scrollToSmile);
+      } else if (e.keyCode === KEY_RIGHT) {
+        e.preventDefault();
+        cur = cur < 0 ? 0 : cur + 1;
+        cur = cur > last ? 0 : cur;
+        this.setState({cur}, this.scrollToSmile);
+      } else if (e.keyCode === KEY_ENTER && cur >= 0) {
+        e.preventDefault();
+        this.props.onSelect(acList[cur]);
+      } else if (
+        e.keyCode === KEY_HOME
+        || e.keyCode === KEY_END
+        || e.keyCode === KEY_UP
+        || e.keyCode === KEY_DOWN
+        ) {
+        // Prefer to close autocomplete box on common cursor movements
+        // to not annoy the user in case of false-positives.
+        this.props.onClose();
+      }
     }
   }
   private handleSmileBoxClick = (e: MouseEvent) => {
@@ -117,7 +171,7 @@ export default class extends Component<any, any> {
   private handleSmileClick = (id: string) => {
     this.props.onSelect(id);
   }
-  public render({ acList }: any, { left, top }: any) {
+  public render({ acList }: any, { left, top, cur }: any) {
     const style = acList ? { left, top } : null;
     return (
       <div
@@ -128,9 +182,9 @@ export default class extends Component<any, any> {
         style={style}
         onClick={this.handleSmileBoxClick}
       >
-        <div class="smiles">
-          {(acList || smileList).map((id: string) =>
-            <div class="smiles-item">
+        <div class="smiles" ref={setter(this, "listEl")}>
+          {(acList || smileList).map((id: string, i: number) =>
+            <div class={cx("smiles-item", {"smiles-item_cur": i === cur})}>
               <i
                 class={cx("smile", `smile-${id}`, "smiles-icon")}
                 title={`:${id}:`}

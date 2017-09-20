@@ -385,7 +385,8 @@ class Reply extends Component<any, any> {
     this.startW = rect.width;
     this.startH = rect.height;
   }
-  private pasteMarkup(markup: string, mono?: boolean) {
+  private pasteMarkup(markup: string, opts?: Dict) {
+    const { mono, nosep } = opts || {} as Dict;
     const start = this.bodyEl.selectionStart;
     const end = this.bodyEl.selectionEnd;
     let { body } = this.state;
@@ -397,7 +398,7 @@ class Reply extends Component<any, any> {
       this.setState({body}, this.focus);
     } else {
       const prevCh = (start > 0) ? body[start - 1] : "";
-      const sep = (!prevCh || prevCh === "\n" || prevCh === " ") ? "" : " ";
+      const sep = (!prevCh || prevCh === "\n" || prevCh === " " || nosep) ? "" : " ";
       const sndMarkup = mono ? "" : markup;
       body = body.slice(0, start) + sep + markup + sndMarkup + body.slice(end);
       const caret = start + sep.length + markup.length;
@@ -619,7 +620,7 @@ class Reply extends Component<any, any> {
   }
   private handleToggleEditing = () => {
     const editing = !this.state.editing;
-    this.setState({editing}, this.focus);
+    this.setState({editing, smileBox: false}, this.focus);
   }
   private handleToggleSmileBox = (e: MouseEvent) => {
     // Needed because of https://github.com/developit/preact/issues/838
@@ -632,7 +633,21 @@ class Reply extends Component<any, any> {
   }
   private handleSmileSelect = (id: string) => {
     this.setState({smileBox: false});
-    this.pasteMarkup(`:${id}:`, true);
+
+    // Remove already typed prefix.
+    let markup = `:${id}:`;
+    const ac = !!this.state.smileBoxAC;
+    if (ac) {
+      let i = this.bodyEl.selectionEnd - 1;
+      let prefix = 0;
+      while (i >= 0 && this.state.body[i] !== ":") {
+        i--;
+        prefix++;
+      }
+      markup = markup.slice(prefix + 1);
+    }
+
+    this.pasteMarkup(markup, {mono: true, nosep: ac});
   }
 
   private renderBoards() {

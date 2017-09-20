@@ -19,14 +19,7 @@ function handleShortcut(event: KeyboardEvent) {
   const inInput = "selectionStart" in event.target;
 
   if (!anyModifier) {
-    if (inInput) {
-      switch (event.key) {
-      case "Escape":
-        caught = true;
-        (event.target as HTMLElement).blur();
-        break;
-      }
-    } else {
+    if (!inInput) {
       switch (event.key) {
       case "ArrowLeft":
         caught = true;
