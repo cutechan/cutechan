@@ -11,6 +11,7 @@ const gutil = require("gulp-util");
 const concat = require("gulp-concat");
 const gulpif = require("gulp-if");
 const tap = require("gulp-tap");
+const shell = require("gulp-shell");
 const sourcemaps = require("gulp-sourcemaps");
 const ts = require("gulp-typescript");
 const rjsOptimize = require("gulp-requirejs-optimize");
@@ -197,11 +198,11 @@ gulp.task("smiles", () => {
   const withRetina = gulp
     .src(pathsWithRetina)
     .pipe(spritesmith({
-      imgName: "smiles.png",
+      imgName: "_smiles.png",
       cssName: "smiles.css",
       imgPath: "/static/img/smiles.png",
       retinaSrcFilter: "smiles/*@2x.png",
-      retinaImgName: "smiles@2x.png",
+      retinaImgName: "_smiles@2x.png",
       retinaImgPath: "/static/img/smiles@2x.png",
       cssOpts: {
         cssSelector: s => ".smile-" + s.name,
@@ -211,7 +212,7 @@ gulp.task("smiles", () => {
   const withoutRetina = gulp
     .src(pathsWithoutRetina)
     .pipe(spritesmith({
-      imgName: "smileso.png",
+      imgName: "_smileso.png",
       cssName: "smileso.css",
       imgPath: "/static/img/smileso.png",
       cssOpts: {
@@ -221,6 +222,15 @@ gulp.task("smiles", () => {
 
   return merge(withRetina, withoutRetina)
     .pipe(gulp.dest("smiles-pp"))
+    // gulp-imagemin requires 240+ deps, fuck that shit.
+    .pipe(gulpif("*.png", shell([
+      "optipng",
+      "-quiet",
+      "-clobber",
+      "-strip", "all",
+      "-out", "'<%= file.basename.slice(1) %>'",
+      "'<%= file.basename %>'",
+    ].join(" "), {cwd: "smiles-pp"})))
     .on("end", () => {
       const jsSmiles = smileIds.map(s => `"${s}"`).join(",");
       const jsModule = `
