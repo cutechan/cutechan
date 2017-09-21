@@ -852,7 +852,10 @@ class ReplyContainer extends Component<any, any> {
     });
     on(document, "drop", (e: DragEvent) => {
       e.preventDefault();
-      this.setState({show: true, dropped: e.dataTransfer.files});
+      const files = e.dataTransfer.files;
+      if (files.length) {
+        this.setState({show: true, dropped: files});
+      }
     });
   }
   public render({}, { show, quoted, dropped }: any) {
