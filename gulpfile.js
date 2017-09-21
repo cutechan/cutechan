@@ -190,6 +190,10 @@ gulp.task("smiles", () => {
     .filter(s => !allSet.has(s + "@2x.png"))
     .map(s => `smiles/${s}.png`);
 
+  if (pathsWithRetina.length + pathsWithoutRetina.length !== allSmiles.length) {
+    throw new Error("Smiles mismatch");
+  }
+
   const withRetina = gulp
     .src(pathsWithRetina)
     .pipe(spritesmith({
