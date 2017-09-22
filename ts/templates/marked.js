@@ -27,7 +27,7 @@ var block = {
   text: /^[^\n]+/
 };
 
-block.bullet = /(?:[*+-]|\d+\.)/;
+block.bullet = /\*/;
 block.item = /^( *)(bull) [^\n]*(?:\n(?!\1bull )[^\n]*)*/;
 block.item = replace(block.item, 'gm')
   (/bull/g, block.bullet)
@@ -1284,5 +1284,7 @@ marked.InlineLexer = InlineLexer;
 marked.inlineLexer = InlineLexer.output;
 
 marked.parse = marked;
+
+marked.noop = noop;
 
 export default marked;

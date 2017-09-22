@@ -11,8 +11,7 @@ import marked from "./marked";
 
 interface AnyClass { new(...args: any[]): any; }
 
-function noop() { /* skip */ }
-(noop as any).exec = noop;
+const noop = marked.noop;
 
 // Verify and render a link to other posts.
 function postLink(m: RegExpMatchArray, links: PostLink[], tid: number): string {
