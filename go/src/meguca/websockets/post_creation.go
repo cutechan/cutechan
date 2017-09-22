@@ -179,7 +179,7 @@ func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
 		post.Auth = pos.String()
 	}
 
-	post.Links, err = parser.ParseBody([]byte(req.Body), board)
+	post.Links, err = parser.ParseLinks([]byte(req.Body))
 	if err != nil {
 		return
 	}

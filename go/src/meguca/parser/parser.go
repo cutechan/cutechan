@@ -1,68 +1,52 @@
-// Package parser parses and verifies user-sent post data.
+// Parses and verifies user-sent post data.
 package parser
 
 import (
+	"bytes"
 	"database/sql"
 	"meguca/common"
+	"meguca/templates"
 	"meguca/db"
-	"meguca/util"
-	"regexp"
 	"strings"
 	"strconv"
+
+	b "github.com/cutechan/blackfriday"
 )
 
-var linkRegexp = regexp.MustCompile(`^>{2,}(\d+)$`)
-
-// Needed to avoid cyclic imports for the 'db' package.
-func init() {
-	common.ParseBody = ParseBody
+type parseRenderer struct {
+	links common.Links
+	*b.Html
 }
 
-// ParseBody parses the entire post text body for links.
-func ParseBody(body []byte, board string) (links [][2]uint64, err error) {
-	start := 0
-
-	for i, b := range body {
-		switch b {
-		case '\n', ' ', '\t':
-		default:
-			if i == len(body)-1 {
-				i++
-			} else {
-				continue
-			}
-		}
-
-		_, word, _ := util.SplitPunctuation(body[start:i])
-		start = i + 1
-		if len(word) == 0 {
-			continue
-		}
-
-		switch word[0] {
-		case '>':
-			m := linkRegexp.FindSubmatch(word)
-			if m == nil {
-				continue
-			}
-			var l [2]uint64
-			l, err = parseLink(m)
-			switch {
-			case err != nil:
-				return
-			case l[0] != 0:
-				links = append(links, l)
-			}
-		}
+func (r *parseRenderer) PostLink(out *bytes.Buffer, text []byte) {
+	link, err := parsePostLink(text)
+	if err != nil {
+		return
 	}
+	r.links = append(r.links, link)
+}
 
-	return
+// Collect post links.
+//
+// Run the full formatting process which is kinda superfluous (we don't
+// need resulting markup) but should be not too expensive.
+//
+// That would guarantee that we will collect only links that are
+// actually needed (e.g. not the ones in code blocks).
+func ParseLinks(body []byte) (common.Links, error) {
+	renderer := &parseRenderer{
+		links: nil,
+		Html:  b.HtmlRenderer(templates.HtmlFlags, "", "").(*b.Html),
+	}
+	b.Markdown(body, renderer, templates.Extensions)
+	return renderer.links, nil
 }
 
 // Extract post links from a text fragment, verify and retrieve their
 // parenthood.
-func parseLink(match [][]byte) (link [2]uint64, err error) {
-	id, err := strconv.ParseUint(string(match[1]), 10, 64)
+func parsePostLink(text []byte) (link [2]uint64, err error) {
+	idStr := string(text[2:])
+	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
 		return
 	}

@@ -13,7 +13,7 @@ import (
 	"smiles"
 )
 
-const htmlFlags = 0 |
+const HtmlFlags = 0 |
 	b.HTML_SKIP_HTML | // skip preformatted HTML blocks
 	b.HTML_SKIP_STYLE | // skip embedded <style> elements
 	b.HTML_SKIP_IMAGES | // skip embedded images
@@ -35,7 +35,7 @@ const htmlFlags = 0 |
 	// b.HTML_FOOTNOTE_RETURN_LINKS     |  // generate a link at the end of a footnote to return to the source
 	0
 
-const extensions = 0 |
+const Extensions = 0 |
 	b.EXTENSION_NO_INTRA_EMPHASIS | // ignore emphasis markers inside words
 	// b.EXTENSION_TABLES                     |  // render tables
 	b.EXTENSION_FENCED_CODE | // render fenced code blocks
@@ -175,9 +175,9 @@ func renderBody(p *common.Post, op uint64, index bool) string {
 		links: p.Links,
 		op:    op,
 		index: index,
-		Html:  b.HtmlRenderer(htmlFlags, "", "").(*b.Html),
+		Html:  b.HtmlRenderer(HtmlFlags, "", "").(*b.Html),
 	}
-	unsafe := b.Markdown(input, renderer, extensions)
+	unsafe := b.Markdown(input, renderer, Extensions)
 	html := policy.SanitizeBytes(unsafe)
 	return string(html)
 }
