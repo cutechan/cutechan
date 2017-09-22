@@ -16,7 +16,7 @@ TODO(Kagami): Fix markup and styles.
 	</form>
 {% endstripspace %}{% endfunc %}
 
-{% func renderThreadNavigation(top bool) %}{% stripspace %}
+{% func renderThreadNavigation(b string, top bool) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	{% code cls := "thread-nav_top" %}
 	{% code if !top { cls = "thread-nav_bottom" } %}
@@ -27,7 +27,7 @@ TODO(Kagami): Fix markup and styles.
 		<a class="button thread-nav-item thread-nav-back" href="/all/">
 			{%s ln.UI["return"] %}
 		</a>
-		<a class="button thread-nav-item thread-nav-catalog" href="/all/catalog">
+		<a class="button thread-nav-item thread-nav-catalog" href="/{%s b %}/catalog">
 			{%s ln.UI["catalog"] %}
 		</a>
 		<a class="button thread-nav-item thread-nav-reply trigger-open-reply">
@@ -39,12 +39,12 @@ TODO(Kagami): Fix markup and styles.
 {% func renderThread(postHTML []byte, id uint64, board, title string, pos auth.ModerationLevel) %}{% stripspace %}
 	<section class="board" id="threads">
 		<h1 class="page-title">{%s title %}</h1>
-		{%= renderThreadNavigation(true) %}
+		{%= renderThreadNavigation(board, true) %}
 		<hr class="separator">
 		{%z= postHTML %}
 		<aside class="reply-container reply-container_thread"></aside>
 		<hr class="separator">
-		{%= renderThreadNavigation(false) %}
+		{%= renderThreadNavigation(board, false) %}
 	</section>
 {% endstripspace %}{% endfunc %}
 
