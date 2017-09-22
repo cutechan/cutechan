@@ -4,18 +4,6 @@
 {% import "meguca/auth" %}
 {% import "encoding/json" %}
 
-TODO(Kagami): Fix markup and styles.
-{% func renderNoscriptReplyForm(id uint64, board string, pos auth.ModerationLevel) %}{% stripspace %}
-	<form id="new-reply-form" action="/html/post" method="POST" enctype="multipart/form-data" class="top-margin hidden">
-		<input name="board" type="text" value="{%s board %}" hidden>
-		<input name="op" type="text" value="{%s strconv.FormatUint(id, 10) %}" hidden>
-		{%= noscriptPostCreationFields(pos) %}
-		{%= uploadForm() %}
-		{%= captcha() %}
-		{%= submit(true) %}
-	</form>
-{% endstripspace %}{% endfunc %}
-
 {% func renderThreadNavigation(b string, top bool) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	{% code cls := "thread-nav_top" %}

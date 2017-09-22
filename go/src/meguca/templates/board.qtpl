@@ -136,27 +136,6 @@ IndexThreads renders abbreviated threads for display on board index pages
 	</section>
 {% endstripspace %}{% endfunc %}
 
-Render noscript-specific post creation fields
-{% func noscriptPostCreationFields(pos auth.ModerationLevel) %}{% stripspace %}
-	{% code ln := lang.Get() %}
-	{% if pos > auth.NotStaff %}
-		{%= input(staffTitleSpec.wrap(), ln) %}
-	{% endif %}
-	{% for _, s := range specs["noscriptPostCreation"] %}
-		{%= input(s, ln) %}
-	{% endfor %}
-{% endstripspace %}{% endfunc %}
-
-Render image upload form
-{% func uploadForm() %}{% stripspace %}
-	<span class="upload-container">
-		<strong class="upload-status"></strong>
-		<br>
-		<input type="file" name="image" accept="image/png, image/gif, image/jpeg, video/webm, video/ogg, audio/ogg, application/ogg, video/mp4, audio/mp4, audio/mp3, application/zip, application/x-7z-compressed, application/x-xz, application/x-gzip">
-		<br>
-	</span>
-{% endstripspace %}{% endfunc %}
-
 Link to catalog or board page
 {% func catalogLink(catalog bool) %}{% stripspace %}
 	{% code ln := lang.Get().UI %}
