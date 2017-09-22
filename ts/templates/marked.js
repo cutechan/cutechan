@@ -326,7 +326,7 @@ Lexer.prototype.token = function(src, top, bq) {
         // Determine whether item is loose or not.
         // Use: /(^|\n)(?! )[^\n]+\n\n(?!\s*$)/
         // for discount behavior.
-        loose = next || /\n\n(?!\s*$)/.test(item);
+        loose = true || next || /\n\n(?!\s*$)/.test(item);
         if (i !== l - 1) {
           next = item.charAt(item.length - 1) === '\n';
           if (!loose) loose = next;
