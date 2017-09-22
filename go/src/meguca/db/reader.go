@@ -232,6 +232,8 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 	var ps postScanner
 	args := ps.ScanArgs()
 	t.Posts = make([]*common.Post, 0, postCnt)
+	postIds := make([]uint64, 1, postCnt + 1)  // + OP
+	postIds[0] = id
 	postsById := make(map[uint64]*common.Post, postCnt + 1)  // + OP
 	postsById[t.ID] = t.Post
 	for r.Next() {
@@ -241,6 +243,7 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 		}
 		p := ps.Val()
 		t.Posts = append(t.Posts, &p)
+		postIds = append(postIds, p.ID)
 		postsById[p.ID] = &p
 	}
 	err = r.Err()
@@ -249,8 +252,13 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 	}
 
 	// Get thread files.
-	// FIXME(Kagami): Limit number of files for abbrev threads.
-	r2, err := tx.Stmt(prepared["get_thread_files"]).Query(id)
+	var r2 *sql.Rows
+	if lastN == 0 {
+		r2, err = tx.Stmt(prepared["get_thread_files"]).Query(id)
+	} else {
+		ids := pq.Array(postIds)
+		r2, err = tx.Stmt(prepared["get_abbrev_thread_files"]).Query(ids)
+	}
 	if err != nil {
 		return
 	}
