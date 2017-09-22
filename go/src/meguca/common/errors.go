@@ -8,8 +8,8 @@ import (
 // Commonly used errors
 var (
 	ErrNameTooLong         = ErrTooLong("name")
+	ErrNoSubject           = errors.New("no subject")
 	ErrSubjectTooLong      = ErrTooLong("subject")
-	ErrPostPasswordTooLong = ErrTooLong("post password")
 	ErrBodyTooLong         = ErrTooLong("post body")
 	ErrInvalidCreds        = errors.New("invalid login credentials")
 	ErrContainsNull        = errors.New("null byte in non-concatenated message")

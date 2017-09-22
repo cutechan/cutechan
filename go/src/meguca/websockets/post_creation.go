@@ -13,6 +13,7 @@ import (
 	"meguca/common"
 	"meguca/db"
 	"meguca/parser"
+	"strings"
 	"time"
 	"unicode/utf8"
 	"unsafe"
@@ -163,7 +164,7 @@ func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
 		return
 	}
 
-	if parser.CountNewlines(req.Body) > common.MaxLinesBody {
+	if strings.Count(req.Body, "\n") > common.MaxLinesBody {
 		err = errTooManyLines
 		return
 	}

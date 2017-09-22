@@ -4,7 +4,6 @@ package common
 const (
 	MaxLenName         = 50
 	MaxLenAuth         = 50
-	MaxLenPostPassword = 100
 	MaxLenSubject      = 100
 	MaxLenBody         = 4000
 	MaxLinesBody       = 100

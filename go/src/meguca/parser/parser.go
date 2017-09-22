@@ -1,15 +1,19 @@
-// Package parser parses and verifies user-sent post data
+// Package parser parses and verifies user-sent post data.
 package parser
 
 import (
+	"database/sql"
 	"meguca/common"
+	"meguca/db"
 	"meguca/util"
 	"regexp"
+	"strings"
+	"strconv"
 )
 
 var linkRegexp = regexp.MustCompile(`^>{2,}(\d+)$`)
 
-// Needed to avoid cyclic imports for the 'db' package
+// Needed to avoid cyclic imports for the 'db' package.
 func init() {
 	common.ParseBody = ParseBody
 }
@@ -55,12 +59,31 @@ func ParseBody(body []byte, board string) (links [][2]uint64, err error) {
 	return
 }
 
-func CountNewlines(s string) int {
-	lines := 0
-	for _, r := range s {
-		if r == '\n' {
-			lines++
-		}
+// Extract post links from a text fragment, verify and retrieve their
+// parenthood.
+func parseLink(match [][]byte) (link [2]uint64, err error) {
+	id, err := strconv.ParseUint(string(match[1]), 10, 64)
+	if err != nil {
+		return
 	}
-	return lines
+
+	op, err := db.GetPostOP(id)
+	switch err {
+	case nil:
+		link = [2]uint64{id, op}
+	case sql.ErrNoRows: // Points to invalid post. Ignore.
+		err = nil
+	}
+	return
+}
+
+// ParseSubject verifies and trims a thread subject string.
+func ParseSubject(s string) (string, error) {
+	if s == "" {
+		return s, common.ErrNoSubject
+	}
+	if len(s) > common.MaxLenSubject {
+		return s, common.ErrSubjectTooLong
+	}
+	return strings.TrimSpace(s), nil
 }
