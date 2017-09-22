@@ -2,6 +2,9 @@
 
   <header class="post-header">
     <a class="post-anchor" name="{{ ID }}"></a>
+    {{#Badge}}
+      <a class="post-header-item post-board" href="/{{ Board }}/">{{ Board }}</a>
+    {{/Badge}}
     <a class="post-header-item post-id" href="{{ URL }}">#{{ ID }}</a>
     {{#OP}}
       <h3 class="post-header-item post-subject">{{ Subject }}</h3>

@@ -77,7 +77,7 @@ function to allow caching of generated posts.
 {% func CatalogThreads(threads []common.Thread, json []byte, all bool) %}{% stripspace %}
 	<section class="catalog" id="catalog">
 		{% for i, t := range threads %}
-			{%= catalogThread(t, i) %}
+			{%= catalogThread(t, i, all) %}
 		{% endfor %}
 		<script id="post-data" type="application/json">
 			{%z= json %}
@@ -85,7 +85,7 @@ function to allow caching of generated posts.
 	</section>
 {% endstripspace %}{% endfunc %}
 
-{% func catalogThread(t common.Thread, i int) %}{% stripspace %}
+{% func catalogThread(t common.Thread, i int, all bool) %}{% stripspace %}
 	{% code idStr := strconv.FormatUint(t.ID, 10) %}
 	{% code url := fmt.Sprintf("/%s/%s", t.Board, idStr) %}
 	<article class="post-catalog-wrapper" style="z-index: {%d -i %}" data-id="{%s idStr %}">
@@ -99,6 +99,9 @@ function to allow caching of generated posts.
 				</figure>
 			{% endif %}
 			<div class="post-header">
+				{% if all %}
+					<a class="post-header-item post-board" href="/{%s t.Board %}/">{%s t.Board %}</a>
+				{% endif %}
 				<a class="post-header-item post-id" href="{%s url %}">#{%s idStr %}</a>
 				<h3 class="post-header-item post-subject">{%s t.Subject %}</h3>
 				<span class="post-header-item post-catalog-counter post-posts-counter">
