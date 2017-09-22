@@ -102,7 +102,7 @@ export default class extends Component<any, any> {
     }
     // Reset smile selection.
     if (acList !== this.props.acList) {
-      this.setState({cur: 0});
+      this.setState({cur: 0}, this.scrollToSmile);
     }
   }
   private setAutocompletePos() {
@@ -112,8 +112,8 @@ export default class extends Component<any, any> {
       left += 5;
       top -= 35;
 
-      // TODO(Kagami): Shift autocomplete box against its wrapper
-      // element (with position=relative). Things to fix:
+      // TODO(Kagami): Workaround to shift autocomplete box against its
+      // wrapper positioned element. Things to fix:
       //   * Fix full box shift
       //   * Put <SmileBox> as sibling of <textarea>
       //   * Remove overflow=hidden on .reply-content
@@ -177,8 +177,11 @@ export default class extends Component<any, any> {
       }
     }
   }
-  private handleSmileBoxClick = (e: MouseEvent) => {
+  private handleIgnore = (e: MouseEvent) => {
     e.stopPropagation();
+  }
+  private handleSmileOver = (cur: number) => {
+    this.setState({cur});
   }
   private handleSmileClick = (id: string) => {
     this.props.onSelect(id);
@@ -193,7 +196,9 @@ export default class extends Component<any, any> {
           "smile-box_autocomplete": !!acList,
         })}
         style={style}
-        onClick={this.handleSmileBoxClick}
+        onMouseDown={this.handleIgnore}
+        onMouseMove={this.handleIgnore}
+        onClick={this.handleIgnore}
       >
         <div class="smiles" ref={setter(this, "listEl")}>
           {(acList || smileList).map((id: string, i: number) =>
@@ -201,6 +206,7 @@ export default class extends Component<any, any> {
               <i
                 class={cx("smile", `smile-${id}`, "smiles-icon")}
                 title={`:${id}:`}
+                onMouseOver={this.handleSmileOver.bind(null, i)}
                 onClick={this.handleSmileClick.bind(null, id)}
               />
             </div>,
