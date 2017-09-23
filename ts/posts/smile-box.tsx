@@ -108,7 +108,14 @@ export default class extends Component<any, any> {
   private setAutocompletePos() {
     if (this.props.acList) {
       const el = this.props.textarea;
+
+      // Get caret offset against closest positioned element.
       let { left, top } = getCaretCoordinates(el, el.selectionEnd);
+
+      // Adjust for scrolling.
+      top -= el.scrollTop;
+
+      // Slightly fix box position.
       left += 5;
       top -= 35;
 
