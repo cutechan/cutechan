@@ -287,6 +287,7 @@ html, body {
 
 .header-item {
   display: inline-block;
+  box-sizing: border-box;
   height: 100%;
   line-height: @headerHeight;
   text-align: center;
@@ -299,6 +300,7 @@ html, body {
 .header-board {
   overflow: hidden;
   text-overflow: ellipsis;
+  white-space: nowrap;
 }
 
 .header-logo:hover, .header-board:hover, .header-icon:hover {
@@ -313,19 +315,18 @@ html, body {
   background: url(/static/img/logo.png) no-repeat;
 }
 
-.header-content {
+.header-spacer {
   flex: 1;
 }
 
-.header-counter, .header-status {
-  width: 40px;
+.header-counter, .header-status, .header-icon {
+  width: 70px;
   &:empty {
     display: none;
   }
 }
 
 .header-icon {
-  width: 40px;
   cursor: pointer;
 }
 
