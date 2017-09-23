@@ -31,6 +31,11 @@ Renders the tab selection butts in tabbed windows
 		<a href="https://github.com/bakape/meguca" target="_blank">
 			github.com/bakape/meguca
 		</a>
+		<br>
+		contacts:{% space %}
+		<a href="mailto:kagami@genshiken.org">
+			kagami@genshiken.org
+		</a>
 	</div>
 {% endstripspace %}{% endfunc %}
 
