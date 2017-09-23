@@ -140,6 +140,9 @@ Renders the tab selection butts in tabbed windows
 		<link rel="icon" href="/static/favicons/default.ico" id="favicon">
 		<link rel="manifest" href="/static/mobile/manifest.json">
 		<link rel="stylesheet" href="/static/css/{%s conf.DefaultCSS %}.css" id="theme-css">
+		{% if conf.ImageRootOverride != "" %}
+			<link rel="dns-prefetch" href="{%s conf.ImageRootOverride %}">
+		{% endif %}
 		<script>
 			var config={%z= confJSON %},boards={%z= boardJSON %},position={%d int(pos) %};
 			if (localStorage.theme !== config.DefaultCSS) {
