@@ -107,13 +107,14 @@ function getClientY(e: MouseEvent | TouchEvent): number {
 class FilePreview extends Component<any, any> {
   public render(props: any) {
     const { thumb } = props.info;
+    const infoText = this.renderInfo();
     return (
       <div class="reply-file">
         <a class="control reply-remove-file-control" onClick={props.onRemove}>
           <i class="fa fa-remove" />
         </a>
         <img class="reply-file-thumb" src={thumb} />
-        <div class="reply-file-info">{this.renderInfo()}</div>
+        <div class="reply-file-info" title={infoText}>{infoText}</div>
       </div>
     );
   }
