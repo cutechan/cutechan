@@ -630,7 +630,7 @@ class Reply extends Component<any, any> {
   }
   private handleToggleStaffTitle = () => {
     const staffTitle = !this.state.staffTitle;
-    this.setState({staffTitle});
+    this.setState({staffTitle}, this.focus);
   }
   private handleToggleSmileBox = (e: MouseEvent) => {
     // Needed because of https://github.com/developit/preact/issues/838
