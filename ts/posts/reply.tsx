@@ -333,12 +333,26 @@ class Reply extends Component<any, any> {
 
     let cited = "";
     const sel = window.getSelection();
-    if (sel.isCollapsed || !body.includes(`>>${postID}`)) {
-      cited += `>>${postID}\n`;
-    }
-    if (!sel.isCollapsed
+    const prevCh = (start > 0) ? body[start - 1] : "";
+    const prevNL = !prevCh || prevCh === "\n";
+    const hasID = body.includes(`>>${postID}`);
+    const hasText = !sel.isCollapsed
         && postBody.contains(sel.anchorNode)
-        && postBody.contains(sel.focusNode)) {
+        && postBody.contains(sel.focusNode);
+
+    if (hasText && !prevNL) {
+      cited += "\n";
+    }
+    if (!hasText && !prevNL && prevCh !== " ") {
+      cited += " ";
+    }
+    if (!hasText || !hasID) {
+      cited += `>>${postID}`;
+    }
+    if (hasText || prevNL) {
+      cited += "\n";
+    }
+    if (hasText) {
       cited += quoteText(sel.toString());
     }
 
@@ -346,6 +360,7 @@ class Reply extends Component<any, any> {
     if (end < body.length) {
       cited += "\n";
     }
+
     body = body.slice(0, start) + cited + body.slice(end);
     this.setState({body}, () => {
       // Don't focus invisible element.
