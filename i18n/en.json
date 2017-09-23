@@ -104,6 +104,10 @@
       "Preview post",
       "Toggle post preview mode"
     ],
+    "modBadge": [
+      "Show mod badge",
+      ""
+    ],
     "notification": [
       "Desktop Notifications",
       "Get desktop notifications when quoted"

@@ -14,6 +14,10 @@ function toFormData(data: Dict): FormData {
     if (Array.isArray(v)) {
       k += "[]";
       v.forEach((item) => form.append(k, item));
+    } else if (typeof v === "boolean") {
+      if (v) {
+        form.append(k, "on");
+      }
     } else {
       form.append(k, v);
     }

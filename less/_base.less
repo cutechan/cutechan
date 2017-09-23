@@ -172,6 +172,13 @@ hr {
   }
 }
 
+.control_active {
+  color: #f00;
+  &:not(:disabled):hover {
+    color: #f00;
+  }
+}
+
 .button {
   display: inline-block;
   background: @buttonBG;
@@ -1462,6 +1469,10 @@ html.pos-notstaff {
 .reply-attach-control {
   font-size: 22px;
   line-height: 20px;
+}
+
+.reply-edit-control {
+  width: 15px;
 }
 
 .reply-send-button {

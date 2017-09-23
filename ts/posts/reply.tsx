@@ -4,6 +4,7 @@ import { showAlert } from "../alerts";
 import API from "../api";
 import { PostData } from "../common";
 import { ln, printf } from "../lang";
+import { isStaff } from "../mod";
 import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {
@@ -158,6 +159,7 @@ class Reply extends Component<any, any> {
     thread: page.thread,
     subject: "",
     body: "",
+    staffTitle: false,
     smileBox: false,
     smileBoxAC: null as string[],
     fwraps: [] as Array<{file: File, info: Dict}>,
@@ -582,7 +584,7 @@ class Reply extends Component<any, any> {
   }
   private handleSend = () => {
     if (this.disabled) return;
-    const { board, thread, subject, body } = this.state;
+    const { board, thread, subject, body, staffTitle } = this.state;
     const files = this.state.fwraps.map((f) => f.file);
     const sendFn = page.thread ? API.post.create : API.thread.create;
     this.setState({sending: true});
@@ -590,7 +592,7 @@ class Reply extends Component<any, any> {
       const sign = signature.gen(token);
       return sendFn({
         board, thread,
-        subject, body, files,
+        subject, body, files, staffTitle,
         token, sign,
       }, this.handleSendProgress, this.sendAPI);
     }).then((res: Dict) => {
@@ -621,6 +623,10 @@ class Reply extends Component<any, any> {
   private handleToggleEditing = () => {
     const editing = !this.state.editing;
     this.setState({editing, smileBox: false}, this.focus);
+  }
+  private handleToggleStaffTitle = () => {
+    const staffTitle = !this.state.staffTitle;
+    this.setState({staffTitle});
   }
   private handleToggleSmileBox = (e: MouseEvent) => {
     // Needed because of https://github.com/developit/preact/issues/838
@@ -740,7 +746,7 @@ class Reply extends Component<any, any> {
     );
   }
   private renderFooterControls() {
-    const { editing, sending, progress } = this.state;
+    const { editing, sending, progress, staffTitle } = this.state;
     const sendTitle = sending ? `${progress}% (${ln.UI.clickToCancel})` : "";
     return (
       <div class="reply-controls reply-footer-controls">
@@ -793,6 +799,17 @@ class Reply extends Component<any, any> {
         >
           <i class={cx("fa", editing ? "fa-print" : "fa-pencil")} />
         </button>
+        <ShowHide show={isStaff()}>
+          <button
+            class={cx("control", "reply-footer-control", "reply-badge-control",
+                      {control_active: staffTitle})}
+            title={ln.Forms.modBadge[0]}
+            disabled={sending}
+            onClick={this.handleToggleStaffTitle}
+          >
+            <i class="fa fa-id-badge" />
+          </button>
+        </ShowHide>
 
         <div
           class="reply-dragger"
