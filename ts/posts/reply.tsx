@@ -159,10 +159,10 @@ class Reply extends Component<any, any> {
     thread: page.thread,
     subject: "",
     body: "",
-    staffTitle: false,
     smileBox: false,
     smileBoxAC: null as string[],
     fwraps: [] as Array<{file: File, info: Dict}>,
+    staffTitle: false,
   };
   private mainEl: HTMLElement = null;
   private bodyEl: HTMLTextAreaElement = null;
@@ -229,12 +229,16 @@ class Reply extends Component<any, any> {
       }
     }
   }
-  public render({}, { float, fwraps }: any) {
+  public render({}, { float, fwraps, staffTitle }: any) {
     const manyf = fwraps.length > 1;
     return (
       <div
-        class={cx("reply", {reply_float: float, reply_files: manyf})}
         ref={s(this, "mainEl")}
+        class={cx("reply", {
+          reply_float: float,
+          reply_files: manyf,
+          reply_mod: staffTitle,
+        })}
         style={this.style}
         onMouseDown={this.handleFormDown}
         onMouseMove={this.handleFormMove}
