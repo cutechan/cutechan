@@ -26,11 +26,12 @@ import * as signature from "./signature";
 import SmileBox, { autocomplete } from "./smile-box";
 
 function quoteText(text: string): string {
-  return text.trim().split(/\n/).filter((line) => {
-    return line.length > 0;
-  }).map((line) => {
-    return ">" + line;
-  }).join("\n") + "\n";
+  return text
+    .trim()
+    .split(/\n/)
+    .filter((line) => !!line)
+    .map((line) => ">" + line)
+    .join("\n");
 }
 
 function getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
@@ -333,13 +334,16 @@ class Reply extends Component<any, any> {
     }
 
     let cited = "";
-    const sel = window.getSelection();
     const prevCh = (start > 0) ? body[start - 1] : "";
     const prevNL = !prevCh || prevCh === "\n";
-    const hasID = body.includes(`>>${postID}`);
+    const nextCh = (end < body.length) ? body[end] : "";
+    const hasID = body.includes(">>" + postID);
+    const sel = window.getSelection();
+    const text = quoteText(sel.toString());
     const hasText = !sel.isCollapsed
         && postBody.contains(sel.anchorNode)
-        && postBody.contains(sel.focusNode);
+        && postBody.contains(sel.focusNode)
+        && !!text;
 
     if (hasText && !prevNL) {
       cited += "\n";
@@ -350,16 +354,27 @@ class Reply extends Component<any, any> {
     if (!hasText || !hasID) {
       cited += `>>${postID}`;
     }
-    if (hasText || prevNL) {
+    if (hasText && !hasID) {
       cited += "\n";
     }
     if (hasText) {
-      cited += quoteText(sel.toString());
+      cited += text;
+    }
+    if (hasText || prevNL) {
+      cited += "\n";
     }
 
     const caret = start + cited.length;
     if (end < body.length) {
-      cited += "\n";
+      if (hasText || prevNL) {
+        if (nextCh !== "\n") {
+          cited += "\n";
+        }
+      } else {
+        if (nextCh !== " ") {
+          cited += " ";
+        }
+      }
     }
 
     body = body.slice(0, start) + cited + body.slice(end);
