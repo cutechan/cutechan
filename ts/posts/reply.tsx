@@ -189,7 +189,7 @@ class Reply extends Component<any, any> {
     }
   }
   public componentDidMount() {
-    hook(HOOKS.openReply, this.focus);
+    hook(HOOKS.openReply, this.focusAndScroll);
     hook(HOOKS.sendReply, this.handleSend);
     hook(HOOKS.selectFile, this.handleAttach);
     hook(HOOKS.previewPost, this.handleToggleEditing);
@@ -200,7 +200,7 @@ class Reply extends Component<any, any> {
     document.addEventListener("touchmove", this.handleGlobalMove);
     document.addEventListener("mouseup", this.handleGlobalUp);
     document.addEventListener("touchend", this.handleGlobalUp);
-    this.focus();
+    this.focusAndScroll();
     const caret = this.state.body.length;
     this.bodyEl.setSelectionRange(caret, caret);
   }
@@ -403,14 +403,20 @@ class Reply extends Component<any, any> {
     this.setState({float: true, left, top});
   }
   private focus = () => {
-    if (!this.bodyEl) return;
-    this.bodyEl.focus();
-    if (page.thread) {
-      if (!this.state.float) {
-        this.bodyEl.scrollIntoView();
+    if (this.bodyEl) {
+      this.bodyEl.focus();
+    }
+  }
+  private focusAndScroll = () => {
+    this.focus();
+    if (this.bodyEl) {
+      if (page.thread) {
+        if (!this.state.float) {
+          this.bodyEl.scrollIntoView();
+        }
+      } else {
+        scrollToTop();
       }
-    } else {
-      scrollToTop();
     }
   }
   private saveCoords(e: MouseEvent | TouchEvent) {
