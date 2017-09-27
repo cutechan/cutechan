@@ -373,6 +373,23 @@ var upgrades = []func(*sql.Tx) error{
 			`ALTER TABLE post_files ADD PRIMARY KEY (id)`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`CREATE TABLE stickers (
+				sha1 char(40) PRIMARY KEY REFERENCES images
+			)`,
+			`CREATE TABLE tags (
+				id bigserial PRIMARY KEY,
+				name varchar(100) not null UNIQUE
+			)`,
+			`CREATE TABLE sticker_tags (
+				sticker_hash char(40) REFERENCES stickers ON DELETE CASCADE,
+				tag_id bigint REFERENCES tags ON DELETE CASCADE,
+				PRIMARY KEY (sticker_hash, tag_id)
+			)`,
+			`CREATE INDEX sticker_tags_tag_id ON sticker_tags (tag_id)`,
+		)
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both
