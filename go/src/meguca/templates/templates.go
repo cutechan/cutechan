@@ -88,6 +88,13 @@ func Landing(pos auth.ModerationLevel, newsHTML []byte) []byte {
 	return execIndex(html, title, pos)
 }
 
+// Render stickers page.
+func Stickers(pos auth.ModerationLevel, stickHTML []byte) []byte {
+	html := renderStickers(stickHTML)
+	title := lang.Get().UI["stickers"]
+	return execIndex(html, title, pos)
+}
+
 // Execute and index template in the second pass
 func execIndex(html, title string, pos auth.ModerationLevel) []byte {
 	title = h.EscapeString(title)

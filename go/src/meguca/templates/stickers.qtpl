@@ -1,0 +1,13 @@
+{% import "meguca/lang" %}
+
+{% func renderStickers(stickHTML []byte) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<section class="board">
+		<h1 class="page-title">{%s ln.UI["stickers"] %}</h1>
+		<hr class="separator">
+			<section class="stickers">
+				{%z= stickHTML %}
+			</section>
+		<hr class="separator">
+	</section>
+{% endstripspace %}{% endfunc %}

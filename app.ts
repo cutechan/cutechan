@@ -32,7 +32,11 @@ async function init() {
 
   initOptions();
 
-  if (!page.landing) {
+  if (page.landing) {
+    /* skip */
+  } else if (page.stickers) {
+    /* skip */
+  } else {
     if (page.thread) {
       renderThread();
       initConnection();

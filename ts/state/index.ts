@@ -26,6 +26,7 @@ export interface BoardConfig {
 
 // The current state of a board or thread page
 export interface PageState {
+  stickers: boolean;
   landing: boolean;
   catalog: boolean;
   thread: number;
@@ -63,6 +64,7 @@ function getState(href: string): PageState {
     catalog: /^\/\w+\/catalog/.test(pathname),
     href,
     landing: pathname === "/",
+    stickers: pathname.startsWith("/stickers/"),
     lastN: /[&\?]last=100/.test(u.search) ? 100 : 0,
     page: pageN ? parseInt(pageN[1], 10) : 0,
     thread: parseInt(thread && thread[1], 10) || 0,

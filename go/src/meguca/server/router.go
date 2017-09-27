@@ -29,6 +29,7 @@ func createRouter() http.Handler {
 
 	// HTML.
 	r.GET("/", serveLanding)
+	r.GET("/stickers/", serveStickers)
 	r.GET("/:board/", func(w http.ResponseWriter, r *http.Request) {
 		boardHTML(w, r, extractParam(r, "board"), false)
 	})
