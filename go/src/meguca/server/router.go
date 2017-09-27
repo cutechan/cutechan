@@ -1,12 +1,12 @@
 package server
 
 import (
-	"github.com/dimfeld/httptreemux"
 	"log"
-	"meguca/auth"
 	"meguca/util"
 	"meguca/websockets"
 	"net/http"
+
+	"github.com/dimfeld/httptreemux"
 )
 
 func startWebServer() (err error) {
@@ -14,13 +14,12 @@ func startWebServer() (err error) {
 	log.Println("listening on " + address)
 	err = http.ListenAndServe(address, r)
 	if err != nil {
-		return util.WrapError("error starting web server", err)
+		err = util.WrapError("error starting web server", err)
 	}
 	return
 }
 
-// Create the monolithic router for routing HTTP requests. Separated into own
-// function for easier testability.
+// Create the monolithic router for routing HTTP requests.
 func createRouter() http.Handler {
 	r := httptreemux.NewContextMux()
 	r.NotFoundHandler = func(w http.ResponseWriter, _ *http.Request) {
@@ -28,7 +27,7 @@ func createRouter() http.Handler {
 	}
 	r.PanicHandler = text500
 
-	// HTML
+	// HTML.
 	r.GET("/", serveLanding)
 	r.GET("/:board/", func(w http.ResponseWriter, r *http.Request) {
 		boardHTML(w, r, extractParam(r, "board"), false)
@@ -44,7 +43,7 @@ func createRouter() http.Handler {
 	r.GET("/:board/:thread", threadHTML)
 	r.GET("/all/:id", crossRedirect)
 
-	// HTML partials
+	// HTML partials.
 	// TODO(Kagami): Remove.
 	html := r.NewGroup("/html")
 	// html.GET("/board-navigation", boardNavigation)
@@ -59,7 +58,7 @@ func createRouter() http.Handler {
 	html.GET("/bans/:board", banList)
 	html.GET("/mod-log/:board", modLog)
 
-	// JSON API
+	// JSON API.
 	api := r.NewGroup("/api")
 	api.GET("/socket", websockets.Handler)
 	api.GET("/embed", serveEmbed)
@@ -87,15 +86,7 @@ func createRouter() http.Handler {
 	// api.POST("/same-IP/:id", getSameIPPosts)
 	// api.POST("/sticky", setThreadSticky)
 	// api.POST("/set-banners", setBanners)
-	// Captcha API
-	captcha := api.NewGroup("/captcha")
-	captcha.GET("/new", auth.NewCaptchaID)
-	captcha.GET("/image/*path", auth.ServeCaptcha)
-	// Noscript captcha API
-	NSCaptcha := captcha.NewGroup("/noscript")
-	NSCaptcha.GET("/load", noscriptCaptchaLink)
-	NSCaptcha.GET("/new", noscriptCaptcha)
-	// TODO(Kagami): Refactor.
+	// TODO(Kagami): Rework and move to /api.
 	// json := r.NewGroup("/json")
 	// boards := json.NewGroup("/boards")
 	// boards.GET("/:board/", func(w http.ResponseWriter, r *http.Request) {
@@ -110,8 +101,7 @@ func createRouter() http.Handler {
 	// json.GET("/board-config/:board", serveBoardConfigs)
 	// json.GET("/board-list", serveBoardList)
 
-	// Assets
-	r.GET("/banners/:board/:id", serveBanner)
+	// Assets.
 	r.GET("/uploads/*path", serveImages)
 	r.GET("/static/*path", serveStatic)
 
