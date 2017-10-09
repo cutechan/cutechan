@@ -2,14 +2,24 @@
 // ADJUSTMENTS FOR SCREEN SIZE
 //////////////////////////////
 
-// iPad
+// Small screen.
+@media (max-width: 1000px) {
+  .post {
+    max-width: 100%;
+  }
+  .post_op:not(.post_hover):not(.post_catalog) {
+    min-width: 100%;
+  }
+}
+
+// iPad.
 @media (max-width: 768px) {
   .board {
     padding: 0 10px 10px;
   }
 }
 
-// Mobile
+// Mobile.
 @media (max-width: 480px) {
   .header-item {
     padding: 0 5px;
@@ -31,27 +41,9 @@
   }
 }
 
-// Small mobile
+// Small mobile.
 @media (max-width: 360px) {
   .post-file-link {
     float: none;
-  }
-}
-
-// Small screen
-@media (max-width: 1000px) {
-  .post {
-    max-width: 100%;
-  }
-  .post_op:not(.post_hover):not(.post_catalog) {
-    min-width: 100%;
-  }
-}
-
-// Retina
-@media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
-  .logo {
-    background: url(/static/img/logo@2x.png) no-repeat top left;
-    background-size: 30px 30px;
   }
 }
