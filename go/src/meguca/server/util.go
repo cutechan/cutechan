@@ -23,11 +23,11 @@ const (
 var (
 	// Base set of HTTP headers for both HTML and JSON
 	vanillaHeaders = map[string]string{
-		"Cache-Control": "no-cache, must-revalidate, max-age=0",
+		"Cache-Control": "no-cache",
 	}
 	// Set of headers for serving images (and other uploaded files)
 	imageHeaders = map[string]string{
-		"Cache-Control": "max-age=31536000, public",
+		"Cache-Control": "max-age=31536000, public, immutable",
 	}
 )
 
