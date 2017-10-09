@@ -47,12 +47,7 @@ func serveLanding(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	newsHTML, _, _, err := cache.GetHTML(cache.NewsKey(), newsCache)
-	if err != nil {
-		text500(w, r, errNoNews)
-		return
-	}
-	html := templates.Landing(pos, newsHTML)
+	html := templates.Landing(pos)
 	serveHTML(w, r, "", html, nil)
 }
 

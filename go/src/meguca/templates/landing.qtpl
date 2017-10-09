@@ -1,4 +1,3 @@
-{% import "math/rand" %}
 {% import "meguca/lang" %}
 {% import "meguca/common" %}
 
@@ -24,17 +23,18 @@ Will be cached.
 	</section>
 {% endstripspace %}{% endfunc %}
 
-{% func renderLanding(newsHTML []byte) %}{% stripspace %}
+{% func renderLanding() %}{% stripspace %}
 	{% code ln := lang.Get() %}
-	{% code n := rand.Intn(numBanners) + 1 %}
-	<img class="banner" src="/static/img/banner{%d n %}.jpg">
-	<nav class="sections">
-		<div class="sections-header">{%s ln.UI["sections"] %}</div>
-		<div class="sections-content">
-			<a class="section" href="/all/">{%s ln.UI["board"] %}</a>
-			<div class="section section_disabled">{%s ln.UI["gallery"] %}</div>
-			<div class="section section_disabled">{%s ln.UI["games"] %}</div>
-		</div>
-	</nav>
-	{%z= newsHTML %}
+	<section class="landing">
+		<h1 class="landing-header">
+			{%s ln.UI["landingHeader"] %}
+		</h1>
+		<a class="button landing-button landing-threads-button" href="/all/">
+			{%s ln.UI["threads"] %}
+		</a>
+		<button class="button landing-button landing-rules-button" disabled>
+			{%s ln.UI["rules"] %}
+		</button>
+		<i class="landing-logo"></i>
+	</section>
 {% endstripspace %}{% endfunc %}

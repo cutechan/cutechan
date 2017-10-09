@@ -180,12 +180,14 @@ hr {
 }
 
 .button {
+  box-sizing: border-box;
   display: inline-block;
   background: @buttonBG;
   color: @button;
   border-radius: 3px;
   border: @buttonBorder;
   padding: 5px 10px;
+  text-align: center;
   cursor: pointer;
   outline: none;
   user-select: none;
@@ -331,72 +333,49 @@ html, body {
 }
 
 //////////////////////////////
-// BANNER
+// LANDING
 //////////////////////////////
 
-.banner {
+.landing {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.landing-header {
+  margin-bottom: 80px;
+  font-size: 35px;
+  color: @pagetitle;
+}
+
+.landing-button {
   display: block;
-  width: 100%;
-  margin: 15px 0;
-  border-width: 2px 0;
-  border-style: solid;
-  border-image: @lightHBorder;
-  user-select: none;
-}
-
-//////////////////////////////
-// SECTIONS
-//////////////////////////////
-
-.sections {
-  width: 80%;
   margin: 0 auto;
-  margin-bottom: 15px;
-  text-align: center;
-  background-image: linear-gradient(90deg, transparent, #e8e2f3 10%, #e8e2f3 90%,transparent 100%);
-  border-style: solid;
-  border-width: 2px 0;
-  border-image: @lightHBorder;
-  cursor: default;
-  user-select: none;
 }
 
-.sections-header {
-  font-size: 24px;
-  padding: 5px 0;
-  font-weight: bold;
-  color: #716090;
+.landing-threads-button {
+  width: 340px;
+  height: 50px;
+  margin-bottom: 10px;
+  font-size: 25px;
+  color: @pagetitle;
+  border-color: #88619e;
 }
 
-.sections-content {
-  margin: 5px 0;
+.landing-rules-button {
+  width: 180px;
+  height: 25px;
+  font-size: 13px;
+  margin-bottom: 80px;
 }
 
-.section {
-  display: inline-block;
-  font-size: 23px;
-  width: 240px;
-  height: 60px;
-  line-height: 60px;
-  text-decoration: none;
-  color: #716090;
-  background-image: linear-gradient(transparent, #ddd4f1 15%, #ddd4f1 85%, transparent 100%);
-  cursor: pointer;
-  border-right: 2px solid;
-  border-image: @darkVBorder;
-  &:not(.section_disabled):hover {
-    color: #716090;
-  }
-}
-
-.section_disabled {
-  color: #b09cb3;
-  background-image: linear-gradient(transparent, #dad4e8 15%, #dad4e8 85%, transparent 100%);
-  cursor: not-allowed;
-}
-
-.section:first-child {
-  border-left: 2px solid;
+.landing-logo {
+  display: block;
+  margin: 0 auto;
+  width: 500px;
+  height: 500px;
+  background: url(/static/img/logo.svg) no-repeat;
 }
 
 //////////////////////////////
@@ -474,7 +453,7 @@ html, body {
   z-index: 600;
 }
 
-// Bootstrap alike.
+// Bootstrap-alike.
 .alert {
   box-sizing: border-box;
   min-width: 250px;

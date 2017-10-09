@@ -102,7 +102,7 @@ Renders the tab selection butts in tabbed windows
 {% func renderHeader(boards config.BoardTitles) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	<header class="header">
-		<a class="header-item header-logo" href="/">
+		<a class="header-item header-logo" href="/" title="{%s ln.UI["main"] %}">
 			<i class="logo"></i>
 		</a>
 		<a class="header-item header-board" href="/all/">{%s ln.UI["aggregator"] %}</a>
