@@ -223,7 +223,7 @@ html, body {
   flex-direction: column;
   box-sizing: border-box;
   min-height: 100%;
-  padding: 0 80px 80px;
+  padding: 0 60px 60px;
 }
 
 .threads-container, .catalog, .stickers {
@@ -739,6 +739,49 @@ input[type=number], input[type=text], input[type=password], textarea {
 //////////////////////////////
 // NAVIGATION
 //////////////////////////////
+
+.page-nav {
+  position: fixed;
+  top: 30px;
+  bottom: 0;
+  left: 0px;
+  width: 58px;
+  display: flex;
+  flex-direction: column;
+}
+
+.page-nav-item {
+  flex: 1;
+  text-align: center;
+  font-size: 20px;
+  font-weight: bold;
+  color: @control;
+  opacity: 0;
+  transition: opacity 0.3s;
+  cursor: pointer;
+  user-select: none;
+}
+
+.page-nav-item_active {
+  opacity: 0.3;
+  &:hover {
+    color: @control;
+    opacity: 1;
+  }
+}
+
+.page-nav-top {
+  padding-top: 10px;
+}
+
+.page-nav-bottom {
+  padding-bottom: 10px;
+  display: flex;
+  flex-direction: column;
+  & i {
+    margin-top: auto;
+  }
+}
 
 .board-nav-item {
   margin-right: 5px;

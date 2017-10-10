@@ -19,6 +19,8 @@ export const POST_FILE_LINK_SEL = ".post-file-link";
 export const POST_FILE_THUMB_SEL = ".post-file-thumb";
 export const POST_BACKLINKS_SEL = ".post-backlinks";
 export const POST_EMBED_SEL = ".post-embed";
+export const PAGE_NAV_TOP_SEL = ".page-nav-top";
+export const PAGE_NAV_BOTTOM_SEL = ".page-nav-bottom";
 
 // Action trigger selectors, might appear multiple times in markup.
 export const TRIGGER_OPEN_REPLY_SEL = ".trigger-open-reply";
@@ -26,6 +28,8 @@ export const TRIGGER_QUOTE_POST_SEL = ".trigger-quote-post";
 export const TRIGGER_DELETE_POST_SEL = ".trigger-delete-post";
 export const TRIGGER_BAN_BY_POST_SEL = ".trigger-ban-by-post";
 export const TRIGGER_MEDIA_POPUP_SEL = ".trigger-media-popup";
+export const TRIGGER_PAGE_NAV_TOP_SEL = ".trigger-page-nav-top";
+export const TRIGGER_PAGE_NAV_BOTTOM_SEL = ".trigger-page-nav-bottom";
 
 // Constants.
 export const ALERT_HIDE_TIMEOUT_SECS = 5;

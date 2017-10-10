@@ -27,6 +27,7 @@
 {% func renderThread(postHTML []byte, id uint64, board, title string, pos auth.ModerationLevel) %}{% stripspace %}
 	<section class="board" id="threads">
 		<h1 class="page-title">{%s title %}</h1>
+		{%= renderPageNavigation(false) %}
 		{%= renderThreadNavigation(board, true) %}
 		<hr class="separator">
 		{%z= postHTML %}

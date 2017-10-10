@@ -6,6 +6,19 @@
 {% import "meguca/auth" %}
 {% import "meguca/imager/assets" %}
 
+{% func renderPageNavigation(catalog bool) %}{% stripspace %}
+	{% if !catalog %}
+		<nav class="page-nav">
+			<a class="page-nav-item page-nav-top trigger-page-nav-top">
+				<i class="fa fa-chevron-up trigger-page-nav-top"></i>
+			</a>
+			<a class="page-nav-item page-nav-bottom trigger-page-nav-bottom">
+				<i class="fa fa-chevron-down trigger-page-nav-bottom"></i>
+			</a>
+		</nav>
+	{% endif %}
+{% endstripspace %}{% endfunc %}
+
 {% func renderBoardSearch(catalog bool) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	{% code inputClass := "board-search-input" %}
@@ -48,6 +61,7 @@
 	<section class="board" id="threads">
 		<h1 class="page-title">{%s title %}</h1>
 		<aside class="reply-container reply-container_board"></aside>
+		{%= renderPageNavigation(catalog) %}
 		{%= renderBoardNavigation(page, total, catalog, true) %}
 		<hr class="separator">
 		{%z= threadHTML %}

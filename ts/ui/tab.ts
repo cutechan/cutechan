@@ -126,15 +126,6 @@ function onScroll() {
   setTimeout(recalc, 200);
 }
 
-export function init() {
-  connSM.on(connState.synced, resolve);
-  connSM.on(connState.dropped, delayedDiscoRender);
-  connSM.on(connState.desynced, delayedDiscoRender);
-
-  document.addEventListener("scroll", onScroll, {passive: true});
-  document.addEventListener("visibilitychange", onScroll);
-}
-
 // Update unseen post count based on post visibility and scroll
 // position.
 export function postAdded(post: Post) {
@@ -153,4 +144,13 @@ export function repliedToMe(post: Post) {
     unseenReplies = true;
     resolve();
   }
+}
+
+export function init() {
+  connSM.on(connState.synced, resolve);
+  connSM.on(connState.dropped, delayedDiscoRender);
+  connSM.on(connState.desynced, delayedDiscoRender);
+
+  document.addEventListener("scroll", onScroll, {passive: true});
+  document.addEventListener("visibilitychange", onScroll);
 }
