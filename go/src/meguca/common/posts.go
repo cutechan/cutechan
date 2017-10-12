@@ -44,12 +44,13 @@ type Thread struct {
 
 // Post is a generic post exposed publically through the JSON API.
 type Post struct {
-	ID      uint64 `json:"id"`
-	Time    int64  `json:"time"`
-	Body    string `json:"body"`
-	Auth    string `json:"auth,omitempty"`
-	Links   Links  `json:"links,omitempty"`
-	Files   Files  `json:"files,omitempty"`
+	ID       uint64   `json:"id"`
+	Time     int64    `json:"time"`
+	Auth     string   `json:"auth,omitempty"`
+	Body     string   `json:"body"`
+	Links    Links    `json:"links,omitempty"`
+	Commands Commands `json:"commands,omitempty"`
+	Files    Files    `json:"files,omitempty"`
 }
 
 // StandalonePost is a post view that includes the "op" and "board"
@@ -66,6 +67,9 @@ type Posts []*Post
 
 // Post links.
 type Links [][2]uint64
+
+// Post commands.
+type Commands []Command
 
 // Post files.
 type Files []*Image

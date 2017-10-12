@@ -1,12 +1,13 @@
 CREATE OR REPLACE FUNCTION insert_thread(
   id bigint,
-  now bigint,
-  body text,
-  auth varchar(20),
-  links bigint[][2],
   op bigint,
+  now bigint,
   board text,
+  auth varchar(20),
+  body text,
   ip inet,
+  links bigint[][2],
+  commands json[],
   file_cnt bigint,
   subject varchar(100)
 ) RETURNS void AS $$
@@ -14,7 +15,7 @@ CREATE OR REPLACE FUNCTION insert_thread(
   INSERT INTO threads (board, id, postCtr, imageCtr, replyTime, bumpTime, subject)
   VALUES              (board, id, 1,       file_cnt, now,       now,      subject);
 
-  INSERT INTO posts (id, board, op, time, body, auth, ip, links)
-  VALUES            (id, board, op, now,  body, auth, ip, links);
+  INSERT INTO posts (id, op, time, board, auth, body, ip, links, commands)
+  VALUES            (id, op, now,  board, auth, body, ip, links, commands);
 
 $$ LANGUAGE SQL;

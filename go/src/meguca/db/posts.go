@@ -10,6 +10,9 @@ import (
 	"meguca/common"
 	"strconv"
 	"time"
+
+	"github.com/lib/pq"
+	"github.com/mailru/easyjson"
 )
 
 const (
@@ -44,8 +47,8 @@ type Thread struct {
 	Subject, Board      string
 }
 
-// For decoding and encoding the tuple arrays we store links in
-type linkRow [][2]uint64
+// For decoding and encoding the tuple arrays we store links in.
+type linkRow common.Links
 
 func (l *linkRow) Scan(src interface{}) error {
 	switch src := src.(type) {
@@ -134,6 +137,58 @@ func (l linkRow) Value() (driver.Value, error) {
 	return string(b), nil
 }
 
+// For encoding and decoding command results.
+type commandRow common.Commands
+
+func (c *commandRow) Scan(src interface{}) error {
+	switch src := src.(type) {
+	case []byte:
+		return c.scanBytes(src)
+	case string:
+		return c.scanBytes([]byte(src))
+	case nil:
+		*c = nil
+		return nil
+	default:
+		return fmt.Errorf("db: cannot convert %T to common.Commands", src)
+	}
+}
+
+func (c *commandRow) scanBytes(data []byte) (err error) {
+	var bArr pq.ByteaArray
+	err = bArr.Scan(data)
+	if err != nil {
+		return
+	}
+
+	*c = make([]common.Command, len(bArr))
+	for i := range bArr {
+		err = (*c)[i].UnmarshalJSON(bArr[i])
+		if err != nil {
+			return
+		}
+	}
+
+	return
+}
+
+func (c commandRow) Value() (driver.Value, error) {
+	if c == nil {
+		return nil, nil
+	}
+
+	var strArr = make(pq.StringArray, len(c))
+	for i := range strArr {
+		s, err := easyjson.Marshal(c[i])
+		if err != nil {
+			return nil, err
+		}
+		strArr[i] = string(s)
+	}
+
+	return strArr.Value()
+}
+
 // ValidateOP confirms the specified thread exists on specific board
 func ValidateOP(id uint64, board string) (valid bool, err error) {
 	err = prepared["validate_op"].QueryRow(id, board).Scan(&valid)
@@ -204,7 +259,9 @@ func getPostCreationArgs(p Post) []interface{} {
 	}
 	fileCnt := len(p.Files)
 	return []interface{}{
-		p.ID, p.Time, p.Body, auth, linkRow(p.Links), p.OP, p.Board, ip, fileCnt,
+		p.ID, p.OP, p.Time, p.Board, auth, p.Body, ip,
+		linkRow(p.Links), commandRow(p.Commands),
+		fileCnt,
 	}
 }
 

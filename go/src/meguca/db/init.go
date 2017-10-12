@@ -390,6 +390,11 @@ var upgrades = []func(*sql.Tx) error{
 			`CREATE INDEX sticker_tags_tag_id ON sticker_tags (tag_id)`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`DROP FUNCTION insert_thread(id bigint, now bigint, body text, auth character varying, links bigint[], op bigint, board text, ip inet, file_cnt bigint, subject character varying)`,
+		)
+	},
 }
 
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both
