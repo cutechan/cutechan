@@ -8,10 +8,6 @@ import (
 	"time"
 )
 
-// ParseBody forwards parser.ParseBody to avoid cyclic imports in
-// db/upkeep.
-var ParseBody func([]byte, string) ([][2]uint64, error)
-
 //easyjson:json
 // Board is defined to enable marshalling optimizations and sorting by
 // sticky threads.

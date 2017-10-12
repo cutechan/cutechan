@@ -13,6 +13,17 @@ import (
 	b "github.com/cutechan/blackfriday"
 )
 
+// Check thread subject string.
+func ParseSubject(s string) (string, error) {
+	if s == "" {
+		return s, common.ErrNoSubject
+	}
+	if len(s) > common.MaxLenSubject {
+		return s, common.ErrSubjectTooLong
+	}
+	return strings.TrimSpace(s), nil
+}
+
 type parseRenderer struct {
 	links common.Links
 	*b.Html
@@ -24,22 +35,6 @@ func (r *parseRenderer) PostLink(out *bytes.Buffer, text []byte) {
 		return
 	}
 	r.links = append(r.links, link)
-}
-
-// Collect post links.
-//
-// Run the full formatting process which is kinda superfluous (we don't
-// need resulting markup) but should be not too expensive.
-//
-// That would guarantee that we will collect only links that are
-// actually needed (e.g. not the ones in code blocks).
-func ParseLinks(body []byte) (common.Links, error) {
-	renderer := &parseRenderer{
-		links: nil,
-		Html:  b.HtmlRenderer(templates.HtmlFlags, "", "").(*b.Html),
-	}
-	b.Markdown(body, renderer, templates.Extensions)
-	return renderer.links, nil
 }
 
 // Extract post links from a text fragment, verify and retrieve their
@@ -61,13 +56,17 @@ func parsePostLink(text []byte) (link [2]uint64, err error) {
 	return
 }
 
-// ParseSubject verifies and trims a thread subject string.
-func ParseSubject(s string) (string, error) {
-	if s == "" {
-		return s, common.ErrNoSubject
+// Extract special elements from the post body which need some
+// additional processing.
+//
+// Run the full formatting process which is kinda superfluous (we don't
+// need resulting markup) but it shouldn't be too expensive. That would
+// guarantee that the parsing is correct (e.g. in case of code blocks).
+func ParseBody(body []byte) (common.Links, error) {
+	renderer := &parseRenderer{
+		links: nil,
+		Html:  b.HtmlRenderer(templates.HtmlFlags, "", "").(*b.Html),
 	}
-	if len(s) > common.MaxLenSubject {
-		return s, common.ErrSubjectTooLong
-	}
-	return strings.TrimSpace(s), nil
+	b.Markdown(body, renderer, templates.Extensions)
+	return renderer.links, nil
 }
