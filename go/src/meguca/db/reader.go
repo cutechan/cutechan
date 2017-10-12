@@ -26,17 +26,19 @@ func (t *threadScanner) Val() common.Thread {
 
 type postScanner struct {
 	common.Post
-	auth  sql.NullString
-	links linkRow
+	auth     sql.NullString
+	links    linkRow
+	commands commandRow
 }
 
 func (p *postScanner) ScanArgs() []interface{} {
-	return []interface{}{&p.ID, &p.Time, &p.Body, &p.auth, &p.links}
+	return []interface{}{&p.ID, &p.Time, &p.auth, &p.Body, &p.links, &p.commands}
 }
 
 func (p *postScanner) Val() common.Post {
 	p.Auth = p.auth.String
 	p.Links = [][2]uint64(p.links)
+	p.Commands = []common.Command(p.commands)
 	return p.Post
 }
 
