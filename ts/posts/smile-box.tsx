@@ -150,7 +150,7 @@ export default class extends Component<any, any> {
     if (this.props.acList) {
       const el = this.props.textarea;
 
-      // Get caret offset against closest positioned element.
+      // Get caret offset relative to closest positioned element.
       let { left, top } = getCaretCoordinates(el, el.selectionEnd);
 
       // Adjust for scrolling.
@@ -197,32 +197,31 @@ export default class extends Component<any, any> {
   }
   public handleBodyKey = (e: KeyboardEvent) => {
     const { acList } = this.props;
+    if (!acList) return;
     const last = acList.length - 1;
     let { cur } = this.state;
-    if (acList) {
-      if (e.keyCode === KEY_LEFT) {
-        e.preventDefault();
-        cur -= 1;
-        cur = cur < 0 ? last : cur;
-        this.setState({cur}, this.scrollToSmile);
-      } else if (e.keyCode === KEY_RIGHT) {
-        e.preventDefault();
-        cur += 1;
-        cur = cur > last ? 0 : cur;
-        this.setState({cur}, this.scrollToSmile);
-      } else if (e.keyCode === KEY_ENTER) {
-        e.preventDefault();
-        this.handleSmileSelect(acList[cur]);
-      } else if (
+    if (e.keyCode === KEY_LEFT) {
+      e.preventDefault();
+      cur -= 1;
+      cur = cur < 0 ? last : cur;
+      this.setState({cur}, this.scrollToSmile);
+    } else if (e.keyCode === KEY_RIGHT) {
+      e.preventDefault();
+      cur += 1;
+      cur = cur > last ? 0 : cur;
+      this.setState({cur}, this.scrollToSmile);
+    } else if (e.keyCode === KEY_ENTER) {
+      e.preventDefault();
+      this.handleSmileSelect(acList[cur]);
+    } else if (
         e.keyCode === KEY_HOME
         || e.keyCode === KEY_END
         || e.keyCode === KEY_UP
         || e.keyCode === KEY_DOWN
-        ) {
-        // Prefer to close autocomplete box on common cursor movements
-        // to not annoy the user in case of false-positives.
-        this.props.onClose();
-      }
+      ) {
+      // Prefer to close autocomplete box on common cursor movements
+      // to not annoy the user in case of false-positives.
+      this.props.onClose();
     }
   }
   private handleIgnore = (e: MouseEvent) => {
@@ -250,7 +249,7 @@ export default class extends Component<any, any> {
       >
         <div class="smiles" ref={setter(this, "listEl")}>
           {(!acList && recent.length) ? this.renderRecent() : null}
-          {acList ? this.renderList(acList) : this.renderFull()}
+          {acList ? this.renderList(acList) : this.renderAll()}
         </div>
       </div>
     );
@@ -263,7 +262,7 @@ export default class extends Component<any, any> {
       <hr class="separator smiles-separator" />,
     ];
   }
-  private renderFull() {
+  private renderAll() {
     return [
       <div class="smiles-group">
         {this.renderList(smileList.filter(isThingSmile))}

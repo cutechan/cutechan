@@ -189,6 +189,7 @@ export function reverse(s: string): string {
 
 /** Rotate recent alike list structure. */
 export function rotateRecent<T>(list: T[], item: T, max: number): T[] {
+  // O(n) search so passed array is supposed to be small.
   const idx = list.indexOf(item);
   return idx < 0
     ? [item, ...list.slice(0, max - 1)]
