@@ -21,17 +21,17 @@
 @modalBG: hsla(285, 20%, 93%, 1);
 @replyBG: #e4e1e5;
 @replyfloatBG: hsla(285, 10%, 90%, 0.9);
+@replyinfoBG: #fff;
 
 // Colors.
 @body: #0a0a0a;
 @link: #7e488f;
-@linkop: @link;
-@linkmessage: #8e3bad;
 @linkHover: #9e85ad;
-@modallinkHover: #918466;
+@messagelink: #8e3bad;
 @admin: #d60000;
 @mod: #7800b3;
 @postop: #101010;
+@postoplink: @link;
 @postid: #26003c;
 @postidop: #26003c;
 @postcounter: #80796a;
@@ -39,14 +39,15 @@
 @posttimeop: #86847f;
 @postsubject: #716090;
 @postinfo: #5f5f5f;
-@postinfoop: #5f5f5f;
 @postboard: #6e72b8;
 @postboardHover: #54578c;
 @postcatalogcounter: #6e72b8;
 @postfilebadge: #e1dde1;
+@postbacklinkpre: @postinfo;
 @quote: #00882d;
 @spoiler: #c4b8ce;
 @modal: #000000;
+@modallinkHover: #918466;
 @pagetitle: #716090;
 @headeritem: #50406b;
 @tabsel: #918466;
@@ -55,6 +56,7 @@
 @controlHover: @linkHover;
 @button: #9e85ad;
 @buttonHover: #955c9e;
+@replyinfo: #555;
 @replysendHover: @buttonHover;
 @searchinput: inherit;
 @pagecurrent: inherit;
@@ -70,9 +72,10 @@
 @previewBorder: 1px solid #a482ab;
 @postBorder: none;
 @replyBorder: none;
-@replysendBorder: 1px solid #754383;
 @buttonBorder: @border;
 @buttonBorderHover: @border;
+@replysendBorder: 1px solid #754383;
+@replysendBorderHover: @buttonBorderHover;
 @lightHBorder: linear-gradient(90deg, transparent, #bfb4d6 10%, #bfb4d6 90%, transparent 100%) 1;
 @darkHBorder: linear-gradient(90deg, transparent, #a295bf 10%, #a295bf 90%, transparent 100%) 1;
 @darkVBorder: linear-gradient(transparent, #a295bf 20%, #a295bf 80%, transparent 100%) 1;

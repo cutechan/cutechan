@@ -13,56 +13,58 @@
 @postMargin: 0 0 10px 0;
 
 // Backgrounds.
-@bodyBG: #373438;
-@postBG: #e0d3e7;
-@headerBG: hsla(259, 76%, 94%, 0.8);
+@bodyBG: #1a191a;
+@postBG: #333036;
+@headerBG: hsla(266, 12%, 30%, 0.91);
 @headerBGHover: #dad4e8;
 @buttonBG: transparent;
-@modalBG: #dad3e8;
-@replyBG: #e0d3e7;
-@replyfloatBG: hsla(278, 27%, 93%, 0.95);
+@modalBG: #333036;
+@replyBG: #333036;
+@replyfloatBG: #333036;
+@replyinfoBG: #333036;
 
 // Colors.
-@body: #0a0a0a;
-@link: #8d6699;
-@linkop: #a47cb3;
-@linkmessage: #8e3bad;
-@linkHover: #9e85ad;
-@modallinkHover: #918466;
+@body: #e3e3e3;
+@link: #b399d4;
+@linkHover: #ceade2;
+@messagelink: #b5a6c5;
 @admin: #d60000;
 @mod: #7800b3;
 @postop: #e7e7e7;
-@postid: #26003c;
+@postoplink: #a47cb3;
+@postid: #a5a5a5;
 @postidop: #ccafdd;
-@postcounter: #80796a;
-@posttime: #59554b;
+@postcounter: #8a8272;
+@posttime: #868686;
 @posttimeop: #86847f;
 @postsubject: #ccafdd;
-@postinfo: #484848;
-@postinfoop: #8a8a8a;
+@postinfo: #808080;
 @postboard: #6e72b8;
 @postboardHover: #54578c;
 @postcatalogcounter: #8085d5;
 @postfilebadge: #dccee3;
-@quote: #00882d;
-@spoiler: #c4b8ce;
-@modal: #000000;
+@postbacklinkpre: #868686;
+@quote: #5ab75e;
+@spoiler: #625365;
+@modal: #e3e3e3;
+@modallinkHover: #918466;
 @pagetitle: #ccafdd;
-@headeritem: #50406b;
+@headeritem: #a5a5a5;
 @tabsel: #918466;
 @omit: #8a8a8a;
-@control: @link;
-@controlHover: @linkHover;
-@button: #9e85ad;
+@control: #86798a;
+@controlHover: #b6a3c1;
+@button: @control;
 @buttonHover: #d7c4e2;
-@replysendHover: #754383;
+@replyinfo: #fff;
+@replysendHover: #b6a3c1;
 @searchinput: #e7e7e7;
 @pagecurrent: #fff;
 
 // Borders.
 @border: 1px solid #94809f;
-@separatorBorder: 1px solid #94809f;
-@headerBorder: 1px solid #775e7c;
+@separatorBorder: 1px solid #3b3240;
+@headerBorder: none;
 @modalBorder: none;
 @searchBorder: @border;
 @searchBorderHover: @border;
@@ -70,9 +72,10 @@
 @previewBorder: 1px solid #a482ab;
 @postBorder: none;
 @replyBorder: none;
-@replysendBorder: 1px solid #754383;
 @buttonBorder: @border;
 @buttonBorderHover: @border;
+@replysendBorder: 1px solid #86798a;
+@replysendBorderHover: 1px solid #b6a3c1;
 @lightHBorder: linear-gradient(90deg, transparent, #bfb4d6 10%, #bfb4d6 90%, transparent 100%) 1;
 @darkHBorder: linear-gradient(90deg, transparent, #a295bf 10%, #a295bf 90%, transparent 100%) 1;
 @darkVBorder: linear-gradient(transparent, #a295bf 20%, #a295bf 80%, transparent 100%) 1;
@@ -80,13 +83,13 @@
 // Shadows.
 @buttonShadow: inset 0 1px 1px rgba(0,0,0,.275), 0 0 8px rgba(149, 92, 158, 0.85);
 @searchShadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 6px rgba(149, 92, 158, 0.9);
-@headerShadow: 0 0 8px 0px #000000;
-@modalShadow: -2px 2px 8px 0px #000000, -2px 2px 7px 0px rgb(182, 112, 196);
+@headerShadow: 0 0 8px 0 #000;
+@modalShadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.5);
 @previewShadow: 0 0 15px rgba(0, 0, 0, 0.26);
-@postShadow: 1px 2px 20px 1px #000000, 0 0 13px 0px rgb(182, 112, 196);
+@postShadow: 1px 1px 9px 0px rgba(0, 0, 0, 0.7);
 @postfilebadgeShadow: 1px 1px 2px #191719;
-@replyShadow: 0px 0px 20px 1px #000000, 0 0 13px 0px rgb(182, 112, 196);
-@replysendShadow: rgba(149, 92, 158, 0.85) 0px 0px 4px;
+@replyShadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.3), 1px 1px 20px 0px rgba(0, 0, 0, 0.35);
+@replysendShadow: none;
 
 // Style everything.
 @import "_base";
