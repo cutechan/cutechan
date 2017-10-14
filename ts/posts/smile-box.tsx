@@ -6,9 +6,17 @@ import * as cx from "classnames";
 import { Component, h } from "preact";
 import * as getCaretCoordinates from "textarea-caret";
 import smiles from "../../smiles-pp/smiles";
-import { reverse, setter } from "../util";
+import { reverse, rotateRecent, setter } from "../util";
 
 const smileList = Array.from(smiles).sort();
+const thingSmiles = new Set(`
+  chips coffee cola corvalol goose gun gun2 heart heart2 heart3 heart4
+  karandash knife nogoose ovsyanka popcorn prev ramyun rope soju
+`.trim().split(/\s+/));
+const memeSmiles = new Set(`
+  beast cool frukt heechul hyunsuk jyp jyp2 kwangsoo lookup priunil sooman
+  tellmemore v_gugudalnik
+`.trim().split(/\s+/));
 
 const KEY_A = 97;
 const KEY_Z = 122;
@@ -32,6 +40,39 @@ function isSmileID(c: number): boolean {
     (c >= KEY_A && c <= KEY_Z) || (c >= KEY_0 && c <= KEY_9) || c === KEY_UND
   );
 }
+
+function isThingSmile(id: string): boolean {
+  return thingSmiles.has(id);
+}
+
+function isMemeSmile(id: string): boolean {
+  return memeSmiles.has(id);
+}
+
+function isIdolSmile(id: string): boolean {
+  return !isThingSmile(id) && !isMemeSmile(id);
+}
+
+// Recent smiles list routines.
+
+const MAX_RECENT = 8;
+let recent = [] as string[];
+
+function loadRecent() {
+  try {
+    recent = JSON.parse(localStorage.recentSmiles);
+  } catch (e) {
+    /* skip */
+  }
+}
+
+function storeRecent(id: string) {
+  recent = rotateRecent(recent, id, MAX_RECENT);
+  localStorage.recentSmiles = JSON.stringify(recent);
+}
+
+window.addEventListener("storage", loadRecent);
+loadRecent();
 
 /**
  * Try to autocomplete textarea input.
@@ -171,7 +212,7 @@ export default class extends Component<any, any> {
         this.setState({cur}, this.scrollToSmile);
       } else if (e.keyCode === KEY_ENTER) {
         e.preventDefault();
-        this.props.onSelect(acList[cur]);
+        this.handleSmileSelect(acList[cur]);
       } else if (
         e.keyCode === KEY_HOME
         || e.keyCode === KEY_END
@@ -190,12 +231,12 @@ export default class extends Component<any, any> {
   private handleSmileOver = (cur: number) => {
     this.setState({cur});
   }
-  private handleSmileClick = (id: string) => {
+  private handleSmileSelect = (id: string) => {
+    storeRecent(id);
     this.props.onSelect(id);
   }
-  public render({ acList }: any, { left, top, cur }: any) {
+  public render({ acList }: any, { left, top }: any) {
     const style = acList ? { left, top } : null;
-    cur = acList ? cur : -1;
     return (
       <div
         class={cx("smile-box", {
@@ -208,18 +249,46 @@ export default class extends Component<any, any> {
         onClick={this.handleIgnore}
       >
         <div class="smiles" ref={setter(this, "listEl")}>
-          {(acList || smileList).map((id: string, i: number) =>
-            <div class={cx("smiles-item", {"smiles-item_cur": i === cur})}>
-              <i
-                class={cx("smile", `smile-${id}`, "smiles-icon")}
-                title={`:${id}:`}
-                onMouseOver={this.handleSmileOver.bind(null, i)}
-                onClick={this.handleSmileClick.bind(null, id)}
-              />
-            </div>,
-          )}
+          {(!acList && recent.length) ? this.renderRecent() : null}
+          {acList ? this.renderList(acList) : this.renderFull()}
         </div>
       </div>
+    );
+  }
+  private renderRecent() {
+    return [
+      <div class="smiles-group">
+        {this.renderList(recent)}
+      </div>,
+      <hr class="separator smiles-separator" />,
+    ];
+  }
+  private renderFull() {
+    return [
+      <div class="smiles-group">
+        {this.renderList(smileList.filter(isThingSmile))}
+      </div>,
+      <hr class="separator smiles-separator" />,
+      <div class="smiles-group">
+        {this.renderList(smileList.filter(isMemeSmile))}
+      </div>,
+      <hr class="separator smiles-separator" />,
+      <div class="smiles-group">
+        {this.renderList(smileList.filter(isIdolSmile))}
+      </div>,
+    ];
+  }
+  private renderList(list: string[]) {
+    const cur = this.props.acList ? this.state.cur : -1;
+    return list.map((id: string, i: number) =>
+      <div class={cx("smiles-item", {"smiles-item_cur": i === cur})}>
+        <i
+          class={cx("smile", `smile-${id}`, "smiles-icon")}
+          title={`:${id}:`}
+          onMouseOver={this.handleSmileOver.bind(null, i)}
+          onClick={this.handleSmileSelect.bind(null, id)}
+        />
+      </div>,
     );
   }
 }

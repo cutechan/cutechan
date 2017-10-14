@@ -186,3 +186,11 @@ export function reverse(s: string): string {
   }
   return s2;
 }
+
+/** Rotate recent alike list structure. */
+export function rotateRecent<T>(list: T[], item: T, max: number): T[] {
+  const idx = list.indexOf(item);
+  return idx < 0
+    ? [item, ...list.slice(0, max - 1)]
+    : [item, ...list.slice(0, idx), ...list.slice(idx + 1)];
+}

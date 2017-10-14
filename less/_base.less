@@ -1555,8 +1555,13 @@ html.pos-notstaff {
   cursor: default;
 }
 
-.smiles {
+.smiles-group {
   display: flex;
+  flex-wrap: wrap;
+}
+
+.smiles-separator {
+  margin: 0 0 5px 0;
 }
 
 .smiles-item {
@@ -1573,14 +1578,13 @@ html.pos-notstaff {
 }
 
 .smile-box_full {
-  width: 375px;
+  width: 335px;
   left: 105px;
   bottom: 35px;
   padding: 5px;
 
   .smiles {
     overflow-y: scroll;
-    flex-wrap: wrap;
     height: 200px;
   }
 }
@@ -1590,6 +1594,7 @@ html.pos-notstaff {
   padding: 3px;
 
   .smiles {
+    display: flex;
     position: relative;
     overflow-x: auto;
   }
