@@ -13,33 +13,29 @@ import (
 type CommandType uint8
 
 const (
-	Dice CommandType = iota
+	// Roll number between X and Y.
+	Roll CommandType = iota
+	// Flip coin with X% probability.
+	Flip
 )
 
-// Command contains the type and value array of commands, such as dice
-// rolls. The val field depends on the type field.
 type Command struct {
 	Type CommandType
-	Dice []uint16
+	Roll uint64
+	Flip bool
 }
 
-// Defined manually to dynamically marshal the appropriate fields by
-// struct type.
+// Dynamically marshal the appropriate fields by struct type.
 func (c Command) MarshalEasyJSON(w *jwriter.Writer) {
 	w.RawString(`{"type":`)
 	w.Uint8(uint8(c.Type))
 	w.RawString(`,"val":`)
 
 	switch c.Type {
-	case Dice:
-		w.RawByte('[')
-		for i, v := range c.Dice {
-			if i != 0 {
-				w.RawByte(',')
-			}
-			w.Uint16(v)
-		}
-		w.RawByte(']')
+	case Roll:
+		w.Uint64(c.Roll)
+	case Flip:
+		w.Bool(c.Flip)
 	}
 
 	w.RawByte('}')
@@ -65,9 +61,12 @@ func (c *Command) UnmarshalJSON(data []byte) error {
 
 	data = data[16 : len(data)-1]
 	switch CommandType(typ) {
-	case Dice:
-		c.Type = Dice
-		err = json.Unmarshal(data, &c.Dice)
+	case Roll:
+		c.Type = Roll
+		err = json.Unmarshal(data, &c.Roll)
+	case Flip:
+		c.Type = Flip
+		err = json.Unmarshal(data, &c.Flip)
 	default:
 		return fmt.Errorf("unknown command type: %d", typ)
 	}
