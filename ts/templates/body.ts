@@ -4,7 +4,7 @@
 // MUST BE KEPT IN SYNC WITH go/src/meguca/templates/body.go!
 
 import { renderPostLink } from ".";  // TODO(Kagami): Avoid circular import
-import { PostData, PostLink } from "../common";
+import { Command, PostData, PostLink } from "../common";
 import { page } from "../state";
 import { escape, unescape } from "../util";
 import marked from "./marked";
@@ -41,7 +41,6 @@ class CustomLexer extends ((marked as any).Lexer as AnyClass) {
   }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 class CustomInlineLexer extends ((marked as any).InlineLexer as AnyClass) {
   constructor(links: any, options: any, post: PostData) {
     // XXX(Kagami): Inject post link logic via hardcoded link defs.
@@ -66,7 +65,6 @@ class CustomInlineLexer extends ((marked as any).InlineLexer as AnyClass) {
   }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 class CustomParser extends ((marked as any).Parser as AnyClass) {
   public parse(src: any, post: PostData) {
     this.inline = new CustomInlineLexer(src.links, this.options, post);
@@ -108,8 +106,12 @@ export const linkEmbeds: { [key: string]: RegExp } = (() => {
   return m;
 })();
 
-// tslint:disable-next-line:max-classes-per-file
-class CustomRenderer extends (marked as any).Renderer {
+class CustomRenderer extends ((marked as any).Renderer as AnyClass) {
+  constructor(commands: Command[]) {
+    super();
+    this.commands = commands;
+    this.cmdi = 0;
+  }
   public blockquote(quote: string): string {
     return "<blockquote>&gt; " + quote + "</blockquote>";
   }
@@ -135,7 +137,6 @@ class CustomRenderer extends (marked as any).Renderer {
 
 // Render post body Markdown to sanitized HTML.
 export function render(post: PostData): string {
-  // tslint:disable:object-literal-sort-keys
   const options = Object.assign({}, (marked as any).defaults, {
     // gfm: true,
     tables: false,
@@ -150,10 +151,9 @@ export function render(post: PostData): string {
     // langPrefix: 'lang-',
     // smartypants: false,
     // headerPrefix: '',
-    renderer: new CustomRenderer(),
+    renderer: new CustomRenderer(post.commands),
     // xhtml: false
   });
-  // tslint:enable:object-literal-sort-keys
   const lexer = new CustomLexer(options);
   const tokens = lexer.lex(post.body);
   const parser = new CustomParser(options);

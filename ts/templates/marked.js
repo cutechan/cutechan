@@ -461,6 +461,7 @@ var inline = {
   br: /^ {2,}\n(?!\s*$)/,
   del: noop,
   smile: /^:([a-z0-9_]+):/,
+  command: /^!(roll[1-9][0-9]?-[1-9][0-9]?[0-9]?|flip[1-9][0-9]?%)/,
   text: /^[\s\S]+?(?=[\\<!\[_*`:]| {2,}\n|$)/
 };
 
@@ -689,6 +690,13 @@ InlineLexer.prototype.output = function(src) {
       }
     }
 
+    // command (cutechan)
+    if (cap = this.rules.command.exec(src)) {
+      src = src.substring(cap[0].length);
+      out += this.renderer.command(cap[0], cap[1].slice(0, 4), cap[1].slice(4));
+      continue;
+    }
+
     // text
     if (cap = this.rules.text.exec(src)) {
       src = src.substring(cap[0].length);
@@ -876,6 +884,22 @@ Renderer.prototype.del = function(text) {
 
 Renderer.prototype.smile = function(id) {
   return `<i class="smile smile-${id}" title=":${id}:"></i>`;
+};
+
+Renderer.prototype.command = function(text, c, q) {
+  if (!this.commands || this.cmdi >= this.commands.length) return escape(text);
+  const cmd = this.commands[this.cmdi];
+  switch (c) {
+  case "roll":
+    this.cmdi++;
+    return `<i class="fa fa-cube post-command post-roll-command"` +
+              `title="${text}"> ${cmd.val} (${q})</i>`;
+  case "flip":
+    this.cmdi++;
+    return `<i class="fa fa-cube post-command post-flip-command ` +
+                     `post-flip-command_${cmd.val ? "hit" : "miss"}"` +
+              `title="${text}"> ${q}</i>`;
+  }
 };
 
 Renderer.prototype.link = function(href, title, text) {

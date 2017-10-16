@@ -79,7 +79,7 @@ func (r *parseRenderer) Command(out *bytes.Buffer, text []byte, c, q string) {
 		if m != nil {
 			a, _ := strconv.Atoi(m[1])
 			b := util.PseudoRandInt(1, 100)
-			v := b <= (100 - a)
+			v := a >= b
 			cmd := common.Command{Type: common.Flip, Flip: v}
 			r.commands = append(r.commands, cmd)
 		}

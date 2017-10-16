@@ -20,6 +20,7 @@ export interface PostData {
   body: string;
   auth: string;
   links?: PostLink[];
+  commands?: Command[];
   files?: ImageData[];
   op?: number;
   board?: string;
@@ -27,6 +28,15 @@ export interface PostData {
 
 /** Generic link object containing target post board and thread. */
 export type PostLink = [number, number];
+
+/** Possible command types. */
+export const enum commandType { roll, flip }
+
+/** Single command result delivered from the server. */
+export interface Command {
+  type: commandType;
+  val: any;
+}
 
 /** Image data. */
 export interface ImageData {
