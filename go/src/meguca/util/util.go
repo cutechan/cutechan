@@ -5,6 +5,12 @@ package util
 import (
 	"crypto/md5"
 	"encoding/base64"
+	"math/rand"
+	"time"
+)
+
+var (
+	rnd = rand.New(rand.NewSource(time.Now().UnixNano()))
 )
 
 // WrapError wraps error types to create compound error chains
@@ -51,4 +57,14 @@ func CloneBytes(b []byte) []byte {
 	cp := make([]byte, len(b))
 	copy(cp, b)
 	return cp
+}
+
+// Return a random integer N such that a <= N <= b.
+func PseudoRandInt(a, b int) int {
+	d := b - a + 1
+	if d <= 0 {
+		return 0
+	}
+	n := rnd.Intn(d)
+	return n + a
 }

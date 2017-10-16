@@ -21,7 +21,7 @@ const (
 
 type Command struct {
 	Type CommandType
-	Roll uint64
+	Roll int
 	Flip bool
 }
 
@@ -33,7 +33,7 @@ func (c Command) MarshalEasyJSON(w *jwriter.Writer) {
 
 	switch c.Type {
 	case Roll:
-		w.Uint64(c.Roll)
+		w.Int(c.Roll)
 	case Flip:
 		w.Bool(c.Flip)
 	}

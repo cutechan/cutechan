@@ -66,7 +66,7 @@ var policy = func() *bluemonday.Policy {
 	p.AllowAttrs("data-id").Matching(bluemonday.Integer).OnElements("a")
 	p.AllowAttrs("data-provider").Matching(bluemonday.SpaceSeparatedTokens).OnElements("a")
 	p.AllowAttrs("class").Matching(bluemonday.SpaceSeparatedTokens).OnElements("i")
-	p.AllowAttrs("title").Matching(regexp.MustCompile(`^[\w:]+$`)).OnElements("i")
+	p.AllowAttrs("title").Matching(regexp.MustCompile(`^[-:!%\w]+$`)).OnElements("i")
 	return p
 }()
 
@@ -94,10 +94,17 @@ var LinkEmbeds = func() map[string]*regexp.Regexp {
 	return m
 }()
 
+var (
+	RollQueryRe = regexp.MustCompile(`^([1-9][0-9]?)-([1-9][0-9]?[0-9]?)$`)
+	FlipQueryRe = regexp.MustCompile(`^([1-9][0-9]?)%$`)
+)
+
 type renderer struct {
-	links common.Links
-	op    uint64
-	index bool
+	op       uint64
+	index    bool
+	links    common.Links
+	commands common.Commands
+	cmdi     int
 	*b.Html
 }
 
@@ -168,13 +175,57 @@ func (r *renderer) Smile(out *bytes.Buffer, text []byte, id string) {
 	out.WriteString(":\"></i>")
 }
 
+func (r *renderer) Command(out *bytes.Buffer, text []byte, c, q string) {
+	if r.cmdi >= len(r.commands) {
+		b.AttrEscape(out, text)
+		return
+	}
+	cmd := r.commands[r.cmdi]
+
+	switch c {
+	case "roll":
+		if RollQueryRe.MatchString(q) {
+			out.WriteString("<i class=\"fa fa-cube post-command post-roll-command")
+			out.WriteString("\" title=\"")
+			out.Write(text)
+			out.WriteString("\"> ")
+			out.WriteString(strconv.Itoa(cmd.Roll))
+			out.WriteString(" (")
+			out.WriteString(q)
+			out.WriteString(")</i>")
+			r.cmdi++
+			return
+		}
+	case "flip":
+		if FlipQueryRe.MatchString(q) {
+			out.WriteString("<i class=\"fa fa-cube post-command post-flip-command ")
+			if cmd.Flip {
+				out.WriteString("post-flip-command_hit")
+			} else {
+				out.WriteString("post-flip-command_miss")
+			}
+			out.WriteString("\" title=\"")
+			out.Write(text)
+			out.WriteString("\"> ")
+			out.WriteString(q)
+			out.WriteString("</i>")
+			r.cmdi++
+			return
+		}
+	}
+
+	b.AttrEscape(out, text)
+}
+
 // Render post body Markdown to sanitized HTML.
 func renderBody(p *common.Post, op uint64, index bool) string {
 	input := []byte(p.Body)
 	renderer := &renderer{
-		links: p.Links,
-		op:    op,
-		index: index,
+		op:       op,
+		index:    index,
+		links:    p.Links,
+		commands: p.Commands,
+		cmdi:     0,
 		Html:  b.HtmlRenderer(HtmlFlags, "", "").(*b.Html),
 	}
 	unsafe := b.Markdown(input, renderer, Extensions)

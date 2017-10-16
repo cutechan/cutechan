@@ -5,8 +5,9 @@ import (
 	"bytes"
 	"database/sql"
 	"meguca/common"
-	"meguca/templates"
 	"meguca/db"
+	"meguca/templates"
+	"meguca/util"
 	"strings"
 	"strconv"
 
@@ -25,7 +26,8 @@ func ParseSubject(s string) (string, error) {
 }
 
 type parseRenderer struct {
-	links common.Links
+	links    common.Links
+	commands common.Commands
 	*b.Html
 }
 
@@ -56,17 +58,46 @@ func parsePostLink(text []byte) (link [2]uint64, err error) {
 	return
 }
 
+func (r *parseRenderer) Command(out *bytes.Buffer, text []byte, c, q string) {
+	// Allow only single command per post for now.
+	if len(r.commands) > 0 {
+		return
+	}
+
+	switch c {
+	case "roll":
+		m := templates.RollQueryRe.FindStringSubmatch(q)
+		if m != nil {
+			a, _ := strconv.Atoi(m[1])
+			b, _ := strconv.Atoi(m[2])
+			v := util.PseudoRandInt(a, b)
+			cmd := common.Command{Type: common.Roll, Roll: v}
+			r.commands = append(r.commands, cmd)
+		}
+	case "flip":
+		m := templates.FlipQueryRe.FindStringSubmatch(q)
+		if m != nil {
+			a, _ := strconv.Atoi(m[1])
+			b := util.PseudoRandInt(1, 100)
+			v := b <= (100 - a)
+			cmd := common.Command{Type: common.Flip, Flip: v}
+			r.commands = append(r.commands, cmd)
+		}
+	}
+}
+
 // Extract special elements from the post body which need some
 // additional processing.
 //
 // Run the full formatting process which is kinda superfluous (we don't
 // need resulting markup) but it shouldn't be too expensive. That would
 // guarantee that the parsing is correct (e.g. in case of code blocks).
-func ParseBody(body []byte) (common.Links, error) {
+func ParseBody(body []byte) (common.Links, common.Commands, error) {
 	renderer := &parseRenderer{
-		links: nil,
-		Html:  b.HtmlRenderer(templates.HtmlFlags, "", "").(*b.Html),
+		links:    nil,
+		commands: nil,
+		Html:     b.HtmlRenderer(templates.HtmlFlags, "", "").(*b.Html),
 	}
 	b.Markdown(body, renderer, templates.Extensions)
-	return renderer.links, nil
+	return renderer.links, renderer.commands, nil
 }
