@@ -15,7 +15,7 @@ const thingSmiles = new Set(`
 `.trim().split(/\s+/));
 const memeSmiles = new Set(`
   beast cool frukt heechul hyunsuk jyp jyp2 kwangsoo lookup priunil sooman
-  tellmemore v_gugudalnik sekshie plsno orly police autism hyperlul iljin
+  tellmemore v_gugudalnik sekshie plsno orly police autism hyperlol iljin
 `.trim().split(/\s+/));
 
 const KEY_A = 97;
