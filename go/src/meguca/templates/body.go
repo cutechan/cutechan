@@ -95,7 +95,7 @@ var LinkEmbeds = func() map[string]*regexp.Regexp {
 }()
 
 var (
-	RollQueryRe = regexp.MustCompile(`^([1-9][0-9]?)-([1-9][0-9]?[0-9]?)$`)
+	RollQueryRe = regexp.MustCompile(`^(0|[1-9][0-9]?)-([1-9][0-9]?[0-9]?)$`)
 	FlipQueryRe = regexp.MustCompile(`^([1-9][0-9]?)%$`)
 )
 
