@@ -11,11 +11,11 @@ import { reverse, rotateRecent, setter } from "../util";
 const smileList = Array.from(smiles).sort();
 const thingSmiles = new Set(`
   chips coffee cola corvalol goose gun gun2 heart heart2 heart3 heart4
-  karandash knife nogoose ovsyanka popcorn prev ramyun rope soju
+  karandash knife nogoose ovsyanka popcorn prev ramyun rope soju pringles
 `.trim().split(/\s+/));
 const memeSmiles = new Set(`
   beast cool frukt heechul hyunsuk jyp jyp2 kwangsoo lookup priunil sooman
-  tellmemore v_gugudalnik sekshie plsno
+  tellmemore v_gugudalnik sekshie plsno orly police
 `.trim().split(/\s+/));
 
 const KEY_A = 97;
