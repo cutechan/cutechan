@@ -192,6 +192,7 @@
   "ui": {
     "main": "Main page",
     "landingHeader": "The only one k-pop imageboard",
+    "landingInfo": "",
     "threads": "All threads",
     "rules": "Rules",
     "news": "News",

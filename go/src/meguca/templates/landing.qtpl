@@ -29,6 +29,9 @@ Will be cached.
 		<h1 class="landing-header">
 			{%s ln.UI["landingHeader"] %}
 		</h1>
+		<h3 class="landing-info">
+			{%s ln.UI["landingInfo"] %}
+		</h3>
 		<a class="button landing-button landing-threads-button" href="/all/">
 			{%s ln.UI["threads"] %}
 		</a>
