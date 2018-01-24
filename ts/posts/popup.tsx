@@ -4,12 +4,11 @@
 
 import * as cx from "classnames";
 import { Component, h, render } from "preact";
-import { ln } from "../lang";
 import options from "../options";
 import { getModel } from "../state";
 import {
   getFirefoxMajorVersion,
-  HOOKS, on, setter as s, ShowHide, trigger,
+  HOOKS, on, setter as s, trigger,
 } from "../util";
 import {
   POPUP_CONTAINER_SEL,
@@ -60,13 +59,11 @@ interface PopupState {
   height: number;
   moving: boolean;
   resizing: boolean;
-  frameLoaded: boolean;
 }
 
 class Popup extends Component<PopupProps, PopupState> {
   private itemEl = null as HTMLVideoElement;
   private frameUrl = "";
-  private httpEmbed = false;
   private aspect = 0;
   private baseX = 0;
   private baseY = 0;
@@ -84,7 +81,6 @@ class Popup extends Component<PopupProps, PopupState> {
 
     if (props.embed) {
       this.frameUrl = props.html.match(/src="(.*)"/)[1];
-      this.httpEmbed = this.frameUrl.startsWith("http:");
     }
 
     this.state = {
@@ -94,7 +90,6 @@ class Popup extends Component<PopupProps, PopupState> {
       height: rect.height,
       moving: false,
       resizing: false,
-      frameLoaded: false,
     };
 
   }
@@ -123,11 +118,10 @@ class Popup extends Component<PopupProps, PopupState> {
     }
   }
 
-  public render({ video, embed }: PopupProps, { left, top, frameLoaded }: PopupState) {
+  public render({ video, embed }: PopupProps, { left, top }: PopupState) {
     const cls = video ? "popup_video" : embed ? "popup_embed" : "popup_image";
     return (
       <div class={cx("popup", cls)} style={{left, top}}>
-        {(this.httpEmbed && !frameLoaded) ? this.renderEmbedHelp() : null}
         {video ? this.renderVideo()
                : embed ? this.renderEmbed() : this.renderImage()}
         {embed ? this.renderControls() : null}
@@ -164,7 +158,6 @@ class Popup extends Component<PopupProps, PopupState> {
         referrerPolicy="no-referrer"
         sandbox="allow-scripts allow-same-origin allow-popups"
         src={this.frameUrl}
-        onLoad={this.handleFrameLoad}
       />
     );
   }
@@ -209,43 +202,6 @@ class Popup extends Component<PopupProps, PopupState> {
       </div>
     );
   }
-  private renderEmbedHelp() {
-    // https://stackoverflow.com/a/9851769
-    const isChrome = !!(window as any).chrome;
-    const isFirefox = !!(window as any).InstallTrigger;
-    const isOpera = !!(window as any).opr;
-
-    const knownBrowser = isChrome || isFirefox || isOpera;
-    const imageSuffix = isChrome ? "chrome" : isFirefox ? "firefox" : "opera";
-    const imageURL = `/static/img/unblock-mixed-${imageSuffix}.png`;
-    return (
-      <div class="popup-embed-help" onClick={this.handleHelpClick}>
-        <h3 class="help-header">{ln.UI.frameBlock}</h3>
-        <ShowHide show={knownBrowser}>
-          <p class="help-item">{ln.UI.frameUnblock}</p>
-        </ShowHide>
-        <ShowHide show={knownBrowser}>
-          <p class="help-item"><img class="help-image" src={imageURL} /></p>
-        </ShowHide>
-        <p class="help-item">{ln.UI.frameDetails}</p>
-        <p class="help-item">
-          <a class="help-link" href="https://support.google.com/chrome/answer/1342714">
-            <i class="fa fa-chrome"></i> support.google.com/chrome/answer/1342714
-          </a>
-          <a
-            class="help-link"
-            href="https://support.mozilla.org/ru/kb/kak-nebezopasnyj-kontent-mozhet-povliyat-na-moyu-b"
-          >
-            <i class="fa fa-firefox"></i>{" "}
-            support.mozilla.org/ru/kb/kak-nebezopasnyj-kontent-mozhet-povliyat-na-moyu-b
-          </a>
-          <a class="help-link" href="http://help.opera.com/opera/Windows/2393/ru/private.html#blocked">
-            <i class="fa fa-opera"></i> help.opera.com/opera/Windows/2393/ru/private.html#blocked
-          </a>
-        </p>
-      </div>
-    );
-  }
 
   private needVideoControls() {
     return (
@@ -266,12 +222,6 @@ class Popup extends Component<PopupProps, PopupState> {
     if (e.keyCode === 27) {
       this.props.onClose();
     }
-  }
-  private handleFrameLoad = () => {
-    // There is no error event in case of mixed content (see
-    // <https://bugs.chromium.org/p/chromium/issues/detail?id=449343>),
-    // so need to detect the opposite way.
-    this.setState({frameLoaded: true});
   }
   private handleMediaDrag = (e: DragEvent) => {
     // NOTE(Kagami): Note that both draggable AND ondragstart are
@@ -341,9 +291,6 @@ class Popup extends Component<PopupProps, PopupState> {
   private handleControlsClick = (e: MouseEvent) => {
     e.stopPropagation();
     this.setState({moving: false, resizing: false});
-  }
-  private handleHelpClick = (e: MouseEvent) => {
-    e.stopPropagation();
   }
   private handleGlobalVideoClick = (e: MouseEvent) => {
     if (this.isVideoControlsClick(e)) return;
