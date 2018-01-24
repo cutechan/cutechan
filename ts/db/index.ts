@@ -2,7 +2,7 @@
  * IndexedDB database controller.
  */
 
-const DB_VERSION = 7;
+const DB_VERSION = 8;
 let db = null as IDBDatabase;
 let dbDisabled = false;
 
@@ -130,6 +130,9 @@ function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
     };
     /* fall-through */
   case 6:
+    t.objectStore(embedStore).clear();
+    /* fall-through */
+  case 7:
     t.objectStore(embedStore).clear();
     /* fall-through */
   }

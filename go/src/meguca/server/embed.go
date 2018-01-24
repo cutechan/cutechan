@@ -68,7 +68,7 @@ func serveEmbed(w http.ResponseWriter, r *http.Request) {
 
 func getVliveEmbed(url string) (doc oEmbedDoc, err error) {
 	videoSeq := proxiedEmbeds["vlive"].FindStringSubmatch(url)[1]
-	url = "http://www.vlive.tv/video/" + videoSeq
+	url = "https://www.vlive.tv/video/" + videoSeq
 
 	client := &http.Client{Timeout: time.Second * 5}
 	resp, err := client.Get(url)
@@ -96,7 +96,7 @@ func getVliveEmbed(url string) (doc oEmbedDoc, err error) {
 	title = html.UnescapeString(title)
 	doc.Title = title
 
-	doc.HTML = `<iframe src="http://www.vlive.tv/embed/` +
+	doc.HTML = `<iframe src="https://www.vlive.tv/embed/` +
 		videoSeq + `"></iframe>`
 	// TODO(Kagami): This is not quite correct.
 	doc.Width = 1280
