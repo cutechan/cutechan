@@ -195,3 +195,9 @@ export function rotateRecent<T>(list: T[], item: T, max: number): T[] {
     ? [item, ...list.slice(0, max - 1)]
     : [item, ...list.slice(0, idx), ...list.slice(idx + 1)];
 }
+
+/** Return current FF major version or -1 if not FF. */
+export function getFirefoxMajorVersion(): number {
+  const m = navigator.userAgent.match(/Firefox\/(\d+)\./);
+  return m ? +m[1] : -1;
+}

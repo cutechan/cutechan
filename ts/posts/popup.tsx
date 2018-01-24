@@ -7,7 +7,10 @@ import { Component, h, render } from "preact";
 import { ln } from "../lang";
 import options from "../options";
 import { getModel } from "../state";
-import { HOOKS, on, setter as s, ShowHide, trigger } from "../util";
+import {
+  getFirefoxMajorVersion,
+  HOOKS, on, setter as s, ShowHide, trigger,
+} from "../util";
 import {
   POPUP_CONTAINER_SEL,
   POST_EMBED_SEL,
@@ -104,6 +107,10 @@ class Popup extends Component<PopupProps, PopupState> {
     if (this.props.video) {
       this.itemEl.volume = options.volume;
       this.itemEl.src = this.props.url;
+      // See https://bugzilla.mozilla.org/show_bug.cgi?id=1412617
+      if (getFirefoxMajorVersion() >= 58) {
+        document.addEventListener("click", this.handleGlobalVideoClick, true);
+      }
     }
   }
   public componentWillUnmount() {
@@ -111,6 +118,9 @@ class Popup extends Component<PopupProps, PopupState> {
     document.removeEventListener("keydown", this.handleGlobalKey);
     document.removeEventListener("mousemove", this.handleGlobalMove);
     document.removeEventListener("click", this.handleGlobalClick);
+    if (this.props.video && getFirefoxMajorVersion() >= 58) {
+      document.removeEventListener("click", this.handleGlobalVideoClick, true);
+    }
   }
 
   public render({ video, embed }: PopupProps, { left, top, frameLoaded }: PopupState) {
@@ -245,7 +255,7 @@ class Popup extends Component<PopupProps, PopupState> {
     );
   }
   private isVideoControlsClick(e: MouseEvent) {
-    if (!this.itemEl.controls) return false;
+    if (!this.props.video || !this.itemEl.controls) return false;
     // <https://stackoverflow.com/a/22928167>.
     const ctrlHeight = 50;
     const rect = this.itemEl.getBoundingClientRect();
@@ -334,6 +344,10 @@ class Popup extends Component<PopupProps, PopupState> {
   }
   private handleHelpClick = (e: MouseEvent) => {
     e.stopPropagation();
+  }
+  private handleGlobalVideoClick = (e: MouseEvent) => {
+    if (this.isVideoControlsClick(e)) return;
+    this.handleGlobalClick(e);
   }
   private handleGlobalClick = (e: MouseEvent) => {
     if (e.button === 0) {
