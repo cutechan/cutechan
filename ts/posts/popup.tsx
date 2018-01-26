@@ -6,10 +6,7 @@ import * as cx from "classnames";
 import { Component, h, render } from "preact";
 import options from "../options";
 import { getModel } from "../state";
-import {
-  getFirefoxMajorVersion,
-  HOOKS, on, setter as s, trigger,
-} from "../util";
+import { HOOKS, on, setter as s, trigger } from "../util";
 import {
   POPUP_CONTAINER_SEL,
   POST_EMBED_SEL,
@@ -102,10 +99,6 @@ class Popup extends Component<PopupProps, PopupState> {
     if (this.props.video) {
       this.itemEl.volume = options.volume;
       this.itemEl.src = this.props.url;
-      // See https://bugzilla.mozilla.org/show_bug.cgi?id=1412617
-      if (getFirefoxMajorVersion() >= 58) {
-        document.addEventListener("click", this.handleGlobalVideoClick, true);
-      }
     }
   }
   public componentWillUnmount() {
@@ -113,9 +106,6 @@ class Popup extends Component<PopupProps, PopupState> {
     document.removeEventListener("keydown", this.handleGlobalKey);
     document.removeEventListener("mousemove", this.handleGlobalMove);
     document.removeEventListener("click", this.handleGlobalClick);
-    if (this.props.video && getFirefoxMajorVersion() >= 58) {
-      document.removeEventListener("click", this.handleGlobalVideoClick, true);
-    }
   }
 
   public render({ video, embed }: PopupProps, { left, top }: PopupState) {
@@ -131,18 +121,25 @@ class Popup extends Component<PopupProps, PopupState> {
   private renderVideo() {
     const { width } = this.state;
     return (
-      <video
-        class="popup-item"
-        ref={s(this, "itemEl")}
-        style={{width}}
-        loop
-        autoPlay
-        controls={this.needVideoControls()}
-        onMouseDown={this.handleMediaDown}
-        onClick={this.handleVideoClick}
-        onWheel={this.handleMediaWheel}
-        onVolumeChange={this.handleMediaVolume}
-      />
+      <div class="popup-video">
+        <video
+          class="popup-item popup-video-item"
+          ref={s(this, "itemEl")}
+          style={{width}}
+          loop
+          autoPlay
+          controls={this.needVideoControls()}
+          onVolumeChange={this.handleMediaVolume}
+        />
+        <div
+          class={cx(
+            "popup-video-overlay",
+            {"popup-video-overlay_full": !this.needVideoControls()},
+          )}
+          onMouseDown={this.handleMediaDown}
+          onWheel={this.handleMediaWheel}
+        />
+      </div>
     );
   }
   private renderEmbed() {
@@ -210,14 +207,6 @@ class Popup extends Component<PopupProps, PopupState> {
       && (this.props.audio || this.props.duration > 10)
     );
   }
-  private isVideoControlsClick(e: MouseEvent) {
-    if (!this.props.video || !this.itemEl.controls) return false;
-    // <https://stackoverflow.com/a/22928167>.
-    const ctrlHeight = 50;
-    const rect = this.itemEl.getBoundingClientRect();
-    const relY = e.clientY - rect.top;
-    return relY > rect.height - ctrlHeight;
-  }
   private handleGlobalKey = (e: KeyboardEvent) => {
     if (e.keyCode === 27) {
       this.props.onClose();
@@ -236,7 +225,7 @@ class Popup extends Component<PopupProps, PopupState> {
     options.volume = this.itemEl.volume;
   }
   private handleMediaDown = (e: MouseEvent) => {
-    if (e.button !== 0 || this.isVideoControlsClick(e)) return;
+    if (e.button !== 0) return;
     this.setState({moving: true});
     this.baseX = e.clientX;
     this.baseY = e.clientY;
@@ -281,20 +270,9 @@ class Popup extends Component<PopupProps, PopupState> {
       this.setState({left, top, width, height});
     }
   }
-  private handleVideoClick = (e: MouseEvent) => {
-    if (this.isVideoControlsClick(e)) {
-      e.stopPropagation();
-    } else {
-      e.preventDefault();
-    }
-  }
   private handleControlsClick = (e: MouseEvent) => {
     e.stopPropagation();
     this.setState({moving: false, resizing: false});
-  }
-  private handleGlobalVideoClick = (e: MouseEvent) => {
-    if (this.isVideoControlsClick(e)) return;
-    this.handleGlobalClick(e);
   }
   private handleGlobalClick = (e: MouseEvent) => {
     if (e.button === 0) {
