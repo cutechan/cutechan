@@ -145,7 +145,7 @@ func saveFile(data []byte, file common.ImageCommon) (int, string, error) {
 	return newFileToken(file.SHA1)
 }
 
-func isMP3(src thumbnailer.Source) bool {
+func isRecord(src thumbnailer.Source) bool {
 	return mimeTypes[src.Mime] == common.MP3
 }
 
@@ -166,13 +166,13 @@ func getThumbnail(
 
 	// Allow only MP3 audios currently.
 	if src.HasAudio {
-		if !src.HasVideo && !isMP3(src) {
+		if !src.HasVideo && !isRecord(src) {
 			return nil, errNoVideo
 		}
 	}
 
 	// Thumbnail is skipped only for MP3.
-	if isMP3(src) {
+	if isRecord(src) {
 		thumb.Data = nil
 	} else if thumb.Data == nil {
 		return nil, errNoThumb
@@ -185,15 +185,13 @@ func getThumbnail(
 	// if file.FileType == common.PNG {
 	// 	file.APNG = apngdetector.Detect(data)
 	// }
-	if thumb.IsPNG || isMP3(src) {
+	if thumb.IsPNG || isRecord(src) {
 		file.ThumbType = common.PNG
 	} else {
 		file.ThumbType = common.JPEG
 	}
 
-	if isMP3(src) {
-		file.Dims = [4]uint16{200, 200, 200, 200}
-	} else {
+	if !isRecord(src) {
 		file.Dims = [4]uint16{
 			uint16(src.Width),
 			uint16(src.Height),

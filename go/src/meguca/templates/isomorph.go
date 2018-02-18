@@ -32,11 +32,14 @@ type PostContext struct {
 }
 
 type FileContext struct {
+	FileClass  string
 	HasTitle   bool
 	LCopy      string
 	Title      string
 	HasVideo   bool
 	HasAudio   bool
+	HasLength  bool
+	Record     bool
 	Length     string
 	Size       string
 	TWidth     uint16
@@ -173,12 +176,20 @@ func (ctx *PostContext) Files() (files []string) {
 
 func renderFile(img *common.Image) string {
 	ln := lang.Get()
+	record := img.FileType == common.MP3
+	classes := "post-file"
+	if record {
+		classes += " post-file_record"
+	}
 	fileCtx := FileContext{
+		FileClass:  classes,
 		HasTitle:   img.Title != "",
 		LCopy:      ln.Common.Posts["clickToCopy"],
 		Title:      img.Title,
 		HasVideo:   img.Video,
 		HasAudio:   img.Audio,
+		HasLength:  img.Video || img.FileType == common.MP3,
+		Record:     img.FileType == common.MP3,
 		Length:     duration(img.Length),
 		Size:       fileSize(img.Size),
 		Width:      img.Dims[0],
