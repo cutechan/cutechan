@@ -2,6 +2,7 @@ package server
 
 import (
 	"log"
+	"mime"
 	"meguca/util"
 	"meguca/websockets"
 	"net/http"
@@ -105,6 +106,8 @@ func createRouter() http.Handler {
 	// Assets.
 	r.GET("/uploads/*path", serveImages)
 	r.GET("/static/*path", serveStatic)
+	// Not yet in /etc/mime.types
+	mime.AddExtensionType(".wasm", "application/wasm")
 
 	h := http.Handler(r)
 	return h

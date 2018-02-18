@@ -4,6 +4,7 @@
 
 @import (inline) "node_modules/normalize.css/normalize.css";
 @import (inline) "node_modules/font-awesome/css/font-awesome.css";
+@import (inline) "node_modules/vmsg/vmsg.css";
 
 //////////////////////////////
 // BASE
@@ -1400,6 +1401,18 @@ html.pos-notstaff {
   max-height: 150px;
 }
 
+.reply-file-thumb_record {
+  width: 150px;
+  height: 150px;
+  text-align: center;
+  line-height: 180px;
+}
+
+.reply-file-thumb-icon {
+  font-size: 80px;
+  color: @control;
+}
+
 .reply-file-info {
   position: absolute;
   bottom: 0;
@@ -1500,7 +1513,7 @@ html.pos-notstaff {
   margin-right: 10px;
 }
 
-.reply-attach-control {
+.reply-attach-control, .reply-record-control {
   font-size: 22px;
   line-height: 20px;
 }

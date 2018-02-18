@@ -1,5 +1,6 @@
 import * as cx from "classnames";
 import { Component, h, render } from "preact";
+import * as vmsg from "../../node_modules/vmsg";
 import { showAlert } from "../alerts";
 import API from "../api";
 import { PostData } from "../common";
@@ -58,6 +59,20 @@ function getVideoInfo(file: File): Promise<Dict> {
   });
 }
 
+function getAudioInfo(file: File): Promise<Dict> {
+  return new Promise((resolve, reject) => {
+    const audio = new Audio();
+    const src = URL.createObjectURL(file);
+    audio.muted = true;
+    audio.onloadeddata = () => {
+      const { duration: dur } = audio;
+      resolve({ dur, src });
+    };
+    audio.onerror = reject;
+    audio.src = src;
+  });
+}
+
 function getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
   return new Promise((resolve, reject) => {
     const src = URL.createObjectURL(file);
@@ -87,6 +102,8 @@ function getFileInfo(file: File): Promise<Dict> {
   let skipCopy = false;
   if (file.type.startsWith("video/")) {
     fn = getVideoInfo;
+  } else if (file.type.startsWith("audio/") && (file as any).record) {
+    fn = getAudioInfo;
   } else {
     fn = getImageInfo;
     // TODO(Kagami): Dump first frame of APNG and animated WebP.
@@ -107,6 +124,7 @@ function getClientY(e: MouseEvent | TouchEvent): number {
 
 class FilePreview extends Component<any, any> {
   public render(props: any) {
+    const record = !!(props.file as any).record;
     const { thumb } = props.info;
     const infoText = this.renderInfo();
     return (
@@ -114,7 +132,14 @@ class FilePreview extends Component<any, any> {
         <a class="control reply-remove-file-control" onClick={props.onRemove}>
           <i class="fa fa-remove" />
         </a>
-        <img class="reply-file-thumb" src={thumb} />
+        <ShowHide show={!record}>
+          <img class="reply-file-thumb" src={thumb} />
+        </ShowHide>
+        <ShowHide show={record}>
+          <div class="reply-file-thumb reply-file-thumb_record">
+            <i class="reply-file-thumb-icon fa fa-music" />
+          </div>
+        </ShowHide>
         <div class="reply-file-info" title={infoText}>{infoText}</div>
       </div>
     );
@@ -122,11 +147,15 @@ class FilePreview extends Component<any, any> {
   private renderInfo(): string {
     const { size } = this.props.file;
     const { width, height, dur } = this.props.info;
-    let out = `${width}×${height}, ${fileSize(size)}`;
-    if (dur) {
-      out += `, ${duration(Math.round(dur))}`;
+    const chunks = [];
+    if (width || height) {
+      chunks.push(`${width}×${height}`);
     }
-    return out;
+    chunks.push(fileSize(size));
+    if (dur) {
+      chunks.push(duration(Math.round(dur)));
+    }
+    return chunks.join(", ");
   }
 }
 
@@ -584,6 +613,18 @@ class Reply extends Component<any, any> {
   private handleAttach = () => {
     this.fileEl.click();
   }
+  private handleRecord = () => {
+    let pitch = Math.random() * 2 - 1;  // [-1, 1]
+    if (pitch > -0.2 && pitch < 0.2) {
+      // Don't tolerate zero pitch shift.
+      pitch = 0.2;
+    }
+    vmsg.record({pitch, wasmURL: "/static/js/vmsg.wasm"}).then((file) => {
+      // To distinguish from regular attachments.
+      (file as any).record = true;
+      this.handleFiles([file]);
+    });
+  }
   private handleAttachRemove = (src: string) => {
     if (this.state.sending) return;
     const fwraps = this.state.fwraps.filter((f) => f.info.src !== src);
@@ -601,7 +642,7 @@ class Reply extends Component<any, any> {
     }
     this.fileEl.value = null;  // Allow to select same file again
   }
-  private handleFiles = (files: FileList) => {
+  private handleFiles = (files: FileList | File[]) => {
     // Limit number of selected files.
     const fslice = Array.prototype.slice.call(files, 0, config.maxFiles);
     collect(fslice.map(this.handleFile)).then((fwraps) => {
@@ -798,6 +839,14 @@ class Reply extends Component<any, any> {
           onClick={this.handleAttach}
         >
           <i class="fa fa-file-image-o" />
+        </button>
+        <button
+          class="control reply-footer-control reply-record-control"
+          title={ln.UI.record}
+          disabled={sending}
+          onClick={this.handleRecord}
+        >
+          <i class="fa fa-file-audio-o" />
         </button>
 
         <button

@@ -199,6 +199,7 @@
     "stickers": "Stickers",
     "clickToCancel": "Click to cancel upload",
     "attach": "Attach file (%s max)",
+    "record": "Record voice message",
     "tooBig": "Too big file",
     "delConfirm": "Delete post?",
     "banConfirm": "Delete post and ban author?",

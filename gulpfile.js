@@ -277,12 +277,13 @@ createTask("loader", "loader.js", src =>
     .pipe(gulp.dest(JS_DIR))
 );
 
-// Polyfills.
+// Polyfills and other deps.
 createTask("polyfills", [
   "node_modules/core-js/client/core.min.js",
   "node_modules/proxy-polyfill/proxy.min.js",
   "node_modules/dom4/build/dom4.js",
   "node_modules/whatwg-fetch/fetch.js",
+  "node_modules/vmsg/vmsg.wasm",
 ], src =>
   src
     .pipe(gulpif(/core\.min\.js$/, rjsOptimize({optimize: "none"})))
