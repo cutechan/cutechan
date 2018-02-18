@@ -17,7 +17,7 @@
       {{/HasVideo}}{{#HasAudio}}
         <i class="fa fa-volume-up post-file-badge post-file-audio-badge"></i>
       {{/HasAudio}}
-      <img class="post-file-thumb{{^Video}} trigger-media-hover{{/Video}} trigger-media-popup" src="{{ ThumbPath }}" width="{{ TWidth }}" height="{{ THeight }}" data-sha1="{{ SHA1 }}">
+      <img class="post-file-thumb{{^HasVideo}} trigger-media-hover{{/HasVideo}} trigger-media-popup" src="{{ ThumbPath }}" width="{{ TWidth }}" height="{{ THeight }}" data-sha1="{{ SHA1 }}">
     {{/Record}}{{#Record}}
       <i class="post-file-thumb trigger-media-popup fa fa-music" data-sha1="{{ SHA1 }}"></i>
     {{/Record}}
