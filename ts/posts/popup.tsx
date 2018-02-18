@@ -39,6 +39,7 @@ export function getCenteredRect({ width, height }: any) {
 interface PopupProps {
   video: boolean;
   audio: boolean;
+  record: boolean;
   embed: boolean;
   transparent: boolean;
   url: string;
@@ -96,7 +97,7 @@ class Popup extends Component<PopupProps, PopupState> {
     document.addEventListener("keydown", this.handleGlobalKey);
     document.addEventListener("mousemove", this.handleGlobalMove);
     document.addEventListener("click", this.handleGlobalClick);
-    if (this.props.video) {
+    if (this.props.video || this.props.record) {
       this.itemEl.volume = options.volume;
       this.itemEl.src = this.props.url;
     }
@@ -108,12 +109,25 @@ class Popup extends Component<PopupProps, PopupState> {
     document.removeEventListener("click", this.handleGlobalClick);
   }
 
-  public render({ video, embed }: PopupProps, { left, top }: PopupState) {
-    const cls = video ? "popup_video" : embed ? "popup_embed" : "popup_image";
+  public render({ video, record, embed }: PopupProps, { left, top }: PopupState) {
+    let cls = "";
+    let fn = null;
+    if (video) {
+      cls = "popup_video";
+      fn = this.renderVideo;
+    } else if (record) {
+      cls = "popup_record";
+      fn = this.renderRecord;
+    } else if (embed) {
+      cls = "popup_embed";
+      fn = this.renderEmbed;
+    } else {
+      cls = "popup_image";
+      fn = this.renderImage;
+    }
     return (
       <div class={cx("popup", cls)} style={{left, top}}>
-        {video ? this.renderVideo()
-               : embed ? this.renderEmbed() : this.renderImage()}
+        {fn.call(this)}
         {embed ? this.renderControls() : null}
       </div>
     );
@@ -142,22 +156,6 @@ class Popup extends Component<PopupProps, PopupState> {
       </div>
     );
   }
-  private renderEmbed() {
-    const { width, height, moving, resizing } = this.state;
-    const pointerEvents = (moving || resizing) ? "none" : "auto";
-    return (
-      <iframe
-        class="popup-item"
-        ref={s(this, "itemEl")}
-        style={{width, height, pointerEvents}}
-        allowFullScreen
-        frameBorder={0}
-        referrerPolicy="no-referrer"
-        sandbox="allow-scripts allow-same-origin allow-popups"
-        src={this.frameUrl}
-      />
-    );
-  }
   private renderImage() {
     const { url } = this.props;
     const { width } = this.state;
@@ -172,6 +170,36 @@ class Popup extends Component<PopupProps, PopupState> {
         onDragStart={this.handleMediaDrag}
         onMouseDown={this.handleMediaDown}
         onWheel={this.handleMediaWheel}
+      />
+    );
+  }
+  private renderRecord() {
+    return (
+      <div class="popup-record" onMouseDown={this.handleMediaDown}>
+        <i class="popup-record-icon fa fa-music" />
+        <audio
+          class="popup-item popup-record-item"
+          ref={s(this, "itemEl")}
+          autoPlay
+          controls
+          onVolumeChange={this.handleMediaVolume}
+        />
+      </div>
+    );
+  }
+  private renderEmbed() {
+    const { width, height, moving, resizing } = this.state;
+    const pointerEvents = (moving || resizing) ? "none" : "auto";
+    return (
+      <iframe
+        class="popup-item"
+        ref={s(this, "itemEl")}
+        style={{width, height, pointerEvents}}
+        allowFullScreen
+        frameBorder={0}
+        referrerPolicy="no-referrer"
+        sandbox="allow-scripts allow-same-origin allow-popups"
+        src={this.frameUrl}
       />
     );
   }
@@ -338,6 +366,7 @@ class Popups extends Component<any, PopupsState> {
     const props = {
       video: false,
       audio: false,
+      record: false,
       embed: false,
       transparent: false,
       url: "",
@@ -349,14 +378,15 @@ class Popups extends Component<any, PopupsState> {
 
     if (target.matches(POST_FILE_THUMB_SEL)) {
       const post = getModel(target);
-      const file = post.getFileByThumb((target as HTMLImageElement).src);
+      const file = post.getFileByHash((target as HTMLImageElement).dataset.sha1);
       Object.assign(props, {
         video: file.video,
         audio: file.audio,
+        record: file.audio && !file.video,
         transparent: file.transparent,
         url: file.src,
-        width: file.dims[0],
-        height: file.dims[1],
+        width: file.dims[0] || 200,
+        height: file.dims[1] || 200,
         duration: file.length,
       });
     } else if (target.matches(POST_EMBED_SEL)) {

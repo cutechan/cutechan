@@ -4,7 +4,7 @@
 import templates from "cc-templates";
 import * as Mustache from "mustache";
 import { bodyEmbeds, renderBody } from ".";
-import { fileTypes, ImageData } from "../common";
+import { ImageData } from "../common";
 import { lang, ln } from "../lang";
 import { Backlinks, Post, sourcePath, Thread, thumbPath } from "../posts";
 import { config, mine } from "../state";
@@ -93,21 +93,16 @@ export function makePostContext(
 }
 
 function renderFile(img: ImageData): string {
-  const record = img.fileType === fileTypes.mp3;
-  let classes = "post-file";
-  if (record) {
-    classes += " post-file_record";
-  }
   return new TemplateContext("post-file", {
-    FileClass: classes,
+    SHA1: img.SHA1,
     HasTitle: !!img.title,
     LCopy: ln.Common.Posts.clickToCopy,
     Title: img.title,
     HasVideo: img.video,
     HasAudio: img.audio,
-    HasLength: img.video || record,
-    Record: record,
+    HasLength: img.video || img.audio,
     Length: duration(img.length || 0),
+    Record: img.audio && !img.video,
     Size: fileSize(img.size),
     Width: img.dims[0],
     Height: img.dims[1],

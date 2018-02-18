@@ -1,4 +1,4 @@
-<figure class="{{ FileClass }}">
+<figure class="post-file{{#Record}} post-file_record{{/Record}}">
   <figcaption class="post-file-info">
     {{^Record}}
       <span class="post-file-info-item post-file-dims">{{ Width }}×{{ Height }}</span>
@@ -17,9 +17,9 @@
       {{/HasVideo}}{{#HasAudio}}
         <i class="fa fa-volume-up post-file-badge post-file-audio-badge"></i>
       {{/HasAudio}}
-      <img class="post-file-thumb trigger-media-popup" src="{{ ThumbPath }}" width="{{ TWidth }}" height="{{ THeight }}">
+      <img class="post-file-thumb{{^Video}} trigger-media-hover{{/Video}} trigger-media-popup" src="{{ ThumbPath }}" width="{{ TWidth }}" height="{{ THeight }}" data-sha1="{{ SHA1 }}">
     {{/Record}}{{#Record}}
-      <i class="post-file-thumb trigger-media-popup fa fa-music"></i>
+      <i class="post-file-thumb trigger-media-popup fa fa-music" data-sha1="{{ SHA1 }}"></i>
     {{/Record}}
   </a>
 </figure>

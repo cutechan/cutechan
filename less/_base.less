@@ -535,6 +535,30 @@ html, body {
   user-select: none;
 }
 
+.popup-record {
+  position: relative;
+  width: 200px;
+  height: 200px;
+  background: #fff;
+}
+
+.popup-record-icon {
+  position: absolute;
+  left: 40px;
+  top: 40px;
+  bottom: 0;
+  font-size: 100px;
+  color: @control;
+}
+
+.popup-record-item {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-width: 200px;
+}
+
 .popup-controls {
   position: absolute;
   padding-right: 5px;
@@ -954,17 +978,6 @@ header {
   color: @posttime;
 }
 
-.post-file_record {
-  .post-file-thumb {
-    width: 100px;
-    height: 100px;
-    text-align: center;
-    line-height: 100px;
-    font-size: 50px;
-    color: @control;
-  }
-}
-
 .post-file-info {
   font-size: smaller;
   font-style: italic;
@@ -1029,6 +1042,17 @@ header {
 
 .post-file-thumb {
   display: block;
+}
+
+.post-file_record {
+  .post-file-thumb {
+    width: 100px;
+    height: 100px;
+    text-align: center;
+    line-height: 100px;
+    font-size: 50px;
+    color: @control;
+  }
 }
 
 html.work-mode {
@@ -1528,6 +1552,8 @@ html.pos-notstaff {
   font-size: 22px;
   line-height: 20px;
 }
+
+.reply-record-control { display: none }
 
 .reply-edit-control {
   width: 15px;

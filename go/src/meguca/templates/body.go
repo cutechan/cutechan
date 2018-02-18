@@ -126,6 +126,7 @@ func (r *renderer) AutoLink(out *bytes.Buffer, link []byte, kind int) {
 	for provider, pattern := range LinkEmbeds {
 		if pattern.Match(link) {
 			out.WriteString("<a class=\"post-embed post-" + provider + "-embed")
+			out.WriteString(" trigger-media-hover")
 			out.WriteString("\" data-provider=\"" + provider)
 			out.WriteString("\" href=\"")
 			b.AttrEscape(out, link)

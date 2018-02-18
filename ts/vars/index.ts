@@ -27,6 +27,7 @@ export const TRIGGER_OPEN_REPLY_SEL = ".trigger-open-reply";
 export const TRIGGER_QUOTE_POST_SEL = ".trigger-quote-post";
 export const TRIGGER_DELETE_POST_SEL = ".trigger-delete-post";
 export const TRIGGER_BAN_BY_POST_SEL = ".trigger-ban-by-post";
+export const TRIGGER_MEDIA_HOVER_SEL = ".trigger-media-hover";
 export const TRIGGER_MEDIA_POPUP_SEL = ".trigger-media-popup";
 export const TRIGGER_PAGE_NAV_TOP_SEL = ".trigger-page-nav-top";
 export const TRIGGER_PAGE_NAV_BOTTOM_SEL = ".trigger-page-nav-bottom";

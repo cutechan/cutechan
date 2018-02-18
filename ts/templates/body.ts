@@ -123,7 +123,7 @@ class CustomRenderer extends ((marked as any).Renderer as AnyClass) {
     let out = "<a ";
     for (const provider of Object.keys(linkEmbeds)) {
       if (linkEmbeds[provider].test(unescape(href))) {
-        out += ` class="post-embed post-${provider}-embed"`;
+        out += ` class="post-embed post-${provider}-embed trigger-media-hover"`;
         out += ` data-provider="${provider}"`;
         break;
       }

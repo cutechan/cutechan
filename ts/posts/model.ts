@@ -50,9 +50,7 @@ export class Post extends Model implements PostData {
     return new File(this.files[i]);
   }
 
-  public getFileByThumb(thumb: string): File {
-    // http://example.com/uploads/thumb/12/3456...jpg
-    const sha1 = thumb.split(/[/.]/).slice(-3, -1).join("");
+  public getFileByHash(sha1: string): File {
     return new File(this.files.find((f) => f.SHA1 === sha1));
   }
 

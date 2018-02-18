@@ -160,6 +160,8 @@ func getThumbnail(
 	switch err {
 	case nil:
 	case thumbnailer.ErrNoCoverArt:
+		// TODO(Kagami): Fix in upstream.
+		src.HasAudio = true
 	default:
 		return nil, err
 	}

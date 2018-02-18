@@ -14,6 +14,7 @@ import {
   HOVER_CONTAINER_SEL, HOVER_TRIGGER_TIMEOUT_SECS,
   POST_EMBED_SEL, POST_FILE_THUMB_SEL,
   POST_HOVER_TIMEOUT_SECS, POST_LINK_SEL,
+  TRIGGER_MEDIA_HOVER_SEL,
 } from "../vars";
 import { Post } from "./model";
 import * as popup from "./popup";
@@ -148,8 +149,7 @@ function showImage(url: string, width: number, height: number) {
 
 function renderPostImagePreview(thumb: HTMLImageElement): any {
   const post = getModel(thumb);
-  const file = post.getFileByThumb(thumb.src);
-  if (file.video) return;
+  const file = post.getFileByHash(thumb.dataset.sha1);
   const [width, height] = file.dims;
   showImage(file.src, width, height);
 }
@@ -168,6 +168,7 @@ function renderImagePreview(event: MouseEvent) {
 
   const target = event.target as HTMLElement;
   if (!target.matches) return;
+  if (!target.matches(TRIGGER_MEDIA_HOVER_SEL)) return;
 
   if (target.matches(POST_FILE_THUMB_SEL)) {
     renderPostImagePreview(target as HTMLImageElement);
