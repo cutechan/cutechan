@@ -12,14 +12,15 @@ import (
 	"errors"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
+	"net/http"
 	"meguca/auth"
 	"meguca/common"
 	"meguca/config"
 	"meguca/db"
-	"mime/multipart"
-	"net/http"
+	"meguca/util"
 
-	"github.com/Soreil/apngdetector"
+	// "github.com/Soreil/apngdetector"
 	"github.com/bakape/thumbnailer"
 )
 
@@ -76,32 +77,33 @@ func Upload(fh *multipart.FileHeader) (int, string, error) {
 		return 400, "", errTooLarge
 	}
 
-	file, err := fh.Open()
+	fd, err := fh.Open()
 	if err != nil {
 		return 400, "", err
 	}
-	defer file.Close()
+	defer fd.Close()
 
-	data, err := ioutil.ReadAll(file)
+	data, err := ioutil.ReadAll(fd)
 	if err != nil {
 		return 500, "", err
 	}
 
 	sum := sha1.Sum(data)
 	SHA1 := hex.EncodeToString(sum[:])
-	img, err := db.GetImage(SHA1)
+	file, err := db.GetImage(SHA1)
 	switch err {
-	case nil: // Already have a thumbnail
-		return newImageToken(SHA1)
+	case nil:
+		// Already have a thumbnail
+		return newFileToken(SHA1)
 	case sql.ErrNoRows:
-		img.SHA1 = SHA1
-		return newThumbnail(data, img)
+		file.SHA1 = SHA1
+		return saveFile(data, file)
 	default:
 		return 500, "", err
 	}
 }
 
-func newImageToken(SHA1 string) (int, string, error) {
+func newFileToken(SHA1 string) (int, string, error) {
 	token, err := db.NewImageToken(SHA1)
 	code := 200
 	if err != nil {
@@ -110,10 +112,10 @@ func newImageToken(SHA1 string) (int, string, error) {
 	return code, token, err
 }
 
-// Create a new thumbnail, commit its resources to the DB and filesystem, and
-// pass the image data to the client.
-func newThumbnail(data []byte, img common.ImageCommon) (int, string, error) {
-	thumb, img, err := processFile(data, img, thumbnailer.Options{
+// Create a new thumbnail, commit its resources to the DB and
+// filesystem, and return resulting token.
+func saveFile(data []byte, file common.ImageCommon) (int, string, error) {
+	thumb, file, err := getThumbnail(data, file, thumbnailer.Options{
 		JPEGQuality: common.JPEGQuality,
 		MaxSourceDims: thumbnailer.Dims{
 			Width:  common.MaxWidth,
@@ -136,24 +138,15 @@ func newThumbnail(data []byte, img common.ImageCommon) (int, string, error) {
 		return 500, "", err
 	}
 
-	if err := db.AllocateImage(data, thumb, img); err != nil {
+	if err := db.AllocateImage(data, thumb, file); err != nil {
 		return 500, "", err
 	}
-	return newImageToken(img.SHA1)
+	return newFileToken(file.SHA1)
 }
 
-func truncString(s string, max int) string {
-	if len(s) > max {
-		return s[:max]
-	} else {
-		return s
-	}
-}
-
-// Separate function for easier testability
-func processFile(
+func getThumbnail(
 	data []byte,
-	img common.ImageCommon,
+	file common.ImageCommon,
 	opts thumbnailer.Options,
 ) (
 	[]byte, common.ImageCommon, error,
@@ -163,38 +156,38 @@ func processFile(
 	case nil:
 	case thumbnailer.ErrNoCoverArt:
 	default:
-		return nil, img, err
+		return nil, file, err
 	}
 
 	if (src.HasAudio && !src.HasVideo) || thumb.Data == nil {
-		return nil, img, errNoVideo
+		return nil, file, errNoVideo
 	}
 
-	img.Audio = src.HasAudio
-	img.Video = src.HasVideo
+	file.Audio = src.HasAudio
+	file.Video = src.HasVideo
 
-	img.FileType = mimeTypes[src.Mime]
-	if img.FileType == common.PNG {
-		img.APNG = apngdetector.Detect(data)
-	}
+	file.FileType = mimeTypes[src.Mime]
+	// if file.FileType == common.PNG {
+	// 	file.APNG = apngdetector.Detect(data)
+	// }
 	if thumb.IsPNG {
-		img.ThumbType = common.PNG
+		file.ThumbType = common.PNG
 	} else {
-		img.ThumbType = common.JPEG
+		file.ThumbType = common.JPEG
 	}
 
-	img.Length = uint32(src.Length.Seconds() + 0.5)
-	img.Size = len(data)
-	img.Artist = truncString(src.Artist, common.MaxLenFileArist)
-	img.Title = truncString(src.Title, common.MaxLenFileTitle)
+	file.Length = uint32(src.Length.Seconds() + 0.5)
+	file.Size = len(data)
+	file.Artist = util.TruncString(src.Artist, common.MaxLenFileArist)
+	file.Title = util.TruncString(src.Title, common.MaxLenFileTitle)
 
 	// MP3, OGG and MP4 might only contain audio and need a fallback thumbnail
 	// if thumb.Data == nil {
-	// 	img.ThumbType = common.PNG
-	// 	img.Dims = [4]uint16{150, 150, 150, 150}
+	// 	file.ThumbType = common.PNG
+	// 	file.Dims = [4]uint16{150, 150, 150, 150}
 	// 	thumb.Data = MustAsset("audio.png")
 	// } else {
-	img.Dims = [4]uint16{
+	file.Dims = [4]uint16{
 		uint16(src.Width),
 		uint16(src.Height),
 		uint16(thumb.Width),
@@ -203,7 +196,7 @@ func processFile(
 	// }
 
 	sum := md5.Sum(data)
-	img.MD5 = base64.RawURLEncoding.EncodeToString(sum[:])
+	file.MD5 = base64.RawURLEncoding.EncodeToString(sum[:])
 
-	return thumb.Data, img, nil
+	return thumb.Data, file, nil
 }
