@@ -34,30 +34,6 @@ function quoteText(text: string): string {
     .join("\n");
 }
 
-function getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
-  return new Promise((resolve, reject) => {
-    const src = URL.createObjectURL(file);
-    let thumb = src;
-    const img = new Image();
-    img.onload = () => {
-      const { width, height } = img;
-      if (skipCopy) {
-        resolve({ width, height, src, thumb });
-        return;
-      }
-      const c = document.createElement("canvas");
-      const ctx = c.getContext("2d");
-      c.width = width;
-      c.height = height;
-      ctx.drawImage(img, 0, 0, width, height);
-      thumb = c.toDataURL();
-      resolve({ width, height, src, thumb });
-    };
-    img.onerror = reject;
-    img.src = src;
-  });
-}
-
 function getVideoInfo(file: File): Promise<Dict> {
   return new Promise((resolve, reject) => {
     const vid = document.createElement("video");
@@ -79,6 +55,30 @@ function getVideoInfo(file: File): Promise<Dict> {
     };
     vid.onerror = reject;
     vid.src = src;
+  });
+}
+
+function getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
+  return new Promise((resolve, reject) => {
+    const src = URL.createObjectURL(file);
+    let thumb = src;
+    const img = new Image();
+    img.onload = () => {
+      const { width, height } = img;
+      if (skipCopy) {
+        resolve({ width, height, src, thumb });
+        return;
+      }
+      const c = document.createElement("canvas");
+      const ctx = c.getContext("2d");
+      c.width = width;
+      c.height = height;
+      ctx.drawImage(img, 0, 0, width, height);
+      thumb = c.toDataURL();
+      resolve({ width, height, src, thumb });
+    };
+    img.onerror = reject;
+    img.src = src;
   });
 }
 
