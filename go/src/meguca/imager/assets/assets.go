@@ -92,6 +92,12 @@ func Write(SHA1 string, fileType, thumbType uint8, src, thumb []byte) error {
 
 // Write a single file to disk with the appropriate permissions and flags
 func writeFile(path string, data []byte) error {
+	// One of the files might be empty (e.g. thumbnail in case of audio
+	// record).
+	if data == nil {
+		return nil
+	}
+
 	dir := filepath.Dir(path)
 	if err := os.Mkdir(dir, 0755); err != nil && !os.IsExist(err) {
 		return err

@@ -48,9 +48,9 @@ var (
 		"image/gif":  true,
 		"video/webm": true,
 		"video/mp4":  true,
+		"audio/mpeg": true,
 		// "application/pdf": true,
 		// "application/ogg": true,
-		// "audio/mpeg":      true,
 		// mimeZip:           true,
 		// mime7Zip:          true,
 		// mimeTarGZ:         true,
@@ -59,6 +59,7 @@ var (
 
 	errTooLarge = errors.New("file too large")
 	errNoVideo  = errors.New("no video track")
+	errNoThumb  = errors.New("cannot generate thumbnailer")
 )
 
 // LogError send the client file upload errors and logs them server-side
@@ -115,7 +116,7 @@ func newFileToken(SHA1 string) (int, string, error) {
 // Create a new thumbnail, commit its resources to the DB and
 // filesystem, and return resulting token.
 func saveFile(data []byte, file common.ImageCommon) (int, string, error) {
-	thumb, file, err := getThumbnail(data, file, thumbnailer.Options{
+	thumb, err := getThumbnail(data, &file, thumbnailer.Options{
 		JPEGQuality: common.JPEGQuality,
 		MaxSourceDims: thumbnailer.Dims{
 			Width:  common.MaxWidth,
@@ -144,23 +145,37 @@ func saveFile(data []byte, file common.ImageCommon) (int, string, error) {
 	return newFileToken(file.SHA1)
 }
 
+func isMP3(src thumbnailer.Source) bool {
+	return mimeTypes[src.Mime] == common.MP3
+}
+
 func getThumbnail(
 	data []byte,
-	file common.ImageCommon,
+	file *common.ImageCommon,
 	opts thumbnailer.Options,
 ) (
-	[]byte, common.ImageCommon, error,
+	[]byte, error,
 ) {
 	src, thumb, err := thumbnailer.ProcessBuffer(data, opts)
 	switch err {
 	case nil:
 	case thumbnailer.ErrNoCoverArt:
 	default:
-		return nil, file, err
+		return nil, err
 	}
 
-	if (src.HasAudio && !src.HasVideo) || thumb.Data == nil {
-		return nil, file, errNoVideo
+	// Allow only MP3 audios currently.
+	if src.HasAudio {
+		if !src.HasVideo && !isMP3(src) {
+			return nil, errNoVideo
+		}
+	}
+
+	// Thumbnail is skipped only for MP3.
+	if isMP3(src) {
+		thumb.Data = nil
+	} else if thumb.Data == nil {
+		return nil, errNoThumb
 	}
 
 	file.Audio = src.HasAudio
@@ -170,33 +185,30 @@ func getThumbnail(
 	// if file.FileType == common.PNG {
 	// 	file.APNG = apngdetector.Detect(data)
 	// }
-	if thumb.IsPNG {
+	if thumb.IsPNG || isMP3(src) {
 		file.ThumbType = common.PNG
 	} else {
 		file.ThumbType = common.JPEG
 	}
 
-	file.Length = uint32(src.Length.Seconds() + 0.5)
+	if isMP3(src) {
+		file.Dims = [4]uint16{200, 200, 200, 200}
+	} else {
+		file.Dims = [4]uint16{
+			uint16(src.Width),
+			uint16(src.Height),
+			uint16(thumb.Width),
+			uint16(thumb.Height),
+		}
+	}
+
 	file.Size = len(data)
+	file.Length = uint32(src.Length.Seconds() + 0.5)
 	file.Artist = util.TruncString(src.Artist, common.MaxLenFileArist)
 	file.Title = util.TruncString(src.Title, common.MaxLenFileTitle)
-
-	// MP3, OGG and MP4 might only contain audio and need a fallback thumbnail
-	// if thumb.Data == nil {
-	// 	file.ThumbType = common.PNG
-	// 	file.Dims = [4]uint16{150, 150, 150, 150}
-	// 	thumb.Data = MustAsset("audio.png")
-	// } else {
-	file.Dims = [4]uint16{
-		uint16(src.Width),
-		uint16(src.Height),
-		uint16(thumb.Width),
-		uint16(thumb.Height),
-	}
-	// }
 
 	sum := md5.Sum(data)
 	file.MD5 = base64.RawURLEncoding.EncodeToString(sum[:])
 
-	return thumb.Data, file, nil
+	return thumb.Data, nil
 }
