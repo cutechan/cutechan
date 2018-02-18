@@ -59,7 +59,7 @@ var (
 
 	errTooLarge = errors.New("file too large")
 	errNoVideo  = errors.New("no video track")
-	errNoThumb  = errors.New("cannot generate thumbnailer")
+	errNoThumb  = errors.New("can't generate thumbnail")
 )
 
 // LogError send the client file upload errors and logs them server-side
