@@ -1,6 +1,6 @@
 import * as cx from "classnames";
 import { Component, h, render } from "preact";
-import * as vmsg from "../../node_modules/vmsg";
+import vmsg from "../../node_modules/vmsg";
 import { showAlert } from "../alerts";
 import API from "../api";
 import { PostData } from "../common";
@@ -619,7 +619,7 @@ class Reply extends Component<any, any> {
       // Don't tolerate zero pitch shift.
       pitch = 0.2;
     }
-    vmsg.record({pitch, wasmURL: "/static/js/vmsg.wasm"}).then((file) => {
+    vmsg.record({pitch}).then((file) => {
       // To distinguish from regular attachments.
       (file as any).record = true;
       this.handleFiles([file]);

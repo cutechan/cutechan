@@ -31,7 +31,8 @@
     "preact": "^8.2.1",
     "proxy-polyfill": "^0.1.6",
     "textarea-caret": "^3.0.2",
-    "vmsg": "^0.1.2",
+    "vmsg": "^0.2.0",
+    "wasm-polyfill.js": "^0.2.0",
     "whatwg-fetch": "^2.0.1"
   },
   "devDependencies": {

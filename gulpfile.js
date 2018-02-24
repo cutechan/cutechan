@@ -284,6 +284,7 @@ createTask("polyfills", [
   "node_modules/dom4/build/dom4.js",
   "node_modules/whatwg-fetch/fetch.js",
   "node_modules/vmsg/vmsg.wasm",
+  "node_modules/wasm-polyfill.js/wasm-polyfill.js",
 ], src =>
   src
     .pipe(gulpif(/core\.min\.js$/, rjsOptimize({optimize: "none"})))

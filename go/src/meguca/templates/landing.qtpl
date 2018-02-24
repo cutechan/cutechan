@@ -35,9 +35,6 @@ Will be cached.
 		<a class="button landing-button landing-threads-button" href="/all/">
 			{%s ln.UI["threads"] %}
 		</a>
-		<button class="button landing-button landing-rules-button" disabled>
-			{%s ln.UI["rules"] %}
-		</button>
 		<i class="landing-logo"></i>
 	</section>
 {% endstripspace %}{% endfunc %}
