@@ -183,3 +183,53 @@ Minimal possible page for reuse.
 	</body>
 	</html>
 {% endstripspace %}{% endfunc %}
+
+Custom not found page.
+{% func NotFound() %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="icon" href="/static/favicons/default.ico">
+		<title>{%s ln.UI["notFound"] %}</title>
+		<style>
+			html, body {
+				margin: 0;
+				padding: 0;
+				height: 100%;
+			}
+			body {
+				color: #fff;
+				background: #131416;
+				font-family: Helvetica, sans-serif;
+			}
+			main {
+				height: 100%;
+				display: flex;
+				text-align: center;
+				flex-direction: column;
+				justify-content: center;
+				background: center / contain no-repeat url(/static/img/luda.jpg);
+			}
+			h1 {
+				font-size: 56px;
+				font-weight: normal;
+				margin: 0;
+				margin-bottom: 10px;
+			}
+			h2 {
+				font-size: 26px;
+				font-weight: normal;
+				margin: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<h1>404</h3>
+			<h2>{%s ln.UI["notFound"] %}</h2>
+		</main>
+	</body>
+	</html>
+{% endstripspace %}{% endfunc %}

@@ -23,12 +23,11 @@ func startWebServer() (err error) {
 // Create the monolithic router for routing HTTP requests.
 func createRouter() http.Handler {
 	r := httptreemux.NewContextMux()
-	r.NotFoundHandler = func(w http.ResponseWriter, _ *http.Request) {
-		text404(w)
-	}
+	r.NotFoundHandler = serve404
 	r.PanicHandler = text500
 
 	// HTML.
+	r.GET("/404.html", serve404)
 	r.GET("/", serveLanding)
 	r.GET("/stickers/", serveStickers)
 	r.GET("/:board/", func(w http.ResponseWriter, r *http.Request) {

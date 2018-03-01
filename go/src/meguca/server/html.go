@@ -4,6 +4,7 @@ import (
 	"database/sql"
 	"errors"
 	"fmt"
+	"io"
 	"meguca/auth"
 	"meguca/cache"
 	"meguca/common"
@@ -51,10 +52,17 @@ func serveLanding(w http.ResponseWriter, r *http.Request) {
 	serveHTML(w, r, "", html, nil)
 }
 
+func serve404(w http.ResponseWriter, r *http.Request) {
+	html := templates.NotFound()
+	w.Header().Set("Content-Type", "text/html")
+	w.WriteHeader(404)
+	io.WriteString(w, html)
+}
+
 // Serves board HTML to regular or noscript clients
 func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 	if !auth.IsBoard(b) {
-		text404(w)
+		serve404(w, r)
 		return
 	}
 	if !assertNotModOnly(w, r, b) {
@@ -68,7 +76,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 	switch err {
 	case nil:
 	case errPageOverflow:
-		text404(w)
+		serve404(w, r)
 		return
 	default:
 		text500(w, r, err)
@@ -265,7 +273,7 @@ func crossRedirect(w http.ResponseWriter, r *http.Request) {
 	idStr := extractParam(r, "id")
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
-		text404(w)
+		serve404(w, r)
 		return
 	}
 
@@ -279,7 +287,7 @@ func crossRedirect(w http.ResponseWriter, r *http.Request) {
 		url.Path = fmt.Sprintf("/%s/%d", board, op)
 		http.Redirect(w, r, url.String(), 301)
 	case sql.ErrNoRows:
-		text404(w)
+		serve404(w, r)
 	default:
 		text500(w, r, err)
 	}

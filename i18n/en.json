@@ -191,6 +191,7 @@
   },
   "ui": {
     "main": "Main page",
+    "notFound": "Page not found",
     "landingHeader": "The only one k-pop imageboard",
     "landingInfo": "",
     "threads": "All threads",

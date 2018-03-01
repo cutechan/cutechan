@@ -220,7 +220,7 @@ func boardConfData(w http.ResponseWriter, r *http.Request) (
 	conf = config.GetBoardConfigs(board).BoardConfigs
 	conf.ID = board
 	if conf.ID == "" {
-		text404(w)
+		serve404(w, r)
 		return conf, false
 	}
 
@@ -583,7 +583,7 @@ func setThreadSticky(w http.ResponseWriter, r *http.Request) {
 func banList(w http.ResponseWriter, r *http.Request) {
 	board := extractParam(r, "board")
 	if !auth.IsBoard(board) {
-		text404(w)
+		serve404(w, r)
 		return
 	}
 
@@ -665,7 +665,7 @@ func unban(w http.ResponseWriter, r *http.Request) {
 func modLog(w http.ResponseWriter, r *http.Request) {
 	board := extractParam(r, "board")
 	if !auth.IsBoard(board) {
-		text404(w)
+		serve404(w, r)
 		return
 	}
 

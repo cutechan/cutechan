@@ -125,7 +125,7 @@ func servePost(w http.ResponseWriter, r *http.Request) {
 		}
 		serveJSON(w, r, "", post)
 	case sql.ErrNoRows:
-		text404(w)
+		serve404(w, r)
 	default:
 		respondToJSONError(w, r, err)
 	}
@@ -133,7 +133,7 @@ func servePost(w http.ResponseWriter, r *http.Request) {
 
 func respondToJSONError(w http.ResponseWriter, r *http.Request, err error) {
 	if err == sql.ErrNoRows {
-		text404(w)
+		serve404(w, r)
 	} else {
 		text500(w, r, err)
 	}
@@ -170,7 +170,7 @@ func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 
 	id, err := strconv.ParseUint(extractParam(r, "thread"), 10, 64)
 	if err != nil {
-		text404(w)
+		serve404(w, r)
 		return 0, false
 	}
 
@@ -180,7 +180,7 @@ func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 		return 0, false
 	}
 	if !valid {
-		text404(w)
+		serve404(w, r)
 		return 0, false
 	}
 
@@ -191,7 +191,7 @@ func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 func boardJSON(w http.ResponseWriter, r *http.Request, catalog bool) {
 	b := extractParam(r, "board")
 	if !auth.IsBoard(b) {
-		text404(w)
+		serve404(w, r)
 		return
 	}
 	if !assertNotModOnly(w, r, b) {
@@ -206,7 +206,7 @@ func boardJSON(w http.ResponseWriter, r *http.Request, catalog bool) {
 	case nil:
 		writeJSON(w, r, formatEtag(ctr, "", auth.NotLoggedIn), data)
 	case errPageOverflow:
-		text404(w)
+		serve404(w, r)
 	default:
 		text500(w, r, err)
 	}

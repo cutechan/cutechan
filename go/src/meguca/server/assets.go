@@ -23,7 +23,7 @@ func serveImages(w http.ResponseWriter, r *http.Request) {
 	path := extractParam(r, "path")
 	file, err := os.Open(cleanJoin(common.ImageWebRoot, path))
 	if err != nil {
-		text404(w)
+		serve404(w, r)
 		return
 	}
 	defer file.Close()
@@ -43,7 +43,7 @@ func cleanJoin(a, b string) string {
 func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 	file, err := os.Open(path)
 	if err != nil {
-		text404(w)
+		serve404(w, r)
 		return
 	}
 	defer file.Close()
@@ -54,7 +54,7 @@ func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 		return
 	}
 	if stats.IsDir() {
-		text404(w)
+		serve404(w, r)
 		return
 	}
 	modTime := stats.ModTime()
@@ -164,13 +164,13 @@ func sendFileError(w http.ResponseWriter, h *multipart.FileHeader, msg string) {
 func serveBanner(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.Atoi(extractParam(r, "id"))
 	if err != nil {
-		text404(w)
+		serve404(w, r)
 		return
 	}
 
 	f, ok := assets.Banners.Get(extractParam(r, "board"), id)
 	if !ok {
-		text404(w)
+		serve404(w, r)
 		return
 	}
 	h := w.Header()

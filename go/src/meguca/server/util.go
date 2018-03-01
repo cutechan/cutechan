@@ -82,16 +82,12 @@ func logError(r *http.Request, err interface{}) {
 	log.Printf("server: %s: %s\n%s\n", ip, err, debug.Stack())
 }
 
-// Text-only 404 response
-func text404(w http.ResponseWriter) {
-	http.Error(w, "404 not found", 404)
-}
-
 // Text-only 400 response
 func text400(w http.ResponseWriter, err error) {
 	http.Error(w, fmt.Sprintf("400 %s", err), 400)
 }
 
+// Text-only 403 response
 func text403(w http.ResponseWriter, err error) {
 	http.Error(w, fmt.Sprintf("403 %s", err), 403)
 }
@@ -180,7 +176,7 @@ func checkModOnly(r *http.Request, board string) bool {
 
 func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string) bool {
 	if !checkModOnly(r, board) {
-		text404(w)
+		serve404(w, r)
 		return false
 	}
 	return true
