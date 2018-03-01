@@ -619,10 +619,10 @@ class Reply extends Component<any, any> {
       // Don't tolerate zero pitch shift.
       pitch = 0.2;
     }
-    vmsg.record({pitch}).then((file) => {
+    vmsg.record({pitch}).then((blob) => {
       // To distinguish from regular attachments.
-      (file as any).record = true;
-      this.handleFiles([file]);
+      (blob as any).record = true;
+      this.handleFiles([blob]);
     });
   }
   private handleAttachRemove = (src: string) => {
@@ -642,7 +642,7 @@ class Reply extends Component<any, any> {
     }
     this.fileEl.value = null;  // Allow to select same file again
   }
-  private handleFiles = (files: FileList | File[]) => {
+  private handleFiles = (files: FileList | Blob[]) => {
     // Limit number of selected files.
     const fslice = Array.prototype.slice.call(files, 0, config.maxFiles);
     collect(fslice.map(this.handleFile)).then((fwraps) => {
