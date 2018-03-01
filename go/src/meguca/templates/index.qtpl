@@ -210,7 +210,7 @@ Custom not found page.
 				text-align: center;
 				flex-direction: column;
 				justify-content: center;
-				background: center / contain no-repeat url(/static/img/luda.jpg);
+				background: center/contain no-repeat url(/static/img/luda.jpg);
 			}
 			h1 {
 				font-size: 56px;
@@ -227,7 +227,7 @@ Custom not found page.
 	</head>
 	<body>
 		<main>
-			<h1>404</h3>
+			<h1>404</h1>
 			<h2>{%s ln.UI["notFound"] %}</h2>
 		</main>
 	</body>
