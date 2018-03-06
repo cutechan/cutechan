@@ -138,7 +138,7 @@ const specs: { [id: string]: OptionSpec } = {
   },
   // Other settings.
   volume: {
-    default: 0,
+    default: 1,
   },
 };
 
