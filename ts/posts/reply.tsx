@@ -234,7 +234,7 @@ class Reply extends Component<any, any> {
     this.bodyEl.setSelectionRange(caret, caret);
   }
   public componentWillUnmount() {
-    unhook(HOOKS.openReply, this.focus);
+    unhook(HOOKS.openReply, this.focusAndScroll);
     unhook(HOOKS.sendReply, this.handleSend);
     unhook(HOOKS.selectFile, this.handleAttach);
     unhook(HOOKS.previewPost, this.handleToggleEditing);
