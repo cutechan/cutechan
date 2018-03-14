@@ -1,56 +1,64 @@
-export NODE_BIN=$(PWD)/node_modules/.bin
-export HTMLMIN=$(NODE_BIN)/html-minifier
-export GULP=$(NODE_BIN)/gulp
-ifeq ($(GOPATH),)
-	export PATH:=$(PATH):$(PWD)/go/bin
-	export GOPATH=$(PWD)/go
-	export TMPDIR=$(PWD)/go
-else
-	export PATH:=$(PATH):$(GOPATH)/bin
-	export GOPATH:=$(GOPATH):$(PWD)/go
-endif
+export GOPATH = $(PWD)/go
+export TMPDIR = $(PWD)/go
+export PATH := $(PATH):$(PWD)/go/bin
+export NODE_BIN = $(PWD)/node_modules/.bin
+export HTMLMIN = $(NODE_BIN)/html-minifier
+export GULP = $(NODE_BIN)/gulp
 
-.PHONY: smiles tags
+all: templates smiles client server
 
-all: deps templates smiles client server
+TEMPLATES = $(wildcard mustache/*.mustache)
+TEMPLATESPP = $(subst mustache/,mustache-pp/,$(TEMPLATES))
 
-deps:
-	npm install --progress=false
-	go get -v \
-		github.com/valyala/quicktemplate/qtc \
-		github.com/jteeuwen/go-bindata/... \
-		github.com/mailru/easyjson/...
-	go generate meguca/...
-	go list -f '{{.Deps}}' meguca | tr -d '[]' | xargs go get -v
+mustache-pp:
+	mkdir mustache-pp
 
-update-deps:
-	npm update
-	go get -u -v \
-		github.com/valyala/quicktemplate/qtc \
-		github.com/jteeuwen/go-bindata/... \
-		github.com/mailru/easyjson/...
-	go list -f '{{.Deps}}' meguca |\
-		tr -d '[]' |\
-		xargs go list -e -f '{{if not .Standard}}{{.ImportPath}}{{end}}' |\
-		grep -v meguca |\
-		xargs go get -u -v
-
-templates:
+mustache-pp/%.mustache: mustache/%.mustache
 	$(HTMLMIN) --collapse-whitespace --collapse-inline-tag-whitespace \
-		--input-dir mustache --output-dir mustache-pp
+		-o $@ $<
 
+templates: mustache-pp $(TEMPLATESPP)
+
+.PHONY: smiles
 smiles:
 	$(GULP) smiles
 
-client:
+node_modules:
+	npm install
+
+client: node_modules
 	$(GULP)
 
 client-watch:
 	$(GULP) -w
 
-server:
+go/bin/go-bindata:
+	go get github.com/jteeuwen/go-bindata/...
+
+go/bin/easyjson:
+	go get github.com/mailru/easyjson/...
+
+go/bin/qtc:
+	go get github.com/valyala/quicktemplate/qtc/...
+
+GENSRC = $(shell find go/src/meguca -type f -name '*.go' | xargs grep -l '^//go:generate')
+GENSRC += $(shell find go/src/meguca/db/sql -type f -name '*.sql')
+GENSRC += $(wildcard go/src/meguca/imager/*.png)
+GENSRC += $(wildcard i18n/*.json)
+GENSRC += $(TEMPLATESPP)
+go/bin/_gen: go/bin/go-bindata go/bin/easyjson go/bin/qtc $(GENSRC)
 	go generate meguca/...
-	go build -v -o cutechan meguca
+	touch go/bin/_gen
+
+GOSRC = $(shell find go/src/meguca -type f -name '*.go')
+cutechan: go/bin/_gen $(GOSRC)
+	go get -v meguca/...
+	cp go/bin/meguca cutechan
+
+server: cutechan
+
+serve: templates cutechan
+	./cutechan -b :8001
 
 deb: clean templates smiles client server
 	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 cutechan
@@ -64,20 +72,12 @@ deb: clean templates smiles client server
 	fakeroot dpkg-deb -z0 -b deb_dist cutechan.deb
 
 test:
-	go test -race -p 1 meguca/...
-
-test-no-race:
-	go test -p 1 meguca/...
-
-test-custom:
-	go test meguca/... $(f)
-
-test-build:
-	go build -o /dev/null meguca
+	go test meguca/...
 
 fmt:
 	go fmt meguca/...
 
+.PHONY: tags
 tags:
 	ctags -R go/src/meguca ts
 
@@ -94,7 +94,9 @@ client-clean:
 
 server-clean:
 	rm -rf cutechan \
-		go/src/meguca/**/bin_data.go \
+		go/bin/meguca \
+		go/bin/_gen \
+		go/src/meguca/*/bin_data.go \
 		go/src/meguca/common/*_easyjson.go \
 		go/src/meguca/config/*_easyjson.go \
 		go/src/meguca/templates/*.qtpl.go
@@ -108,8 +110,3 @@ test-clean:
 		go/src/meguca/imager/assets/uploads \
 		go/src/meguca/imager/testdata/thumb_*.jpg \
 		go/src/meguca/imager/testdata/thumb_*.png
-
-distclean: clean
-	rm -rf uploads
-	rm -rf node_modules package-lock.json
-	rm -rf go/src/github.com go/src/golang.org go/bin go/pkg tags
