@@ -5,30 +5,20 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
 ## Runtime dependencies
 
 * [PostgresSQL](https://www.postgresql.org/download/) >= 9.6
-* ffmpeg >= 3.1 shared libraries (libavcodec, libavutil, libavformat, libswscale) compiled with:
+* FFmpeg >= 3.1 shared libraries (libavcodec, libavutil, libavformat, libswscale) compiled with:
     * libvpx
-    * libvorbis
-    * libopus
-    * libtheora
-    * libx264
-    * libmp3lame
-* GraphicsMagick shared library compiled with:
+* GraphicsMagick >= 1.3 shared library (Q16) compiled with:
     * zlib
     * libpng
     * libjpeg
-    * postscript
 
 ## Build dependencies
 
 * [Go](https://golang.org/doc/install) >= 1.9.2 (for building server)
 * [Node.js](https://nodejs.org/) >= 8.0 (for building client)
-* GCC or Clang
-* git
-* make
-* pthread
-* pkg-config
-* ffmpeg and GraphicsMagick development files
-* optipng
+* FFmpeg and GraphicsMagick development files
+* GNU Build System
+* OptiPNG
 
 ## Build
 
