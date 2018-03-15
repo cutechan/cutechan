@@ -129,10 +129,9 @@ export function render() {
     extractThreads();
   }
 
-  const container = document.getElementById("threads");
-  on(container, "input", onSearchChange, {selector: BOARD_SEARCH_INPUT_SEL});
-
   if (page.catalog) {
+    const container = document.getElementById("threads");
+    on(container, "input", onSearchChange, {selector: BOARD_SEARCH_INPUT_SEL});
     on(container, "input", onSortChange, {selector: BOARD_SEARCH_SORT_SEL});
     const select = container.querySelector(BOARD_SEARCH_SORT_SEL) as HTMLSelectElement;
     select.value = localStorage.getItem("catalogSort") || "bump";

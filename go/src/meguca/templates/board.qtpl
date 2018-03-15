@@ -51,7 +51,7 @@
 		{% if !catalog %}
 			{%= pagination(page, total) %}
 		{% endif %}
-		{% if top %}
+		{% if top && catalog %}
 			{%= renderBoardSearch(catalog) %}
 		{% endif %}
 	</nav>
