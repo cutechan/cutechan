@@ -227,7 +227,7 @@ func renderBody(p *common.Post, op uint64, index bool) string {
 		links:    p.Links,
 		commands: p.Commands,
 		cmdi:     0,
-		Html:  b.HtmlRenderer(HtmlFlags, "", "").(*b.Html),
+		Html:     b.HtmlRenderer(HtmlFlags, "", "").(*b.Html),
 	}
 	unsafe := b.Markdown(input, renderer, Extensions)
 	html := policy.SanitizeBytes(unsafe)

@@ -8,8 +8,8 @@ import (
 	"meguca/db"
 	"meguca/templates"
 	"meguca/util"
-	"strings"
 	"strconv"
+	"strings"
 
 	b "github.com/cutechan/blackfriday"
 )

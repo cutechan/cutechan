@@ -327,7 +327,10 @@ var upgrades = []func(*sql.Tx) error{
 	},
 	// Migrate post images to support multiple files per post.
 	func(tx *sql.Tx) (err error) {
-		type File struct {id uint64; sha1 string}
+		type File struct {
+			id   uint64
+			sha1 string
+		}
 		files := make([]File, 0)
 
 		// Keep old scheme values just in case.

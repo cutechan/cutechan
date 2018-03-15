@@ -89,7 +89,7 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 }
 
 // CreatePost creates a new post and writes it to the database.
-func CreatePost(req PostCreationRequest, ip string,  op uint64, board string) (
+func CreatePost(req PostCreationRequest, ip string, op uint64, board string) (
 	post db.Post, msg []byte, err error,
 ) {
 	ok := db.CanCreatePost(ip)

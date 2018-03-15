@@ -87,11 +87,11 @@ func commitLogin(w http.ResponseWriter, r *http.Request, userID string) {
 	expiry := time.Duration(common.SessionExpiry)*time.Hour*24 - time.Hour
 	expires := time.Now().Add(expiry)
 	sessionCookie := http.Cookie{
-		Name:    "session",
-		Value:   token,
-		Path:    "/",
-		Expires: expires,
-		Secure:  secureCookie,
+		Name:     "session",
+		Value:    token,
+		Path:     "/",
+		Expires:  expires,
+		Secure:   secureCookie,
 		HttpOnly: true,
 	}
 	SetCookie(w, &sessionCookie, SAMESITE_LAX_MODE)
@@ -148,11 +148,11 @@ func commitLogout(
 
 	expires := time.Unix(0, 0)
 	sessionCookie := http.Cookie{
-		Name:    "session",
-		Value:   "0",
-		Path:    "/",
-		Expires: expires,
-		Secure:  secureCookie,
+		Name:     "session",
+		Value:    "0",
+		Path:     "/",
+		Expires:  expires,
+		Secure:   secureCookie,
 		HttpOnly: true,
 	}
 	SetCookie(w, &sessionCookie, SAMESITE_LAX_MODE)

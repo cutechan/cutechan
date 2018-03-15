@@ -71,11 +71,15 @@ deb: clean templates smiles client server
 	chmod -R go+rX deb_dist
 	fakeroot dpkg-deb -z0 -b deb_dist cutechan.deb
 
-test:
-	go test meguca/...
+test: gofmt-staged cutechan
+	npm -s test
+	#go test meguca/...
 
-fmt:
+gofmt:
 	go fmt meguca/...
+
+gofmt-staged:
+	./gofmt-staged.sh
 
 .PHONY: tags
 tags:

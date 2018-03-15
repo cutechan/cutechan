@@ -2,13 +2,13 @@ package server
 
 import (
 	"log"
-	"mime"
 	"meguca/util"
 	"meguca/websockets"
+	"mime"
 	"net/http"
 
-	"github.com/dimfeld/httptreemux"
 	"github.com/Kagami/kpopnet/go/src/kpopnet"
+	"github.com/dimfeld/httptreemux"
 )
 
 func startWebServer() (err error) {

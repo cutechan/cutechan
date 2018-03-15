@@ -184,7 +184,7 @@ func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string) bool
 
 // Deprecated: use getParam instead.
 func extractParam(r *http.Request, id string) string {
-	return getParam(r, id);
+	return getParam(r, id)
 }
 
 // Extract URL paramater from request context

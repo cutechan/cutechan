@@ -20,4 +20,3 @@ func serveStickers(w http.ResponseWriter, r *http.Request) {
 	html := templates.Stickers(pos, stickHTML)
 	serveHTML(w, r, "", html, nil)
 }
-

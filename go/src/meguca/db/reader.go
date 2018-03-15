@@ -234,9 +234,9 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 	var ps postScanner
 	args := ps.ScanArgs()
 	t.Posts = make([]*common.Post, 0, postCnt)
-	postIds := make([]uint64, 1, postCnt + 1)  // + OP
+	postIds := make([]uint64, 1, postCnt+1) // + OP
 	postIds[0] = id
-	postsById := make(map[uint64]*common.Post, postCnt + 1)  // + OP
+	postsById := make(map[uint64]*common.Post, postCnt+1) // + OP
 	postsById[t.ID] = t.Post
 	for r.Next() {
 		err = r.Scan(args...)
