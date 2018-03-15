@@ -21,25 +21,24 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
 ## Build dependencies
 
 * [Go](https://golang.org/doc/install) >= 1.9.2 (for building server)
-* [Node.js](https://nodejs.org) >= 8.0 (for building client)
+* [Node.js](https://nodejs.org/) >= 8.0 (for building client)
 * GCC or Clang
 * git
 * make
 * pthread
 * pkg-config
 * ffmpeg and GraphicsMagick development files
+* optipng
 
 ## Build
 
-```
-make
-```
+`make`
 
 ## Setup
 
 * See `./cutechan help` for server operation
-* Login into the "admin" account via the infinity symbol in the top banner with
-  the password "password"
+* Login into the `admin` account via the infinity symbol in the top banner with
+  the password `password`
 * Change the default password
 * Create a board from the administration panel
 * Configure server from the administration panel
@@ -47,7 +46,11 @@ make
 ## Development
 
 * `./cutechan` or `./cutechan debug` run the server in development mode
-* `make server` and `make client` build the server and client separately
+* `make client` and `make server` build the client and server separately
 * `make client-watch` watches the file system for changes and incrementally
   rebuilds the client
 * `make clean` removes files from the previous compilation
+
+## License
+
+[AGPL-3.0](LICENSE)
