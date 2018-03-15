@@ -8,6 +8,8 @@ import (
 	"meguca/auth"
 	"meguca/config"
 	"meguca/util"
+
+	"github.com/Kagami/kpopnet/go/src/kpopnet"
 )
 
 const (
@@ -400,6 +402,8 @@ var upgrades = []func(*sql.Tx) error{
 // LoadDB establishes connections to RethinkDB and Redis and bootstraps both
 // databases, if not yet done.
 func LoadDB() (err error) {
+	kpopnet.StartDb(ConnArgs)
+
 	db, err = sql.Open("postgres", ConnArgs)
 	if err != nil {
 		return err

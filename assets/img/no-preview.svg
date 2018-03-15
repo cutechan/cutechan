@@ -1,0 +1,66 @@
+<svg width="388" height="401" viewBox="0 0 388 401" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+<g id="Canvas" transform="translate(-2613 -4)">
+<g id="Picture not found">
+<g id="Group">
+<g id="Rectangle">
+<g id="Vector">
+<use xlink:href="#path0_fill" transform="translate(2736.99 42.7978)" fill="#C3C2C4"/>
+</g>
+<g id="Vector">
+<use xlink:href="#path1_fill" transform="translate(2727.09 178.137)" fill="#C3C2C4"/>
+</g>
+<mask id="mask0_alpha" mask-type="alpha">
+<g id="mask">
+<g id="Vector">
+<use xlink:href="#path2_fill" transform="translate(2636.57 4.90305)" fill="#FFFFFF"/>
+</g>
+</g>
+</mask>
+<g id="Group" mask="url(#mask0_alpha)">
+<g id="Vector">
+<use xlink:href="#path3_fill" transform="translate(2615.35 -16.1492)" fill="#C3C2C4"/>
+</g>
+</g>
+</g>
+<mask id="mask1_alpha" mask-type="alpha">
+<g id="mask">
+<g id="Vector">
+<use xlink:href="#path0_fill" transform="translate(2736.99 42.7978)" fill="#C3C2C4"/>
+</g>
+<g id="Vector">
+<use xlink:href="#path1_fill" transform="translate(2727.09 178.137)" fill="#C3C2C4"/>
+</g>
+<g id="Rectangle">
+<mask id="mask2_alpha" mask-type="alpha">
+<g id="mask">
+<g id="Vector">
+<use xlink:href="#path2_fill" transform="translate(2636.57 4.90305)" fill="#FFFFFF"/>
+</g>
+</g>
+</mask>
+<g id="Vector" mask="url(#mask2_alpha)">
+<use xlink:href="#path3_fill" transform="translate(2615.35 -16.1492)" fill="#C3C2C4"/>
+</g>
+</g>
+</g>
+</mask>
+<g id="Line" mask="url(#mask1_alpha)">
+<g id="Vector">
+<use xlink:href="#path4_fill" transform="matrix(0.708865 0.705344 -0.708865 0.705344 2629.94 22.1333)" fill="#A5A3A8"/>
+</g>
+</g>
+</g>
+<g id="Line 2">
+<use xlink:href="#path5_stroke" transform="matrix(0.707107 0.707107 -0.707107 0.707107 2605.5 31.5)" fill="#8D8B8F"/>
+</g>
+</g>
+</g>
+<defs>
+<path id="path0_fill" d="M 136.527 67.6692C 136.527 105.042 105.964 135.339 68.2635 135.339C 30.5625 135.339 0 105.042 0 67.6692C 0 30.2966 30.5625 0 68.2635 0C 105.964 0 136.527 30.2966 136.527 67.6692Z"/>
+<path id="path1_fill" d="M 0 77.8948C 0 34.8747 35.1469 0 78.5029 0C 121.859 0 157.006 34.8747 157.006 77.8948L 157.006 180.451L 0 180.451L 0 77.8948Z"/>
+<path id="path2_fill" d="M 0 35.0878C 0 15.7093 15.832 0 35.3617 0L 301.281 0C 320.811 0 336.643 15.7093 336.643 35.0878L 336.643 364.912C 336.643 384.291 320.811 400 301.281 400L 35.3617 400C 15.832 400 0 384.291 0 364.912L 0 35.0878Z"/>
+<path id="path3_fill" d="M 56.5787 42.1053L 322.499 42.1053L 322.499 0L 56.5787 0L 56.5787 42.1053ZM 336.643 56.1404L 336.643 385.965L 379.077 385.965L 379.077 56.1404L 336.643 56.1404ZM 322.499 400L 56.5787 400L 56.5787 442.106L 322.499 442.106L 322.499 400ZM 42.4341 385.965L 42.4341 56.1404L 0 56.1404L 0 385.965L 42.4341 385.965ZM 56.5787 400C 48.7668 400 42.4341 393.717 42.4341 385.965L 0 385.965C 0 416.97 25.3311 442.106 56.5787 442.106L 56.5787 400ZM 336.643 385.965C 336.643 393.717 330.311 400 322.499 400L 322.499 442.106C 353.745 442.106 379.077 416.97 379.077 385.965L 336.643 385.965ZM 322.499 42.1053C 330.311 42.1053 336.643 48.3891 336.643 56.1404L 379.077 56.1404C 379.077 25.1349 353.745 0 322.499 0L 322.499 42.1053ZM 56.5787 0C 25.3311 0 0 25.1349 0 56.1404L 42.4341 56.1404C 42.4341 48.3891 48.7668 42.1053 56.5787 42.1053L 56.5787 0Z"/>
+<path id="path4_fill" d="M 0 39.2588L 601.645 39.2588L 601.645 0L 0 0L 0 39.2588Z"/>
+<path id="path5_stroke" d="M 19.5 -39C 8.73045 -39 0 -30.2696 0 -19.5C 0 -8.73045 8.73045 0 19.5 0L 19.5 -39ZM 512.244 0C 523.014 0 531.744 -8.73045 531.744 -19.5C 531.744 -30.2696 523.014 -39 512.244 -39L 512.244 0ZM 19.5 0L 512.244 0L 512.244 -39L 19.5 -39L 19.5 0Z"/>
+</defs>
+</svg>
