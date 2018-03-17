@@ -52,27 +52,26 @@ go/bin/_gen: go/bin/go-bindata go/bin/easyjson go/bin/qtc $(GENSRC)
 	touch go/bin/_gen
 
 GOSRC = $(shell find go/src/meguca -type f -name '*.go')
-cutechan: go/bin/_gen $(GOSRC)
+go/bin/cutechan: go/bin/_gen $(GOSRC)
 	go get -v meguca/...
-	cp go/bin/meguca cutechan
 
-server: cutechan
+server: go/bin/cutechan
 
-serve: templates cutechan
-	./cutechan -b :8001
+serve: templates server
+	cutechan -b :8001
 
 deb: clean templates smiles client server
-	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 cutechan
+	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 go/bin/cutechan
 	mkdir deb_dist
 	cp -a DEBIAN deb_dist
 	mkdir -p deb_dist/usr/share/cutechan/www
 	cp -a dist/* deb_dist/usr/share/cutechan/www
 	mkdir -p deb_dist/usr/bin
-	cp -a cutechan deb_dist/usr/bin
+	cp -a go/bin/cutechan deb_dist/usr/bin
 	chmod -R go+rX deb_dist
 	fakeroot dpkg-deb -z0 -b deb_dist cutechan.deb
 
-test: gofmt-staged cutechan
+test: gofmt-staged server
 	npm -s test
 	#go test meguca/...
 
@@ -98,12 +97,11 @@ client-clean:
 	rm -rf dist
 
 server-clean:
-	rm -rf cutechan \
-		go/bin/meguca \
+	rm -f \
 		go/bin/_gen \
+		go/bin/cutechan \
 		go/src/meguca/*/bin_data.go \
-		go/src/meguca/common/*_easyjson.go \
-		go/src/meguca/config/*_easyjson.go \
+		go/src/meguca/*/*_easyjson.go \
 		go/src/meguca/templates/*.qtpl.go
 
 deb-clean:

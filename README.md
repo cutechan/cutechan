@@ -26,7 +26,7 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
 
 ## Setup
 
-* See `./cutechan help` for server operation
+* See `go/bin/cutechan help` for server operation
 * Login into the `admin` account via the infinity symbol in the top banner with
   the password `password`
 * Change the default password
@@ -35,7 +35,7 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
 
 ## Development
 
-* `./cutechan` run the server in development mode
+* `go/bin/cutechan` run the server in development mode
 * `make client` and `make server` build the client and server separately
 * `make client-watch` watches the file system for changes and incrementally
   rebuilds the client
