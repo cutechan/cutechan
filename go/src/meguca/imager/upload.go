@@ -1,5 +1,3 @@
-//go:generate go-bindata -o bin_data.go --pkg imager --nocompress --nometadata archive.png audio.png
-
 // Package imager handles image, video, etc. upload requests and processing
 package imager
 
@@ -35,10 +33,6 @@ var (
 		"application/ogg": common.OGG,
 		"video/mp4":       common.MP4,
 		"audio/mpeg":      common.MP3,
-		mime7Zip:          common.SevenZip,
-		mimeTarGZ:         common.TGZ,
-		mimeTarXZ:         common.TXZ,
-		mimeZip:           common.ZIP,
 	}
 
 	// MIME types from thumbnailer  to accept
@@ -51,10 +45,6 @@ var (
 		"audio/mpeg": true,
 		// "application/pdf": true,
 		// "application/ogg": true,
-		// mimeZip:           true,
-		// mime7Zip:          true,
-		// mimeTarGZ:         true,
-		// mimeTarXZ:         true,
 	}
 
 	errTooLarge = errors.New("file too large")
