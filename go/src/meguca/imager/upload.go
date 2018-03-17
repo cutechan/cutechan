@@ -18,7 +18,6 @@ import (
 	"mime/multipart"
 	"net/http"
 
-	// "github.com/Soreil/apngdetector"
 	"github.com/bakape/thumbnailer"
 )
 
@@ -174,9 +173,6 @@ func getThumbnail(
 	file.Video = src.HasVideo
 
 	file.FileType = mimeTypes[src.Mime]
-	// if file.FileType == common.PNG {
-	// 	file.APNG = apngdetector.Detect(data)
-	// }
 	if thumb.IsPNG || isMP3(src) {
 		file.ThumbType = common.PNG
 	} else {
