@@ -430,7 +430,7 @@ func LoadDB() (err error) {
 	}
 	tasks = append(
 		tasks,
-		loadConfigs, loadBoardConfigs, loadBans, loadBanners,
+		loadConfigs, loadBoardConfigs, loadBans,
 	)
 	if err := util.Waterfall(tasks...); err != nil {
 		return err

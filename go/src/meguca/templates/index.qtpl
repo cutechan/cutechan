@@ -68,7 +68,7 @@ Renders the tab selection butts in tabbed windows
 				{% for _, l := range [...]string{
 					"logout", "logoutAll", "changePassword",
 					"createBoard",
-					"configureBoard", "setBanners", "assignStaff",
+					"configureBoard", "assignStaff",
 					"deleteBoard",
 				} %}
 					<a class="form-selection-link" id="{%s l %}">

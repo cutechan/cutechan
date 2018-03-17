@@ -56,7 +56,6 @@ func createRouter() http.Handler {
 	html.POST("/configure-board/:board", boardConfigurationForm)
 	html.POST("/configure-server", serverConfigurationForm)
 	html.GET("/assign-staff/:board", staffAssignmentForm)
-	html.GET("/set-banners", bannerSettingForm)
 	html.GET("/bans/:board", banList)
 	html.GET("/mod-log/:board", modLog)
 
@@ -90,7 +89,6 @@ func createRouter() http.Handler {
 	// api.POST("/notification", sendNotification)
 	// api.POST("/same-IP/:id", getSameIPPosts)
 	// api.POST("/sticky", setThreadSticky)
-	// api.POST("/set-banners", setBanners)
 	// TODO(Kagami): Rework and move to /api.
 	// json := r.NewGroup("/json")
 	// boards := json.NewGroup("/boards")
