@@ -44,6 +44,16 @@ func GetIP(r *http.Request) (string, error) {
 	return ip, nil
 }
 
+// Get IP for logging, replace with placeholder on error.
+// TODO(Kagami): Migrate boilerplate to use this helper.
+func GetLogIP(r *http.Request) (ip string) {
+	ip, err := GetIP(r)
+	if err != nil {
+		ip = "invalid IP"
+	}
+	return
+}
+
 func getIP(req *http.Request) string {
 	if IsReverseProxied {
 		for _, h := range [...]string{"X-Forwarded-For", "X-Real-Ip"} {

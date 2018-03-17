@@ -8,8 +8,6 @@ const (
 	MaxLenBody         = 4000
 	MaxLinesBody       = 100
 	MaxLenPassword     = 50
-	MaxLenFileArist    = 100
-	MaxLenFileTitle    = 300
 	MaxLenUserID       = 20
 	MaxLenBoardID      = 10
 	MaxLenBoardTitle   = 100
@@ -24,10 +22,6 @@ const (
 
 // Some default options.
 const (
-	ThumbSize       = 200
-	MaxWidth        = 12000
-	MaxHeight       = 12000
-	JPEGQuality     = 90
 	SessionExpiry   = 5 * 365 // Days
 	DefaultMaxSize  = 20      // Megabytes
 	DefaultMaxFiles = 4

@@ -1,4 +1,5 @@
-// Package imager handles image, video, etc. upload requests and processing
+// Package imager handles image, video, etc. upload requests and
+// processing.
 package imager
 
 import (
@@ -10,19 +11,18 @@ import (
 	"errors"
 	"io/ioutil"
 	"log"
+	"mime/multipart"
+	"net/http"
+
 	"meguca/auth"
 	"meguca/common"
 	"meguca/config"
 	"meguca/db"
-	"meguca/util"
-	"mime/multipart"
-	"net/http"
-
-	"github.com/bakape/thumbnailer"
+	"meguca/ipc"
 )
 
 var (
-	// Map of MIME types to the constants used internally
+	// Map of MIME types to the constants used internally.
 	mimeTypes = map[string]uint8{
 		"image/jpeg":      common.JPEG,
 		"image/png":       common.PNG,
@@ -34,32 +34,17 @@ var (
 		"audio/mpeg":      common.MP3,
 	}
 
-	// MIME types from thumbnailer  to accept
-	allowedMimeTypes = map[string]bool{
-		"image/jpeg": true,
-		"image/png":  true,
-		"image/gif":  true,
-		"video/webm": true,
-		"video/mp4":  true,
-		"audio/mpeg": true,
-		// "application/pdf": true,
-		// "application/ogg": true,
-	}
-
 	errTooLarge = errors.New("file too large")
-	errNoVideo  = errors.New("no video track")
-	errNoThumb  = errors.New("can't generate thumbnail")
 )
 
-// LogError send the client file upload errors and logs them server-side
+// FIXME(Kagami): Combine with similar code from server package.
 func LogError(w http.ResponseWriter, r *http.Request, code int, err error) {
+	log.Printf("upload error: %s: %v\n", auth.GetLogIP(r), err)
 	text := err.Error()
-	http.Error(w, text, code)
-	ip, err := auth.GetIP(r)
-	if err != nil {
-		ip = "invalid IP"
+	if code == 500 {
+		text = "internal server error"
 	}
-	log.Printf("upload error: %s: %s\n", ip, text)
+	http.Error(w, text, code)
 }
 
 func Upload(fh *multipart.FileHeader) (int, string, error) {
@@ -87,114 +72,57 @@ func Upload(fh *multipart.FileHeader) (int, string, error) {
 		return newFileToken(SHA1)
 	case sql.ErrNoRows:
 		file.SHA1 = SHA1
-		return saveFile(data, file)
+		return saveFile(data, &file)
 	default:
 		return 500, "", err
 	}
 }
 
-func newFileToken(SHA1 string) (int, string, error) {
-	token, err := db.NewImageToken(SHA1)
-	code := 200
+func newFileToken(SHA1 string) (code int, token string, err error) {
+	token, err = db.NewImageToken(SHA1)
+	code = 200
 	if err != nil {
 		code = 500
 	}
-	return code, token, err
+	return
 }
 
 // Create a new thumbnail, commit its resources to the DB and
 // filesystem, and return resulting token.
-func saveFile(data []byte, file common.ImageCommon) (int, string, error) {
-	thumb, err := getThumbnail(data, &file, thumbnailer.Options{
-		JPEGQuality: common.JPEGQuality,
-		MaxSourceDims: thumbnailer.Dims{
-			Width:  common.MaxWidth,
-			Height: common.MaxHeight,
-		},
-		ThumbDims: thumbnailer.Dims{
-			Width:  common.ThumbSize,
-			Height: common.ThumbSize,
-		},
-		AcceptedMimeTypes: allowedMimeTypes,
-	})
-	if err == errNoVideo {
-		return 400, "", err
-	}
-	switch err.(type) {
-	case nil:
-	case thumbnailer.UnsupportedMIMEError:
-		return 400, "", err
-	default:
-		return 500, "", err
-	}
-
-	if err := db.AllocateImage(data, thumb, file); err != nil {
-		return 500, "", err
-	}
-	return newFileToken(file.SHA1)
-}
-
-func isMP3(src thumbnailer.Source) bool {
-	return mimeTypes[src.Mime] == common.MP3
-}
-
-func getThumbnail(
-	data []byte,
-	file *common.ImageCommon,
-	opts thumbnailer.Options,
-) (
-	[]byte, error,
-) {
-	src, thumb, err := thumbnailer.ProcessBuffer(data, opts)
+func saveFile(srcData []byte, file *common.ImageCommon) (code int, token string, err error) {
+	thumb, err := ipc.GetThumbnail(srcData)
 	switch err {
 	case nil:
-	case thumbnailer.ErrNoCoverArt:
-		// TODO(Kagami): Fix in upstream.
-		src.HasAudio = true
+		// Do nothing.
+	case ipc.ErrThumbUnsupported:
+	case ipc.ErrThumbTracks:
+		code = 400
 	default:
-		return nil, err
+		code = 500
+	}
+	if err != nil {
+		return
 	}
 
-	// Allow only MP3 audios currently.
-	if src.HasAudio {
-		if !src.HasVideo && !isMP3(src) {
-			return nil, errNoVideo
-		}
-	}
-
-	// Thumbnail is skipped only for MP3.
-	if isMP3(src) {
-		thumb.Data = nil
-	} else if thumb.Data == nil {
-		return nil, errNoThumb
-	}
-
-	file.Audio = src.HasAudio
-	file.Video = src.HasVideo
-
-	file.FileType = mimeTypes[src.Mime]
-	if thumb.IsPNG || isMP3(src) {
+	// Map fields.
+	file.Size = len(srcData)
+	file.Video = thumb.HasVideo
+	file.Audio = thumb.HasAudio
+	file.FileType = mimeTypes[thumb.Mime]
+	if thumb.HasAlpha {
 		file.ThumbType = common.PNG
 	} else {
 		file.ThumbType = common.JPEG
 	}
+	file.Length = thumb.Duration
+	file.Title = thumb.Title
+	file.Dims = [4]uint16{thumb.SrcWidth, thumb.SrcHeight, thumb.Width, thumb.Height}
+	hash := md5.Sum(srcData)
+	file.MD5 = base64.RawURLEncoding.EncodeToString(hash[:])
 
-	if !isMP3(src) {
-		file.Dims = [4]uint16{
-			uint16(src.Width),
-			uint16(src.Height),
-			uint16(thumb.Width),
-			uint16(thumb.Height),
-		}
+	if err = db.AllocateImage(srcData, thumb.Data, *file); err != nil {
+		code = 500
+		return
 	}
-
-	file.Size = len(data)
-	file.Length = uint32(src.Length.Seconds() + 0.5)
-	file.Artist = util.TruncString(src.Artist, common.MaxLenFileArist)
-	file.Title = util.TruncString(src.Title, common.MaxLenFileTitle)
-
-	sum := md5.Sum(data)
-	file.MD5 = base64.RawURLEncoding.EncodeToString(sum[:])
-
-	return thumb.Data, nil
+	return newFileToken(file.SHA1)
 }

@@ -68,12 +68,3 @@ func PseudoRandInt(a, b int) int {
 	n := rnd.Intn(d)
 	return n + a
 }
-
-// Return truncated string.
-func TruncString(s string, max int) string {
-	if len(s) > max {
-		return s[:max]
-	} else {
-		return s
-	}
-}
