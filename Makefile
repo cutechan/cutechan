@@ -26,11 +26,14 @@ smiles:
 node_modules:
 	npm install
 
-client: node_modules
+client: node_modules go/src/github.com/Kagami/kpopnet
 	$(GULP)
 
 client-watch:
 	$(GULP) -w
+
+go/src/github.com/Kagami/kpopnet:
+	go get github.com/Kagami/kpopnet
 
 go/bin/go-bindata:
 	go get github.com/kevinburke/go-bindata/...

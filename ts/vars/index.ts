@@ -8,6 +8,7 @@ export const ALERTS_CONTAINER_SEL = ".alerts-container";
 export const HOVER_CONTAINER_SEL = ".hover-container";
 export const POPUP_CONTAINER_SEL = ".popup-container";
 export const REPLY_CONTAINER_SEL = ".reply-container";
+export const PROFILES_CONTAINER_SEL = ".header-profiles";
 export const BOARD_SEARCH_INPUT_SEL = ".board-search-input";
 export const BOARD_SEARCH_SORT_SEL = ".board-search-sort";
 export const THREAD_SEL = ".thread";

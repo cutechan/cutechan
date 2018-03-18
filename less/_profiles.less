@@ -1,0 +1,23 @@
+.header-profiles-wrapper {
+  display: inline-block;
+  position: relative;
+  height: 22px;
+  line-height: 1.15;
+}
+
+.header-profiles-search {
+  box-sizing: border-box;
+  display: inline-block;
+  width: 130px;
+  height: 22px;
+  border-radius: 15px;
+  padding: 6px 10px;
+  color: @searchinput;
+  border: @searchBorder;
+  background: none;
+  outline: none;
+  &:focus {
+    border: @searchBorderHover;
+    box-shadow: @searchShadow;
+  }
+}

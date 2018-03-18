@@ -21,6 +21,7 @@ interface Options extends ChangeEmitter {
   bold: number;
   italic: number;
   spoiler: number;
+  search: number;
   volume: number;
 }
 
@@ -134,6 +135,10 @@ const specs: { [id: string]: OptionSpec } = {
   },
   spoiler: {
     default: 80,
+    type: optionType.shortcut,
+  },
+  search: {
+    default: 83,
     type: optionType.shortcut,
   },
   // Other settings.

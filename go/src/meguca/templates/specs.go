@@ -217,5 +217,9 @@ var optionSpecs = [...][]inputSpec{
 			ID:   "spoiler",
 			Type: _shortcut,
 		},
+		{
+			ID:   "search",
+			Type: _shortcut,
+		},
 	},
 }

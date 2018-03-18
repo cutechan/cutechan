@@ -16,6 +16,7 @@ import { init as initAlerts, showAlert } from "./ts/alerts";
 import { init as initHandlers } from "./ts/client";
 import { init as initConnection } from "./ts/connection";
 import { init as initDB } from "./ts/db";
+import { initProfiles } from "./ts/idols";
 import { ln } from "./ts/lang";
 import { init as initModeration } from "./ts/mod";
 import { renderBoard, renderThread } from "./ts/page";
@@ -51,6 +52,8 @@ async function init() {
 
   initUI();
   initModeration();
+
+  initProfiles();
 }
 
 init().catch((err) => {
