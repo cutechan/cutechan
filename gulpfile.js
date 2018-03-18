@@ -2,6 +2,7 @@
 
 const fs = require("fs");
 const path = require("path");
+const spawn = require("child_process").spawn;
 const del = require("del");
 const merge = require("merge-stream");
 const stripAnsi = require("strip-ansi");
@@ -29,12 +30,13 @@ const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
 const SMILESJS_GLOB = "smiles-pp/smiles.js";
 const TYPESCRIPT_GLOB = "{app,ts/**/*}.[tj]s?(x)";
 
-const DIST_DIR = "dist";
+const DIST_DIR = path.resolve("dist");
 const STATIC_DIR = path.join(DIST_DIR, "static");
 const JS_DIR = path.join(STATIC_DIR, "js");
 const CSS_DIR = path.join(STATIC_DIR, "css");
 const IMG_DIR = path.join(STATIC_DIR, "img");
 const FONTS_DIR = path.join(STATIC_DIR, "fonts");
+const TSC_TMP_FILE = path.join(JS_DIR, "_app.js");
 
 // Keep script alive and rebuild on file changes.
 // Triggered with the `-w` flag.
@@ -124,15 +126,20 @@ function templates() {
     }));
 }
 
-function typescript(opts) {
+function typescriptGulp(opts) {
   const project = ts.createProject("tsconfig.json", opts);
   return gulp.src("app.ts")
     .pipe(project(ts.reporter.nullReporter()))
     .on("error", handleError);
 }
 
+function typescriptTsc(opts) {
+  return gulp.src(TSC_TMP_FILE);
+}
+
 function buildClient(tsOpts) {
-  return merge(langs(), templates(), typescript(tsOpts))
+  const tsFn = watch ? typescriptTsc : typescriptGulp;
+  return merge(langs(), templates(), tsFn(tsOpts))
     .on("error", () => {})
     .pipe(sourcemaps.init())
     .pipe(concat(tsOpts.outFile));
@@ -146,15 +153,27 @@ function buildES6() {
     buildClient({target: "ES6", outFile: "app.js"})
       .pipe(gulpif(!watch, uglify({mangle: {safari10: true}})))
       .pipe(sourcemaps.write("maps"))
-      .pipe(gulp.dest(JS_DIR)));
+      .pipe(gulp.dest(JS_DIR))
+      .pipe(gulpif("**/*.js", livereload())));
 
   // Recompile on source update, if running with the `-w` flag.
   if (watch) {
+    // Much faster than gulp-typescript, see:
+    // https://github.com/ivogabe/gulp-typescript/issues/549
+    spawn("node_modules/.bin/tsc", [
+      "-w",
+      "-p", "tsconfig.json",
+      "--outFile", TSC_TMP_FILE,
+      "--diagnostics",
+    ], {
+      stdio: "inherit",
+    });
+
     gulp.watch([
       LANGS_GLOB,
       TEMPLATES_GLOB,
       SMILESJS_GLOB,
-      TYPESCRIPT_GLOB,
+      TSC_TMP_FILE,
     ], [name]);
   }
 }
