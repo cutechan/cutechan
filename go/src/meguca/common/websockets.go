@@ -58,7 +58,7 @@ const (
 	MessageCaptcha
 )
 
-// Forwarded functions from "meguca/websockets/feeds" to avoid circular imports
+// Forwarded functions from "meguca/feeds" to avoid circular imports
 var (
 	// GetByIPAndBoard retrieves all Clients that match the passed IP on a board
 	GetByIPAndBoard func(ip, board string) []Client
