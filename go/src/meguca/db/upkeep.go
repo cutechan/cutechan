@@ -5,8 +5,8 @@ package db
 import (
 	"log"
 	"math"
+	"meguca/assets"
 	"meguca/config"
-	"meguca/imager/assets"
 	"strings"
 	"time"
 )

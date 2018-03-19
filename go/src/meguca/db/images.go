@@ -2,9 +2,9 @@ package db
 
 import (
 	"database/sql"
+	"meguca/assets"
 	"meguca/auth"
 	"meguca/common"
-	"meguca/imager/assets"
 	"meguca/util"
 	"time"
 

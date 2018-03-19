@@ -4,10 +4,10 @@ package templates
 
 import (
 	"fmt"
+	"meguca/assets"
 	"meguca/auth"
 	"meguca/common"
 	"meguca/config"
-	"meguca/imager/assets"
 	"meguca/lang"
 	"sort"
 	"strconv"

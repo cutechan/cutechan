@@ -4,7 +4,7 @@
 {% import "meguca/common" %}
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
-{% import "meguca/imager/assets" %}
+{% import "meguca/assets" %}
 
 {% func renderPageNavigation(catalog bool) %}{% stripspace %}
 	{% if !catalog %}
