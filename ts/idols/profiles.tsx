@@ -11,7 +11,6 @@ import {
   renderIdol, searchIdols,
 } from "../../go/src/github.com/Kagami/kpopnet/ts/api";
 import { _ } from "../lang";
-import Spinner from "../spinner";
 import { hook, HOOKS } from "../util";
 import { PROFILES_CONTAINER_SEL } from "../vars";
 
@@ -71,6 +70,12 @@ class IdolList extends Component<ListProps, any> {
       </article>
     );
   }
+}
+
+function Spinner() {
+  return (
+    <i class="header-profiles-spinner fa fa-spinner fa-pulse fa-fw"></i>
+  );
 }
 
 interface WrapperState {
