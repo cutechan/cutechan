@@ -110,10 +110,10 @@ Renders the tab selection butts in tabbed windows
 			<a class="header-item header-board" href="/{%s b.ID %}/">{%s b.Title %}</a>
 		{% endfor %}
 		<div class="header-spacer"></div>
-		<span class="header-item header-status" id="sync-status" title="{%s ln.UI["sync"] %}"></span>
 		<span class="header-item header-profiles">
-			<input class="header-profiles-search">
+			<input class="header-profiles-search" placeholder="{%s ln.UI["searchIdol"] %}">
 		</span>
+		<span class="header-item header-status" id="sync-status" title="{%s ln.UI["sync"] %}"></span>
 		<a class="header-item header-icon header-faq-icon" id="header-FAQ" title="{%s ln.UI["FAQ"] %}">
 			<i class="fa fa-info-circle"></i>
 		</a>
