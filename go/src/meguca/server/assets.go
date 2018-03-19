@@ -30,8 +30,8 @@ func serveImages(w http.ResponseWriter, r *http.Request) {
 	http.ServeContent(w, r, path, time.Time{}, file)
 }
 
-func cleanJoin(a, b string) string {
-	return filepath.Clean(filepath.Join(a, b))
+func cleanJoin(parts ...string) string {
+	return filepath.Clean(filepath.Join(parts...))
 }
 
 func serveFile(w http.ResponseWriter, r *http.Request, path string) {
@@ -64,7 +64,7 @@ func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 
 // Server static assets
 func serveStatic(w http.ResponseWriter, r *http.Request) {
-	serveFile(w, r, cleanJoin(common.WebRoot, extractParam(r, "path")))
+	serveFile(w, r, cleanJoin(common.WebRoot, "static", extractParam(r, "path")))
 }
 
 func sendFileError(w http.ResponseWriter, h *multipart.FileHeader, msg string) {

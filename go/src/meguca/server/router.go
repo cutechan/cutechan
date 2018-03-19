@@ -1,8 +1,6 @@
 package server
 
 import (
-	"log"
-	"meguca/util"
 	"meguca/websockets"
 	"mime"
 	"net/http"
@@ -11,17 +9,11 @@ import (
 	"github.com/dimfeld/httptreemux"
 )
 
-func startWebServer() (err error) {
-	r := createRouter()
-	log.Println("listening on " + address)
-	err = http.ListenAndServe(address, r)
-	if err != nil {
-		err = util.WrapError("error starting web server", err)
-	}
-	return
+func Start(address string) (err error) {
+	router := createRouter()
+	return http.ListenAndServe(address, router)
 }
 
-// Create the monolithic router for routing HTTP requests.
 func createRouter() http.Handler {
 	r := httptreemux.NewContextMux()
 	r.NotFoundHandler = serve404

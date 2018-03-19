@@ -14,6 +14,9 @@ import (
 )
 
 var (
+	// Add "secure" flag to auth cookies.
+	SecureCookie bool
+
 	errInvalidCaptcha  = errors.New("invalid captcha")
 	errInvalidPassword = errors.New("invalid password")
 	errInvalidUserID   = errors.New("invalid login ID")
@@ -91,7 +94,7 @@ func commitLogin(w http.ResponseWriter, r *http.Request, userID string) {
 		Value:    token,
 		Path:     "/",
 		Expires:  expires,
-		Secure:   secureCookie,
+		Secure:   SecureCookie,
 		HttpOnly: true,
 	}
 	SetCookie(w, &sessionCookie, SAMESITE_LAX_MODE)
@@ -152,7 +155,7 @@ func commitLogout(
 		Value:    "0",
 		Path:     "/",
 		Expires:  expires,
-		Secure:   secureCookie,
+		Secure:   SecureCookie,
 		HttpOnly: true,
 	}
 	SetCookie(w, &sessionCookie, SAMESITE_LAX_MODE)

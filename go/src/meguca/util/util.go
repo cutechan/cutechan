@@ -68,3 +68,31 @@ func PseudoRandInt(a, b int) int {
 	n := rnd.Intn(d)
 	return n + a
 }
+
+type Task func() error
+
+func runAsyncTasks(tasks []Task) (err error) {
+	ch := make(chan error)
+	for _, task := range tasks {
+		go func(task Task) {
+			ch <- task()
+		}(task)
+	}
+	for range tasks {
+		if err = <-ch; err != nil {
+			return
+		}
+	}
+	return
+}
+
+// Run tasks in the specified order. Exit on first error.
+// Inspired by https://github.com/OverZealous/run-sequence
+func RunTasks(tasks [][]Task) (err error) {
+	for _, asyncTasks := range tasks {
+		if err = runAsyncTasks(asyncTasks); err != nil {
+			return
+		}
+	}
+	return
+}
