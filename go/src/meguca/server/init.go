@@ -12,6 +12,7 @@ import (
 	"meguca/cache"
 	"meguca/common"
 	"meguca/db"
+	"meguca/imager"
 	"meguca/lang"
 	"meguca/templates"
 	"os"
@@ -180,6 +181,8 @@ func startServer() {
 	wg.Wait()
 	load(templates.CompileMustache)
 	wg.Wait()
+
+	imager.Start()
 
 	log.Fatal(startWebServer())
 }

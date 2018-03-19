@@ -90,7 +90,7 @@ func newFileToken(SHA1 string) (code int, token string, err error) {
 // Create a new thumbnail, commit its resources to the DB and
 // filesystem, and return resulting token.
 func saveFile(srcData []byte, file *common.ImageCommon) (code int, token string, err error) {
-	thumb, err := ipc.GetThumbnail(srcData)
+	thumb, err := getThumbnail(srcData)
 	switch err {
 	case nil:
 		// Do nothing.
