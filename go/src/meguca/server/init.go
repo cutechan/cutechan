@@ -16,39 +16,21 @@ import (
 	"meguca/lang"
 	"meguca/templates"
 	"os"
-	"runtime"
 	"sync"
 )
 
 var (
-	// debugMode denotes the server has been started with the `debug` parameter.
-	// This will cause not to spawn a daemon and stay attached to the launching
-	// shell.
-	daemonised bool
-
 	// Address is the listening address of the HTTP web server
 	address string
 
 	// Add "secure" flag to auth cookies
 	secureCookie bool
 
-	// Are we running on Windows?
-	isWindows = runtime.GOOS == "windows"
-
-	// Is assigned in ./daemon.go to control/spawn a daemon process. That file
-	// is never compiled on Windows and this function is never called.
-	handleDaemon func(string)
-
 	// CLI mode arguments and descriptions
 	arguments = map[string]string{
-		"start":   "start the cutechan server",
-		"stop":    "stop a running daemonised cutechan server",
-		"restart": "combination of stop + start",
-		"debug":   "start server in debug mode without daemonizing (default)",
-		"help":    "print this help text",
+		"debug": "start server in debug mode (default)",
+		"help":  "print this help text",
 	}
-
-	isTest bool
 )
 
 // Start parses command line arguments and initializes the server.
@@ -111,22 +93,12 @@ func Start() {
 		log.Fatal("cache size must be a positive number")
 	}
 	arg := flag.Arg(0)
-	if arg == "" {
-		arg = "debug"
-	}
 
-	// Can't daemonise in windows, so only args they have is "start" and "help"
-	if isWindows {
-		switch arg {
-		case "debug", "start":
-			startServer()
-		case "init": // For internal use only
-			os.Exit(0)
-		default:
-			printUsage()
-		}
-	} else {
-		handleDaemon(arg)
+	switch arg {
+	case "", "debug":
+		startServer()
+	default:
+		printUsage()
 	}
 }
 
@@ -135,11 +107,7 @@ func printUsage() {
 	os.Stderr.WriteString("Usage: cutechan [OPTIONS]... [MODE]\n\nMODES:\n")
 
 	toPrint := []string{"start"}
-	if !isWindows {
-		toPrint = append(toPrint, []string{"stop", "restart"}...)
-	} else {
-		arguments["debug"] = `alias of "start"`
-	}
+	arguments["debug"] = `alias of "start"`
 	toPrint = append(toPrint, []string{"debug", "help"}...)
 
 	help := new(bytes.Buffer)
