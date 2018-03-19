@@ -73,16 +73,25 @@ func UseImageToken(tx *sql.Tx, token string) (img common.ImageCommon, err error)
 
 // AllocateImage allocates an image's file resources to their respective
 // served directories and write its data to the database.
-func AllocateImage(src, thumb []byte, img common.ImageCommon) error {
-	err := assets.Write(img.SHA1, img.FileType, img.ThumbType, src, thumb)
+func AllocateImage(src, thumb []byte, img common.ImageCommon) (err error) {
+	tx, err := beginTx()
 	if err != nil {
-		return cleanUpFailedAllocation(img, err)
+		return
 	}
-	err = WriteImage(nil, img)
+	defer endTx(tx, &err)
+
+	// NOTE(Kagami): Write to database first because in case e.g. key
+	// conflict we should NOT remove the files.
+	if err = WriteImage(tx, img); err != nil {
+		return
+	}
+
+	err = assets.Write(img.SHA1, img.FileType, img.ThumbType, src, thumb)
 	if err != nil {
-		return cleanUpFailedAllocation(img, err)
+		err = cleanUpFailedAllocation(img, err)
 	}
-	return nil
+
+	return
 }
 
 // Delete any dangling image files in case of a failed image allocation.

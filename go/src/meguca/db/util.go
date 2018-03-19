@@ -68,10 +68,35 @@ func genPrepared() error {
 	return nil
 }
 
-// StartTransaction initiates a new DB transaction. It is the
-// responsibility of the caller to commit or rollback the transaction.
+// Deprecated: use beginTx instead.
 func StartTransaction() (*sql.Tx, error) {
+	return beginTx()
+}
+
+// RollbackOnError on error undoes the transaction on error.
+// Deprecated: move to endTx instead.
+func RollbackOnError(tx *sql.Tx, err *error) {
+	if *err != nil {
+		tx.Rollback()
+	}
+}
+
+// Initiate a new DB transaction. It is the responsibility of the caller
+// to commit or rollback the transaction.
+func beginTx() (tx *sql.Tx, err error) {
 	return db.Begin()
+}
+
+// Commit/rollback transaction depending on the error state.
+func endTx(tx *sql.Tx, err *error) {
+	if *err != nil {
+		if rbErr := tx.Rollback(); rbErr != nil {
+			// Can only log this because original err should be preserved.
+			logError("rollback", rbErr)
+		}
+		return
+	}
+	*err = tx.Commit()
 }
 
 func getExecutor(tx *sql.Tx, key string) executor {
@@ -110,13 +135,6 @@ func IsConflictError(err error) bool {
 		return true
 	}
 	return false
-}
-
-// RollbackOnError on error undoes the transaction on error
-func RollbackOnError(tx *sql.Tx, err *error) {
-	if *err != nil {
-		tx.Rollback()
-	}
 }
 
 // Retrieve binary-encoded SQL query
