@@ -50,3 +50,9 @@ export default lang;
 export function printf(s: string, ...args: any[]): string {
   return s.replace(/%s/, () => args.shift());
 }
+
+/** Gettext-alike helper. */
+// TODO(Kagami): Rewrite ln.UI boilerplate to this.
+export function _(s: string): string {
+  return pack.ui[s] || s;
+}

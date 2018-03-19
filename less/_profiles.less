@@ -2,7 +2,8 @@
   display: inline-block;
   position: relative;
   height: 22px;
-  line-height: 1.15;
+  color: @body;
+  line-height: @lineHeight;
 }
 
 .header-profiles-search {
@@ -11,8 +12,7 @@
   width: 130px;
   height: 22px;
   border-radius: 15px;
-  padding: 6px 10px;
-  color: @searchinput;
+  padding: 0 10px;
   border: @searchBorder;
   background: none;
   outline: none;
@@ -20,4 +20,58 @@
     border: @searchBorderHover;
     box-shadow: @searchShadow;
   }
+}
+
+.idols {
+  position: fixed;
+  top: @headerHeight + 3px;
+  bottom: 0;
+
+  overflow-y: scroll;
+  &::-webkit-scrollbar {
+    // Same width as FF on Linux.
+    width: 12px;
+  }
+  // Hide scrollbar but keep it scrollable.
+  // Should be ~12px but cut a bit more.
+  right: -15px;
+}
+
+.idol {
+  display: flex;
+  box-sizing: border-box;
+  width: 435px;
+  padding: 5px;
+  margin-bottom: 8px;
+  background: @replyBG;
+  box-shadow: -1px 1px 3px 0 rgba(59, 26, 84, 0.6);
+  // Adujust for shadow (because of overflow-y).
+  margin-left: 3px;
+}
+
+.idol-preview {
+  align-self: flex-start;
+  width: 114px;
+  min-width: 114px;
+  min-height: 114px;
+  background-size: contain;
+  background-position: center;
+  background-repeat: no-repeat;
+  user-select: none;
+}
+
+.idol-info {
+  width: 100%;
+  text-align: left;
+  margin-left: 5px;
+}
+
+.idol-info-line {
+  margin: 0;
+}
+
+.idol-info-key {
+}
+
+.idol-info-val {
 }

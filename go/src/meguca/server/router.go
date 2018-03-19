@@ -65,6 +65,7 @@ func createRouter() http.Handler {
 	api.GET("/embed", serveEmbed)
 	api.GET("/profiles", kpopnet.ServeProfiles)
 	api.GET("/idols/:id/preview", serveIdolPreview)
+	api.GET("/idols/:id/preview/small", serveSmallIdolPreview)
 	// TODO(Kagmi): Should be plural.
 	api.GET("/post/:post", servePost)
 	api.POST("/post/token", createPostToken)

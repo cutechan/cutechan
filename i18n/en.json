@@ -213,6 +213,7 @@
     "networkErr": "Network error",
     "initErr": "Site load error",
     "sendErr": "Send error",
+    "searchIdol": "Search idol…",
     "aggregator": "Aggregator metaboard",
     "FAQ": "Information",
     "account": "Account",
