@@ -47,7 +47,6 @@ go/bin/qtc:
 GENSRC = $(shell find go/src/meguca -type f -name '*.go' | xargs grep -l '^//go:generate')
 GENSRC += $(shell find go/src/meguca/db/sql -type f -name '*.sql')
 GENSRC += $(wildcard go/src/meguca/templates/*.qtpl)
-GENSRC += $(wildcard go/src/meguca/imager/*.png)
 GENSRC += $(wildcard i18n/*.json)
 GENSRC += $(TEMPLATESPP)
 go/bin/_gen: go/bin/go-bindata go/bin/easyjson go/bin/qtc $(GENSRC)
@@ -113,6 +112,4 @@ deb-clean:
 test-clean:
 	rm -rf go/multipart-* \
 		go/src/meguca/imager/uploads \
-		go/src/meguca/imager/assets/uploads \
-		go/src/meguca/imager/testdata/thumb_*.jpg \
-		go/src/meguca/imager/testdata/thumb_*.png
+		go/src/meguca/assets/uploads
