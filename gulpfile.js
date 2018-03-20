@@ -26,7 +26,6 @@ const runSequence = require("run-sequence");
 const LANGS_GLOB = "i18n/*.json";
 const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
 const SMILESJS_GLOB = "smiles-pp/smiles.js";
-const TYPESCRIPT_GLOB = "{app,ts/**/*}.[tj]s?(x)";
 
 const DIST_DIR = path.resolve("dist");
 const STATIC_DIR = path.join(DIST_DIR, "static");
@@ -96,15 +95,13 @@ function langs() {
   return gulp.src(LANGS_GLOB)
     .pipe(tap(function(file) {
       const name = JSON.stringify(path.basename(file.path, ".json"));
-      let contents = file.contents.toString();
+      let lang = file.contents.toString();
       try {
-        // Basically just a validation.
-        contents = JSON.parse(contents);
+        JSON.parse(lang);
       } catch(e) {
         handleError(e);
-        contents = null;
+        return;
       }
-      const lang = JSON.stringify(contents);
       file.contents = new Buffer(`langs[${name}] = ${lang};`);
     }))
     .pipe(concat("langs.js"))
@@ -166,7 +163,8 @@ function buildES6() {
       .pipe(gulpif(!watch, uglify({mangle: {safari10: true}})))
       .pipe(sourcemaps.write("maps"))
       .pipe(gulp.dest(JS_DIR))
-      .pipe(gulpif("**/*.js", livereload())));
+      .pipe(gulpif("**/*.js", livereload()))
+  );
 
   // Recompile on source update, if running with the `-w` flag.
   if (watch) {
@@ -390,27 +388,28 @@ createTask("fonts", "node_modules/font-awesome/fonts/fontawesome-webfont.*",
 
 // Kpopnet static.
 tasks.push("kpopnet");
-gulp.task("kpopnet", (cb) => {
-  const w = spawn("node_modules/.bin/webpack-cli", [
-    "--mode", "production",
-    "--env.output", KPOPNET_DIST_DIR,
-    "--env.api_prefix", "https://kpop.re",
-    "--config", KPOPNET_WEBPACK_CONFIG,
-  ], {stdio: "inherit"});
-  w.on("error", (err) => {
-    cb(err);
-    cb = null;
-  });
-  w.on("close", () => {
-    // Can be called after error event.
-    if (cb) {
-      cb();
-    }
+gulp.task("kpopnet", () => {
+  return new Promise((resolve, reject) => {
+    const w = spawn("node_modules/.bin/webpack-cli", [
+      "--mode", watch ? "development" : "production",
+      "--env.output", KPOPNET_DIST_DIR,
+      "--env.api_prefix", "https://kpop.re",
+      "--config", KPOPNET_WEBPACK_CONFIG,
+      "--display", "errors-only",
+    ], {stdio: "inherit"});
+    w.on("error", reject);
+    w.on("exit", (code) => {
+      if (code === 0) {
+        resolve()
+      } else {
+        reject(new Error(`webpack exited with ${code}`));
+      }
+    });
   });
 });
 
 // Build everything.
-gulp.task("default", cb => {
+gulp.task("default", (cb) => {
   runSequence("clean", tasks, cb)
 });
 
