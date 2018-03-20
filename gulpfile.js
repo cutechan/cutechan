@@ -3,12 +3,12 @@
 const fs = require("fs");
 const path = require("path");
 const spawn = require("child_process").spawn;
+const argv = require("minimist")(process.argv.slice(2));
 const del = require("del");
 const merge = require("merge-stream");
 const stripAnsi = require("strip-ansi");
 const uglifyes = require("uglify-es");
 const gulp = require("gulp");
-const gutil = require("gulp-util");
 const concat = require("gulp-concat");
 const gulpif = require("gulp-if");
 const tap = require("gulp-tap");
@@ -44,8 +44,7 @@ const KPOPNET_WEBPACK_CONFIG = path.resolve(__dirname,
   "webpack.config.js");
 
 // Keep script alive and rebuild on file changes.
-// Triggered with the `-w` flag.
-const watch = gutil.env.w;
+const watch = argv.w;
 
 // Dependency tasks for the default tasks.
 const tasks = [];
