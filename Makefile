@@ -1,5 +1,4 @@
 export GOPATH = $(PWD)/go
-export TMPDIR = $(PWD)/go
 export PATH := $(PATH):$(PWD)/go/bin
 export NODE_BIN = $(PWD)/node_modules/.bin
 export HTMLMIN = $(NODE_BIN)/html-minifier
@@ -49,6 +48,7 @@ GENSRC += $(shell find go/src/meguca/db/sql -type f -name '*.sql')
 GENSRC += $(wildcard go/src/meguca/templates/*.qtpl)
 GENSRC += $(wildcard i18n/*.json)
 GENSRC += $(TEMPLATESPP)
+go/bin/_gen: export TMPDIR = $(PWD)/go
 go/bin/_gen: go/bin/go-bindata go/bin/easyjson go/bin/qtc $(GENSRC)
 	go generate meguca/...
 	touch go/bin/_gen
