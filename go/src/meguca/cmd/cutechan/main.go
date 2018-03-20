@@ -15,6 +15,7 @@ import (
 	"meguca/templates"
 	"meguca/util"
 
+	"github.com/Kagami/kpopnet/go/src/kpopnet"
 	"github.com/docopt/docopt-go"
 )
 
@@ -59,6 +60,14 @@ type config struct {
 	Origin  string `docopt:"-o"`
 }
 
+func importProfiles(conf config) {
+	log.Printf("Importing profiles from %s", conf.DataDir)
+	if err := kpopnet.ImportProfiles(conf.Conn, conf.DataDir); err != nil {
+		log.Fatal(err)
+	}
+	log.Print("Done.")
+}
+
 func serve(conf config) {
 	// Set subsystem options.
 	// TODO(Kagami): Use config structs instead of globals.
@@ -98,7 +107,7 @@ func main() {
 	}
 
 	if conf.Profile && conf.Import {
-		// importProfiles(conf)
+		importProfiles(conf)
 	} else {
 		serve(conf)
 	}
