@@ -39,6 +39,7 @@
     "@types/classnames": "^2.2.3",
     "@types/mustache": "^0.8.30",
     "@types/node": "^8.9.5",
+    "ajv": "^6.3.0",
     "autoprefixer": "^7.2.6",
     "babel-preset-latest": "^6.16.0",
     "clean-webpack-plugin": "^0.1.19",
