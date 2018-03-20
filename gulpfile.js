@@ -38,6 +38,11 @@ const IMG_DIR = path.join(STATIC_DIR, "img");
 const FONTS_DIR = path.join(STATIC_DIR, "fonts");
 const TSC_TMP_FILE = path.join(JS_DIR, "_app.js");
 
+const KPOPNET_DIST_DIR = path.join(DIST_DIR, "kpopnet");
+const KPOPNET_WEBPACK_CONFIG = path.resolve(__dirname,
+  "go/src/github.com/Kagami/kpopnet",
+  "webpack.config.js");
+
 // Keep script alive and rebuild on file changes.
 // Triggered with the `-w` flag.
 const watch = gutil.env.w;
@@ -348,6 +353,18 @@ createTask("fonts", "node_modules/font-awesome/fonts/fontawesome-webfont.*",
            src =>
   src
     .pipe(gulp.dest(FONTS_DIR))
+);
+
+// Kpopnet static.
+tasks.push("kpopnet");
+gulp.task("kpopnet",
+  shell.task([
+    "webpack-cli",
+    "--mode", "production",
+    "--env.output", `'${KPOPNET_DIST_DIR}'`,
+    "--env.api_prefix", "https://kpop.re",
+    "--config", `'${KPOPNET_WEBPACK_CONFIG}'`,
+  ].join(" "))
 );
 
 // Build everything.
