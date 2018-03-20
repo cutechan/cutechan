@@ -41,6 +41,9 @@ var (
 func LogError(w http.ResponseWriter, r *http.Request, code int, err error) {
 	log.Printf("upload error: %s: %v\n", auth.GetLogIP(r), err)
 	text := err.Error()
+	if code == 0 {
+		code = 500
+	}
 	if code == 500 {
 		text = "internal server error"
 	}
@@ -94,8 +97,7 @@ func saveFile(srcData []byte, file *common.ImageCommon) (code int, token string,
 	switch err {
 	case nil:
 		// Do nothing.
-	case ipc.ErrThumbUnsupported:
-	case ipc.ErrThumbTracks:
+	case ipc.ErrThumbUnsupported, ipc.ErrThumbTracks:
 		code = 400
 	default:
 		code = 500
