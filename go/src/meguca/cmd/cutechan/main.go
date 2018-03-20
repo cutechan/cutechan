@@ -41,6 +41,7 @@ Options:
   -s <sitedir>  Site directory location [default: ./dist].
   -f <filedir>  Uploads directory location [default: ./uploads].
   -d <datadir>  Kpopnet data directory location [default: ./data].
+  -o <origin>   Allowed origin for Idol API [default: http://localhost:8000].
 `
 
 type config struct {
@@ -55,6 +56,7 @@ type config struct {
 	SiteDir string `docopt:"-s"`
 	FileDir string `docopt:"-f"`
 	DataDir string `docopt:"-d"`
+	Origin  string `docopt:"-o"`
 }
 
 func serve(conf config) {
@@ -66,6 +68,7 @@ func serve(conf config) {
 	cache.Size = conf.Cache
 	common.WebRoot = conf.SiteDir
 	common.ImageWebRoot = conf.FileDir
+	server.IdolOrigin = conf.Origin
 	address := fmt.Sprintf("%v:%v", conf.Host, conf.Port)
 
 	// Prepare runtime subsystems.

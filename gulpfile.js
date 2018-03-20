@@ -23,6 +23,9 @@ const notify = require("gulp-notify");
 const livereload = require("gulp-livereload");
 const runSequence = require("run-sequence");
 
+// Keep script alive and rebuild on file changes.
+const watch = process.argv.includes("-w");
+
 const LANGS_GLOB = "i18n/*.json";
 const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
 const SMILESJS_GLOB = "smiles-pp/smiles.js";
@@ -36,12 +39,10 @@ const FONTS_DIR = path.join(STATIC_DIR, "fonts");
 const TSC_TMP_FILE = path.join(JS_DIR, "_app.js");
 
 const KPOPNET_DIST_DIR = path.join(DIST_DIR, "kpopnet");
+const KPOPNET_API_PREFIX = watch ? "http://localhost:8001" : "https://kpop.re";
 const KPOPNET_WEBPACK_CONFIG = path.resolve(__dirname,
   "go/src/github.com/Kagami/kpopnet",
   "webpack.config.js");
-
-// Keep script alive and rebuild on file changes.
-const watch = process.argv.includes("-w");
 
 // Dependency tasks for the default tasks.
 const tasks = [];
@@ -393,7 +394,7 @@ gulp.task("kpopnet", () => {
     const w = spawn("node_modules/.bin/webpack-cli", [
       "--mode", watch ? "development" : "production",
       "--env.output", KPOPNET_DIST_DIR,
-      "--env.api_prefix", "https://kpop.re",
+      "--env.api_prefix", KPOPNET_API_PREFIX,
       "--config", KPOPNET_WEBPACK_CONFIG,
       "--display", "errors-only",
     ], {stdio: "inherit"});

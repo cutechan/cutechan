@@ -5,7 +5,6 @@ import (
 	"mime"
 	"net/http"
 
-	"github.com/Kagami/kpopnet/go/src/kpopnet"
 	"github.com/dimfeld/httptreemux"
 )
 
@@ -55,7 +54,7 @@ func createRouter() http.Handler {
 	api := r.NewGroup("/api")
 	api.GET("/socket", websockets.Handler)
 	api.GET("/embed", serveEmbed)
-	api.GET("/profiles", kpopnet.ServeProfiles)
+	api.GET("/profiles", serveProfiles)
 	api.GET("/idols/:id/preview", serveIdolPreview)
 	api.GET("/idols/:id/preview/small", serveSmallIdolPreview)
 	// TODO(Kagmi): Should be plural.
