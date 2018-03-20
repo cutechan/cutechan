@@ -25,7 +25,7 @@ Usage:
   cutechan [options]
   cutechan [-h | --help]
   cutechan [-V | --version]
-  cutechan profile import [-c <conn>] [-d <datadir>]
+  cutechan profile import [options]
 
 Serve a k-pop oriented imageboard.
 
