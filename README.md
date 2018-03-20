@@ -26,7 +26,7 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
 
 ## Setup
 
-* See `go/bin/cutechan help` for server operation
+* See `go/bin/cutechan --help` for server operation
 * Login into the `admin` account via the infinity symbol in the top banner with
   the password `password`
 * Change the default password
