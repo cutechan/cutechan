@@ -357,10 +357,10 @@ class Popups extends Component<any, PopupsState> {
       </div>
     );
   }
-  private open = (e: MouseEvent) => {
+  private open = (e: Event) => {
     const target = e.target as HTMLElement;
     if (!target.matches) return;
-    if (e.button !== 0) return;
+    if ((e as MouseEvent).button !== 0) return;
     e.preventDefault();
 
     const props = {

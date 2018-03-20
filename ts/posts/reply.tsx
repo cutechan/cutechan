@@ -1,6 +1,6 @@
 import * as cx from "classnames";
 import { Component, h, render } from "preact";
-import vmsg from "../../node_modules/vmsg";
+import vmsg from "vmsg";
 import { showAlert } from "../alerts";
 import API from "../api";
 import { PostData } from "../common";
@@ -957,9 +957,9 @@ class ReplyContainer extends Component<any, any> {
     on(document, "dragover", (e) => {
       e.preventDefault();
     });
-    on(document, "drop", (e: DragEvent) => {
+    on(document, "drop", (e: Event) => {
       e.preventDefault();
-      const files = e.dataTransfer.files;
+      const files = (e as DragEvent).dataTransfer.files;
       if (files.length) {
         this.setState({show: true, dropped: files});
       }

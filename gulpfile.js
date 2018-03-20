@@ -49,6 +49,16 @@ const watch = argv.w;
 // Dependency tasks for the default tasks.
 const tasks = [];
 
+// Typescript compiler spawned in watch mode.
+let tsc = null;
+
+// Make sure to kill tsc child on error in gulpfile.
+process.on("exit", () => {
+  if (tsc) {
+    tsc.kill();
+  }
+});
+
 // Notify about errors.
 const notifyError = notify.onError({
   title: "<%= error.name %>",
@@ -144,7 +154,7 @@ function typescriptTsc(opts) {
 function buildClient(tsOpts) {
   const tsFn = watch ? typescriptTsc : typescriptGulp;
   return merge(langs(), templates(), tsFn(tsOpts))
-    .on("error", () => {})
+    .on("error", () => {})  // XXX(Kagami): Skip duplicated errors?
     .pipe(sourcemaps.init())
     .pipe(concat(tsOpts.outFile));
 }
@@ -164,7 +174,7 @@ function buildES6() {
   if (watch) {
     // Much faster than gulp-typescript, see:
     // https://github.com/ivogabe/gulp-typescript/issues/549
-    spawn("node_modules/.bin/tsc", [
+    tsc = spawn("node_modules/.bin/tsc", [
       "-w",
       "-p", "tsconfig.json",
       "--outFile", TSC_TMP_FILE,
@@ -294,8 +304,10 @@ createTask("loader", "loader.js", src =>
         classnames: "node_modules/classnames/index",
         preact: "node_modules/preact/dist/preact",
         "textarea-caret": "node_modules/textarea-caret/index",
+        vmsg: "node_modules/vmsg/vmsg.es5",
       },
     }))
+    .on("error", handleError)
     .pipe(gulpif(!watch, uglify()))
     .pipe(gulp.dest(JS_DIR))
 );

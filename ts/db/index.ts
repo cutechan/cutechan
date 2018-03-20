@@ -139,7 +139,7 @@ function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
 }
 
 // Helper for logging errors with event-based error passing.
-function logErr(err: ErrorEvent) {
+function logErr(err: Event) {
   // tslint:disable-next-line:no-console
   console.error(err);
 }

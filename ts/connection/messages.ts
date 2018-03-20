@@ -46,7 +46,9 @@ export const enum message {
   captcha,
 }
 
-export type MessageHandler = (msg: {}) => void;
+// TODO(Kagami): Use proper message type (need to fix handler
+// callbacks).
+export type MessageHandler = (msg: any) => void;
 
 // Websocket message handlers. Each handler responds to its distinct message
 // type.

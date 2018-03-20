@@ -5,6 +5,7 @@ define("loader", [
   "classnames",
   "preact",
   "textarea-caret",
+  "vmsg",
 ], function () {
   var scriptCount = 0;
   var scripts = [];
