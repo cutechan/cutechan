@@ -3,7 +3,6 @@
 const fs = require("fs");
 const path = require("path");
 const spawn = require("child_process").spawn;
-const argv = require("minimist")(process.argv.slice(2));
 const del = require("del");
 const merge = require("merge-stream");
 const stripAnsi = require("strip-ansi");
@@ -43,7 +42,7 @@ const KPOPNET_WEBPACK_CONFIG = path.resolve(__dirname,
   "webpack.config.js");
 
 // Keep script alive and rebuild on file changes.
-const watch = argv.w;
+const watch = process.argv.includes("-w");
 
 // Dependency tasks for the default tasks.
 const tasks = [];
