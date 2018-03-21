@@ -4,13 +4,34 @@ import (
 	"meguca/websockets"
 	"mime"
 	"net/http"
+	"runtime/debug"
+	"time"
 
 	"github.com/dimfeld/httptreemux"
 )
 
 func Start(address string) (err error) {
+	go runForceFreeTask()
 	router := createRouter()
 	return http.ListenAndServe(address, router)
+}
+
+// If user uploads large file (40MB max by default), Go consumes quite a
+// lot of memory for temporal allocations (~200MB), releasing it
+// (obviously) a bit later. Unfortunately it doesn't hurry to return it
+// back to the OS, see:
+// https://github.com/golang/go/blob/go1.10/src/runtime/proc.go#L4191-L4193
+// See also detailed description: https://stackoverflow.com/a/14586361
+//
+// Here we force it to free memory much quicker in order to make it
+// available to other applications on the same machine (e.g. database
+// cache, file cache). This is especially useful in case of low memory
+// VPS servers.
+func runForceFreeTask() {
+	for {
+		time.Sleep(time.Minute)
+		debug.FreeOSMemory()
+	}
 }
 
 func createRouter() http.Handler {
