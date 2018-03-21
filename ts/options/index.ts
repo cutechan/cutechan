@@ -106,39 +106,39 @@ const specs: { [id: string]: OptionSpec } = {
   },
   // Shortcuts.
   workMode: {
-    default: 65,
+    default: "A",
     type: optionType.shortcut,
   },
   newPost: {
-    default: 78,
+    default: "N",
     type: optionType.shortcut,
   },
   cancelPost: {
-    default: 67,
+    default: "C",
     type: optionType.shortcut,
   },
   selectFile: {
-    default: 79,
+    default: "O",
     type: optionType.shortcut,
   },
   previewPost: {
-    default: 69,
+    default: "E",
     type: optionType.shortcut,
   },
   bold: {
-    default: 66,
+    default: "B",
     type: optionType.shortcut,
   },
   italic: {
-    default: 73,
+    default: "I",
     type: optionType.shortcut,
   },
   spoiler: {
-    default: 80,
+    default: "P",
     type: optionType.shortcut,
   },
   search: {
-    default: 70,
+    default: "F",
     type: optionType.shortcut,
   },
   // Other settings.
@@ -169,12 +169,16 @@ class OptionModel {
 
   // Create new option model from template spec
   constructor(id: string, spec: OptionSpec) {
-    this.spec = spec;
+    this.spec = spec = {...spec};
     this.id = id;
 
     // No type = checkbox + default false
     if (!spec.type) {
       spec.type = optionType.checkbox;
+    }
+
+    if (spec.type === optionType.shortcut) {
+      spec.default = spec.default.charCodeAt(0);
     }
 
     // Store option value in central storage options Model
