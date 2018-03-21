@@ -8,6 +8,7 @@ import (
 	"errors"
 	"fmt"
 	"io/ioutil"
+	"os"
 	"os/exec"
 	"syscall"
 )
@@ -103,6 +104,7 @@ func getExitCode(err error) int {
 func GetThumbnail(srcData []byte) (thumb *Thumb, err error) {
 	// Start process.
 	cmd := exec.Command(THUMB_CMD)
+	cmd.Stderr = os.Stderr
 	in, err := cmd.StdinPipe()
 	if err != nil {
 		err = fmt.Errorf("thumbnailer OS error: %v", err)

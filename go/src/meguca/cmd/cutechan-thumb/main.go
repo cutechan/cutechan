@@ -5,6 +5,7 @@ package main
 import (
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 
 	"meguca/ipc"
@@ -66,6 +67,7 @@ func getThumbnail(srcData []byte) (ithumb *ipc.Thumb, err error) {
 		case thumbnailer.UnsupportedMIMEError:
 			err = ipc.ErrThumbUnsupported
 		default:
+			log.Printf("thumbnailer error: %v", err)
 			err = ipc.ErrThumbProcess
 		}
 		return
@@ -123,6 +125,7 @@ func main() {
 	}
 	_, err = os.Stdout.Write(outData)
 	if err != nil {
+		log.Printf("thumbnailer error: %v", err)
 		os.Exit(1)
 	}
 }
