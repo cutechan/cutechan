@@ -50,12 +50,16 @@ const tasks = [];
 // Typescript compiler spawned in watch mode.
 let tsc = null;
 
-// Make sure to kill tsc child on error in gulpfile.
-process.on("exit", () => {
+// Make sure to kill tsc child on exit.
+function onExit() {
   if (tsc) {
     tsc.kill();
+    tsc = null;
   }
-});
+  process.exit();
+}
+process.on("exit", onExit);
+process.on("SIGTERM", onExit);
 
 // Notify about errors.
 const notifyError = notify.onError({
@@ -176,7 +180,15 @@ function buildES6() {
       "-p", "tsconfig.json",
       "--outFile", TSC_TMP_FILE,
       "--diagnostics",
-    ], {stdio: "inherit"});
+    ], {
+      stdio: "inherit",
+    }).on("error", (err) => {
+      tsc = null;
+      handleError(err);
+    }).on("exit", (code) => {
+      tsc = null;
+      handleError(new Error(`tsc exited with ${code}`));
+    });
 
     gulp.watch([
       LANGS_GLOB,
@@ -253,21 +265,23 @@ gulp.task("smiles", (cb) => {
   function optimize(name) {
     return new Promise((resolve, reject) => {
       // gulp-imagemin requires 240+ deps, fuck that shit.
-      const p = spawn("optipng", [
+      spawn("optipng", [
         "-quiet",
         "-clobber",
         "-strip", "all",
         "-out", name.slice(1),
         name,
-      ], {cwd: "smiles-pp", stdio: "inherit"});
-      p.on("error", reject);
-      p.on("exit", (code) => {
-        if (code === 0) {
-          resolve()
-        } else {
-          reject(new Error(`optipng exited with ${code}`));
-        }
-      });
+      ], {
+        cwd: "smiles-pp",
+        stdio: "inherit",
+      }).on("error", reject)
+        .on("exit", (code) => {
+          if (code === 0) {
+            resolve()
+          } else {
+            reject(new Error(`optipng exited with ${code}`));
+          }
+        });
     });
   }
 
@@ -388,26 +402,29 @@ createTask("fonts", "node_modules/font-awesome/fonts/fontawesome-webfont.*",
 );
 
 // Kpopnet static.
-tasks.push("kpopnet");
 gulp.task("kpopnet", () => {
   return new Promise((resolve, reject) => {
-    const w = spawn("node_modules/.bin/webpack-cli", [
+    spawn("node_modules/.bin/webpack-cli", [
       "--mode", watch ? "development" : "production",
       "--env.output", KPOPNET_DIST_DIR,
       "--env.api_prefix", KPOPNET_API_PREFIX,
       "--config", KPOPNET_WEBPACK_CONFIG,
       "--display", "errors-only",
-    ], {stdio: "inherit"});
-    w.on("error", reject);
-    w.on("exit", (code) => {
-      if (code === 0) {
-        resolve()
-      } else {
-        reject(new Error(`webpack exited with ${code}`));
-      }
-    });
+    ], {
+      stdio: "inherit",
+    }).on("error", reject)
+      .on("exit", (code) => {
+        if (code === 0) {
+          resolve()
+        } else {
+          reject(new Error(`webpack exited with ${code}`));
+        }
+      });
   });
 });
+if (!watch) {
+  tasks.push("kpopnet");
+}
 
 // Build everything.
 gulp.task("default", (cb) => {
