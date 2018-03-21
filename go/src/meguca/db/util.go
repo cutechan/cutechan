@@ -32,6 +32,12 @@ type tableScanner interface {
 	Close() error
 }
 
+func logError(prefix string, err error) {
+	if err != nil {
+		log.Printf("%s: %s\n", prefix, err)
+	}
+}
+
 func makeError(id string, err error) error {
 	return fmt.Errorf("Error preparing %s: %v", id, err)
 }

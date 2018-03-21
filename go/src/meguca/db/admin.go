@@ -268,3 +268,10 @@ func GetModLog(board string) (log []auth.ModLogEntry, err error) {
 
 	return
 }
+
+// DeleteBoard deletes a board and all of its contained threads and
+// posts.
+func DeleteBoard(board string) error {
+	_, err := prepared["delete_board"].Exec(board)
+	return err
+}
