@@ -51,15 +51,17 @@ const tasks = [];
 let tsc = null;
 
 // Make sure to kill tsc child on exit.
-function onExit() {
+function killTsc() {
   if (tsc) {
     tsc.kill();
     tsc = null;
   }
-  process.exit();
 }
-process.on("exit", onExit);
-process.on("SIGTERM", onExit);
+process.on("exit", killTsc);
+process.on("SIGTERM", (code) => {
+  killTsc();
+  process.exit(code);
+});
 
 // Notify about errors.
 const notifyError = notify.onError({
@@ -147,14 +149,39 @@ function typescriptGulp(opts) {
     .on("error", handleError);
 }
 
-function typescriptTsc(opts) {
-  return gulp.src(TSC_TMP_FILE);
+// Wait compilation result from tsc and pass it further.
+function typescriptTsc() {
+  const File = require("vinyl");
+  const through = require("through2");
+  const stream = through.obj(function(chunk, enc, cb) {
+    function passFile() {
+      try {
+        chunk.contents = fs.readFileSync(chunk.path)
+      } catch(e) {
+        return false;
+      }
+      cb(null, new File(chunk));
+      return true;
+    }
+
+    if (!passFile()) {
+      const tid = setInterval(() => {
+        if (passFile()) {
+          clearInterval(tid);
+        }
+      }, 200);
+    }
+  });
+  stream.end({
+    base: process.cwd(),
+    path: TSC_TMP_FILE,
+  });
+  return stream;
 }
 
 function buildClient(tsOpts) {
   const tsFn = watch ? typescriptTsc : typescriptGulp;
   return merge(langs(), templates(), tsFn(tsOpts))
-    .on("error", () => {})  // XXX(Kagami): Skip duplicated errors?
     .pipe(sourcemaps.init())
     .pipe(concat(tsOpts.outFile));
 }
