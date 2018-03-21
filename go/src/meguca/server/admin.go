@@ -184,14 +184,6 @@ func servePrivateBoardConfigs(w http.ResponseWriter, r *http.Request) {
 	serveJSON(w, r, "", conf)
 }
 
-// Serve the current server configurations. Available only to the "admin"
-// account
-func servePrivateServerConfigs(w http.ResponseWriter, r *http.Request) {
-	if isAdmin(w, r) {
-		serveJSON(w, r, "", config.Get())
-	}
-}
-
 func isAdmin(w http.ResponseWriter, r *http.Request) bool {
 	creds, ok := isLoggedIn(w, r)
 	if !ok {

@@ -11,9 +11,9 @@ import (
 	"time"
 )
 
-// More performant handler for serving image assets. These are immutable
-// (except deletion), so we can also set separate caching policies for them.
-func serveImages(w http.ResponseWriter, r *http.Request) {
+// Serve uploads directory. Only makes sense for dev server, on
+// production you normally use nginx or CDN.
+func serveFiles(w http.ResponseWriter, r *http.Request) {
 	path := extractParam(r, "path")
 	file, err := os.Open(cleanJoin(common.ImageWebRoot, path))
 	if err != nil {

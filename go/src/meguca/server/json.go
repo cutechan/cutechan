@@ -7,8 +7,6 @@ import (
 	"fmt"
 	"meguca/auth"
 	"meguca/cache"
-	"meguca/common"
-	"meguca/config"
 	"meguca/db"
 	"meguca/util"
 	"net/http"
@@ -104,12 +102,6 @@ func detectLastN(r *http.Request) int {
 	return 0
 }
 
-// Serve public configuration information as JSON
-func serveConfigs(w http.ResponseWriter, r *http.Request) {
-	buf, etag := config.GetClient()
-	writeJSON(w, r, etag, buf)
-}
-
 // Serve a single post as JSON
 func servePost(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseUint(extractParam(r, "post"), 10, 64)
@@ -137,23 +129,6 @@ func respondToJSONError(w http.ResponseWriter, r *http.Request, err error) {
 	} else {
 		text500(w, r, err)
 	}
-}
-
-// Serves thread page JSON
-func threadJSON(w http.ResponseWriter, r *http.Request) {
-	id, ok := validateThread(w, r)
-	if !ok {
-		return
-	}
-
-	k := cache.ThreadKey(id, detectLastN(r))
-	data, _, ctr, err := cache.GetJSONAndData(k, threadCache)
-	if err != nil {
-		respondToJSONError(w, r, err)
-		return
-	}
-
-	writeJSON(w, r, formatEtag(ctr, "", auth.NotLoggedIn), data)
 }
 
 // Confirms a the thread exists on the board and returns its ID. If an error
@@ -210,10 +185,4 @@ func boardJSON(w http.ResponseWriter, r *http.Request, catalog bool) {
 	default:
 		text500(w, r, err)
 	}
-}
-
-// Serve map of internal file type enums to extensions. Needed for
-// version-independent backwards compatibility with external applications.
-func serveExtensionMap(w http.ResponseWriter, r *http.Request) {
-	serveJSON(w, r, "", common.Extensions)
 }
