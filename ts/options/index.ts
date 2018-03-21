@@ -138,7 +138,7 @@ const specs: { [id: string]: OptionSpec } = {
     type: optionType.shortcut,
   },
   search: {
-    default: 83,
+    default: 70,
     type: optionType.shortcut,
   },
   // Other settings.
