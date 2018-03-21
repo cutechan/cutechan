@@ -6,6 +6,9 @@ export GULP = $(NODE_BIN)/gulp
 
 all: templates smiles client server
 
+node_modules:
+	npm install
+
 TEMPLATES = $(wildcard mustache/*.mustache)
 TEMPLATESPP = $(subst mustache/,mustache-pp/,$(TEMPLATES))
 
@@ -16,14 +19,11 @@ mustache-pp/%.mustache: mustache/%.mustache
 	$(HTMLMIN) --collapse-whitespace --collapse-inline-tag-whitespace \
 		-o $@ $<
 
-templates: mustache-pp $(TEMPLATESPP)
+templates: node_modules mustache-pp $(TEMPLATESPP)
 
 .PHONY: smiles
-smiles:
+smiles: node_modules
 	$(GULP) smiles
-
-node_modules:
-	npm install
 
 client: node_modules go/src/github.com/Kagami/kpopnet
 	$(GULP)
