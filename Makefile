@@ -48,13 +48,12 @@ GENSRC += $(shell find go/src/meguca/db/sql -type f -name '*.sql')
 GENSRC += $(wildcard go/src/meguca/templates/*.qtpl)
 GENSRC += $(wildcard i18n/*.json)
 GENSRC += $(TEMPLATESPP)
-go/bin/_gen: export TMPDIR = $(PWD)/go
-go/bin/_gen: go/bin/go-bindata go/bin/easyjson go/bin/qtc $(GENSRC)
+go/src/meguca/db/bin_data.go: export TMPDIR = $(PWD)/go
+go/src/meguca/db/bin_data.go: go/bin/go-bindata go/bin/easyjson go/bin/qtc $(GENSRC)
 	go generate meguca/...
-	touch go/bin/_gen
 
 GOSRC = $(shell find go/src/meguca -type f -name '*.go')
-go/bin/cutechan: go/bin/_gen $(GOSRC)
+go/bin/cutechan: go/src/meguca/db/bin_data.go $(GOSRC)
 	go get -v meguca/...
 
 server: go/bin/cutechan
@@ -102,7 +101,6 @@ client-clean:
 
 server-clean:
 	rm -f \
-		go/bin/_gen \
 		go/bin/cutechan* \
 		go/src/meguca/*/bin_data.go \
 		go/src/meguca/*/*_easyjson.go \
