@@ -23,7 +23,7 @@ const (
 // Some default options.
 const (
 	SessionExpiry        = 5 * 365 // Days
-	DefaultMaxSize       = 20      // Megabytes
+	DefaultMaxSize       = 40      // Megabytes
 	DefaultMaxFiles      = 4
 	DefaultLang          = "en"
 	DefaultCSS           = "light"
