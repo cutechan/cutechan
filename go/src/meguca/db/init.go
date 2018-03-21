@@ -6,6 +6,7 @@ import (
 	"fmt"
 	"log"
 	"meguca/auth"
+	"meguca/common"
 	"meguca/config"
 	"meguca/util"
 
@@ -23,8 +24,8 @@ var (
 	// ConnArgs specifies the PostgreSQL connection arguments
 	ConnArgs string
 
-	// IsTest can be overridden to not launch several infinite loops during
-	// tests
+	// IsTest can be overridden to not launch several infinite loops
+	// during tests
 	IsTest bool
 
 	// Stores the postgres database instance
@@ -402,44 +403,41 @@ var upgrades = []func(*sql.Tx) error{
 	},
 }
 
-// LoadDB establishes connections to RethinkDB and Redis and bootstraps both
-// databases, if not yet done.
-func LoadDB() (err error) {
-	kpopnet.StartDb(ConnArgs)
-
-	db, err = sql.Open("postgres", ConnArgs)
-	if err != nil {
-		return err
+func StartDb() (err error) {
+	if db, err = sql.Open("postgres", ConnArgs); err != nil {
+		return
 	}
 
 	var exists bool
 	err = db.QueryRow(getQuery("init/check_db_exists.sql")).Scan(&exists)
 	if err != nil {
-		return err
-	}
-
-	tasks := make([]func() error, 0, 6)
-	if !exists {
-		tasks = append(tasks, initDB)
-	} else if err = checkVersion(); err != nil {
 		return
 	}
+
+	tasks := []func() error{}
+	if exists {
+		if err = checkVersion(); err != nil {
+			return
+		}
+	} else {
+		tasks = append(tasks, initDb)
+	}
+	tasks = append(tasks, startKpopnetDb)
 	tasks = append(tasks, genPrepared)
 	if !exists {
-		tasks = append(tasks, CreateAdminAccount)
+		tasks = append(tasks, createAdminAccount)
 	}
-	tasks = append(
-		tasks,
-		loadConfigs, loadBoardConfigs, loadBans,
-	)
-	if err := util.Waterfall(tasks...); err != nil {
-		return err
+	tasks = append(tasks, loadConfigs, loadBoardConfigs, loadBans)
+	if err = util.Waterfall(tasks...); err != nil {
+		return
 	}
 
-	if !IsTest {
-		go runCleanupTasks()
-	}
-	return nil
+	go runCleanupTasks()
+	return
+}
+
+func startKpopnetDb() (err error) {
+	return kpopnet.StartDb(ConnArgs)
 }
 
 // Check database version perform any upgrades
@@ -488,8 +486,7 @@ func rollBack(tx *sql.Tx, err error) error {
 	return err
 }
 
-// initDB initializes a database
-func initDB() error {
+func initDb() error {
 	log.Println("initializing database")
 
 	conf, err := json.Marshal(config.Defaults)
@@ -502,10 +499,9 @@ func initDB() error {
 	return err
 }
 
-// CreateAdminAccount writes a fresh admin account with the default password to
-// the database
-func CreateAdminAccount() error {
-	hash, err := auth.BcryptHash("password", 10)
+// Create admin account with default password.
+func createAdminAccount() error {
+	hash, err := auth.BcryptHash(common.DefaultAdminPassword, 10)
 	if err != nil {
 		return err
 	}

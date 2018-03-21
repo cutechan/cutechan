@@ -22,11 +22,12 @@ const (
 
 // Some default options.
 const (
-	SessionExpiry   = 5 * 365 // Days
-	DefaultMaxSize  = 20      // Megabytes
-	DefaultMaxFiles = 4
-	DefaultLang     = "en"
-	DefaultCSS      = "light"
+	SessionExpiry        = 5 * 365 // Days
+	DefaultMaxSize       = 20      // Megabytes
+	DefaultMaxFiles      = 4
+	DefaultLang          = "en"
+	DefaultCSS           = "light"
+	DefaultAdminPassword = "password"
 )
 
 // Available language packs and themes. Change this, when adding any new ones.
