@@ -1,6 +1,6 @@
 export { Thread, Post, Backlinks } from "./model";
 export { default as PostView } from "./view";
-export { thumbPath, sourcePath } from "./images";
+export { getFilePrefix, thumbPath, sourcePath } from "./images";
 export { default as PostCollection } from "./collection";
 export { isOpen as isHoverActive } from "./hover";
 

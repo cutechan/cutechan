@@ -46,8 +46,6 @@ func createRouter() http.Handler {
 	api.GET("/socket", websockets.Handler)
 	api.GET("/embed", serveEmbed)
 	api.GET("/profiles", serveProfiles)
-	api.GET("/idols/:id/preview", serveIdolPreview)
-	api.GET("/idols/:id/preview/small", serveSmallIdolPreview)
 	api.GET("/post/:post", servePost)
 	api.POST("/post/token", createPostToken)
 	api.POST("/thread", createThread)

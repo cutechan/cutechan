@@ -6,11 +6,12 @@
 
 import { Component, h, render } from "preact";
 import {
-  Band, BandMap, getBandMap, getProfiles,
-  getSmallIdolPreviewUrl, Idol, Profiles,
+  Band, BandMap, getBandMap, getIdolPreviewUrl,
+  getProfiles, Idol, Profiles,
   renderIdol, searchIdols,
 } from "../../go/src/github.com/Kagami/kpopnet/ts/api";
 import { _ } from "../lang";
+import { getFilePrefix } from "../posts";
 import { hook, HOOKS } from "../util";
 import { PROFILES_CONTAINER_SEL } from "../vars";
 
@@ -24,7 +25,8 @@ class IdolItem extends Component<ItemProps, any> {
     return false;
   }
   public render({ idol, band }: ItemProps) {
-    const previewUrl = getSmallIdolPreviewUrl(idol.id);
+    const opts = {small: true, prefix: getFilePrefix()};
+    const previewUrl = getIdolPreviewUrl(idol, opts);
     const style = {backgroundImage: `url(${previewUrl})`};
     const lines = renderIdol(idol, band).slice(0, 5);
     return (

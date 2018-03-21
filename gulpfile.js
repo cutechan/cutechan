@@ -39,7 +39,12 @@ const FONTS_DIR = path.join(STATIC_DIR, "fonts");
 const TSC_TMP_FILE = path.join(JS_DIR, "_app.js");
 
 const KPOPNET_DIST_DIR = path.join(DIST_DIR, "kpopnet");
-const KPOPNET_API_PREFIX = watch ? "http://localhost:8001" : "https://kpop.re";
+const KPOPNET_API_PREFIX = watch
+  ? "http://localhost:8001/api"
+  : "https://kpop.re/api";
+const KPOPNET_FILE_PREFIX = watch
+  ? "http://localhost:8001/uploads"
+  : "https://up.kpop.re";
 const KPOPNET_WEBPACK_CONFIG = path.resolve(__dirname,
   "go/src/github.com/Kagami/kpopnet",
   "webpack.config.js");
@@ -435,6 +440,7 @@ gulp.task("kpopnet", () => {
       "--mode", watch ? "development" : "production",
       "--env.output", KPOPNET_DIST_DIR,
       "--env.api_prefix", KPOPNET_API_PREFIX,
+      "--env.file_prefix", KPOPNET_FILE_PREFIX,
       "--config", KPOPNET_WEBPACK_CONFIG,
       "--display", "errors-only",
     ], {
