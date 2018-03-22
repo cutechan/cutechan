@@ -416,9 +416,7 @@ func StartDb() (err error) {
 
 	tasks := []func() error{}
 	if exists {
-		if err = checkVersion(); err != nil {
-			return
-		}
+		tasks = append(tasks, upgradeDb)
 	} else {
 		tasks = append(tasks, initDb)
 	}
@@ -436,12 +434,21 @@ func StartDb() (err error) {
 	return
 }
 
-func startKpopnetDb() (err error) {
-	return kpopnet.StartDb(ConnArgs)
+func initDb() error {
+	log.Println("initializing database")
+
+	conf, err := json.Marshal(config.Defaults)
+	if err != nil {
+		return err
+	}
+
+	q := fmt.Sprintf(getQuery("init/init.sql"), version, string(conf))
+	_, err = db.Exec(q)
+	return err
 }
 
-// Check database version perform any upgrades
-func checkVersion() (err error) {
+// Check database version perform any upgrades.
+func upgradeDb() (err error) {
 	var v int
 	err = db.QueryRow(`select val from main where id = 'version'`).Scan(&v)
 	if err != nil {
@@ -486,17 +493,8 @@ func rollBack(tx *sql.Tx, err error) error {
 	return err
 }
 
-func initDb() error {
-	log.Println("initializing database")
-
-	conf, err := json.Marshal(config.Defaults)
-	if err != nil {
-		return err
-	}
-
-	q := fmt.Sprintf(getQuery("init/init.sql"), version, string(conf))
-	_, err = db.Exec(q)
-	return err
+func startKpopnetDb() (err error) {
+	return kpopnet.StartDb(db, ConnArgs)
 }
 
 // Create admin account with default password.
