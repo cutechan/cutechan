@@ -16,9 +16,13 @@
   border: @searchBorder;
   background: none;
   outline: none;
+  color: @body;
   &:focus {
     border: @searchBorderHover;
     box-shadow: @searchShadow;
+  }
+  &::placeholder {
+    color: @searchplaceholder;
   }
 }
 
@@ -71,6 +75,8 @@
   width: 100%;
   text-align: left;
   margin-left: 5px;
+  cursor: text;
+  user-select: text;
 }
 
 .idol-info-line {
@@ -78,7 +84,5 @@
 }
 
 .idol-info-key {
-}
-
-.idol-info-val {
+  color: #858585;
 }
