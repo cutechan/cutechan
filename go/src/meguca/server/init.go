@@ -4,6 +4,7 @@ import (
 	"meguca/websockets"
 	"mime"
 	"net/http"
+	"net/http/pprof"
 	"runtime/debug"
 	"time"
 
@@ -38,6 +39,9 @@ func createRouter() http.Handler {
 	r := httptreemux.NewContextMux()
 	r.NotFoundHandler = serve404
 	r.PanicHandler = text500
+
+	// Debug routes, make sure to control access in production.
+	r.Handle("GET", "/debug/pprof/*", pprof.Index)
 
 	// Pages.
 	r.GET("/", serveLanding)
