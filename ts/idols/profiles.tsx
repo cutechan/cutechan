@@ -8,9 +8,11 @@ import * as cx from "classnames";
 import { Component, h, render } from "preact";
 import {
   Band, BandMap, getBandMap, getIdolPreviewUrl,
-  getProfiles, Idol, Profiles,
-  renderIdol, searchIdols,
+  getProfiles, Idol, ImageIdData,
+  Profiles, renderIdol,
+  searchIdols, setIdolPreview,
 } from "../../go/src/github.com/Kagami/kpopnet/ts/api";
+import { showAlert } from "../alerts";
 import { _ } from "../lang";
 import { getFilePrefix } from "../posts";
 import { hook, HOOKS } from "../util";
@@ -63,7 +65,10 @@ class IdolPreview extends Component<PreviewProps, any> {
     this.fileEl.value = "";  // Allow to select same file again
   }
   private handleFile(file: File) {
-    this.props.onChange(this.props.idol, this.props.idol.image_id);
+    const { idol } = this.props;
+    setIdolPreview(idol, file).then(({ SHA1 }: ImageIdData) => {
+      this.props.onChange(idol, SHA1);
+    }).catch(showAlert);
   }
 }
 
@@ -182,7 +187,7 @@ class ProfilesWrapper extends Component<any, WrapperState> {
         this.profiles = profiles;
         this.bandMap = getBandMap(profiles);
         this.setState({loading: false});
-      });
+      }).catch(showAlert);
     }
   }
   private handleSearch = () => {

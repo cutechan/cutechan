@@ -11,7 +11,11 @@ var (
 	IdolOrigin string
 )
 
-func serveProfiles(w http.ResponseWriter, r *http.Request) {
+func serveIdolProfiles(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Access-Control-Allow-Origin", IdolOrigin)
 	kpopnet.ServeProfiles(w, r)
+}
+
+func setIdolPreview(w http.ResponseWriter, r *http.Request) {
+	serveErrorJSON(w, r, aerrModOnly)
 }
