@@ -165,14 +165,19 @@ func (w *formWriter) sel(spec inputSpec) {
 		val = spec.Val.(string)
 	}
 
-	for _, o := range spec.Options {
+	for i, o := range spec.Options {
 		w.N().S("<option")
 		w.attr("value", o)
 		if o == val {
 			w.attr("selected", "selected")
 		}
 		w.N().S(`>`)
-		w.N().S(o)
+		text := o
+		idx := i + 2
+		if len(w.lang.Forms[spec.ID]) >= idx+1 {
+			text = w.lang.Forms[spec.ID][idx]
+		}
+		w.N().S(text)
 		w.N().S("</option>")
 	}
 

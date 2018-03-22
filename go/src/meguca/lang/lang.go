@@ -15,7 +15,7 @@ var pack Pack
 type Pack struct {
 	ID              string
 	Tabs, SortModes []string
-	Forms           map[string][2]string
+	Forms           map[string][]string
 	UI              map[string]string
 	Templates       map[string][]string
 	Common          struct {
@@ -50,4 +50,12 @@ func Load() (err error) {
 // Returns the loaded language pack
 func Get() Pack {
 	return pack
+}
+
+// Gettext-alike helper.
+func Gettext(id string) string {
+	if text, ok := pack.UI[id]; ok {
+		return text
+	}
+	return id
 }
