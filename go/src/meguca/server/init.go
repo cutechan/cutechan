@@ -72,7 +72,7 @@ func createRouter(debugRoutes bool) http.Handler {
 	api := r.NewGroup("/api")
 	api.GET("/socket", websockets.Handler)
 	api.GET("/embed", serveEmbed)
-	api.GET("/profiles", serveProfiles)
+	api.GET("/idols/profiles", serveProfiles)
 	api.GET("/post/:post", servePost)
 	api.POST("/post/token", createPostToken)
 	api.POST("/thread", createThread)
