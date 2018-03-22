@@ -147,6 +147,9 @@ Renders the tab selection butts in tabbed windows
 		{% endif %}
 		<script>
 			var config={%z= confJSON %},boards={%z= boardJSON %},position={%d int(pos) %};
+			if (localStorage.theme === "photon") {
+				localStorage.theme = "light";
+			}
 			if (localStorage.theme !== config.DefaultCSS) {
 				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
 			}
