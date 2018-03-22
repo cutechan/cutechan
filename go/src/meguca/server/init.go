@@ -11,9 +11,9 @@ import (
 	"github.com/dimfeld/httptreemux"
 )
 
-func Start(address string) (err error) {
+func Start(address string, debugRoutes bool) (err error) {
 	go runForceFreeTask()
-	router := createRouter()
+	router := createRouter(debugRoutes)
 	return http.ListenAndServe(address, router)
 }
 
@@ -35,13 +35,15 @@ func runForceFreeTask() {
 	}
 }
 
-func createRouter() http.Handler {
+func createRouter(debugRoutes bool) http.Handler {
 	r := httptreemux.NewContextMux()
 	r.NotFoundHandler = serve404
 	r.PanicHandler = text500
 
-	// Debug routes, make sure to control access in production.
-	r.Handle("GET", "/debug/pprof/*", pprof.Index)
+	// Make sure to control access in production.
+	if debugRoutes {
+		r.Handle("GET", "/debug/pprof/*", pprof.Index)
+	}
 
 	// Pages.
 	r.GET("/", serveLanding)

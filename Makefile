@@ -59,7 +59,7 @@ go/bin/cutechan: go/src/meguca/db/bin_data.go $(GOSRC)
 server: go/bin/cutechan
 
 serve: templates server
-	cutechan
+	cutechan --debug
 
 deb: clean templates smiles client server
 	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 go/bin/cutechan-thumb

@@ -32,6 +32,7 @@ Serve a k-pop oriented imageboard.
 Options:
   -h --help     Show this screen.
   -V --version  Show version.
+  --debug       Enable debug server routes (pprof).
   -H <host>     Host to listen on [default: 127.0.0.1].
   -p <port>     Port to listen on [default: 8001].
   -c <conn>     PostgreSQL connection string
@@ -48,6 +49,7 @@ Options:
 type config struct {
 	Profile bool
 	Import  bool
+	Debug   bool
 	Host    string `docopt:"-H"`
 	Port    int    `docopt:"-p"`
 	Conn    string `docopt:"-c"`
@@ -93,7 +95,7 @@ func serve(conf config) {
 
 	// Start serving requests.
 	log.Printf("Listening on %v", address)
-	log.Fatal(server.Start(address))
+	log.Fatal(server.Start(address, conf.Debug))
 }
 
 func main() {
