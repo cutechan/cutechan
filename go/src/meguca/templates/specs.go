@@ -138,30 +138,6 @@ var specs = map[string][]inputSpec{
 			Min:      1,
 			Required: true,
 		},
-		{ID: "pruneBoards"},
-		{
-			ID:       "boardExpiry",
-			Type:     _number,
-			Min:      1,
-			Required: true,
-		},
-		{ID: "pruneThreads"},
-		{
-			ID:       "threadExpiryMin",
-			Type:     _number,
-			Min:      1,
-			Required: true,
-		},
-		{
-			ID:       "threadExpiryMax",
-			Type:     _number,
-			Min:      1,
-			Required: true,
-		},
-		{
-			ID:   "rootURL",
-			Type: _string,
-		},
 		{
 			ID:   "imageRootOverride",
 			Type: _string,

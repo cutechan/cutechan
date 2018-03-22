@@ -4,7 +4,6 @@ package config
 
 // Configs stores the global server configuration
 type Configs struct {
-	RootURL string `json:"rootURL"`
 	Public
 }
 
@@ -12,11 +11,6 @@ type Configs struct {
 type Public struct {
 	Captcha           bool   `json:"captcha"`
 	DisableUserBoards bool   `json:"disableUserBoards"`
-	PruneBoards       bool   `json:"pruneBoards"`
-	BoardExpiry       uint   `json:"boardExpiry"`
-	PruneThreads      bool   `json:"pruneThreads"`
-	ThreadExpiryMin   uint   `json:"threadExpiryMin"`
-	ThreadExpiryMax   uint   `json:"threadExpiryMax"`
 	MaxSize           uint   `json:"maxSize"`
 	MaxFiles          uint   `json:"maxFiles"`
 	DefaultLang       string `json:"defaultLang"`

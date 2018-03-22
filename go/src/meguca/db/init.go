@@ -99,8 +99,8 @@ var upgrades = []func(*sql.Tx) error{
 			return
 		}
 
-		conf.ThreadExpiryMin = config.Defaults.ThreadExpiryMin
-		conf.ThreadExpiryMax = config.Defaults.ThreadExpiryMax
+		// conf.ThreadExpiryMin = config.Defaults.ThreadExpiryMin
+		// conf.ThreadExpiryMax = config.Defaults.ThreadExpiryMax
 		buf, err := json.Marshal(conf)
 		if err != nil {
 			return
