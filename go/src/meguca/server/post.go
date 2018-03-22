@@ -3,7 +3,6 @@
 package server
 
 import (
-	"errors"
 	"fmt"
 	"meguca/auth"
 	"meguca/config"
@@ -14,13 +13,6 @@ import (
 	"net/http"
 	"strconv"
 	"strings"
-)
-
-var (
-	errInvalidBoard = errors.New("invalid board")
-	errReadOnly     = errors.New("read only board")
-	errBanned       = errors.New("you are banned")
-	errTooManyFiles = errors.New("too many files")
 )
 
 // Client should get token and solve challenge in order to post.
@@ -43,7 +35,7 @@ func createPostToken(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res := map[string]string{"id": token}
-	serveJSON(w, r, "", res)
+	serveJSON(w, r, res)
 }
 
 // Create thread.
@@ -92,7 +84,7 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 	}
 
 	res := map[string]uint64{"id": post.ID}
-	serveJSON(w, r, "", res)
+	serveJSON(w, r, res)
 }
 
 // Create post.
@@ -143,7 +135,7 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	feeds.InsertPostInto(post.StandalonePost, msg)
 
 	res := map[string]uint64{"id": post.ID}
-	serveJSON(w, r, "", res)
+	serveJSON(w, r, res)
 }
 
 // ok = false if failed and caller should return.

@@ -5,7 +5,6 @@ package server
 import (
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"io"
 	"meguca/auth"
@@ -27,17 +26,8 @@ const (
 )
 
 var (
-	errTitleTooLong     = common.ErrTooLong("board title")
-	errBanReasonTooLong = common.ErrTooLong("ban reason")
-	errInvalidBoardName = errors.New("invalid board name")
-	errBoardNameTaken   = errors.New("board name taken")
-	errAccessDenied     = errors.New("access denied")
-	errNoReason         = errors.New("no reason provided")
-	errNoDuration       = errors.New("no ban duration provided")
-
 	boardNameValidation = regexp.MustCompile(`^[a-z0-9]{1,10}$`)
-
-	reservedBoards = [...]string{
+	reservedBoards      = [...]string{
 		"all", "stickers",
 		"html", "api",
 		"static", "uploads",
@@ -181,7 +171,7 @@ func servePrivateBoardConfigs(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	serveJSON(w, r, "", conf)
+	serveJSON(w, r, conf)
 }
 
 func isAdmin(w http.ResponseWriter, r *http.Request) bool {
@@ -493,13 +483,13 @@ func assignStaff(w http.ResponseWriter, r *http.Request) {
 	switch {
 	// Ensure there always is at least one board owner
 	case len(msg.Owners) == 0:
-		text400(w, errors.New("no board owners set"))
+		text400(w, errNoBoardOwner)
 		return
 	default:
 		// Maximum of 100 staff per position
 		for _, s := range [...][]string{msg.Owners, msg.Moderators, msg.Janitors} {
 			if len(s) > 100 {
-				text400(w, errors.New("too many staff per position"))
+				text400(w, errTooManyStaff)
 				return
 			}
 		}
@@ -546,7 +536,7 @@ func getSameIPPosts(w http.ResponseWriter, r *http.Request) {
 		text500(w, r, err)
 		return
 	}
-	serveJSON(w, r, "", posts)
+	serveJSON(w, r, posts)
 }
 
 // Set the sticky flag of a thread

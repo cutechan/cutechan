@@ -1,3 +1,4 @@
+// TODO(Kagami): Somehow merge with server/errors.go
 package common
 
 import (

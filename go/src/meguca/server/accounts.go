@@ -2,7 +2,6 @@ package server
 
 import (
 	"database/sql"
-	"errors"
 	"meguca/auth"
 	"meguca/common"
 	"meguca/db"
@@ -16,11 +15,6 @@ import (
 var (
 	// Add "secure" flag to auth cookies.
 	SecureCookie bool
-
-	errInvalidCaptcha  = errors.New("invalid captcha")
-	errInvalidPassword = errors.New("invalid password")
-	errInvalidUserID   = errors.New("invalid login ID")
-	errUserIDTaken     = errors.New("login ID already taken")
 )
 
 type loginCreds struct {

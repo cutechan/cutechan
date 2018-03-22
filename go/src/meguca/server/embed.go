@@ -1,7 +1,6 @@
 package server
 
 import (
-	"errors"
 	"html"
 	"io"
 	"meguca/templates"
@@ -9,11 +8,6 @@ import (
 	"regexp"
 	"strings"
 	"time"
-)
-
-var (
-	errNoURL           = errors.New("no url")
-	errNotSupportedURL = errors.New("url not supported")
 )
 
 var (
@@ -41,7 +35,7 @@ type oEmbedDoc struct {
 func serveEmbed(w http.ResponseWriter, r *http.Request) {
 	url := r.URL.Query().Get("url")
 	if url == "" {
-		serveErrorJSON(w, r, errNoURL)
+		serveErrorJSON(w, r, aerrNoURL)
 		return
 	}
 
@@ -53,17 +47,17 @@ func serveEmbed(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if provider != "vlive" {
-		serveErrorJSON(w, r, errNotSupportedURL)
+		serveErrorJSON(w, r, aerrNotSupportedURL)
 		return
 	}
 
 	doc, err := getVliveEmbed(url)
 	if err != nil {
-		serveErrorJSON(w, r, errInternal)
+		serveErrorJSON(w, r, aerrInternal)
 		return
 	}
 
-	serveJSON(w, r, "", doc)
+	serveJSON(w, r, doc)
 }
 
 func getVliveEmbed(url string) (doc oEmbedDoc, err error) {

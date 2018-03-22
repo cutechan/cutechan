@@ -2,7 +2,6 @@ package server
 
 import (
 	"database/sql"
-	"errors"
 	"fmt"
 	"io"
 	"meguca/auth"
@@ -13,10 +12,6 @@ import (
 	"meguca/templates"
 	"net/http"
 	"strconv"
-)
-
-var (
-	errNoNews = errors.New("can't get news")
 )
 
 // Apply headers and write HTML to client

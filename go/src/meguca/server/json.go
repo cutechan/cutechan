@@ -3,7 +3,6 @@ package server
 import (
 	"database/sql"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"meguca/auth"
 	"meguca/cache"
@@ -13,11 +12,6 @@ import (
 	"strconv"
 )
 
-var (
-	errNoImage  = errors.New("post has no image")
-	errInternal = errors.New("internal server error")
-)
-
 // Request to spoiler an already allocated image that the sender has created
 type spoilerRequest struct {
 	ID       uint64
@@ -25,42 +19,28 @@ type spoilerRequest struct {
 }
 
 // API helper. Returns standardly shaped error message.
-// TODO(Kagami): Use APIError struct.
-func serveErrorJSON(w http.ResponseWriter, r *http.Request, err error) {
-	code := 400
-	if err == errInternal {
-		code = 500
-	}
-	data := map[string]string{"error": err.Error()}
-	buf, err := json.Marshal(data)
-	if err != nil {
-		text500(w, r, err)
-		return
-	}
+func serveErrorJSON(w http.ResponseWriter, r *http.Request, aerr ApiError) {
+	buf, _ := json.Marshal(aerr)
 	w.Header().Set("Content-Type", "application/json")
-	w.WriteHeader(code)
+	w.WriteHeader(aerr.Code())
 	writeData(w, r, buf)
 }
 
 // API helper. Server should always return valid JSON to the clients.
+// TODO(Kagami): Remove.
 func serveEmptyJSON(w http.ResponseWriter, r *http.Request) {
 	res := map[string]int{}
-	serveJSON(w, r, "", res)
+	serveJSON(w, r, res)
 }
 
-// Marshal input data to JSON an write to client
-func serveJSON(
-	w http.ResponseWriter,
-	r *http.Request,
-	etag string,
-	data interface{},
-) {
+// Marshal input data to JSON an write to client.
+func serveJSON(w http.ResponseWriter, r *http.Request, data interface{}) {
 	buf, err := json.Marshal(data)
 	if err != nil {
 		text500(w, r, err)
 		return
 	}
-	writeJSON(w, r, etag, buf)
+	writeJSON(w, r, "", buf)
 }
 
 // Write data as JSON to the client. If etag is "" generate a strong etag by
@@ -115,7 +95,7 @@ func servePost(w http.ResponseWriter, r *http.Request) {
 		if !assertNotModOnly(w, r, post.Board) {
 			return
 		}
-		serveJSON(w, r, "", post)
+		serveJSON(w, r, post)
 	case sql.ErrNoRows:
 		serve404(w, r)
 	default:

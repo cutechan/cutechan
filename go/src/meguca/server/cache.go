@@ -3,7 +3,6 @@
 package server
 
 import (
-	"errors"
 	"meguca/cache"
 	"meguca/common"
 	"meguca/db"
@@ -19,8 +18,6 @@ type pageStore struct {
 	json                  []byte
 	data                  common.Board
 }
-
-var errPageOverflow = errors.New("page not found")
 
 var newsCache = cache.FrontEnd{
 	GetCounter: func(k cache.Key) (uint64, error) {
