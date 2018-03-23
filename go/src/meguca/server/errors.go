@@ -68,6 +68,7 @@ var (
 	aerrParseForm       = aerrorNew(400, "error parsing form")
 	aerrNoFile          = aerrorNew(400, "no file provided")
 	aerrBadUuid         = aerrorNew(400, "malformed UUID")
+	aerrDupPreview      = aerrorNew(400, "duplicated preview")
 	aerrTooLarge        = aerrorNew(400, "file too large")
 	aerrTooManyFiles    = aerrorNew(400, "too many files")
 	aerrUploadRead      = aerrorNew(400, "error reading upload")

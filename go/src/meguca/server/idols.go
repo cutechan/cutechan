@@ -47,7 +47,11 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if err := setIdolPreviewTx(idolId, res); err != nil {
-		err = aerrInternal.Hide(err)
+		if db.IsConflictError(err) {
+			err = aerrDupPreview
+		} else {
+			err = aerrInternal.Hide(err)
+		}
 		serveErrorJSON(w, r, err)
 		return
 	}
