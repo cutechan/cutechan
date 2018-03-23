@@ -5,20 +5,32 @@ package server
 import (
 	"errors"
 	"fmt"
+
+	"meguca/ipc"
 )
 
 // Error returned by API. Serialized to common shape understanable by
-// frontend.
-// TODO(Kagami): easyjson support?
-// TODO(Kagami): Context fields?
+// frontend. Can also keep error from internal subsystems which is never
+// shown to the user by might be e.g. logged for debugging purposes.
+// TODO(Kagami): easyjson.
 type ApiError struct {
-	code int
-	err  error
+	code      int
+	err       error
+	hiddenErr error
 }
 
-func NewApiError(code int, text string) ApiError {
+func aerrorNew(code int, text string) ApiError {
 	err := errors.New(text)
-	return ApiError{code, err}
+	return ApiError{code: code, err: err}
+}
+
+func aerrorFrom(code int, err error) ApiError {
+	return ApiError{code: code, err: err}
+}
+
+func (ae ApiError) Hide(err error) ApiError {
+	ae.hiddenErr = err
+	return ae
 }
 
 func (ae ApiError) Code() int {
@@ -29,9 +41,17 @@ func (ae ApiError) Code() int {
 	return ae.code
 }
 
+func (ae ApiError) Error() string {
+	err := ae.err
+	if ae.hiddenErr != nil {
+		err = ae.hiddenErr
+	}
+	return fmt.Sprintf("%v", err)
+}
+
 func (ae ApiError) MarshalJSON() ([]byte, error) {
 	err := ae.err
-	// Do not leak sensitive data to clients.
+	// Do not leak sensitive data to users.
 	if ae.Code() >= 500 {
 		err = errInternal
 	}
@@ -41,10 +61,18 @@ func (ae ApiError) MarshalJSON() ([]byte, error) {
 
 // Predefined API errors.
 var (
-	aerrNoURL           = NewApiError(400, "no url")
-	aerrNotSupportedURL = NewApiError(400, "url not supported")
-	aerrInternal        = NewApiError(500, "internal server error")
-	aerrModOnly         = NewApiError(403, "only for mods")
+	aerrNoURL           = aerrorNew(400, "no url")
+	aerrNotSupportedURL = aerrorNew(400, "url not supported")
+	aerrInternal        = aerrorNew(500, "internal server error")
+	aerrModOnly         = aerrorNew(403, "only for mods")
+	aerrParseForm       = aerrorNew(400, "error parsing form")
+	aerrNoFile          = aerrorNew(400, "no file provided")
+	aerrBadUuid         = aerrorNew(400, "malformed UUID")
+	aerrTooLarge        = aerrorNew(400, "file too large")
+	aerrTooManyFiles    = aerrorNew(400, "too many files")
+	aerrUploadRead      = aerrorNew(400, "error reading upload")
+	aerrUnsupported     = aerrorFrom(400, ipc.ErrThumbUnsupported)
+	aerrNoTracks        = aerrorFrom(400, ipc.ErrThumbTracks)
 )
 
 // Legacy errors.
@@ -53,7 +81,6 @@ var (
 	errInvalidBoard     = errors.New("invalid board")
 	errReadOnly         = errors.New("read only board")
 	errBanned           = errors.New("you are banned")
-	errTooManyFiles     = errors.New("too many files")
 	errNoImage          = errors.New("post has no image")
 	errInternal         = errors.New("internal server error")
 	errNoNews           = errors.New("can't get news")

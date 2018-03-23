@@ -8,7 +8,6 @@ import (
 	"meguca/config"
 	"meguca/db"
 	"meguca/feeds"
-	"meguca/imager"
 	"meguca/websockets"
 	"net/http"
 	"strconv"
@@ -142,32 +141,24 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	req websockets.PostCreationRequest, ok bool,
 ) {
-	maxSize := config.Get().MaxSize<<20 + jsonLimit
-	r.Body = http.MaxBytesReader(w, r.Body, int64(maxSize))
-	err := r.ParseMultipartForm(0)
+	f, m, err := parseUploadForm(w, r)
 	if err != nil {
-		text400(w, err)
+		serveErrorJSON(w, r, err)
 		return
 	}
 
-	f := r.Form
-	m := r.MultipartForm
-
 	fhs := m.File["files[]"]
-	if len(fhs) > int(config.Get().MaxFiles) {
-		text400(w, errTooManyFiles)
+	if len(fhs) > config.Get().MaxFiles {
+		serveErrorJSON(w, r, aerrTooManyFiles)
 		return
 	}
 	tokens := make([]string, len(fhs))
 	for i, fh := range fhs {
-		var code int
-		var token string
-		code, token, err = imager.Upload(fh)
+		res, err := uploadFile(fh)
 		if err != nil {
-			imager.LogError(w, r, code, err)
-			return
+			serveUploadError(w, r, err)
 		}
-		tokens[i] = token
+		tokens[i] = res.token
 	}
 
 	// NOTE(Kagami): Browsers use CRLF newlines in form-data requests,

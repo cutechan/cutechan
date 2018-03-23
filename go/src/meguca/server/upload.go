@@ -1,14 +1,9 @@
-// Package imager handles image, video, etc. upload requests and
-// processing.
-package imager
+package server
 
 import (
-	"crypto/md5"
-	"crypto/sha1"
 	"database/sql"
-	"encoding/base64"
+	"crypto/sha1"
 	"encoding/hex"
-	"errors"
 	"io/ioutil"
 	"log"
 	"mime/multipart"
@@ -33,76 +28,85 @@ var (
 		"video/mp4":       common.MP4,
 		"audio/mpeg":      common.MP3,
 	}
-
-	errTooLarge = errors.New("file too large")
 )
 
-// FIXME(Kagami): Combine with similar code from server package.
-func LogError(w http.ResponseWriter, r *http.Request, code int, err error) {
-	log.Printf("upload error: %s: %v\n", auth.GetLogIP(r), err)
-	text := err.Error()
-	if code == 0 {
-		code = 500
-	}
-	if code == 500 {
-		text = "internal server error"
-	}
-	http.Error(w, text, code)
+func getSha1(data []byte) string {
+	hash := sha1.Sum(data)
+	return hex.EncodeToString(hash[:])
 }
 
-func Upload(fh *multipart.FileHeader) (int, string, error) {
-	if fh.Size > int64(config.Get().MaxSize<<20) {
-		return 400, "", errTooLarge
+
+func serveUploadError(w http.ResponseWriter, r *http.Request, err error) {
+	// Upload errors are quite painful (e.g. badly-encoded files and such)
+	// so need to have everything logged.
+	log.Printf("upload error: %s: %v\n", auth.GetLogIP(r), err)
+	serveErrorJSON(w, r, err)
+}
+
+type uploadResult struct {
+	hash string
+	token string
+}
+
+func uploadFile(fh *multipart.FileHeader) (res uploadResult, err error) {
+	if fh.Size > config.Get().MaxSize * 1024 * 1024 {
+		err = aerrTooLarge
+		return
 	}
 
 	fd, err := fh.Open()
 	if err != nil {
-		return 400, "", err
+		err = aerrUploadRead.Hide(err)
+		return
 	}
 	defer fd.Close()
 
 	data, err := ioutil.ReadAll(fd)
 	if err != nil {
-		return 500, "", err
+		err = aerrUploadRead.Hide(err)
+		return
 	}
 
-	sum := sha1.Sum(data)
-	SHA1 := hex.EncodeToString(sum[:])
-	file, err := db.GetImage(SHA1)
+	hash := getSha1(data)
+	file, err := db.GetImage(hash)
 	switch err {
 	case nil:
 		// Already have a thumbnail
-		return newFileToken(SHA1)
+		return newFileToken(hash)
 	case sql.ErrNoRows:
-		file.SHA1 = SHA1
+		file.SHA1 = hash
 		return saveFile(data, &file)
 	default:
-		return 500, "", err
+		err = aerrInternal.Hide(err)
+		return
 	}
 }
 
-func newFileToken(SHA1 string) (code int, token string, err error) {
-	token, err = db.NewImageToken(SHA1)
-	code = 200
+func newFileToken(hash string) (res uploadResult, err error) {
+	res.hash = hash
+	res.token, err = db.NewImageToken(hash)
 	if err != nil {
-		code = 500
+		err = aerrInternal.Hide(err)
+		return
 	}
 	return
 }
 
 // Create a new thumbnail, commit its resources to the DB and
 // filesystem, and return resulting token.
-func saveFile(srcData []byte, file *common.ImageCommon) (code int, token string, err error) {
+func saveFile(srcData []byte, file *common.ImageCommon) (res uploadResult, err error) {
 	thumb, err := getThumbnail(srcData)
 	switch err {
 	case nil:
 		// Do nothing.
-	case ipc.ErrThumbUnsupported, ipc.ErrThumbTracks:
-		code = 400
+	case ipc.ErrThumbUnsupported:
+		err = aerrUnsupported
+		return
+	case ipc.ErrThumbTracks:
+		err = aerrNoTracks
+		return
 	default:
-		code = 500
-	}
-	if err != nil {
+		err = aerrInternal
 		return
 	}
 
@@ -119,11 +123,9 @@ func saveFile(srcData []byte, file *common.ImageCommon) (code int, token string,
 	file.Length = thumb.Duration
 	file.Title = thumb.Title
 	file.Dims = [4]uint16{thumb.SrcWidth, thumb.SrcHeight, thumb.Width, thumb.Height}
-	hash := md5.Sum(srcData)
-	file.MD5 = base64.RawURLEncoding.EncodeToString(hash[:])
 
 	if err = db.AllocateImage(srcData, thumb.Data, *file); err != nil {
-		code = 500
+		err = aerrInternal.Hide(err)
 		return
 	}
 	return newFileToken(file.SHA1)

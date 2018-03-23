@@ -19,7 +19,13 @@ type spoilerRequest struct {
 }
 
 // API helper. Returns standardly shaped error message.
-func serveErrorJSON(w http.ResponseWriter, r *http.Request, aerr ApiError) {
+// TODO(Kagami): Consistent naming.
+func serveErrorJSON(w http.ResponseWriter, r *http.Request, err error) {
+	// This function expects ApiError so assume any other values as bug.
+	aerr := aerrInternal
+	if aerrAsserted, ok := err.(ApiError); ok {
+		aerr = aerrAsserted
+	}
 	buf, _ := json.Marshal(aerr)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(aerr.Code())
@@ -34,6 +40,7 @@ func serveEmptyJSON(w http.ResponseWriter, r *http.Request) {
 }
 
 // Marshal input data to JSON an write to client.
+// TODO(Kagami): Consistent naming.
 func serveJSON(w http.ResponseWriter, r *http.Request, data interface{}) {
 	buf, err := json.Marshal(data)
 	if err != nil {
@@ -46,6 +53,7 @@ func serveJSON(w http.ResponseWriter, r *http.Request, data interface{}) {
 // Write data as JSON to the client. If etag is "" generate a strong etag by
 // hashing the resulting buffer and perform a check against the "If-None-Match"
 // header. If etag is set, assume this check has already been done.
+// TODO(Kagami): Consistent naming.
 func writeJSON(
 	w http.ResponseWriter,
 	r *http.Request,

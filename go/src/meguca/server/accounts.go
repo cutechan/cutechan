@@ -91,7 +91,7 @@ func commitLogin(w http.ResponseWriter, r *http.Request, userID string) {
 		Secure:   SecureCookie,
 		HttpOnly: true,
 	}
-	SetCookie(w, &sessionCookie, SAMESITE_LAX_MODE)
+	setSameSiteCookie(w, &sessionCookie, SAMESITE_LAX_MODE)
 }
 
 // Log into a registered user account
@@ -152,7 +152,7 @@ func commitLogout(
 		Secure:   SecureCookie,
 		HttpOnly: true,
 	}
-	SetCookie(w, &sessionCookie, SAMESITE_LAX_MODE)
+	setSameSiteCookie(w, &sessionCookie, SAMESITE_LAX_MODE)
 }
 
 // Log out user from session and remove the session key from the database

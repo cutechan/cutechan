@@ -8,7 +8,9 @@ import (
 	"meguca/config"
 	"meguca/db"
 	"meguca/templates"
+	"mime/multipart"
 	"net/http"
+	"net/url"
 	"runtime/debug"
 	"strconv"
 
@@ -83,16 +85,19 @@ func logError(r *http.Request, err interface{}) {
 }
 
 // Text-only 400 response
+// TODO(Kagami): User ApiError instead.
 func text400(w http.ResponseWriter, err error) {
 	http.Error(w, fmt.Sprintf("400 %s", err), 400)
 }
 
 // Text-only 403 response
+// TODO(Kagami): User ApiError instead.
 func text403(w http.ResponseWriter, err error) {
 	http.Error(w, fmt.Sprintf("403 %s", err), 403)
 }
 
 // Text-only 500 response
+// TODO(Kagami): User ApiError instead.
 func text500(w http.ResponseWriter, r *http.Request, err interface{}) {
 	http.Error(w, "500 internal server error", 500)
 	logError(r, err)
@@ -192,24 +197,21 @@ func getParam(r *http.Request, id string) string {
 	return httptreemux.ContextParams(r.Context())[id]
 }
 
-type SameSite int
+// Maximum amount of data server will deal with.
+func getMaxBodySize() int64 {
+	n := config.Get().MaxSize*1024*1024 + jsonLimit
+	return int64(n)
+}
 
-const (
-	SAMESITE_DEFAULT_MODE SameSite = iota + 1
-	SAMESITE_LAX_MODE
-	SAMESITE_STRICT_MODE
-)
-
-// https://github.com/golang/go/issues/15867
-func SetCookie(w http.ResponseWriter, cookie *http.Cookie, sameSite SameSite) {
-	if v := cookie.String(); v != "" {
-		v += "; SameSite"
-		switch sameSite {
-		case SAMESITE_LAX_MODE:
-			v += "=Lax"
-		case SAMESITE_STRICT_MODE:
-			v += "=Strict"
-		}
-		w.Header().Add("Set-Cookie", v)
+func parseUploadForm(w http.ResponseWriter, r *http.Request) (
+	f url.Values, m *multipart.Form, err error,
+) {
+	r.Body = http.MaxBytesReader(w, r.Body, getMaxBodySize())
+	if err = r.ParseMultipartForm(0); err != nil {
+		err = aerrParseForm.Hide(err)
+		return
 	}
+	f = r.Form
+	m = r.MultipartForm
+	return
 }

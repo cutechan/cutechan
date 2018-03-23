@@ -9,7 +9,6 @@ import (
 	"meguca/cache"
 	"meguca/common"
 	"meguca/db"
-	"meguca/imager"
 	"meguca/lang"
 	"meguca/server"
 	"meguca/templates"
@@ -85,7 +84,7 @@ func serve(conf config) {
 	// Prepare runtime subsystems.
 	// TODO(Kagami): Check dependency order. Can we run all in parallel?
 	err := util.RunTasks([][]util.Task{
-		[]util.Task{db.StartDb, assets.CreateDirs, imager.Start},
+		[]util.Task{db.StartDb, assets.CreateDirs},
 		[]util.Task{lang.Load},
 		[]util.Task{templates.Compile, templates.CompileMustache},
 	})

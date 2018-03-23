@@ -11,8 +11,8 @@ type Configs struct {
 type Public struct {
 	Captcha           bool   `json:"captcha"`
 	DisableUserBoards bool   `json:"disableUserBoards"`
-	MaxSize           uint   `json:"maxSize"`
-	MaxFiles          uint   `json:"maxFiles"`
+	MaxSize           int64  `json:"maxSize"`
+	MaxFiles          int    `json:"maxFiles"`
 	DefaultLang       string `json:"defaultLang"`
 	DefaultCSS        string `json:"defaultCSS"`
 	ImageRootOverride string `json:"imageRootOverride"`

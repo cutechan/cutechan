@@ -1,4 +1,4 @@
-package imager
+package server
 
 import (
 	"meguca/ipc"
@@ -44,7 +44,7 @@ func getThumbnail(srcData []byte) (*ipc.Thumb, error) {
 }
 
 // Start thumbnailer workers.
-func Start() (err error) {
+func startThumbWorkers() (err error) {
 	for i := 0; i < THUMB_PROCESSES; i++ {
 		go worker()
 	}
