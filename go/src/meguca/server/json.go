@@ -170,7 +170,7 @@ func boardJSON(w http.ResponseWriter, r *http.Request, catalog bool) {
 	data, _, ctr, err := cache.GetJSONAndData(boardCacheArgs(r, b, catalog))
 	switch err {
 	case nil:
-		writeJSON(w, r, formatEtag(ctr, "", auth.NotLoggedIn), data)
+		writeJSON(w, r, formatEtag(ctr, "", auth.NullPositions), data)
 	case errPageOverflow:
 		serve404(w, r)
 	default:

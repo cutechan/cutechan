@@ -174,3 +174,99 @@ Render the captcha for noscript browsers
 		<img src="/api/captcha/image/{%s id %}.png">
 	</div>
 {% endstripspace %}{% endfunc %}
+
+Renders the tab selection butts in tabbed windows
+{% func tabButts(names []string) %}{% stripspace %}
+	<div class="tab-butts">
+		{% for i, n := range names %}
+			<a class="tab-link{% if i == 0 %}{% space %}tab-sel{% endif %}" data-id="{%d i %}">
+				{%s n %}
+			</a>
+		{% endfor %}
+	</div>
+	<hr>
+{% endstripspace %}{% endfunc %}
+
+{% func faqModal() %}{% stripspace %}
+	<div id="FAQ" class="modal">
+		cutechan is licensed under the{% space %}
+		<a href="https://www.gnu.org/licenses/agpl.html" target="_blank">
+			GNU Affero General Public License
+		</a>
+		<br>
+		source code repository:{% space %}
+		<a href="https://github.com/cutechan/cutechan" target="_blank">
+			github.com/cutechan/cutechan
+		</a>
+		<br>
+		original project:{% space %}
+		<a href="https://github.com/bakape/meguca" target="_blank">
+			github.com/bakape/meguca
+		</a>
+		<br>
+		contacts:{% space %}
+		<a href="mailto:kagami@genshiken.org">
+			kagami@genshiken.org
+		</a>
+	</div>
+{% endstripspace %}{% endfunc %}
+
+{% func accountModal(pos auth.Positions) %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<div id="account-panel" class="modal">
+		{% if pos.CurBoard == auth.NotLoggedIn %}
+			<div id="login-forms">
+				{% code f := ln.Forms %}
+				{%= tabButts([]string{f["id"][0], f["register"][0]}) %}
+				<div class="tab-cont">
+					<div class="tab-sel" data-id="0">
+						<form id="login-form">
+							{%= table(specs["login"]) %}
+							{%= captcha() %}
+							{%= submit(false) %}
+						</form>
+					</div>
+					<div data-id="1">
+						<form id="registration-form">
+							{%= table(specs["register"]) %}
+							{%= captcha() %}
+							{%= submit(false) %}
+						</form>
+					</div>
+				</div>
+			</div>
+		{% else %}
+			<div id="form-selection">
+				{% for _, l := range [...]string{
+					"logout", "logoutAll", "changePassword",
+					"createBoard",
+					"configureBoard", "assignStaff",
+					"deleteBoard",
+				} %}
+					<a class="form-selection-link" id="{%s l %}">
+						{%s ln.UI[l] %}
+					</a>
+				{% endfor %}
+				{% if pos.CurBoard == auth.Admin %}
+					<a class="form-selection-link" id="configureServer">
+						{%s ln.UI["configureServer"] %}
+					</a>
+				{% endif %}
+			</div>
+		{% endif %}
+	</div>
+{% endstripspace %}{% endfunc %}
+
+{% func optionsModal() %}{% stripspace %}
+	{% code ln := lang.Get() %}
+	<div id="options" class="modal">
+		{%= tabButts(ln.Tabs) %}
+		<div class="tab-cont">
+			{% for i, sp := range optionSpecs %}
+				<div data-id="{%d i %}"{% if i == 0 %}{% space %}class="tab-sel"{% endif %}>
+					{%= options(sp, ln) %}
+				</div>
+			{% endfor %}
+		</div>
+	</div>
+{% endstripspace %}{% endfunc %}

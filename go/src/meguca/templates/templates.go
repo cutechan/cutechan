@@ -7,46 +7,29 @@ package templates
 import (
 	"bytes"
 	"fmt"
-	"github.com/hoisie/mustache"
-	h "html"
+	"strings"
+
 	"meguca/auth"
 	"meguca/config"
 	"meguca/lang"
-	"strings"
-	"sync"
+
+	"github.com/hoisie/mustache"
 )
 
 var (
-	indexTemplates map[auth.ModerationLevel][3][]byte
-	mu             sync.RWMutex
-
 	mustacheTemplates = map[string]*mustache.Template{}
 )
 
-// Injects dynamic variables, hashes and stores compiled templates
-func Compile() error {
-	levels := [...]auth.ModerationLevel{
-		auth.NotLoggedIn, auth.NotStaff, auth.Janitor, auth.Moderator,
-		auth.BoardOwner, auth.Admin,
-	}
-	t := make(map[auth.ModerationLevel][3][]byte, len(levels))
-	for _, pos := range levels {
-		split := bytes.Split([]byte(renderIndex(pos)), []byte("$$$"))
-		t[pos] = [3][]byte{split[0], split[1], split[2]}
-	}
-
-	mu.Lock()
-	indexTemplates = t
-	mu.Unlock()
-
-	return nil
+func Page(pos auth.Positions, title string, html string) []byte {
+	var buf bytes.Buffer
+	writerenderPage(&buf, pos, title, html)
+	return buf.Bytes()
 }
 
-// Board renders board page HTML.
 func Board(
 	b string,
 	page, total int,
-	pos auth.ModerationLevel,
+	pos auth.Positions,
 	minimal, catalog bool,
 	threadHTML []byte,
 ) []byte {
@@ -60,57 +43,38 @@ func Board(
 		b, title,
 		boardConf,
 		page, total,
-		pos,
 		catalog,
 	)
 	if minimal {
 		return []byte(html)
 	}
-	return execIndex(html, title, pos)
+	return Page(pos, title, html)
 }
 
-// Thread renders thread page HTML.
 func Thread(
 	id uint64,
 	board, title string,
 	abbrev bool,
-	pos auth.ModerationLevel,
+	pos auth.Positions,
 	postHTML []byte,
 ) []byte {
-	html := renderThread(postHTML, id, board, title, pos)
-	return execIndex(html, title, pos)
+	html := renderThread(postHTML, id, board, title)
+	return Page(pos, title, html)
 }
 
-// Render landing page.
-func Landing(pos auth.ModerationLevel) []byte {
-	html := renderLanding()
+func Landing(pos auth.Positions) []byte {
 	title := lang.Get().UI["main"]
-	return execIndex(html, title, pos)
+	html := renderLanding()
+	return Page(pos, title, html)
 }
 
-// Render stickers page.
-func Stickers(pos auth.ModerationLevel, stickHTML []byte) []byte {
+func Stickers(pos auth.Positions, stickHTML []byte) []byte {
 	html := renderStickers(stickHTML)
 	title := lang.Get().UI["stickers"]
-	return execIndex(html, title, pos)
+	return Page(pos, title, html)
 }
 
-// Execute and index template in the second pass
-func execIndex(html, title string, pos auth.ModerationLevel) []byte {
-	title = h.EscapeString(title)
-	mu.RLock()
-	t := indexTemplates[pos]
-	mu.RUnlock()
-	return bytes.Join([][]byte{
-		t[0],
-		[]byte(title),
-		t[1],
-		[]byte(html),
-		t[2],
-	}, nil)
-}
-
-func CompileMustache() error {
+func CompileMustache() (err error) {
 	for _, name := range AssetNames() {
 		if strings.HasSuffix(name, ".mustache") {
 			tmpl, err := mustache.ParseString(string(MustAsset(name)))
@@ -121,7 +85,7 @@ func CompileMustache() error {
 			mustacheTemplates[tmplName] = tmpl
 		}
 	}
-	return nil
+	return
 }
 
 func renderMustache(name string, ctx interface{}) string {

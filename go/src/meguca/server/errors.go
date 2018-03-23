@@ -64,7 +64,7 @@ var (
 	aerrNoURL           = aerrorNew(400, "no url")
 	aerrNotSupportedURL = aerrorNew(400, "url not supported")
 	aerrInternal        = aerrorNew(500, "internal server error")
-	aerrModOnly         = aerrorNew(403, "only for mods")
+	aerrPowerUserOnly   = aerrorNew(403, "only for power users")
 	aerrParseForm       = aerrorNew(400, "error parsing form")
 	aerrNoFile          = aerrorNew(400, "no file provided")
 	aerrBadUuid         = aerrorNew(400, "malformed UUID")

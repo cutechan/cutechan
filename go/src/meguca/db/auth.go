@@ -39,29 +39,30 @@ func GetPassword(id string) (hash []byte, err error) {
 	return
 }
 
-// FindPosition returns the highest matching position of a user on a certain
-// board. As a special case the admin user will always return "admin".
-func FindPosition(board, userID string) (pos auth.ModerationLevel, err error) {
+// Get highest positions of specified user.
+// FIXME(Kagami): Use numeric position.
+func GetPositions(board, userID string) (pos auth.Positions, err error) {
 	if userID == "admin" {
-		return auth.Admin, nil
+		pos.CurBoard = auth.Admin
+		pos.AnyBoard = auth.Admin
+		return
 	}
 
-	r, err := prepared["get_positions"].Query(userID, board)
+	rs, err := prepared["get_positions"].Query(userID)
 	if err != nil {
 		return
 	}
-	defer r.Close()
+	defer rs.Close()
 
-	// Read the highest position held
-	var s string
-	for r.Next() {
-		err = r.Scan(&s)
+	var posBoard string
+	var posLevel string
+	for rs.Next() {
+		err = rs.Scan(&posBoard, &posLevel)
 		if err != nil {
 			return
 		}
-
 		level := auth.NotStaff
-		switch s {
+		switch posLevel {
 		case "owners":
 			level = auth.BoardOwner
 		case "moderators":
@@ -69,11 +70,14 @@ func FindPosition(board, userID string) (pos auth.ModerationLevel, err error) {
 		case "janitors":
 			level = auth.Janitor
 		}
-		if level > pos {
-			pos = level
+		if level > pos.AnyBoard {
+			pos.AnyBoard = level
+		}
+		if posBoard == board && level > pos.CurBoard {
+			pos.CurBoard = level
 		}
 	}
-	err = r.Err()
+	err = rs.Err()
 	return
 }
 

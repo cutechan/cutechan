@@ -1,7 +1,6 @@
 {% import "strconv" %}
 {% import "meguca/lang" %}
 {% import "meguca/common" %}
-{% import "meguca/auth" %}
 {% import "encoding/json" %}
 
 {% func renderThreadNavigation(b string, top bool) %}{% stripspace %}
@@ -24,7 +23,7 @@
 	</nav>
 {% endstripspace %}{% endfunc %}
 
-{% func renderThread(postHTML []byte, id uint64, board, title string, pos auth.ModerationLevel) %}{% stripspace %}
+{% func renderThread(postHTML []byte, id uint64, board, title string) %}{% stripspace %}
 	<section class="board" id="threads">
 		<h1 class="page-title">{%s title %}</h1>
 		{%= renderPageNavigation(false) %}

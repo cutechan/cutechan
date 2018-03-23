@@ -1,22 +1,17 @@
-// Stickers HTTP handlers.
-
 package server
 
 import (
-	"meguca/templates"
 	"net/http"
+
+	"meguca/templates"
 )
 
 func serveStickers(w http.ResponseWriter, r *http.Request) {
-	pos, ok := extractPosition(w, r)
+	pos, ok := extractPositions(w, r)
 	if !ok {
 		return
 	}
 	stickHTML := []byte{}
-	// if err != nil {
-	// 	text500(w, r, errInternal)
-	// 	return
-	// }
 	html := templates.Stickers(pos, stickHTML)
 	serveHTML(w, r, "", html, nil)
 }

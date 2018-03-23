@@ -1,2 +1,1 @@
-select position from staff
-  where account = $1 and board = $2
+SELECT board, position FROM staff WHERE account = $1

@@ -9,7 +9,14 @@ var (
 	// board: IP: IsBanned
 	bans   = map[string]map[string]bool{}
 	bansMu sync.RWMutex
+
+	NullPositions = Positions{CurBoard: NotLoggedIn, AnyBoard: NotLoggedIn}
 )
+
+type Positions struct {
+	CurBoard ModerationLevel
+	AnyBoard ModerationLevel
+}
 
 // ModerationLevel defines the level required to perform an action
 type ModerationLevel int8
@@ -42,7 +49,7 @@ func (l ModerationLevel) String() string {
 	case Janitor:
 		return "janitors"
 	default:
-		return ""
+		return "notstaff"
 	}
 }
 
@@ -55,6 +62,8 @@ const (
 	BoardOwner
 	Admin
 )
+
+const MaxModerationLevel = Admin
 
 // An action performable by moderation staff
 type ModerationAction uint8

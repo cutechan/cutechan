@@ -28,26 +28,18 @@ export const enum ModerationLevel {
   admin,
 }
 
-// Current staff position on this page
+// Current staff position on this page.
 export const position: ModerationLevel = (window as any).position;
+
+// Current staff position on any boardl.
+export const anyposition: ModerationLevel = (window as any).anyposition;
 
 export function isStaff(): boolean {
   return position > ModerationLevel.notStaff;
 }
 
-export function getMyAuth(): string {
-  switch (position) {
-  case ModerationLevel.admin:
-    return "admin";
-  case ModerationLevel.boardOwner:
-    return "owners";
-  case ModerationLevel.moderator:
-    return "moderators";
-  case ModerationLevel.janitor:
-    return "janitors";
-  default:
-    return "";
-  }
+export function isPowerUser(): boolean {
+  return anyposition >= ModerationLevel.janitor;
 }
 
 // Set a password match validator function for 2 input elements, that are

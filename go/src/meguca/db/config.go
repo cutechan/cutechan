@@ -4,7 +4,6 @@ import (
 	"database/sql"
 	"encoding/json"
 	"meguca/config"
-	"meguca/templates"
 	"meguca/util"
 	"time"
 )
@@ -94,8 +93,7 @@ func updateConfigs(data string) error {
 		return util.WrapError("reloading configuration", err)
 	}
 	config.Set(conf)
-
-	return recompileTemplates()
+	return nil
 }
 
 func updateBoardConfigs(board string) error {
@@ -104,7 +102,7 @@ func updateBoardConfigs(board string) error {
 	case nil:
 	case sql.ErrNoRows:
 		config.RemoveBoard(board)
-		return recompileTemplates()
+		return nil
 	default:
 		return err
 	}
@@ -114,7 +112,7 @@ func updateBoardConfigs(board string) error {
 	case err != nil:
 		return util.WrapError("reloading board configuration", err)
 	case changed:
-		return recompileTemplates()
+		return nil
 	default:
 		return nil
 	}
@@ -123,16 +121,6 @@ func updateBoardConfigs(board string) error {
 // GetBoardConfigs retrives the configurations of a specific board
 func GetBoardConfigs(board string) (config.BoardConfigs, error) {
 	return scanBoardConfigs(prepared["get_board_configs"].QueryRow(board))
-}
-
-func recompileTemplates() error {
-	if IsTest {
-		return nil
-	}
-	if err := templates.Compile(); err != nil {
-		return util.WrapError("recompiling templates", err)
-	}
-	return nil
 }
 
 // WriteConfigs writes new global configurations to the database

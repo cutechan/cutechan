@@ -22,6 +22,10 @@ func serveIdolProfiles(w http.ResponseWriter, r *http.Request) {
 }
 
 func setIdolPreview(w http.ResponseWriter, r *http.Request) {
+	if !assertPowerUser(w, r) {
+		return
+	}
+
 	idolId := getParam(r, "id")
 	if !uuidRe.MatchString(idolId) {
 		serveErrorJSON(w, r, aerrBadUuid)

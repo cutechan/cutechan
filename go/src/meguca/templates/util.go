@@ -2,9 +2,34 @@ package templates
 
 import (
 	"html"
-	"meguca/common"
+	"strings"
 	"time"
+
+	"meguca/auth"
+	"meguca/common"
 )
+
+func posClasses(pos auth.Positions) string {
+	var classes []string
+	// Any next moderation level can do anything that previous can.
+	// Add them all for simpler handling in CSS.
+	for level := pos.CurBoard; level >= auth.Janitor; level-- {
+		classes = append(classes, "pos_"+level.String())
+	}
+	if pos.CurBoard <= auth.NotStaff {
+		classes = append(classes, "pos_notstaff")
+	}
+	for level := pos.AnyBoard; level >= auth.Janitor; level-- {
+		classes = append(classes, "anypos_"+level.String())
+	}
+	if pos.AnyBoard <= auth.NotStaff {
+		classes = append(classes, "anypos_notstaff")
+	}
+	if pos.AnyBoard >= auth.Janitor {
+		classes = append(classes, "user_power")
+	}
+	return strings.Join(classes, " ")
+}
 
 // Extract reverse links to linked posts on a page
 func extractBacklinks(cap int, threads ...common.Thread) common.Backlinks {

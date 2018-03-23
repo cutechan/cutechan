@@ -86,7 +86,7 @@ func serve(conf config) {
 	err := util.RunTasks([][]util.Task{
 		[]util.Task{db.StartDb, assets.CreateDirs},
 		[]util.Task{lang.Load},
-		[]util.Task{templates.Compile, templates.CompileMustache},
+		[]util.Task{templates.CompileMustache},
 	})
 	if err != nil {
 		log.Fatalf("Error preparing server: %v", err)

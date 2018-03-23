@@ -39,7 +39,7 @@ func serveHTML(
 }
 
 func serveLanding(w http.ResponseWriter, r *http.Request) {
-	pos, ok := extractPosition(w, r)
+	pos, ok := extractPositions(w, r)
 	if !ok {
 		return
 	}
@@ -78,7 +78,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		return
 	}
 
-	pos, ok := extractPosition(w, r)
+	pos, ok := extractPositions(w, r)
 	if !ok {
 		return
 	}
@@ -119,7 +119,7 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pos, ok := extractPosition(w, r)
+	pos, ok := extractPositions(w, r)
 	if !ok {
 		return
 	}
@@ -134,35 +134,6 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 	title := data.(common.Thread).Subject
 	html = templates.Thread(id, b, title, lastN != 0, pos, html)
 	serveHTML(w, r, etag, html, nil)
-}
-
-// Extract logged in position for HTML request.
-// If ok == false, caller should return.
-func extractPosition(w http.ResponseWriter, r *http.Request) (
-	pos auth.ModerationLevel, ok bool,
-) {
-	ok = true
-	pos = auth.NotLoggedIn
-	creds, err := extractLoginCreds(r)
-
-	switch err {
-	case nil:
-		board := extractParam(r, "board")
-		pos, err = db.FindPosition(board, creds.UserID)
-		if err != nil {
-			text500(w, r, err)
-			ok = false
-			return
-		}
-	case common.ErrInvalidCreds:
-		return
-	default:
-		text500(w, r, err)
-		ok = false
-		return
-	}
-
-	return
 }
 
 // Render a board selection and navigation panel and write HTML to client

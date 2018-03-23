@@ -194,8 +194,8 @@ func CanPerform(account, board string, action auth.ModerationLevel) (
 		return false, nil
 	}
 
-	pos, err := FindPosition(board, account)
-	can = pos >= action
+	pos, err := GetPositions(board, account)
+	can = pos.CurBoard >= action
 	return
 }
 

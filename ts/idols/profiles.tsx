@@ -4,7 +4,6 @@
  * @module cutechan/idols/profiles
  */
 
-import * as cx from "classnames";
 import { Component, h, render } from "preact";
 import {
   Band, BandMap, getBandMap, getIdolPreviewUrl,
@@ -14,13 +13,10 @@ import {
 } from "../../go/src/github.com/Kagami/kpopnet/ts/api";
 import { showAlert } from "../alerts";
 import { _ } from "../lang";
+import { isPowerUser } from "../mod";
 import { getFilePrefix } from "../posts";
 import { hook, HOOKS } from "../util";
 import { PROFILES_CONTAINER_SEL } from "../vars";
-
-function canEditProfiles(): boolean {
-  return true;
-}
 
 interface PreviewProps {
   idol: Idol;
@@ -50,7 +46,7 @@ class IdolPreview extends Component<PreviewProps, any> {
     );
   }
   private handlePreviewClick = () => {
-    if (canEditProfiles()) {
+    if (isPowerUser()) {
       this.fileEl.click();
     }
   }
@@ -81,7 +77,7 @@ class IdolItem extends Component<ItemProps, any> {
   public render({ idol, band }: ItemProps) {
     const lines = renderIdol(idol, band).slice(0, 5);
     return (
-      <section class={cx("idol", canEditProfiles() && "idol_editable")}>
+      <section class="idol">
         <IdolPreview idol={idol} onChange={this.handlePreviewChange} />
         <div class="idol-info">
           {lines.map(([key, val]) =>

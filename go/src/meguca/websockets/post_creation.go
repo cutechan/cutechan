@@ -171,12 +171,14 @@ func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
 
 	// Attach staff position title after validation.
 	if req.Creds != nil {
-		var pos auth.ModerationLevel
-		pos, err = db.FindPosition(board, req.Creds.UserID)
+		var pos auth.Positions
+		pos, err = db.GetPositions(board, req.Creds.UserID)
 		if err != nil {
 			return
 		}
-		post.Auth = pos.String()
+		if pos.CurBoard > auth.NotStaff {
+			post.Auth = pos.CurBoard.String()
+		}
 	}
 
 	post.Links, post.Commands, err = parser.ParseBody([]byte(req.Body))

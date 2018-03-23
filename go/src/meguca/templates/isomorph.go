@@ -5,7 +5,6 @@ package templates
 import (
 	"fmt"
 	"meguca/assets"
-	"meguca/auth"
 	"meguca/common"
 	"meguca/config"
 	"meguca/lang"
@@ -279,12 +278,4 @@ func pluralize2(n1, n2 int, plurals []string) string {
 	} else {
 		return plurals[1]
 	}
-}
-
-func posClass(pos auth.ModerationLevel) string {
-	posStr := pos.String()
-	if posStr == "" {
-		posStr = "notstaff"
-	}
-	return "pos-" + posStr
 }

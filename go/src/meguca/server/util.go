@@ -4,15 +4,17 @@ import (
 	"database/sql"
 	"fmt"
 	"log"
-	"meguca/auth"
-	"meguca/config"
-	"meguca/db"
-	"meguca/templates"
 	"mime/multipart"
 	"net/http"
 	"net/url"
 	"runtime/debug"
 	"strconv"
+
+	"meguca/auth"
+	"meguca/common"
+	"meguca/config"
+	"meguca/db"
+	"meguca/templates"
 
 	"github.com/dimfeld/httptreemux"
 )
@@ -48,7 +50,7 @@ func checkClientEtag(
 }
 
 // Combine the progress counter and optional configuration hash into a weak etag
-func formatEtag(ctr uint64, hash string, pos auth.ModerationLevel) string {
+func formatEtag(ctr uint64, hash string, pos auth.Positions) string {
 	buf := make([]byte, 3, 128)
 	buf[0] = 'W'
 	buf[1] = '/'
@@ -62,8 +64,8 @@ func formatEtag(ctr uint64, hash string, pos auth.ModerationLevel) string {
 	if hash != "" {
 		addOpt(hash)
 	}
-	if pos != auth.NotLoggedIn {
-		addOpt(pos.String())
+	if pos.CurBoard != auth.NotLoggedIn {
+		addOpt(pos.CurBoard.String())
 	}
 	buf = append(buf, '"')
 
@@ -149,6 +151,30 @@ func assertNotBanned(
 	}
 }
 
+// Extract positions of the current user. If ok == false, caller should
+// return.
+func extractPositions(w http.ResponseWriter, r *http.Request) (pos auth.Positions, ok bool) {
+	pos.CurBoard = auth.NotLoggedIn
+	pos.AnyBoard = auth.NotLoggedIn
+	ok = true
+	creds, err := extractLoginCreds(r)
+	switch err {
+	case nil:
+		board := getParam(r, "board")
+		pos, err = db.GetPositions(board, creds.UserID)
+		if err != nil {
+			text500(w, r, err)
+			ok = false
+		}
+	case common.ErrInvalidCreds:
+		// Do nothing.
+	default:
+		text500(w, r, err)
+		ok = false
+	}
+	return
+}
+
 func checkReadOnly(board string) bool {
 	conf := config.GetBoardConfigs(board).BoardConfigs
 	if conf.ReadOnly {
@@ -167,20 +193,41 @@ func checkModOnly(r *http.Request, board string) bool {
 		return false
 	}
 
-	pos, err := db.FindPosition(board, creds.UserID)
+	pos, err := db.GetPositions(board, creds.UserID)
 	if err != nil {
 		return false
 	}
-	if pos < auth.Moderator {
-		return false
-	}
 
-	return true
+	return pos.CurBoard >= auth.Moderator
 }
 
 func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string) bool {
 	if !checkModOnly(r, board) {
 		serve404(w, r)
+		return false
+	}
+	return true
+}
+
+// Currently any janitor or above pass.
+func isPowerUser(r *http.Request) bool {
+	creds, err := extractLoginCreds(r)
+	if err != nil {
+		return false
+	}
+
+	pos, err := db.GetPositions("", creds.UserID)
+	if err != nil {
+		return false
+	}
+
+	return pos.AnyBoard >= auth.Janitor
+}
+
+// Eunsure only power users can pass.
+func assertPowerUser(w http.ResponseWriter, r *http.Request) bool {
+	if !isPowerUser(r) {
+		serveErrorJSON(w, r, aerrPowerUserOnly)
 		return false
 	}
 	return true
