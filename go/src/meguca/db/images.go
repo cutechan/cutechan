@@ -71,14 +71,19 @@ func UseImageToken(tx *sql.Tx, token string) (img common.ImageCommon, err error)
 	return
 }
 
+func DeleteImageToken(tx *sql.Tx, token string) (err error) {
+	err = execPreparedTx(tx, "use_image_token", token)
+	return
+}
+
 // AllocateImage allocates an image's file resources to their respective
 // served directories and write its data to the database.
 func AllocateImage(src, thumb []byte, img common.ImageCommon) (err error) {
-	tx, err := beginTx()
+	tx, err := BeginTx()
 	if err != nil {
 		return
 	}
-	defer endTx(tx, &err)
+	defer EndTx(tx, &err)
 
 	// NOTE(Kagami): Write to database first because in case e.g. key
 	// conflict we should NOT remove the files.

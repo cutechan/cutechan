@@ -29,9 +29,6 @@ interface PreviewProps {
 
 class IdolPreview extends Component<PreviewProps, any> {
   private fileEl: HTMLInputElement = null;
-  public shouldComponentUpdate(nextProps: PreviewProps) {
-    return false;
-  }
   public render({ idol }: PreviewProps) {
     const opts = {small: true, prefix: getFilePrefix()};
     const previewUrl = getIdolPreviewUrl(idol, opts);

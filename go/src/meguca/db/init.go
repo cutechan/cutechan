@@ -401,6 +401,11 @@ var upgrades = []func(*sql.Tx) error{
 			`DROP FUNCTION insert_thread(id bigint, now bigint, body text, auth character varying, links bigint[], op bigint, board text, ip inet, file_cnt bigint, subject character varying)`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`DROP TABLE idol_previews`,
+		)
+	},
 }
 
 func StartDb() (err error) {

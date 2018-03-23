@@ -14,8 +14,10 @@ import (
 	"github.com/lib/pq"
 )
 
-// Stores generated prepared statements
-var prepared = make(map[string]*sql.Stmt)
+var (
+	// Stores generated prepared statements
+	prepared = make(map[string]*sql.Stmt)
+)
 
 type executor interface {
 	Exec(args ...interface{}) (sql.Result, error)
@@ -34,7 +36,7 @@ type tableScanner interface {
 
 func logError(prefix string, err error) {
 	if err != nil {
-		log.Printf("%s: %s\n", prefix, err)
+		log.Printf("db: %s: %s\n", prefix, err)
 	}
 }
 
@@ -74,13 +76,13 @@ func genPrepared() error {
 	return nil
 }
 
-// Deprecated: use beginTx instead.
+// Deprecated: use BeginTx instead.
 func StartTransaction() (*sql.Tx, error) {
-	return beginTx()
+	return BeginTx()
 }
 
 // RollbackOnError on error undoes the transaction on error.
-// Deprecated: move to endTx instead.
+// Deprecated: move to EndTx instead.
 func RollbackOnError(tx *sql.Tx, err *error) {
 	if *err != nil {
 		tx.Rollback()
@@ -89,12 +91,12 @@ func RollbackOnError(tx *sql.Tx, err *error) {
 
 // Initiate a new DB transaction. It is the responsibility of the caller
 // to commit or rollback the transaction.
-func beginTx() (tx *sql.Tx, err error) {
+func BeginTx() (tx *sql.Tx, err error) {
 	return db.Begin()
 }
 
 // Commit/rollback transaction depending on the error state.
-func endTx(tx *sql.Tx, err *error) {
+func EndTx(tx *sql.Tx, err *error) {
 	if *err != nil {
 		if rbErr := tx.Rollback(); rbErr != nil {
 			// Can only log this because original err should be preserved.
@@ -118,7 +120,11 @@ func execPrepared(id string, args ...interface{}) error {
 }
 
 func execPreparedTx(tx *sql.Tx, id string, args ...interface{}) error {
-	_, err := tx.Stmt(prepared[id]).Exec(args...)
+	stmt, ok := prepared[id]
+	if !ok {
+		return fmt.Errorf("no such prepared id: %s', id")
+	}
+	_, err := tx.Stmt(stmt).Exec(args...)
 	return err
 }
 

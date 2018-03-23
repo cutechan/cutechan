@@ -26,6 +26,9 @@ func serveErrorJSON(w http.ResponseWriter, r *http.Request, err error) {
 	if aerrAsserted, ok := err.(ApiError); ok {
 		aerr = aerrAsserted
 	}
+	if aerr.Code() >= 500 {
+		logError(r, aerr)
+	}
 	buf, _ := json.Marshal(aerr)
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(aerr.Code())

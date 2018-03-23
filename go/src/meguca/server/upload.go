@@ -1,8 +1,8 @@
 package server
 
 import (
-	"database/sql"
 	"crypto/sha1"
+	"database/sql"
 	"encoding/hex"
 	"io/ioutil"
 	"log"
@@ -35,21 +35,20 @@ func getSha1(data []byte) string {
 	return hex.EncodeToString(hash[:])
 }
 
-
 func serveUploadError(w http.ResponseWriter, r *http.Request, err error) {
 	// Upload errors are quite painful (e.g. badly-encoded files and such)
 	// so need to have everything logged.
-	log.Printf("upload error: %s: %v\n", auth.GetLogIP(r), err)
+	log.Printf("upload: %s: %v", auth.GetLogIP(r), err)
 	serveErrorJSON(w, r, err)
 }
 
 type uploadResult struct {
-	hash string
+	hash  string
 	token string
 }
 
 func uploadFile(fh *multipart.FileHeader) (res uploadResult, err error) {
-	if fh.Size > config.Get().MaxSize * 1024 * 1024 {
+	if fh.Size > config.Get().MaxSize*1024*1024 {
 		err = aerrTooLarge
 		return
 	}

@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"regexp"
 
+	"meguca/db"
+
 	"github.com/Kagami/kpopnet/go/src/kpopnet"
 )
 
@@ -44,5 +46,26 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	serveJSON(w, r, res)
+	if err := setIdolPreviewTx(idolId, res); err != nil {
+		err = aerrInternal.Hide(err)
+		serveErrorJSON(w, r, err)
+	}
+
+	answer := map[string]string{"SHA1": res.hash}
+	serveJSON(w, r, answer)
+}
+
+func setIdolPreviewTx(idolId string, res uploadResult) (err error) {
+	tx, err := db.BeginTx()
+	if err != nil {
+		return
+	}
+	defer db.EndTx(tx, &err)
+
+	if err = db.UpsertIdolPreview(tx, idolId, res.hash); err != nil {
+		return
+	}
+
+	err = db.DeleteImageToken(tx, res.token)
+	return
 }
