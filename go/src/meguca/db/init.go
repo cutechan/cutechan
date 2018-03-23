@@ -406,6 +406,13 @@ var upgrades = []func(*sql.Tx) error{
 			`DROP TABLE idol_previews`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`ALTER TABLE idol_previews
+				DROP CONSTRAINT idol_previews_image_id_fkey,
+				ADD CONSTRAINT idol_previews_image_id_fkey FOREIGN KEY (image_id) REFERENCES images(sha1)`,
+		)
+	},
 }
 
 func StartDb() (err error) {
