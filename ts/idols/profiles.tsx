@@ -146,11 +146,6 @@ class ProfilesWrapper extends Component<any, WrapperState> {
       query: "",
     };
   }
-  public componentDidUpdate(prevProps: any, prevState: WrapperState) {
-    if (prevState.loading && !this.state.loading) {
-      this.inputEl.focus();
-    }
-  }
   public render(props: any, { loading, query }: WrapperState) {
     return (
       <span class="header-profiles-wrapper">
@@ -158,7 +153,6 @@ class ProfilesWrapper extends Component<any, WrapperState> {
           ref={(i) => this.inputEl = i as HTMLInputElement}
           class="header-profiles-search"
           placeholder={_("searchIdol")}
-          disabled={loading}
           onFocus={this.handleSearchFocus}
           onInput={this.handleSearch}
         />
@@ -172,9 +166,7 @@ class ProfilesWrapper extends Component<any, WrapperState> {
     );
   }
   private handleSearchFocus = () => {
-    // Lazy load profiles to avoid extra request on page load.
-    // Should we fetch them automatically after 5-10s?
-    if (!this.profiles) {
+    if (!this.props.loading && !this.props.query) {
       this.setState({loading: true});
       getProfiles().then((profiles) => {
         this.profiles = profiles;
@@ -184,8 +176,10 @@ class ProfilesWrapper extends Component<any, WrapperState> {
     }
   }
   private handleSearch = () => {
-    const query = this.inputEl.value;
-    this.setState({query});
+    if (!this.props.loading) {
+      const query = this.inputEl.value;
+      this.setState({query});
+    }
   }
 }
 
