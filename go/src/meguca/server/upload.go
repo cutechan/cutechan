@@ -33,7 +33,7 @@ func getSha1(data []byte) string {
 }
 
 type uploadResult struct {
-	hash  string
+	file  *common.ImageCommon
 	token string
 }
 
@@ -60,8 +60,8 @@ func uploadFile(fh *multipart.FileHeader) (res uploadResult, err error) {
 	file, err := db.GetImage(hash)
 	switch err {
 	case nil:
-		// Already have a thumbnail
-		return newFileToken(hash)
+		// Already have thumbnail.
+		return newFileToken(&file)
 	case sql.ErrNoRows:
 		file.SHA1 = hash
 		return saveFile(data, &file)
@@ -71,9 +71,9 @@ func uploadFile(fh *multipart.FileHeader) (res uploadResult, err error) {
 	}
 }
 
-func newFileToken(hash string) (res uploadResult, err error) {
-	res.hash = hash
-	res.token, err = db.NewImageToken(hash)
+func newFileToken(file *common.ImageCommon) (res uploadResult, err error) {
+	res.file = file
+	res.token, err = db.NewImageToken(file.SHA1)
 	if err != nil {
 		err = aerrInternal.Hide(err)
 		return
@@ -117,5 +117,5 @@ func saveFile(srcData []byte, file *common.ImageCommon) (res uploadResult, err e
 		err = aerrInternal.Hide(err)
 		return
 	}
-	return newFileToken(file.SHA1)
+	return newFileToken(file)
 }

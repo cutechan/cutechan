@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"regexp"
 
+	"meguca/common"
 	"meguca/db"
 
 	"github.com/Kagami/kpopnet/go/src/kpopnet"
@@ -21,32 +22,38 @@ func serveIdolProfiles(w http.ResponseWriter, r *http.Request) {
 	kpopnet.ServeProfiles(w, r)
 }
 
-func setIdolPreview(w http.ResponseWriter, r *http.Request) {
+func serveSetIdolPreview(w http.ResponseWriter, r *http.Request) {
 	if !assertPowerUser(w, r) {
 		return
 	}
+	answer, err := setIdolPreview(w, r)
+	if err != nil {
+		serveErrorJSON(w, r, err)
+		return
+	}
+	serveJSON(w, r, answer)
+}
 
+func setIdolPreview(w http.ResponseWriter, r *http.Request) (answer map[string]string, err error) {
 	idolId := getParam(r, "id")
 	if !uuidRe.MatchString(idolId) {
-		serveErrorJSON(w, r, aerrBadUuid)
+		err = aerrBadUuid
 		return
 	}
 
 	_, m, err := parseUploadForm(w, r)
 	if err != nil {
-		serveErrorJSON(w, r, err)
 		return
 	}
 
 	fhs := m.File["files[]"]
 	if len(fhs) != 1 {
-		serveErrorJSON(w, r, aerrNoFile)
+		err = aerrNoFile
 		return
 	}
 
 	res, err := uploadFile(fhs[0])
 	if err != nil {
-		serveErrorJSON(w, r, err)
 		return
 	}
 
@@ -56,7 +63,15 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) {
 		}
 	}()
 
-	if err := db.UpsertIdolPreview(idolId, res.hash); err != nil {
+	// Can safely check only after thumbnail generation (uploaded file may
+	// have wrong mime/extension). If this check is failed we may have to
+	// remove just uploaded file but this shouldn't occur often.
+	if res.file.FileType != common.JPEG {
+		err = aerrBadPreview
+		return
+	}
+
+	if err = db.UpsertIdolPreview(idolId, res.file.SHA1); err != nil {
 		switch {
 		case db.IsUniqueViolationError(err):
 			err = aerrDupPreview
@@ -65,12 +80,11 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) {
 		default:
 			err = aerrInternal.Hide(err)
 		}
-		serveErrorJSON(w, r, err)
 		return
 	}
 
 	kpopnet.ClearProfilesCache()
 
-	answer := map[string]string{"SHA1": res.hash}
-	serveJSON(w, r, answer)
+	answer = map[string]string{"SHA1": res.file.SHA1}
+	return
 }
