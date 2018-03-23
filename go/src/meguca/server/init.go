@@ -12,7 +12,7 @@ import (
 )
 
 func Start(address string, debugRoutes bool) (err error) {
-	go runForceFreeTask()
+	// go runForceFreeTask()
 	startThumbWorkers()
 	router := createRouter(debugRoutes)
 	return http.ListenAndServe(address, router)
