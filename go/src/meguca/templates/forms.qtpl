@@ -245,6 +245,9 @@ Renders the tab selection butts in tabbed windows
 				} %}
 					<a class="form-selection-link" id="{%s l %}">
 						{%s ln.UI[l] %}
+						{% if l == "logout" %}
+							,{% space %}{%s pos.UserID %}
+						{% endif %}
 					</a>
 				{% endfor %}
 				{% if pos.CurBoard == auth.Admin %}

@@ -92,9 +92,6 @@ class AccountPanel extends TabbedModal {
       this.showHook = () => {
         loginForm.initCaptcha();
       };
-    } else {
-      const logoutItem = document.getElementById("logout");
-      logoutItem.textContent += `, ${LoginID.get()}`;
     }
   }
 
@@ -116,27 +113,6 @@ class AccountPanel extends TabbedModal {
   }
 }
 
-/**
- * Manage login ID of the current session.
- * Simple localStorage wrapper.
- */
-export const LoginID = {
-  get(): string {
-    return localStorage.loginID;
-  },
-  set(id: string) {
-    localStorage.loginID = id;
-  },
-  delete() {
-    delete localStorage.loginID;
-  },
-};
-
-// Reset the views and module to its not-logged-id state
-export function reset() {
-  LoginID.delete();
-}
-
 // Terminate the user session(s) server-side and reset the panel
 async function logout(url: string) {
   const res = await fetch(url, {
@@ -146,19 +122,15 @@ async function logout(url: string) {
   switch (res.status) {
     case 200:
     case 403: // Does not really matter, if the session already expired
-      reset();
       location.reload(true);
-      break;
     default:
       showAlert(await res.text());
   }
 }
 
 // Common functionality of login and registration forms
-// tslint:disable-next-line:max-classes-per-file
 class LoginForm extends FormView {
   private url: string;
-  private login: boolean;
 
   constructor(id: string, url: string) {
     super({
@@ -166,8 +138,6 @@ class LoginForm extends FormView {
       lazyCaptcha: true,
     });
     this.url = "/api/" + url;
-    // TODO(Kagami): Refactor this.
-    this.login = url === "login";
   }
 
   // Extract and send login ID and password and captcha (if any) from a form
@@ -179,9 +149,6 @@ class LoginForm extends FormView {
     const res = await postJSON(this.url, req);
     switch (res.status) {
       case 200:
-        if (this.login) {
-          LoginID.set(id);
-        }
         location.reload(true);
       default:
         this.renderFormResponse(await res.text());

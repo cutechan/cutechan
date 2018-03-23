@@ -1,4 +1,3 @@
-import { reset } from "..";
 import { accountPanel } from "..";
 import { showAlert } from "../../alerts";
 import lang from "../../lang";
@@ -18,7 +17,6 @@ export abstract class AccountForm extends FormView {
   // stored in the database (likely because of session expiry).
   public handle403() {
     this.remove();
-    reset();
     showAlert(lang.ui.sessionExpired);
   }
 
