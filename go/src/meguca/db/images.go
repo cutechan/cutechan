@@ -71,8 +71,8 @@ func UseImageToken(tx *sql.Tx, token string) (img common.ImageCommon, err error)
 	return
 }
 
-func DeleteImageToken(tx *sql.Tx, token string) (err error) {
-	err = execPreparedTx(tx, "use_image_token", token)
+func DeleteImageToken(token string) (err error) {
+	err = execPrepared("use_image_token", token)
 	return
 }
 

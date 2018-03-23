@@ -69,6 +69,7 @@ var (
 	aerrNoFile          = aerrorNew(400, "no file provided")
 	aerrBadUuid         = aerrorNew(400, "malformed UUID")
 	aerrDupPreview      = aerrorNew(400, "duplicated preview")
+	aerrNoIdol          = aerrorNew(404, "no such idol")
 	aerrTooLarge        = aerrorNew(400, "file too large")
 	aerrTooManyFiles    = aerrorNew(400, "too many files")
 	aerrUploadRead      = aerrorNew(400, "error reading upload")

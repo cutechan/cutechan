@@ -50,10 +50,19 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	if err := setIdolPreviewTx(idolId, res); err != nil {
-		if db.IsConflictError(err) {
+	defer func() {
+		if tokErr := db.DeleteImageToken(res.token); tokErr != nil {
+			logError(r, tokErr)
+		}
+	}()
+
+	if err := db.UpsertIdolPreview(idolId, res.hash); err != nil {
+		switch {
+		case db.IsUniqueViolationError(err):
 			err = aerrDupPreview
-		} else {
+		case db.IsForeignKeyViolationError(err):
+			err = aerrNoIdol
+		default:
 			err = aerrInternal.Hide(err)
 		}
 		serveErrorJSON(w, r, err)
@@ -64,19 +73,4 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) {
 
 	answer := map[string]string{"SHA1": res.hash}
 	serveJSON(w, r, answer)
-}
-
-func setIdolPreviewTx(idolId string, res uploadResult) (err error) {
-	tx, err := db.BeginTx()
-	if err != nil {
-		return
-	}
-	defer db.EndTx(tx, &err)
-
-	if err = db.UpsertIdolPreview(tx, idolId, res.hash); err != nil {
-		return
-	}
-
-	err = db.DeleteImageToken(tx, res.token)
-	return
 }

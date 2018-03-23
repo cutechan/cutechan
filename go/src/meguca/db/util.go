@@ -141,9 +141,22 @@ func setReadOnly(tx *sql.Tx) error {
 	return err
 }
 
-// IsConflictError returns if an error is a unique key conflict error
+// Deprecated: Use IsUniqueViolation instead.
 func IsConflictError(err error) bool {
+	return IsUniqueViolationError(err)
+}
+
+func IsUniqueViolationError(err error) bool {
+	// List of codes:
+	// https://www.postgresql.org/docs/9.3/static/errcodes-appendix.html
 	if err, ok := err.(*pq.Error); ok && err.Code.Name() == "unique_violation" {
+		return true
+	}
+	return false
+}
+
+func IsForeignKeyViolationError(err error) bool {
+	if err, ok := err.(*pq.Error); ok && err.Code.Name() == "foreign_key_violation" {
 		return true
 	}
 	return false
