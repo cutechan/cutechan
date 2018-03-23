@@ -6,10 +6,9 @@
   "jsRules": {},
   "rules": {
     "curly": [true, "ignore-same-line"],
-    "interface-name": false,
     "object-literal-sort-keys": false,
     "max-classes-per-file": false,
-    "member-ordering": false
+    "interface-name": false
   },
   "rulesDirectory": []
 }

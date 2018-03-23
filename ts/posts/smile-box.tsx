@@ -196,7 +196,7 @@ export default class extends Component<any, any> {
       this.props.onClose();
     }
   }
-  public handleBodyKey = (e: KeyboardEvent) => {
+  private handleBodyKey = (e: KeyboardEvent) => {
     const { acList } = this.props;
     if (!acList) return;
     const last = acList.length - 1;
@@ -235,6 +235,7 @@ export default class extends Component<any, any> {
     storeRecent(id);
     this.props.onSelect(id);
   }
+  // tslint:disable-next-line:member-ordering
   public render({ acList }: any, { left, top }: any) {
     const style = acList ? { left, top } : null;
     return (
