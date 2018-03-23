@@ -5,11 +5,8 @@ import (
 	"database/sql"
 	"encoding/hex"
 	"io/ioutil"
-	"log"
 	"mime/multipart"
-	"net/http"
 
-	"meguca/auth"
 	"meguca/common"
 	"meguca/config"
 	"meguca/db"
@@ -33,13 +30,6 @@ var (
 func getSha1(data []byte) string {
 	hash := sha1.Sum(data)
 	return hex.EncodeToString(hash[:])
-}
-
-func serveUploadError(w http.ResponseWriter, r *http.Request, err error) {
-	// Upload errors are quite painful (e.g. badly-encoded files and such)
-	// so need to have everything logged.
-	log.Printf("upload: %s: %v", auth.GetLogIP(r), err)
-	serveErrorJSON(w, r, err)
 }
 
 type uploadResult struct {

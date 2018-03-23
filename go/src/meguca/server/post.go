@@ -156,7 +156,8 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	for i, fh := range fhs {
 		res, err := uploadFile(fh)
 		if err != nil {
-			serveUploadError(w, r, err)
+			serveErrorJSON(w, r, err)
+			return
 		}
 		tokens[i] = res.token
 	}

@@ -42,14 +42,17 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) {
 
 	res, err := uploadFile(fhs[0])
 	if err != nil {
-		serveUploadError(w, r, err)
+		serveErrorJSON(w, r, err)
 		return
 	}
 
 	if err := setIdolPreviewTx(idolId, res); err != nil {
 		err = aerrInternal.Hide(err)
 		serveErrorJSON(w, r, err)
+		return
 	}
+
+	kpopnet.ClearProfilesCache()
 
 	answer := map[string]string{"SHA1": res.hash}
 	serveJSON(w, r, answer)
