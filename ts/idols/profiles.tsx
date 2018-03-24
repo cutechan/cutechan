@@ -130,12 +130,15 @@ function Spinner() {
   );
 }
 
+// tslint:disable-next-line:interface-over-type-literal
+type WrapperProps = {};
+
 interface WrapperState {
   loading: boolean;
   query: string;
 }
 
-class ProfilesWrapper extends Component<any, WrapperState> {
+class ProfilesWrapper extends Component<WrapperProps, WrapperState> {
   private profiles: Profiles = null;
   private bandMap: BandMap = null;
   private inputEl: HTMLInputElement = null;
@@ -146,7 +149,7 @@ class ProfilesWrapper extends Component<any, WrapperState> {
       query: "",
     };
   }
-  public render(props: any, { loading, query }: WrapperState) {
+  public render(props: WrapperProps, { loading, query }: WrapperState) {
     return (
       <span class="header-profiles-wrapper">
         <input
@@ -166,7 +169,7 @@ class ProfilesWrapper extends Component<any, WrapperState> {
     );
   }
   private handleSearchFocus = () => {
-    if (!this.props.loading && !this.props.query) {
+    if (!this.state.loading && !this.state.query) {
       this.setState({loading: true});
       getProfiles().then((profiles) => {
         this.profiles = profiles;
@@ -176,7 +179,7 @@ class ProfilesWrapper extends Component<any, WrapperState> {
     }
   }
   private handleSearch = () => {
-    if (!this.props.loading) {
+    if (!this.state.loading) {
       const query = this.inputEl.value;
       this.setState({query});
     }
