@@ -50,7 +50,7 @@ func (l ModerationLevel) String() string {
 	case Janitor:
 		return "janitors"
 	default:
-		return "notstaff"
+		return ""
 	}
 }
 
@@ -65,6 +65,10 @@ const (
 )
 
 const MaxModerationLevel = Admin
+
+func IsPowerUser(pos Positions) bool {
+	return pos.AnyBoard >= Janitor
+}
 
 // An action performable by moderation staff
 type ModerationAction uint8

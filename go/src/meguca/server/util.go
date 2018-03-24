@@ -210,7 +210,7 @@ func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string) bool
 }
 
 // Currently any janitor or above pass.
-func isPowerUser(r *http.Request) bool {
+func checkPowerUser(r *http.Request) bool {
 	creds, err := extractLoginCreds(r)
 	if err != nil {
 		return false
@@ -221,12 +221,12 @@ func isPowerUser(r *http.Request) bool {
 		return false
 	}
 
-	return pos.AnyBoard >= auth.Janitor
+	return auth.IsPowerUser(pos)
 }
 
 // Eunsure only power users can pass.
 func assertPowerUser(w http.ResponseWriter, r *http.Request) bool {
-	if !isPowerUser(r) {
+	if !checkPowerUser(r) {
 		serveErrorJSON(w, r, aerrPowerUserOnly)
 		return false
 	}

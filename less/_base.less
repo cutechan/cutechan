@@ -1174,10 +1174,8 @@ html.work-mode {
 // POST MOD CONTROLS
 //////////////////////////////
 
-html.pos_notstaff {
-  .post-delete-control,
-  .post-ban-control,
-  {
+html:not(.pos_janitors) {
+  .post-delete-control, .post-ban-control {
     display: none;
   }
 }

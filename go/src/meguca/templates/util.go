@@ -16,16 +16,10 @@ func posClasses(pos auth.Positions) string {
 	for level := pos.CurBoard; level >= auth.Janitor; level-- {
 		classes = append(classes, "pos_"+level.String())
 	}
-	if pos.CurBoard <= auth.NotStaff {
-		classes = append(classes, "pos_notstaff")
-	}
 	for level := pos.AnyBoard; level >= auth.Janitor; level-- {
 		classes = append(classes, "anypos_"+level.String())
 	}
-	if pos.AnyBoard <= auth.NotStaff {
-		classes = append(classes, "anypos_notstaff")
-	}
-	if pos.AnyBoard >= auth.Janitor {
+	if auth.IsPowerUser(pos) {
 		classes = append(classes, "user_power")
 	}
 	return strings.Join(classes, " ")
