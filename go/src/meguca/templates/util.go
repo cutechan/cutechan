@@ -13,10 +13,10 @@ func posClasses(pos auth.Positions) string {
 	var classes []string
 	// Any next moderation level can do anything that previous can.
 	// Add them all for simpler handling in CSS.
-	for level := pos.CurBoard; level >= auth.Janitor; level-- {
+	for level := pos.CurBoard; level >= auth.Moderator; level-- {
 		classes = append(classes, "pos_"+level.String())
 	}
-	for level := pos.AnyBoard; level >= auth.Janitor; level-- {
+	for level := pos.AnyBoard; level >= auth.Moderator; level-- {
 		classes = append(classes, "anypos_"+level.String())
 	}
 	if auth.IsPowerUser(pos) {

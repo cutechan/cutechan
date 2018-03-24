@@ -78,7 +78,7 @@ const actions: { [key: string]: ItemSpec } = {
 // Returns, if the post still likely has an IP attached and the client is
 // logged in
 function canModerateIP(m: Post): boolean {
-  return position >= ModerationLevel.janitor
+  return position >= ModerationLevel.moderator
     && m.time > Date.now() / 1000 - 24 * 7 * 3600;
 }
 

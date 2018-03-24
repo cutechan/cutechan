@@ -35,7 +35,7 @@ export const position: ModerationLevel = (window as any).position;
 export const anyposition: ModerationLevel = (window as any).anyposition;
 
 export function isMod(): boolean {
-  return position > ModerationLevel.moderator;
+  return position >= ModerationLevel.moderator;
 }
 
 export function isPowerUser(): boolean {

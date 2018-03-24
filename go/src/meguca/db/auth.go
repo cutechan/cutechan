@@ -40,7 +40,6 @@ func GetPassword(id string) (hash []byte, err error) {
 }
 
 // Get highest positions of specified user.
-// FIXME(Kagami): Use numeric position.
 func GetPositions(board, userID string) (pos auth.Positions, err error) {
 	pos.UserID = userID
 
