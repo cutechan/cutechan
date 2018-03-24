@@ -176,7 +176,7 @@ func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
 		if err != nil {
 			return
 		}
-		if pos.CurBoard > auth.NotStaff {
+		if pos.CurBoard > auth.Janitor {
 			post.Auth = pos.CurBoard.String()
 		}
 	}

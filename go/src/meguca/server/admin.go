@@ -318,7 +318,7 @@ func deleteBoard(w http.ResponseWriter, r *http.Request) {
 
 // Delete one or multiple posts on a moderated board
 func deletePost(w http.ResponseWriter, r *http.Request) {
-	moderatePosts(w, r, auth.Janitor, db.DeletePost)
+	moderatePosts(w, r, auth.Moderator, db.DeletePost)
 }
 
 // Perform a moderation action an a single post. If ok == false, the caller
@@ -361,7 +361,7 @@ func moderatePosts(
 		return
 	}
 	for _, id := range ids {
-		ok := moderatePost(w, r, id, auth.Janitor, func(userID string) error {
+		ok := moderatePost(w, r, id, auth.Moderator, func(userID string) error {
 			return fn(id, userID)
 		})
 		if !ok {
@@ -526,7 +526,7 @@ func getSameIPPosts(w http.ResponseWriter, r *http.Request) {
 		text400(w, err)
 		return
 	}
-	board, _, ok := canModeratePost(w, r, id, auth.Janitor)
+	board, _, ok := canModeratePost(w, r, id, auth.Moderator)
 	if !ok {
 		return
 	}
