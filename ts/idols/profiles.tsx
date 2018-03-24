@@ -82,7 +82,7 @@ class IdolItem extends Component<ItemProps, any> {
         <div class="idol-info">
           {lines.map(([key, val]) =>
             <p class="idol-info-line">
-              <span class="idol-info-key">{_(key)}: </span>
+              <span class="idol-info-key">{_(key)}</span>
               <span class="idol-info-val">{val}</span>
             </p>,
           )}
@@ -116,7 +116,7 @@ class IdolList extends Component<ListProps, any> {
           <IdolItem
             key={idol.id}
             idol={idol}
-            band={bandMap.get(idol.band_id).band}
+            band={bandMap.get(idol.band_id)}
           />,
         )}
       </article>
