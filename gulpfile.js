@@ -16,7 +16,6 @@ const ts = require("gulp-typescript");
 const rjsOptimize = require("gulp-requirejs-optimize");
 const spritesmith = require("gulp.spritesmith");
 const less = require("gulp-less");
-const postcss = require("gulp-postcss");
 const rename = require("gulp-rename");
 const uglify = require("gulp-uglify/composer")(uglifyes, console);
 const notify = require("gulp-notify");
@@ -25,6 +24,9 @@ const runSequence = require("run-sequence");
 
 // Keep script alive and rebuild on file changes.
 const watch = process.argv.includes("-w");
+
+// Build also tasks which are rarely needed.
+const all = process.argv.includes("-a");
 
 const LANGS_GLOB = "i18n/*.json";
 const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
@@ -399,7 +401,7 @@ createTask("css", "less/[^_]*.less", src =>
     .pipe(sourcemaps.init())
     .pipe(less())
     .on("error", handleError)
-    .pipe(gulpif(!watch, postcss([
+    .pipe(gulpif(!watch, require("gulp-postcss")([
       // NOTE(Kagami): Takes ~1sec to just require them.
       require("autoprefixer")(),
       require("cssnano")({
@@ -455,7 +457,7 @@ gulp.task("kpopnet", () => {
       });
   });
 });
-if (!watch) {
+if (!watch || all) {
   tasks.push("kpopnet");
 }
 
