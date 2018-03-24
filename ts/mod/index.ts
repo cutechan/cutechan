@@ -34,8 +34,8 @@ export const position: ModerationLevel = (window as any).position;
 // Current staff position on any boardl.
 export const anyposition: ModerationLevel = (window as any).anyposition;
 
-export function isStaff(): boolean {
-  return position > ModerationLevel.notStaff;
+export function isMod(): boolean {
+  return position > ModerationLevel.moderator;
 }
 
 export function isPowerUser(): boolean {
