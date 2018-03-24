@@ -364,6 +364,7 @@ if (!watch) buildES5();
 createTask("loader", "loader.js", src =>
   src
     .pipe(rjsOptimize({
+      logLevel: 2,
       optimize: "none",
       cjsTranslate: true,
       paths: {
@@ -391,7 +392,10 @@ createTask("polyfills", [
   "node_modules/wasm-polyfill.js/wasm-polyfill.js",
 ], src =>
   src
-    .pipe(gulpif(/core\.min\.js$/, rjsOptimize({optimize: "none"})))
+    .pipe(gulpif(/core\.min\.js$/, rjsOptimize({
+      logLevel: 2,
+      optimize: "none",
+    })))
     .pipe(gulp.dest(JS_DIR))
 );
 
