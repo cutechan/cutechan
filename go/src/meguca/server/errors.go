@@ -70,6 +70,7 @@ var (
 	aerrBadUuid         = aerrorNew(400, "malformed UUID")
 	aerrDupPreview      = aerrorNew(400, "duplicated preview")
 	aerrBadPreview      = aerrorNew(400, "only JPEG previews allowed")
+	aerrBadPreviewDims  = aerrorNew(400, "only square previews allowed")
 	aerrNoIdol          = aerrorNew(404, "no such idol")
 	aerrTooLarge        = aerrorNew(400, "file too large")
 	aerrTooManyFiles    = aerrorNew(400, "too many files")

@@ -71,6 +71,13 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) (answer map[string]s
 		return
 	}
 
+	width := res.file.Dims[0]
+	height := res.file.Dims[1]
+	if width != height {
+		err = aerrBadPreviewDims
+		return
+	}
+
 	if err = db.UpsertIdolPreview(idolId, res.file.SHA1); err != nil {
 		switch {
 		case db.IsUniqueViolationError(err):
