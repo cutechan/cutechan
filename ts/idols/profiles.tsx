@@ -6,7 +6,7 @@
 
 import { Component, h, render } from "preact";
 import {
-  Band, BandMap, getBandMap, getIdolPreviewUrl,
+  BandMap, getBandMap, getIdolPreviewUrl,
   getProfiles, Idol, ImageIdData,
   Profiles, renderIdol,
   searchIdols, setIdolPreview,
@@ -67,15 +67,15 @@ class IdolPreview extends Component<PreviewProps, any> {
 
 interface ItemProps {
   idol: Idol;
-  band: Band;
+  bandMap: BandMap;
 }
 
 class IdolItem extends Component<ItemProps, any> {
   public shouldComponentUpdate() {
     return false;
   }
-  public render({ idol, band }: ItemProps) {
-    const lines = renderIdol(idol, band).slice(0, 5);
+  public render({ idol, bandMap }: ItemProps) {
+    const lines = renderIdol(idol, bandMap).slice(0, 5);
     return (
       <section class="idol">
         <IdolPreview idol={idol} onChange={this.handlePreviewChange} />
@@ -116,7 +116,7 @@ class IdolList extends Component<ListProps, any> {
           <IdolItem
             key={idol.id}
             idol={idol}
-            band={bandMap.get(idol.band_id)}
+            bandMap={bandMap}
           />,
         )}
       </article>

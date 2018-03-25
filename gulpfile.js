@@ -158,7 +158,7 @@ function typescriptGulp(opts) {
 
 // Wait compilation result from tsc and pass it further.
 function typescriptTsc() {
-  const File = require("vinyl");
+  const Vinyl = require("vinyl");
   const through = require("through2");
   const stream = through.obj(function(chunk, enc, cb) {
     function passFile() {
@@ -167,7 +167,7 @@ function typescriptTsc() {
       } catch(e) {
         return false;
       }
-      cb(null, new File(chunk));
+      cb(null, new Vinyl(chunk));
       return true;
     }
 

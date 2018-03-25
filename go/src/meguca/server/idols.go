@@ -63,9 +63,8 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) (answer map[string]s
 		}
 	}()
 
-	// Can safely check only after thumbnail generation (uploaded file may
-	// have wrong mime/extension). If this check is failed we may have to
-	// remove just uploaded file but this shouldn't occur often.
+	// TODO(Kagami): Pass required file properties to uploadFile to avoid
+	// garbage uploads (they will be removed by deleteUnusedFiles).
 	if res.file.FileType != common.JPEG {
 		err = aerrBadPreview
 		return
