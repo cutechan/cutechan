@@ -29,7 +29,7 @@ const watch = process.argv.includes("-w");
 const all = process.argv.includes("-a");
 
 const LANGS_GLOB = "i18n/*.json";
-const TEMPLATES_GLOB = "mustache-pp/**/*.mustache";
+const TEMPLATES_GLOB = "mustache-pp/*.mustache";
 const SMILESJS_GLOB = "smiles-pp/smiles.js";
 
 const DIST_DIR = path.resolve("dist");
