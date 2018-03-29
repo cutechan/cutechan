@@ -1719,6 +1719,10 @@ html:not(.pos_moderators) {
   top: @headerHeight + 3px;
   bottom: 0;
 
+  &:empty {
+    display: none;
+  }
+
   overflow-y: scroll;
   &::-webkit-scrollbar {
     // Same width as FF on Linux.
