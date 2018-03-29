@@ -1717,20 +1717,21 @@ html:not(.pos_moderators) {
 .idols {
   position: fixed;
   top: @headerHeight + 3px;
-  bottom: 0;
+  max-height: ~"calc(100% - @{headerHeight} - 3px)";
 
-  &:empty {
-    display: none;
-  }
-
+  overflow-x: hidden;
   overflow-y: scroll;
+  // Hide scrollbar but keep it scrollable.
+  // Should be ~12px but cut a bit more.
+  right: -15px;
   &::-webkit-scrollbar {
     // Same width as FF on Linux.
     width: 12px;
   }
-  // Hide scrollbar but keep it scrollable.
-  // Should be ~12px but cut a bit more.
-  right: -15px;
+
+  &:empty {
+    display: none;
+  }
 }
 
 .idol {
