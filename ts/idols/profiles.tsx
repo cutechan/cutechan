@@ -5,14 +5,15 @@
  */
 
 import { Component, h, render } from "preact";
+import * as ruhangul from "ruhangul";
 import {
   BandMap, getBandMap, getIdolPreviewUrl,
   getProfiles, Idol, ImageIdData,
-  Profiles, renderIdol,
+  Profiles, RenderedLine, renderIdol,
   searchIdols, setIdolPreview,
 } from "../../go/src/github.com/Kagami/kpopnet/ts/api";
 import { showAlert } from "../alerts";
-import { _ } from "../lang";
+import { _, printf } from "../lang";
 import { isPowerUser } from "../mod";
 import { getFilePrefix } from "../posts";
 import { hook, HOOKS } from "../util";
@@ -75,19 +76,49 @@ class IdolItem extends Component<ItemProps, any> {
     return false;
   }
   public render({ idol, bandMap }: ItemProps) {
+    // FIXME(Kagami): Show all info on request.
     const lines = renderIdol(idol, bandMap).slice(0, 5);
     return (
       <section class="idol">
         <IdolPreview idol={idol} onChange={this.handlePreviewChange} />
         <div class="idol-info">
-          {lines.map(([key, val]) =>
-            <p class="idol-info-line">
-              <span class="idol-info-key">{_(key)}</span>
-              <span class="idol-info-val">{val}</span>
-            </p>,
-          )}
+          {lines.map(this.rerenderLine.bind(this, idol))}
         </div>
       </section>
+    );
+  }
+  private rerenderLine(idol: Idol, [key, val]: RenderedLine) {
+    // XXX(Kagami): Fix result of kpopnet example render the way we
+    // need. This is a bit hacky, maybe it would be better to implement
+    // everything by ourself.
+    switch (key) {
+    case "Real name":
+      if (!idol.birth_name_hangul) break;
+      const ru = ruhangul.name(idol.birth_name_hangul);
+      if (!ru) break;
+      return (
+        <p class="idol-info-line">
+          <span class="idol-info-key">{_(key)}</span>
+          <span class="idol-info-val">
+            {idol.birth_name} (
+            <abbr class="idol-info-abbr" title={ru}>
+              {idol.birth_name_hangul}
+            </abbr>)
+          </span>
+        </p>
+      );
+    case "Height":
+      val = printf(_("cm"), idol.height);
+      break;
+    case "Weight":
+      val = printf(_("kg"), idol.weight);
+      break;
+    }
+    return (
+      <p class="idol-info-line">
+        <span class="idol-info-key">{_(key)}</span>
+        <span class="idol-info-val">{val}</span>
+      </p>
     );
   }
   private handlePreviewChange = (idol: Idol, imageId: string) => {

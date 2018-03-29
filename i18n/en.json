@@ -196,6 +196,8 @@
     ]
   },
   "ui": {
+    "cm": "%s cm",
+    "kg": "%s kg",
     "main": "Main page",
     "notFound": "Page not found",
     "landingHeader": "The only one k-pop imageboard",
