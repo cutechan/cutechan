@@ -1716,8 +1716,8 @@ html:not(.pos_moderators) {
 
 .idols {
   position: fixed;
-  top: @headerHeight + 3px;
-  max-height: ~"calc(100% - @{headerHeight} - 3px)";
+  top: @headerHeight;
+  max-height: ~"calc(100% - @{headerHeight})";
 
   overflow-x: hidden;
   overflow-y: scroll;
@@ -1744,6 +1744,13 @@ html:not(.pos_moderators) {
   box-shadow: -1px 1px 3px 0 rgba(59, 26, 84, 0.6);
   // Adujust for shadow (because of overflow-y).
   margin-left: 3px;
+
+  &:first-child {
+    margin-top: 3px;
+  }
+  &:last-child {
+    margin-bottom: 3px;
+  }
 }
 
 .idol-preview {
