@@ -91,10 +91,26 @@ class IdolItem extends Component<ItemProps, any> {
     // XXX(Kagami): Fix result of kpopnet example render the way we
     // need. This is a bit hacky, maybe it would be better to implement
     // everything by ourself.
+    let ru = "";
     switch (key) {
+    case "Name":
+      if (!idol.name_hangul) break;
+      ru = ruhangul.name(idol.name_hangul);
+      if (!ru) break;
+      return (
+        <p class="idol-info-line">
+          <span class="idol-info-key">{_(key)}</span>
+          <span class="idol-info-val">
+            {idol.name} (
+            <abbr class="idol-info-abbr" title={ru}>
+              {idol.name_hangul}
+            </abbr>)
+          </span>
+        </p>
+      );
     case "Real name":
       if (!idol.birth_name_hangul) break;
-      const ru = ruhangul.name(idol.birth_name_hangul);
+      ru = ruhangul.name(idol.birth_name_hangul);
       if (!ru) break;
       return (
         <p class="idol-info-line">
