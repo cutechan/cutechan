@@ -6,7 +6,7 @@ import (
 
 const (
 	// Maximum number of thumbnailer processes executing at the same time.
-	THUMB_PROCESSES = 1
+	thumbProcesses = 1
 )
 
 var (
@@ -45,7 +45,7 @@ func getThumbnail(srcData []byte) (*ipc.Thumb, error) {
 
 // Start thumbnailer workers.
 func startThumbWorkers() (err error) {
-	for i := 0; i < THUMB_PROCESSES; i++ {
+	for i := 0; i < thumbProcesses; i++ {
 		go worker()
 	}
 	return
