@@ -87,7 +87,7 @@ Omitted posts and images info
 				{% space %}{%s pluralize2(omit, imageOmit, ln.Common.Plurals["omitted"]) %}
 			</div>
 		{% endif %}
-		<a clas="omit-link" href="/{%s t.Board %}/{%s idStr %}">
+		<a class="omit-link" href="/{%s t.Board %}/{%s idStr %}">
 			{% if last100 %}
 				{%s ln.Common.Posts["seeAll"] %}
 			{% else %}
