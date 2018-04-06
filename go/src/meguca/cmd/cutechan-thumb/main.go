@@ -10,7 +10,7 @@ import (
 
 	"meguca/ipc"
 
-	"github.com/bakape/thumbnailer"
+	"github.com/cutechan/thumbnailer"
 )
 
 const (
