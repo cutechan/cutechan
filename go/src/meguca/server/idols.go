@@ -22,6 +22,11 @@ func serveIdolProfiles(w http.ResponseWriter, r *http.Request) {
 	kpopnet.ServeProfiles(w, r)
 }
 
+func serveIdolRecognize(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", IdolOrigin)
+	kpopnet.ServeRecognize(w, r)
+}
+
 func serveSetIdolPreview(w http.ResponseWriter, r *http.Request) {
 	if !assertPowerUser(w, r) {
 		return

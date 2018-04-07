@@ -74,6 +74,7 @@ func createRouter(debugRoutes bool) http.Handler {
 	api.GET("/socket", websockets.Handler)
 	api.GET("/embed", serveEmbed)
 	api.GET("/idols/profiles", serveIdolProfiles)
+	api.POST("/idols/recognize", serveIdolRecognize)
 	api.POST("/idols/:id/preview", serveSetIdolPreview)
 	api.GET("/post/:post", servePost)
 	api.POST("/post/token", createPostToken)

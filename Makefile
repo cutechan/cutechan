@@ -69,6 +69,7 @@ deb: clean templates smiles client server
 	cp -a dist/* deb_dist/usr/share/cutechan/www
 	mkdir -p deb_dist/usr/share/cutechan/data
 	cp -a go/src/github.com/Kagami/kpopnet/data/profiles deb_dist/usr/share/cutechan/data
+	cp -a go/src/github.com/Kagami/kpopnet/data/models deb_dist/usr/share/cutechan/data
 	mkdir -p deb_dist/usr/bin
 	cp -a go/bin/cutechan* deb_dist/usr/bin
 	chmod -R go+rX deb_dist

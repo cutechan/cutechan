@@ -41,7 +41,7 @@ Options:
   -z <size>     Cache size in megabytes [default: 128].
   -s <sitedir>  Site directory location [default: ./dist].
   -f <filedir>  Uploads directory location [default: ./uploads].
-  -d <datadir>  Kpopnet data directory location [default: ./data].
+  -d <datadir>  Kpopnet data directory location [default: ./go/src/github.com/Kagami/kpopnet/data].
   -o <origin>   Allowed origin for Idol API [default: http://localhost:8000].
 `
 
@@ -80,11 +80,15 @@ func serve(conf config) {
 	common.ImageWebRoot = conf.FileDir
 	server.IdolOrigin = conf.Origin
 	address := fmt.Sprintf("%v:%v", conf.Host, conf.Port)
+	startKpopnetFaceRec := func() error {
+		return kpopnet.StartFaceRec(conf.DataDir)
+	}
 
 	// Prepare runtime subsystems.
 	// TODO(Kagami): Check dependency order. Can we run all in parallel?
 	err := util.RunTasks([][]util.Task{
 		[]util.Task{db.StartDb, assets.CreateDirs},
+		[]util.Task{startKpopnetFaceRec},
 		[]util.Task{lang.Load},
 		[]util.Task{templates.CompileMustache},
 	})
