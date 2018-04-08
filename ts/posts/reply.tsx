@@ -484,7 +484,8 @@ class Reply extends Component<any, any> {
   private pasteItalic = () => this.pasteMarkup("*");
   private pasteSpoiler = () => this.pasteMarkup("%%");
 
-  private handleGlobalMove = (e: MouseEvent | TouchEvent) => {
+  // tslint:disable-next-line:member-ordering
+  private handleGlobalMove = ((e: MouseEvent | TouchEvent) => {
     if (this.moving) {
       this.setState({
         float: true,
@@ -547,7 +548,8 @@ class Reply extends Component<any, any> {
 
       this.setState({width, height, left, top});
     }
-  }
+  // https://github.com/Microsoft/TypeScript/issues/22565
+  }) as EventListenerOrEventListenerObject;
   private handleGlobalUp = () => {
     this.moving = false;
     this.resizing = false;

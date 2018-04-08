@@ -108,7 +108,7 @@ export function firstChild(
 
 // Returns an input element inside the parent by name
 export function inputElement(
-  parent: NodeSelector,
+  parent: Element,
   name: string,
 ): HTMLInputElement {
   return parent.querySelector(`input[name="${name}"]`) as HTMLInputElement;

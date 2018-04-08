@@ -242,7 +242,8 @@ export function init() {
     render(<ProfilesWrapper/>, container);
 
     hook(HOOKS.focusSearch, () => {
-      document.querySelector(".header-profiles-search").focus();
+      (document.querySelector(".header-profiles-search") as HTMLInputElement)
+        .focus();
     });
   }
 }

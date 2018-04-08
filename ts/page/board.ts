@@ -55,7 +55,7 @@ function getThreads(): [HTMLElement, HTMLElement[]] {
     threadSel = ".thread";
   }
   const container = document.getElementById(contID);
-  const threads = container.querySelectorAll(threadSel);
+  const threads: NodeListOf<HTMLElement> = container.querySelectorAll(threadSel);
   return [container, Array.from(threads)];
 }
 
