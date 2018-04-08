@@ -18,7 +18,7 @@ function handleErr(res: Response): Promise<Dict> {
   const type = res.headers.get("Content-Type");
   if (type.startsWith("application/json")) {
     return res.json().then((data) => {
-      throw new Error(data.message || ln.UI.unknownErr);
+      throw new Error(data.error || data.message || ln.UI.unknownErr);
     });
   } else {
     return res.text().then((data) => {
