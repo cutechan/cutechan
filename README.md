@@ -11,12 +11,14 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
     * zlib
     * libpng
     * libjpeg
+* libjpeg(-turbo, 6.2 or 8.0 ABI) shared library
+* dlib >= 19.10 shared library
 
 ## Build dependencies
 
-* Go >= 1.9.2 (for building server)
+* FFmpeg, GraphicsMagick, libjpeg, dlib development files
 * Node.js >= 8.0 (for building client)
-* FFmpeg and GraphicsMagick development files
+* Go >= 1.9.2 (for building server)
 * GNU Build System
 * OptiPNG
 
