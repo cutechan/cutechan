@@ -6,7 +6,6 @@ import { getClosestID } from "../util";
 
 // Server-wide global configurations
 interface Config {
-  captcha: boolean;
   disableUserBoards: boolean;
   maxSize: number;
   maxFiles: number;

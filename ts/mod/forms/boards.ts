@@ -40,7 +40,6 @@ class OwnedBoardSelection extends View<null> {
 }
 
 // View that performs an action on a selected board
-// tslint:disable-next-line:max-classes-per-file
 abstract class SelectedBoardForm extends AccountForm {
   public board: string;
   protected boardSelector: OwnedBoardSelection;
@@ -56,7 +55,6 @@ abstract class SelectedBoardForm extends AccountForm {
 }
 
 // Board configuration panel
-// tslint:disable-next-line:max-classes-per-file
 export class BoardConfigForm extends SelectedBoardForm {
   constructor() {
     super({ class: "wide-fields" });
@@ -69,7 +67,6 @@ export class BoardConfigForm extends SelectedBoardForm {
       case 200:
         const frag = makeFrag(await res.text());
         this.el.append(frag);
-        this.initCaptcha();
         break;
       case 403:
         this.handle403();
@@ -86,7 +83,6 @@ export class BoardConfigForm extends SelectedBoardForm {
   }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class BoardDeletionForm extends SelectedBoardForm {
   constructor() {
     super({});
@@ -102,7 +98,6 @@ export class BoardDeletionForm extends SelectedBoardForm {
   }
 }
 
-// tslint:disable-next-line:max-classes-per-file
 export class StaffAssignmentForm extends SelectedBoardForm {
   constructor() {
     super({ class: "divide-rows" });
@@ -120,38 +115,7 @@ export class StaffAssignmentForm extends SelectedBoardForm {
   }
 }
 
-// tslint:disable-next-line:max-classes-per-file
-export class BannerForm extends SelectedBoardForm {
-  public el: HTMLFormElement;
-
-  constructor() {
-    super({});
-  }
-
-  public renderNext(board: string) {
-    this.renderPublicForm("/html/set-banners");
-  }
-
-  protected async send() {
-    const data = new FormData(this.el);
-    data.append("board", this.board);
-    if (this.captcha) {
-      const c = this.captcha.data();
-      for (const k of Object.keys(c)) {
-        data.append(k, c[k]);
-      }
-    }
-
-    this.handlePostResponse(await fetch("/api/set-banners", {
-      body: data,
-      credentials: "include",
-      method: "POST",
-    }));
-  }
-}
-
 // Panel view for creating boards
-// tslint:disable-next-line:max-classes-per-file
 export class BoardCreationForm extends AccountForm {
   constructor() {
     super({ tag: "form" });

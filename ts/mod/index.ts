@@ -10,7 +10,7 @@ import { FormView } from "../ui";
 import { inputElement, on, postJSON } from "../util";
 import { TRIGGER_BAN_BY_POST_SEL, TRIGGER_DELETE_POST_SEL } from "../vars";
 import {
-  BannerForm, BoardConfigForm, BoardCreationForm, BoardDeletionForm,
+  BoardConfigForm, BoardCreationForm, BoardDeletionForm,
   PasswordChangeForm, ServerConfigForm, StaffAssignmentForm,
 } from "./forms";
 
@@ -58,14 +58,10 @@ export function validatePasswordMatch(
 // Only active AccountPanel instance
 export let accountPanel: AccountPanel;
 
-let loginForm: LoginForm;
-let registrationForm: LoginForm;
-
 // Account login and registration
 class AccountPanel extends TabbedModal {
   constructor() {
     super(document.getElementById("account-panel"));
-
     this.onClick({
       "#logout": () => logout("/api/logout"),
       "#logoutAll": () => logout("/api/logout/all"),
@@ -73,26 +69,9 @@ class AccountPanel extends TabbedModal {
       "#createBoard": this.loadConditional(BoardCreationForm),
       "#configureBoard": this.loadConditional(BoardConfigForm),
       "#assignStaff": this.loadConditional(StaffAssignmentForm),
-      "#setBanners": this.loadConditional(BannerForm),
       "#deleteBoard": this.loadConditional(BoardDeletionForm),
       "#configureServer": this.loadConditional(ServerConfigForm),
     });
-
-    if (position === ModerationLevel.notLoggedIn) {
-      this.tabHook = (id) => {
-        switch (id) {
-          case 0:
-            loginForm.initCaptcha();
-            break;
-          case 1:
-            registrationForm.initCaptcha();
-            break;
-        }
-      };
-      this.showHook = () => {
-        loginForm.initCaptcha();
-      };
-    }
   }
 
   // Either hide or show the selection menu
@@ -133,19 +112,15 @@ class LoginForm extends FormView {
   private url: string;
 
   constructor(id: string, url: string) {
-    super({
-      el: document.getElementById(id),
-      lazyCaptcha: true,
-    });
+    super({el: document.getElementById(id)});
     this.url = "/api/" + url;
   }
 
-  // Extract and send login ID and password and captcha (if any) from a form
+  // Extract and send login ID and password from a form
   protected async send() {
     const id = this.inputElement("id").value.trim();
     const password = this.inputElement("password").value;
     const req = {id, password};
-    this.injectCaptcha(req);
     const res = await postJSON(this.url, req);
     switch (res.status) {
       case 200:
@@ -189,8 +164,9 @@ export function init() {
   accountPanel = new AccountPanel();
 
   if (position === ModerationLevel.notLoggedIn) {
-    loginForm = new LoginForm("login-form", "login");
-    registrationForm = new LoginForm("registration-form", "register");
+    // tslint:disable-next-line:no-unused-expression
+    new LoginForm("login-form", "login");
+    const registrationForm = new LoginForm("registration-form", "register");
     validatePasswordMatch(registrationForm.el, "password", "repeat");
   }
 

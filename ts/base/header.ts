@@ -52,7 +52,6 @@ export class HeaderModal extends View<null> {
 }
 
 // A view that supports switching between multiple tabs
-// tslint:disable-next-line:max-classes-per-file
 export class TabbedModal extends HeaderModal {
   // Hook a function to execute on tab switching
   protected tabHook: (id: number) => void;

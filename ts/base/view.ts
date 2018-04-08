@@ -14,7 +14,6 @@ export class Model {
 }
 
 // Generic view class, that all over view classes extend
-// tslint:disable-next-line:max-classes-per-file
 export default class View<M> {
   public model: M;
   public el: HTMLElement;

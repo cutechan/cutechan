@@ -76,7 +76,6 @@ export default class FSM<S extends Stringable, E extends Stringable> {
 }
 
 // Simple map of sets with automatic array creation and removal
-// tslint:disable-next-line:max-classes-per-file
 class SetMap<V> {
   private map: { [key: string]: Set<V> } = {};
 
