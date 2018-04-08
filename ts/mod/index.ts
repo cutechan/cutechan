@@ -11,8 +11,10 @@ import { inputElement, on, postJSON } from "../util";
 import { TRIGGER_BAN_BY_POST_SEL, TRIGGER_DELETE_POST_SEL } from "../vars";
 import {
   BoardConfigForm, BoardCreationForm, BoardDeletionForm,
-  PasswordChangeForm, ServerConfigForm, StaffAssignmentForm,
-} from "./forms";
+  StaffAssignmentForm,
+} from "./board-form";
+import { PasswordChangeForm } from "./password-form";
+import { ServerConfigForm } from "./server-form";
 
 interface Constructable {
   new (): any;

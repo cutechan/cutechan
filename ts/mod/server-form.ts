@@ -1,5 +1,5 @@
-import { makeFrag } from "../../util";
-import { AccountForm } from "./common";
+import { makeFrag } from "../util";
+import { AccountForm } from "./common-form";
 
 // Panel for server administration controls such as global server settings
 export class ServerConfigForm extends AccountForm {

@@ -1,5 +1,5 @@
-import { validatePasswordMatch } from "..";
-import { AccountForm } from "./common";
+import { validatePasswordMatch } from ".";
+import { AccountForm } from "./common-form";
 
 // View for changing a password
 export class PasswordChangeForm extends AccountForm {

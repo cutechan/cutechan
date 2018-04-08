@@ -1,6 +1,6 @@
-import { View, ViewAttrs } from "../../base";
-import { makeFrag, postJSON, uncachedGET } from "../../util";
-import { AccountForm } from "./common";
+import { View, ViewAttrs } from "../base";
+import { makeFrag, postJSON, uncachedGET } from "../util";
+import { AccountForm } from "./common-form";
 
 // Render the <select> for picking the owned board you want to manipulate
 class OwnedBoardSelection extends View<null> {

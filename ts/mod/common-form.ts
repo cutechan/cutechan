@@ -1,8 +1,8 @@
-import { accountPanel } from "..";
-import { showAlert } from "../../alerts";
-import lang from "../../lang";
-import { FormView } from "../../ui";
-import { Dict, makeFrag, postJSON, uncachedGET } from "../../util";
+import { accountPanel } from ".";
+import { showAlert } from "../alerts";
+import lang from "../lang";
+import { FormView } from "../ui";
+import { Dict, makeFrag, postJSON, uncachedGET } from "../util";
 
 // Generic input form that is embedded into AccountPanel
 export abstract class AccountForm extends FormView {
