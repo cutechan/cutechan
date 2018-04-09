@@ -44,4 +44,4 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
 
 ## License
 
-[AGPL-3.0](LICENSE)
+[AGPLv3+](LICENSE)
