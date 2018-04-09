@@ -1805,12 +1805,12 @@ html.user_power {
 // Preload sprites in order to avoid broken smiles when updated image is
 // being requested _after_ the page (and CSS) were loaded.
 body:after {
-  content: url(/static/img/smiles.png) url(/static/img/smileso.png);
+  content: url(/static/img/smiles.png);
   display: none;
 }
 @media (-webkit-min-device-pixel-ratio: 2), (min-resolution: 192dpi) {
   body:after {
-    content: url(/static/img/smiles@2x.png) url(/static/img/smileso.png);
+    content: url(/static/img/smiles@2x.png);
   }
 }
 
@@ -1819,7 +1819,6 @@ body:after {
 }
 
 @import (inline) "smiles-pp/smiles.css";
-@import (inline) "smiles-pp/smileso.css";
 
 //////////////////////////////
 // VMSG
