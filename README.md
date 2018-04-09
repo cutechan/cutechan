@@ -29,15 +29,14 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
 ## Setup
 
 * See `go/bin/cutechan --help` for server operation
-* Login into the `admin` account via the infinity symbol in the top banner with
-  the password `password`
+* Login into the `admin` account with the password `password`
 * Change the default password
 * Create a board from the administration panel
 * Configure server from the administration panel
 
 ## Development
 
-* `make serve` run the server
+* `make serve` runs the server
 * `make client` and `make server` build the client and server separately
 * `make client-watch` watches the file system for changes and incrementally
   rebuilds the client
