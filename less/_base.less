@@ -16,11 +16,11 @@ html {
 }
 
 ::-webkit-scrollbar {
-  width: 3px;
-  height: 3px;
+  width: 8px;
+  height: 5px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: #716090;
+  background-color: hsl(275, 15%, 40%);
 }
 
 body {
@@ -168,7 +168,7 @@ hr {
   display: inline-block;
   background: @buttonBG;
   color: @button;
-  border-radius: 3px;
+  border-radius: 2px;
   border: @buttonBorder;
   padding: 5px 10px;
   text-align: center;
@@ -243,10 +243,21 @@ html, body {
   color: @omit;
 }
 
+.omit-link {
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.lastN-link {
+    margin-left: 5px;
+	font-size: 15px;
+}
+
 .page-title {
-  font-size: 2em;
+  font-size: 3.5em;
   font-weight: bold;
-  margin: 20px 0;
+  margin: 40px 0 50px;
+  text-align: left;
   color: @pagetitle;
 }
 
@@ -328,15 +339,18 @@ html, body {
 }
 
 .landing-header {
-  font-size: 35px;
+  font-size: 50px;
   color: @pagetitle;
-  margin: 15px 0;
+  margin: 0 0 50px;
+  line-height: 60px;
 }
 
 .landing-info {
-  max-width: 800px;
+  max-width: 1000px;
   color: @pagetitle;
-  margin: 0 auto 15px auto;
+  margin: 0 auto 60px auto;
+  font-weight: 500;
+  font-size: 1.3em;
   text-align: center;
 }
 
@@ -346,12 +360,12 @@ html, body {
 }
 
 .landing-threads-button {
-  width: 340px;
-  height: 50px;
-  margin-bottom: 10px;
-  font-size: 25px;
+  width: 400px;
+  height: 40px;
+  margin-bottom: 50px;
+  font-size: 20px;
   color: @pagetitle;
-  border-color: #88619e;
+  border-color: hsl(275, 10%, 50%);
 }
 
 .landing-rules-button {
@@ -364,8 +378,8 @@ html, body {
 .landing-logo {
   display: block;
   margin: 0 auto;
-  width: 500px;
-  height: 500px;
+  width: 170px;
+  height: 170px;
   background: url(/static/img/logo.svg) no-repeat;
 }
 
@@ -481,7 +495,7 @@ html, body {
 .post_hover {
   position: absolute;
   padding: 4px 10px;
-  border-radius: 3px;
+  border-radius: 2px;
   border: @previewBorder;
   box-shadow: @previewShadow;
   z-index: 401;
@@ -894,7 +908,7 @@ input[type=number], input[type=text], input[type=password], textarea {
   padding: 4px 10px;
   min-width: 200px;
   max-width: 1000px;
-  border-radius: 4px;
+  border-radius: 2px;
   border: @postBorder;
   background: @postBG;
   box-shadow: @postShadow;
@@ -961,6 +975,10 @@ header {
   color: @postsubject;
 }
 
+.thread_single .post_op .post-subject {
+    display: none;
+}
+
 .post-staff {
   font-weight: bold;
   color: @admin;
@@ -988,7 +1006,7 @@ header {
 
 .post-file-title {
   display: inline-block;
-  max-width: 200px;
+  max-width: 130px;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
@@ -1369,7 +1387,7 @@ html:not(.pos_moderators) {
   box-sizing: border-box;
   padding: 5px;
   position: relative;
-  border-radius: 3px;
+  border-radius: 2px;
   border: @replyBorder;
   background: @replyBG;
   box-shadow: @replyShadow;
@@ -1452,7 +1470,7 @@ html:not(.pos_moderators) {
   font-size: smaller;
   background: @replyinfoBG;
   color: @replyinfo;
-  opacity: 0.8;
+  opacity: 1;
   overflow: hidden;
   text-overflow: ellipsis;
   cursor: default;
@@ -1555,13 +1573,13 @@ html:not(.pos_moderators) {
 
 .reply-send-button {
   box-sizing: border-box;
-  width: 100px;
+  width: 200px;
   height: 22px;
   line-height: 20px;
   padding: 0;
   text-align: center;
   border: @replysendBorder;
-  border-radius: 3px;
+  border-radius: 2px;
   &:not(:disabled):hover {
     color: @replysendHover;
     border: @replysendBorderHover;
@@ -1602,7 +1620,7 @@ html:not(.pos_moderators) {
 
 .smile-box {
   position: absolute;
-  border-radius: 3px;
+  border-radius: 2px;
   border: @replyBorder;
   background: @replyBG;
   box-shadow: @replyShadow;
@@ -1744,6 +1762,7 @@ html:not(.pos_moderators) {
   box-shadow: -1px 1px 3px 0 rgba(59, 26, 84, 0.6);
   // Adujust for shadow (because of overflow-y).
   margin-left: 3px;
+  margin-right: 6px;
 
   &:first-child {
     margin-top: 3px;
