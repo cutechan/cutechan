@@ -267,6 +267,8 @@ gulp.task("smiles", () => {
       retinaSrcFilter: "smiles/*@2x.png",
       retinaImgName: "_smiles@2x.png",
       retinaImgPath: "/static/img/smiles@2x.png",
+      // https://github.com/twolfson/gulp.spritesmith/issues/97
+      padding: 1,
       cssOpts: {
         cssSelector: s => ".smile-" + s.name,
       },
