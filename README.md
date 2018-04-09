@@ -11,7 +11,7 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
     * zlib
     * libpng
     * libjpeg
-* libjpeg(-turbo, 6.2 or 8.0 ABI) shared library
+* libjpeg(-turbo) shared library (6.2 or 8.0 ABI)
 * dlib >= 19.10 shared library
 
 ## Build dependencies
