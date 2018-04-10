@@ -78,12 +78,18 @@ class IdolItem extends Component<ItemProps, any> {
   public render({ idol, bandMap }: ItemProps) {
     // FIXME(Kagami): Show all info on request.
     const lines = renderIdol(idol, bandMap).slice(0, 5);
+    const { label_icon } = bandMap.get(idol.band_id);
     return (
       <section class="idol">
         <IdolPreview idol={idol} onChange={this.handlePreviewChange} />
         <div class="idol-info">
           {lines.map(this.rerenderLine.bind(this, idol))}
         </div>
+        {label_icon &&
+          <div class="idol-label">
+            <i class={`label label-${label_icon}`} />
+          </div>
+        }
       </section>
     );
   }
