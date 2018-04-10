@@ -77,7 +77,6 @@ deb: clean templates smiles client server
 
 test: gofmt-staged server
 	npm -s test
-	#go test meguca/...
 
 gofmt:
 	go fmt meguca/...
@@ -95,10 +94,10 @@ templates-clean:
 	rm -rf mustache-pp
 
 smiles-clean:
-	rm -rf smiles-pp
+	rm -rf smiles-pp go/src/smiles
 
 client-clean:
-	rm -rf dist
+	rm -rf labels-pp dist
 
 server-clean:
 	rm -f \
@@ -108,7 +107,7 @@ server-clean:
 		go/src/meguca/templates/*.qtpl.go
 
 deb-clean:
-	rm -rf deb_dist *.deb
+	rm -rf deb_dist cutechan.deb
 
 test-clean:
 	rm -rf go/multipart-* \

@@ -33,6 +33,7 @@ const LANGS_GLOB = "i18n/*.json";
 const TEMPLATES_GLOB = "mustache-pp/*.mustache";
 const SMILESJS_GLOB = "smiles-pp/smiles.js";
 
+const LABELS_TMP_DIR = path.resolve("labels-pp");
 const DIST_DIR = path.resolve("dist");
 const STATIC_DIR = path.join(DIST_DIR, "static");
 const JS_DIR = path.join(STATIC_DIR, "js");
@@ -304,7 +305,7 @@ gulp.task("smiles", () => {
 });
 
 gulp.task("clean", () =>
-  del(DIST_DIR)
+  del([LABELS_TMP_DIR, DIST_DIR])
 );
 
 // Client JS files.
@@ -351,6 +352,26 @@ createTask("polyfills", [
     .pipe(gulp.dest(JS_DIR))
 );
 
+gulp.task("labels", () =>
+  gulp.src("go/src/github.com/Kagami/kpopnet/ts/labels/icons/!(*@4x).png")
+    .pipe(spritesmith({
+      imgName: "labels.png",
+      cssName: "labels.css",
+      imgPath: "/static/img/labels.png",
+      retinaSrcFilter: "**/*@2x.png",
+      retinaImgName: "labels@2x.png",
+      retinaImgPath: "/static/img/labels@2x.png",
+      padding: 1,
+      cssOpts: {
+        cssSelector: l => ".label-" + l.name,
+      },
+    }))
+    .pipe(gulpif("*.png",
+      gulp.dest(IMG_DIR),
+      gulp.dest(LABELS_TMP_DIR)
+    ))
+);
+
 // Compile Less to CSS.
 createTask("css", "less/[^_]*.less", src =>
   src
@@ -395,7 +416,7 @@ createTask("fonts", "node_modules/font-awesome/fonts/fontawesome-webfont.*",
 gulp.task("kpopnet", () => {
   return new Promise((resolve, reject) => {
     spawn("node_modules/.bin/webpack-cli", [
-      "--mode", watch ? "development" : "production",
+      "--mode", "production",
       "--env.output", KPOPNET_DIST_DIR,
       "--env.api_prefix", KPOPNET_API_PREFIX,
       "--env.file_prefix", KPOPNET_FILE_PREFIX,
@@ -419,7 +440,7 @@ if (!watch || all) {
 
 // Build everything.
 gulp.task("default", (cb) => {
-  runSequence("clean", tasks, cb)
+  runSequence("clean", "labels", tasks, cb)
 });
 
 if (watch) {
