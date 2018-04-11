@@ -63,7 +63,7 @@ endif
 server: go/bin/cutechan
 
 serve: templates server
-	cutechan --debug
+	cutechan -H 0.0.0.0 --debug
 
 deb: clean templates smiles client server
 	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 go/bin/cutechan-thumb
