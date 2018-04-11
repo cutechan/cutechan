@@ -15,11 +15,11 @@ TEMPLATESPP = $(subst mustache/,mustache-pp/,$(TEMPLATES))
 mustache-pp:
 	mkdir mustache-pp
 
-mustache-pp/%.mustache: mustache/%.mustache
+mustache-pp/%.mustache: mustache/%.mustache mustache-pp
 	$(HTMLMIN) --collapse-whitespace --collapse-inline-tag-whitespace \
 		-o $@ $<
 
-templates: node_modules mustache-pp $(TEMPLATESPP)
+templates: node_modules $(TEMPLATESPP)
 
 .PHONY: smiles
 smiles: node_modules
