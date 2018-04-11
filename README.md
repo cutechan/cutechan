@@ -51,8 +51,8 @@ check out preconfigured
 **Instructions**
 
 * Install [VirtualBox](https://www.virtualbox.org)
-* File -> Import Appliance -> Select `cutechan.ova`
-* Go to machine settings -> Shared folders -> Set path to your clone of cutechan repo
+* File → Import Appliance → Select `cutechan.ova`
+* Go to machine settings → Shared folders → Set path to your clone of cutechan repo
 * Start it, use `user` for username and `1` for password
 * Startup script will automatically build and run server at http://192.168.56.101:8001
 * That's it, now you can do any experiments with your personal cutechan install
