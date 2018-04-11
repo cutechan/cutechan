@@ -100,8 +100,8 @@ func (w *formWriter) input(spec inputSpec) {
 	case _number:
 		w.typ("number")
 		if spec.Val != nil {
-			cast := uint64(spec.Val.(uint))
-			w.attr("value", strconv.FormatUint(cast, 10))
+			cast := spec.Val.(int64)
+			w.attr("value", strconv.FormatInt(cast, 10))
 		}
 		w.attr("min", strconv.Itoa(spec.Min))
 		if spec.Max != 0 {

@@ -28,8 +28,8 @@ func configurationTable(v reflect.Value, key string, needCaptcha bool) string {
 			continue
 		}
 		switch k := v.Kind(); k {
-		case reflect.Uint8, reflect.Uint16:
-			v = v.Convert(reflect.TypeOf(uint(0)))
+		case reflect.Int:
+			v = v.Convert(reflect.TypeOf(int64(0)))
 		}
 		withValues[i].Val = v.Interface()
 	}
