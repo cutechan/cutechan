@@ -277,13 +277,14 @@ gulp.task("smiles", () => {
     .pipe(gulp.dest("smiles-pp"))
     .pipe(gulpif("*.png", tap(function({ basename }) {
       // gulp-imagemin requires 240+ deps, fuck that shit.
-      spawnSync("optipng", [
+      const p = spawnSync("otipng", [
         "-quiet",
         "-clobber",
         "-strip", "all",
         "-out", basename.slice(1),
         basename,
       ], {cwd: "smiles-pp", stdio: "inherit"});
+      if (p.error) return handleError(p.error);
     })))
     .on("end", () => {
       const jsSmiles = smileIds.map(id => `"${id}"`).join(",");
