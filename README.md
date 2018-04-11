@@ -42,6 +42,21 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
   rebuilds the client
 * `make clean` removes files from the previous compilation
 
+## VM image
+
+If you're on Windows or would like to try cutechan in action without any setup,
+check out preconfigured
+[VirtualBox image](https://drive.google.com/uc?id=14J4JExRP47cg3cJ8tDJ3lZ7xpHHSwWZO&export=download).
+
+**Instructions**
+
+* Install [VirtualBox](https://www.virtualbox.org)
+* File -> Import Appliance -> Select `cutechan.ova`
+* Go to machine settings -> Shared folders -> Set path to your clone of cutechan repo
+* Start it, use `user` for username and `1` for password
+* Startup script will automatically build and run server at http://192.168.56.101:8001
+* That's it, now you can do any experiments with your personal setup of cutechan
+
 ## License
 
 [AGPLv3+](LICENSE)
