@@ -277,7 +277,7 @@ gulp.task("smiles", () => {
     .pipe(gulp.dest("smiles-pp"))
     .pipe(gulpif("*.png", tap(function({ basename }) {
       // gulp-imagemin requires 240+ deps, fuck that shit.
-      const p = spawnSync("otipng", [
+      const p = spawnSync("optipng", [
         "-quiet",
         "-clobber",
         "-strip", "all",
