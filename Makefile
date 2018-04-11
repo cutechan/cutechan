@@ -54,10 +54,10 @@ go/src/meguca/db/bin_data.go: go/bin/go-bindata go/bin/easyjson go/bin/qtc $(GEN
 
 GOSRC = $(shell find go/src/meguca -type f -name '*.go')
 go/bin/cutechan: go/src/meguca/db/bin_data.go $(GOSRC)
-ifeq ($(TAGS),)
+ifeq ($(GOTAGS),)
 	go get -v meguca/...
 else
-	go get -v -tags $(TAGS) meguca/...
+	go get -v -tags $(GOTAGS) meguca/...
 endif
 
 server: go/bin/cutechan
