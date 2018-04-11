@@ -251,7 +251,7 @@ html, body {
 
 .lastN-link {
     margin-left: 5px;
-	font-size: 15px;
+  font-size: 16px;
 }
 
 .page-title {
@@ -1111,17 +1111,21 @@ html.work-mode {
   // Link.
   a {
     color: @messagelink;
+    padding: 0.3ex 0 0.3ex;
     &:hover {
       color: @linkHover;
+      padding: 0.3ex 0 0.3ex;
     }
   }
 
   // Spoiler.
   del {
+    padding: 0.3ex 0 0.3ex;
     text-decoration: none;
     background-color: @spoiler;
     &:not(:hover) {
       &, a, .post-embed-icon {
+            padding: 0.3ex 0 0.3ex;
         color: transparent;
       }
       .smile {
@@ -1130,6 +1134,8 @@ html.work-mode {
     }
     &:hover {
       &, a {
+        cursor: text;
+        padding: 0.3ex 0 0.3ex;
         color: @body;
       }
     }
