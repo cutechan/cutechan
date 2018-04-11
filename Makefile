@@ -6,6 +6,13 @@ export GULP = $(NODE_BIN)/gulp
 
 all: templates smiles client server
 
+update-main-deps:
+	npm install
+	-go get -u -v -tags nodlib \
+		github.com/Kagami/kpopnet/go/src/kpopnet \
+		github.com/cutechan/blackfriday \
+		github.com/cutechan/thumbnailer
+
 node_modules:
 	npm install
 
