@@ -1,6 +1,7 @@
 "use strict";
 
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const assert = require("assert");
 const { spawn, spawnSync } = require("child_process");
@@ -78,6 +79,9 @@ process.on("SIGTERM", (code) => {
   process.exit(code);
 });
 
+// Avoid "no notifier" errors on headless systems.
+const canNotify = os.platform() !== "linux" || !!process.env.DISPLAY;
+
 // Notify about errors.
 const notifyError = notify.onError({
   title: "<%= error.name %>",
@@ -90,7 +94,11 @@ const notifyError = notify.onError({
 // use failure to build the client to not pass Travis CL tests.
 function handleError(err) {
   if (watch) {
-    notifyError(err);
+    if (canNotify) {
+      notifyError(err);
+    } else {
+      console.error(err.message);
+    }
     if (this) {
       this.emit("end");
     }
@@ -252,11 +260,13 @@ function buildES6() {
       // Remove extra newlines.
       data = data.replace(/\n+$/, "");
       // Fix date format and prefix.
-      data = data.replace(/ GMT\+\d{4} \([A-Z]{3}\)([^\]]*\])/g,
+      data = data.replace(/(?: [AP]M)?(?: GMT\+\d{4} \([A-Z]{3}\))?(....\])/g,
                           `$1 ${colors.cyan("tsc")}:`);
       // Finally output "fixed" log messages.
       if (data.includes("error")) {
-        handleError(new Error(data));
+        const err = new Error(data);
+        err.name = "TypeScript error";
+        handleError(err);
       } else {
         console.log(data);
       }
