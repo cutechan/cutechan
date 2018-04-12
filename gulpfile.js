@@ -40,6 +40,7 @@ const LANGS_GLOB = "i18n/*.json";
 const TEMPLATES_GLOB = "mustache-pp/*.mustache";
 const SMILESJS_GLOB = "smiles-pp/smiles.js";
 
+const SMILES_TMP_DIR = path.resolve("smiles-pp");
 const LABELS_TMP_DIR = path.resolve("labels-pp");
 const DIST_DIR = path.resolve("dist");
 const STATIC_DIR = path.join(DIST_DIR, "static");
@@ -300,7 +301,7 @@ gulp.task("smiles", () => {
     .filter(n => /^[a-z0-9_]+\.png$/.test(n))
     .map(n => n.slice(0, -4))
     .sort();
-  assert.equal(smileIds.length * 2, smileNames.length, "smiles mismatch");
+  assert.equal(smileIds.length * 2, smileNames.length, "Smiles mismatch");
   // spritesmith requires correct sorting.
   const smilePaths = [];
   smileIds.forEach(id =>
@@ -308,11 +309,11 @@ gulp.task("smiles", () => {
   );
   return gulp.src(smilePaths)
     .pipe(spritesmith({
-      imgName: "_smiles.png",
+      imgName: "__smiles.png",
       cssName: "smiles.css",
       imgPath: "/static/img/smiles.png",
       retinaSrcFilter: "smiles/*@2x.png",
-      retinaImgName: "_smiles@2x.png",
+      retinaImgName: "__smiles@2x.png",
       retinaImgPath: "/static/img/smiles@2x.png",
       // https://github.com/twolfson/gulp.spritesmith/issues/97
       padding: 1,
@@ -320,17 +321,21 @@ gulp.task("smiles", () => {
         cssSelector: s => ".smile-" + s.name,
       },
     }))
-    .pipe(gulp.dest("smiles-pp"))
+    .pipe(gulp.dest(SMILES_TMP_DIR))
     .pipe(gulpif("*.png", tap(function({ basename }) {
       // gulp-imagemin requires 240+ deps, fuck that shit.
       const p = spawnSync("optipng", [
         "-quiet",
-        "-clobber",
         "-strip", "all",
         "-out", basename.slice(1),
         basename,
-      ], {cwd: "smiles-pp", stdio: "inherit"});
+      ], {cwd: SMILES_TMP_DIR, stdio: "inherit"});
       if (p.error) return handleError(p.error);
+      // Avoid corrupted sprite copy in dist/ via atomic rename.
+      fs.renameSync(
+        path.join(SMILES_TMP_DIR, basename.slice(1)),
+        path.join(SMILES_TMP_DIR, basename.slice(2))
+      );
     })))
     .on("end", () => {
       const jsSmiles = smileIds.map(id => `"${id}"`).join(",");
