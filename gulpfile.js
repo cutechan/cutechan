@@ -29,6 +29,9 @@ const watch = process.argv.includes("-w");
 // Build also tasks which are rarely needed.
 const all = process.argv.includes("-a");
 
+// Host where livereload server will be available.
+const LR_HOST = process.env.CC_LR_HOST || "127.0.0.1:35729";
+
 const LANGS_GLOB = "i18n/*.json";
 const TEMPLATES_GLOB = "mustache-pp/*.mustache";
 const SMILESJS_GLOB = "smiles-pp/smiles.js";
@@ -188,9 +191,33 @@ function typescriptTsc() {
   return stream;
 }
 
+function injectLivereload() {
+  const Vinyl = require("vinyl");
+  const through = require("through2");
+  const stream = through.obj(function(chunk, enc, cb) {
+    chunk.contents = Buffer.concat([
+      Buffer.from("(function() {\n"),
+      Buffer.from('  var script = document.createElement("script");\n'),
+      Buffer.from(`  script.src = "http://${LR_HOST}/livereload.js"\n`),
+      Buffer.from("  document.body.appendChild(script);\n"),
+      Buffer.from("})();\n"),
+    ]);
+    cb(null, new Vinyl(chunk));
+  });
+  stream.end({
+    base: process.cwd(),
+    path: "livereload.js",
+  });
+  return stream;
+}
+
 function buildClient(tsOpts) {
   const tsFn = watch ? typescriptTsc : typescriptGulp;
-  return merge(langs(), templates(), tsFn(tsOpts))
+  const stream = merge(langs(), templates(), tsFn(tsOpts));
+  if (watch) {
+    stream.add(injectLivereload());
+  }
+  return stream
     .pipe(sourcemaps.init())
     .pipe(concat(tsOpts.outFile));
 }
