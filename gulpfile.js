@@ -4,6 +4,8 @@ const fs = require("fs");
 const path = require("path");
 const assert = require("assert");
 const { spawn, spawnSync } = require("child_process");
+const Vinyl = require("vinyl");
+const through = require("through2");
 const del = require("del");
 const merge = require("merge-stream");
 const stripAnsi = require("strip-ansi");
@@ -163,8 +165,6 @@ function typescriptGulp(opts) {
 
 // Wait compilation result from tsc and pass it further.
 function typescriptTsc() {
-  const Vinyl = require("vinyl");
-  const through = require("through2");
   const stream = through.obj(function(chunk, enc, cb) {
     function passFile() {
       try {
@@ -184,16 +184,11 @@ function typescriptTsc() {
       }, 200);
     }
   });
-  stream.end({
-    base: process.cwd(),
-    path: TSC_TMP_FILE,
-  });
+  stream.end({path: TSC_TMP_FILE});
   return stream;
 }
 
 function injectLivereload() {
-  const Vinyl = require("vinyl");
-  const through = require("through2");
   const stream = through.obj(function(chunk, enc, cb) {
     chunk.contents = Buffer.concat([
       Buffer.from("(function() {\n"),
@@ -204,10 +199,7 @@ function injectLivereload() {
     ]);
     cb(null, new Vinyl(chunk));
   });
-  stream.end({
-    base: process.cwd(),
-    path: "livereload.js",
-  });
+  stream.end({path: path.resolve("livereload.js")});
   return stream;
 }
 
