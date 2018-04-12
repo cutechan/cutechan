@@ -126,11 +126,11 @@ function langs() {
     .pipe(concat("langs.js"))
     .pipe(tap(function(file) {
       file.contents = Buffer.concat([
-        new Buffer('define("cc-langs", ["exports"], function(exports) {\n'),
-        new Buffer("var langs = {};\n"),
+        Buffer.from('define("cc-langs", ["exports"], function(exports) {\n'),
+        Buffer.from("var langs = {};\n"),
         file.contents,
-        new Buffer("\nexports.default = langs;\n"),
-        new Buffer("});\n"),
+        Buffer.from("\nexports.default = langs;\n"),
+        Buffer.from("});\n"),
       ]);
     }));
 }
@@ -145,11 +145,11 @@ function templates() {
     .pipe(concat("templates.js"))
     .pipe(tap(function(file) {
       file.contents = Buffer.concat([
-        new Buffer('define("cc-templates", ["exports"], function(exports) {\n'),
-        new Buffer("var templates = {};\n"),
+        Buffer.from('define("cc-templates", ["exports"], function(exports) {\n'),
+        Buffer.from("var templates = {};\n"),
         file.contents,
-        new Buffer("\nexports.default = templates;\n"),
-        new Buffer("});\n"),
+        Buffer.from("\nexports.default = templates;\n"),
+        Buffer.from("});\n"),
       ]);
     }));
 }
