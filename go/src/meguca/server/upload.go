@@ -94,6 +94,9 @@ func saveFile(srcData []byte, file *common.ImageCommon) (res uploadResult, err e
 	case ipc.ErrThumbTracks:
 		err = aerrNoTracks
 		return
+	case ipc.ErrThumbProcess:
+		err = aerrCorrupted
+		return
 	default:
 		err = aerrInternal
 		return

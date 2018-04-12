@@ -75,6 +75,7 @@ var (
 	aerrTooLarge        = aerrorNew(400, "file too large")
 	aerrTooManyFiles    = aerrorNew(400, "too many files")
 	aerrUploadRead      = aerrorNew(400, "error reading upload")
+	aerrCorrupted       = aerrorNew(400, "corrupted file")
 	aerrUnsupported     = aerrorFrom(400, ipc.ErrThumbUnsupported)
 	aerrNoTracks        = aerrorFrom(400, ipc.ErrThumbTracks)
 )

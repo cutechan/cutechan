@@ -110,17 +110,17 @@ func getThumbnail(srcData []byte) (ithumb *ipc.Thumb, err error) {
 func main() {
 	srcData, err := ioutil.ReadAll(os.Stdin)
 	if err != nil {
-		fmt.Printf("%v", err)
+		fmt.Print(err.Error())
 		os.Exit(ipc.THUMB_ERROR_EXIT_CODE)
 	}
 	thumb, err := getThumbnail(srcData)
 	if err != nil {
-		fmt.Printf("%v", err)
+		fmt.Print(err.Error())
 		os.Exit(ipc.THUMB_ERROR_EXIT_CODE)
 	}
 	outData, err := thumb.Marshal()
 	if err != nil {
-		fmt.Printf("%v", err)
+		fmt.Print(err.Error())
 		os.Exit(ipc.THUMB_ERROR_EXIT_CODE)
 	}
 	_, err = os.Stdout.Write(outData)
