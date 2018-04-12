@@ -141,7 +141,7 @@ function langs() {
         Buffer.from("var langs = {};\n"),
         file.contents,
         Buffer.from("\nexports.default = langs;\n"),
-        Buffer.from("});\n"),
+        Buffer.from("});"),
       ]);
     }));
 }
@@ -160,7 +160,7 @@ function templates() {
         Buffer.from("var templates = {};\n"),
         file.contents,
         Buffer.from("\nexports.default = templates;\n"),
-        Buffer.from("});\n"),
+        Buffer.from("});"),
       ]);
     }));
 }
@@ -201,10 +201,10 @@ function injectLivereload() {
   const stream = through.obj(function(chunk, enc, cb) {
     chunk.contents = Buffer.concat([
       Buffer.from("(function() {\n"),
-      Buffer.from('  var script = document.createElement("script");\n'),
-      Buffer.from(`  script.src = "http://${LR_HOST}/livereload.js";\n`),
-      Buffer.from("  document.body.appendChild(script);\n"),
-      Buffer.from("})();\n"),
+      Buffer.from('var script = document.createElement("script");\n'),
+      Buffer.from(`script.src = "http://${LR_HOST}/livereload.js";\n`),
+      Buffer.from("document.body.appendChild(script);\n"),
+      Buffer.from("})();"),
     ]);
     cb(null, new Vinyl(chunk));
   });
