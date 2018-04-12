@@ -193,7 +193,7 @@ function injectLivereload() {
     chunk.contents = Buffer.concat([
       Buffer.from("(function() {\n"),
       Buffer.from('  var script = document.createElement("script");\n'),
-      Buffer.from(`  script.src = "http://${LR_HOST}/livereload.js"\n`),
+      Buffer.from(`  script.src = "http://${LR_HOST}/livereload.js";\n`),
       Buffer.from("  document.body.appendChild(script);\n"),
       Buffer.from("})();\n"),
     ]);
