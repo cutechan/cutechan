@@ -146,8 +146,10 @@ hr {
   cursor: pointer;
   outline: none;
   user-select: none;
+  transition:0.1s;
   &:not(:disabled):hover {
     color: @controlHover;
+    transition:0.1s;
   }
   &:disabled {
     cursor: default;
@@ -176,10 +178,12 @@ hr {
   cursor: pointer;
   outline: none;
   user-select: none;
+  transition: 0.1s linear;
   &:not(:disabled):hover {
     color: @buttonHover;
     border: @buttonBorderHover;
     box-shadow: @buttonShadow;
+    transition:0.1s linear;
   }
   &:disabled {
     cursor: default;
@@ -293,6 +297,7 @@ html, body {
   color: @headeritem;
   text-decoration: none;
   outline: none;
+  transition:0.05s linear;
 }
 
 .header-board {
@@ -304,6 +309,7 @@ html, body {
 .header-logo:hover, .header-board:hover, .header-icon:hover {
   color: @headeritem;
   background: @headerBGHover;
+  transition:0.05s linear;
 }
 
 .logo {
@@ -854,7 +860,11 @@ input[type=number], input[type=text], input[type=password], textarea {
 }
 
 .board-search-input_catalog {
-  border-radius: 15px 0 0 15px;
+  border-radius: 2px 0 0 2px;
+  transition: 0.1s linear;
+  &:focus {
+    transition: 0.1s linear;
+  };
 }
 
 .board-search-sort {
@@ -863,22 +873,24 @@ input[type=number], input[type=text], input[type=password], textarea {
   height: 30px;
   border: @searchBorder;
   border-left-color: transparent;
-  border-radius: 0 15px 15px 0;
+  border-radius: 0 2px 2px 0;
   color: transparent;
   background: none;
   cursor: pointer;
   outline: none;
   appearance: none;
-  direction: rtl;
+  direction: ltr;
   background-image:
     linear-gradient(45deg, transparent 50%, gray 50%),
     linear-gradient(135deg, gray 50%, transparent 50%);
   background-position: 7px 12px, 12px 12px;
   background-size: 5px 5px;
   background-repeat: no-repeat;
+  transition: 0.1s linear;
   &:focus {
     border: @searchBorderHover;
     box-shadow: @searchShadow;
+    transition: 0.1s linear;
   }
 }
 
@@ -1118,10 +1130,10 @@ html.work-mode {
   // Link.
   a {
     color: @messagelink;
-    padding: 0.3ex 0 0.3ex;
+    padding: 0.3ex 0 0.2ex;
     &:hover {
       color: @linkHover;
-      padding: 0.3ex 0 0.3ex;
+      padding: 0.3ex 0 0.2ex;
     }
   }
 
@@ -1729,9 +1741,11 @@ html:not(.pos_moderators) {
   background: none;
   outline: none;
   color: @body;
+  transition: 0.13s linear;
   &:focus {
     border: @searchBorderHover;
     box-shadow: @searchShadow;
+    transition: 0.1s linear;
   }
   &::placeholder {
     color: @searchplaceholder;
