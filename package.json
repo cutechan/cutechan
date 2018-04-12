@@ -41,6 +41,7 @@
     "@types/mustache": "^0.8.30",
     "@types/node": "^9.4.7",
     "ajv": "^6.3.0",
+    "ansi-colors": "^1.1.0",
     "autoprefixer": "^8.1.0",
     "babel-preset-latest": "^6.24.1",
     "clean-webpack-plugin": "^0.1.19",

@@ -8,6 +8,7 @@ const Vinyl = require("vinyl");
 const through = require("through2");
 const del = require("del");
 const merge = require("merge-stream");
+const colors = require("ansi-colors");
 const stripAnsi = require("strip-ansi");
 const uglifyes = require("uglify-es");
 const gulp = require("gulp");
@@ -231,18 +232,34 @@ function buildES6() {
     // Much faster than gulp-typescript, see:
     // https://github.com/ivogabe/gulp-typescript/issues/549
     tsc = spawn("node_modules/.bin/tsc", [
-      "-w",
-      "-p", "tsconfig.json",
+      "-w", "-p", "tsconfig.json",
       "--outFile", TSC_TMP_FILE,
-      "--diagnostics",
     ], {
-      stdio: "inherit",
+      stdio: ["ignore", "pipe", "inherit"],
     }).on("error", (err) => {
       tsc = null;
       handleError(err);
     }).on("exit", (code) => {
       tsc = null;
       handleError(new Error(`tsc exited with ${code}`));
+    });
+
+    // Make tsc output gulp-alike.
+    // Too hacky but whatever, all of this is a big hack.
+    tsc.stdout.on("data", (data) => {
+      // Might be buffer.
+      data = data.toString();
+      // Remove extra newlines.
+      data = data.replace(/\n+$/, "");
+      // Fix date format and prefix.
+      data = data.replace(/ GMT\+\d{4} \([A-Z]{3}\)([^\]]*\])/g,
+                          `$1 ${colors.cyan("tsc")}:`);
+      // Finally output "fixed" log messages.
+      if (data.includes("error")) {
+        handleError(new Error(data));
+      } else {
+        console.log(data);
+      }
     });
 
     gulp.watch([

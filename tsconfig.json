@@ -12,6 +12,9 @@
     "strictNullChecks": false,
     "suppressImplicitAnyIndexErrors": true,
     "noUnusedLocals": true,
-    "allowJs": true
+    "allowJs": true,
+    "pretty": true,
+    "noEmitOnError": true,
+    "preserveWatchOutput": true
   }
 }
