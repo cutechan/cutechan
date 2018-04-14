@@ -1,7 +1,7 @@
 //////////////////////////////
 // THIRD-PARTY
 //////////////////////////////
-
+@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i&subset=cyrillic');
 @import (inline) "node_modules/normalize.css/normalize.css";
 @import (inline) "node_modules/font-awesome/css/font-awesome.css";
 @import (inline) "node_modules/vmsg/vmsg.css";
@@ -21,7 +21,7 @@ html {
 }
 ::-webkit-scrollbar-thumb {
   background-color: hsl(275, 15%, 40%);
-  border-radius: 2px;
+  border-radius: 4px;
 }
 
 body {
@@ -32,6 +32,7 @@ body, textarea {
   font-family: @font;
   font-size: @fontSize;
   line-height: @lineHeight;
+  font-weight: 400;
   color: @body;
 }
 
@@ -259,11 +260,12 @@ html, body {
 }
 
 .page-title {
-  font-size: 3.5em;
-  font-weight: bold;
-  margin: 40px 0 50px;
+  font-size: 3.7em;
+  font-weight: 700;
+  margin: 50px 0 50px;
   text-align: left;
   color: @pagetitle;
+
 }
 
 //////////////////////////////
@@ -280,6 +282,7 @@ html, body {
   font-size: @headerFontSize;
   box-sizing: border-box;
   border-bottom: @headerBorder;
+  border-bottom: none;
   background: @headerBG;
   box-shadow: @headerShadow;
   cursor: default;
@@ -346,18 +349,19 @@ html, body {
 }
 
 .landing-header {
-  font-size: 50px;
+  font-size: 4em;
+  font-weight: 700;
   color: @pagetitle;
-  margin: 0 0 50px;
+  margin: 30px 0 50px;
   line-height: 60px;
 }
 
 .landing-info {
-  max-width: 1000px;
+  max-width: 1200px;
   color: @pagetitle;
   margin: 0 auto 60px auto;
   font-weight: 500;
-  font-size: 1.3em;
+  font-size: 1.5em;
   text-align: center;
 }
 
@@ -802,12 +806,16 @@ input[type=number], input[type=text], input[type=password], textarea {
 
 .board-nav-item {
   margin-right: 5px;
+  float: right;
 }
 
 .thread-nav-item {
   margin-right: 5px;
 }
 
+.thread-nav_top {
+  display:none;
+}
 //////////////////////////////
 // PAGINATION
 //////////////////////////////
@@ -816,6 +824,7 @@ input[type=number], input[type=text], input[type=password], textarea {
   display: inline-block;
   user-select: none;
   cursor: default;
+  float: right;
 }
 
 .board-pagination-page {
@@ -833,6 +842,7 @@ input[type=number], input[type=text], input[type=password], textarea {
   color: @pagecurrent;
   border:@border;
   border-radius: 2px;
+  opacity: 1;
 }
 
 //////////////////////////////
@@ -842,11 +852,12 @@ input[type=number], input[type=text], input[type=password], textarea {
 .board-search {
   font-size: @searchFontSize;
   float: right;
+  margin-right: 10px;
 }
 
 .board-search-input {
   box-sizing: border-box;
-  height: 30px;
+  height: 31px;
   border-radius: 15px;
   padding: 6px 14px;
   color: @searchinput;
@@ -870,7 +881,7 @@ input[type=number], input[type=text], input[type=password], textarea {
 .board-search-sort {
   box-sizing: border-box;
   width: 30px;
-  height: 30px;
+  height: 31px;
   border: @searchBorder;
   border-left-color: transparent;
   border-radius: 0 2px 2px 0;
@@ -1120,6 +1131,8 @@ html.work-mode {
 .post-quote-control {
   float: right;
   margin-right: 0;
+  padding: 0 0 0 15px;
+   font-size:15px;
 }
 
 //////////////////////////////
@@ -1130,21 +1143,21 @@ html.work-mode {
   // Link.
   a {
     color: @messagelink;
-    padding: 0.3ex 0 0.2ex;
+    padding: 0.1ex 0 0;
     &:hover {
       color: @linkHover;
-      padding: 0.3ex 0 0.2ex;
+      padding: 0.1ex 0 0;
     }
   }
 
   // Spoiler.
   del {
-    padding: 0.3ex 0 0.3ex;
+    padding: 0.1ex 0 0;
     text-decoration: none;
     background-color: @spoiler;
     &:not(:hover) {
       &, a, .post-embed-icon {
-            padding: 0.3ex 0 0.3ex;
+            padding: 0.1ex 0 0;
         color: transparent;
       }
       .smile {
@@ -1154,7 +1167,7 @@ html.work-mode {
     &:hover {
       &, a {
         cursor: text;
-        padding: 0.3ex 0 0.3ex;
+        padding: 0.1ex 0 0;
         color: @body;
       }
     }
@@ -1202,6 +1215,12 @@ html:not(.pos_moderators) {
   .post-delete-control, .post-ban-control {
     display: none;
   }
+}
+.post-delete-control, .post-ban-control {
+   opacity: 0.3;
+}
+.post-delete-control:hover, .post-ban-control:hover {
+   opacity: 1;
 }
 
 //////////////////////////////
@@ -1390,7 +1409,7 @@ html:not(.pos_moderators) {
 //////////////////////////////
 
 .reply-container_board {
-  margin: 0 auto;
+  margin: 0 0;
   max-width: 100%;
   .reply {
     margin-bottom: 20px;
@@ -1600,6 +1619,7 @@ html:not(.pos_moderators) {
 }
 
 .reply-send-button {
+  margin-left: 20px;
   box-sizing: border-box;
   width: 200px;
   height: 22px;
@@ -1872,6 +1892,7 @@ body:after {
 
 .smile {
   display: inline-block;
+  cursor: default;
 }
 
 @import (inline) "smiles-pp/smiles.css";

@@ -21,10 +21,7 @@
         margin: 0 20px 70px;
    }
   .board {
-    padding: 0 10px 10px;
-  }
-  .page-nav {
-    display: none;
+    padding: 0 10px 50px;
   }
 }
 
@@ -32,11 +29,12 @@
 @media (max-width: 480px) {
   .landing-header {
     font-size: 27px;
-    margin: -20px 10px 30px;
+    margin: 10px 10px 60px;
     line-height: 33px;
+    font-weight: 800;
   }
   .landing-info {
-    margin: 0 25px 30px;
+    margin: 0 25px 60px;
     font-size: 1.1em;
    }
    .landing-threads-button {
@@ -44,6 +42,7 @@
     height: 40px;
     margin-bottom: 0px;
     font-size: 20px;
+    line-height: 17px;
     }
     .landing-logo {
     display:none;
@@ -51,9 +50,13 @@
   .board-nav_top .board-pagination {
     display: none;
   }
+  .board-nav-item {
+    float:left;
+  }
   .page-title {
-    font-size: 40px;
-    margin: 20px 0 25px;
+    font-size: 50px;
+    margin: 35px 0 35px;
+    word-wrap: break-word;
   }
   .landing-logo {
     width: 300px;
@@ -61,6 +64,7 @@
   }
   .header-item {
     padding: 0 5px;
+    font-size: 15px;
   }
   .header-logo {
     padding: 0 10px;
@@ -79,12 +83,50 @@
   }
   .header-counter, .header-status, .header-icon {
     width: 40px;
+    font-size: 16px;
   }
   .board-search {
     display: none;
   }
   .post_file {
     min-width: 100%;
+  }
+  ::-webkit-scrollbar {
+    width: 3px;
+  }
+  .post-file-link {
+  float: none;
+  }
+  .post-quote-control {
+  padding: 0 0 0 15px;
+  font-size:19px;
+  }
+  .board-pagination, .board-nav-item, .thread-nav-item {
+  padding: 10px 15px;
+  }
+  .post-file-thumb, .post-file-link {
+  display: inline-block;
+  }
+  .page-nav-item_active {
+  opacity:1;
+  }
+  .page-nav-bottom i {
+  margin-top: 0;
+  top:40px;
+  left:45%;
+  position:fixed;
+  opacity:1;
+  }
+  .page-nav-top i {
+  margin-top: 0;
+  top:40px;
+  left:55%;
+  position:fixed;
+  }
+  .page-nav {
+  opacity:0.6;
+  width: 0;
+  z-index:1;
   }
 }
 
