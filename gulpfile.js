@@ -380,6 +380,7 @@ createTask("loader", "loader.js", src =>
         "textarea-caret": "node_modules/textarea-caret/index",
         vmsg: "node_modules/vmsg/vmsg.es5",
         ruhangul: "node_modules/ruhangul/index.es5",
+        fontfaceobserver: "node_modules/fontfaceobserver/fontfaceobserver",
       },
     }))
     .on("error", handleError)

@@ -12,6 +12,6 @@ func serveStickers(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	stickHTML := []byte{}
-	html := templates.Stickers(pos, stickHTML)
+	html := templates.Stickers(r, pos, stickHTML)
 	serveHTML(w, r, "", html, nil)
 }

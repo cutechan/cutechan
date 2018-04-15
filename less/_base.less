@@ -64,11 +64,17 @@ body {
 }
 
 body, textarea {
-  font-family: 'Open Sans', sans-serif;
+  font-family: sans-serif;
   font-size: @fontSize;
   line-height: @lineHeight;
   font-weight: 400;
   color: @body;
+}
+
+html.fonts_loaded {
+  body, textarea {
+    font-family: 'Open Sans', sans-serif;
+  }
 }
 
 a {
