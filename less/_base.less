@@ -1,7 +1,6 @@
 //////////////////////////////
 // THIRD-PARTY
 //////////////////////////////
-@import url('https://fonts.googleapis.com/css?family=Open+Sans:400,400i,600,600i,700,700i&subset=cyrillic');
 @import (inline) "node_modules/normalize.css/normalize.css";
 @import (inline) "node_modules/font-awesome/css/font-awesome.css";
 @import (inline) "node_modules/vmsg/vmsg.css";
@@ -28,8 +27,44 @@ body {
   background-color: @bodyBG;
 }
 
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 400;
+  src: local('Open Sans Regular'), local('OpenSans-Regular'), local('Open Sans'),
+       url('../fonts/opensans-regular.woff2') format('woff2'),
+       url('../fonts/opensans-regular.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 400;
+  src: local('Open Sans Italic'), local('OpenSans-Italic'),
+       url('../fonts/opensans-italic.woff2') format('woff2'),
+       url('../fonts/opensans-italic.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: normal;
+  font-weight: 700;
+  src: local('Open Sans Bold'), local('OpenSans-Bold'),
+       url('../fonts/opensans-700.woff2') format('woff2'),
+       url('../fonts/opensans-700.woff') format('woff');
+}
+
+@font-face {
+  font-family: 'Open Sans';
+  font-style: italic;
+  font-weight: 700;
+  src: local('Open Sans Bold Italic'), local('OpenSans-BoldItalic'),
+       url('../fonts/opensans-700italic.woff2') format('woff2'),
+       url('../fonts/opensans-700italic.woff') format('woff');
+}
+
 body, textarea {
-  font-family: @font;
+  font-family: 'Open Sans', sans-serif;
   font-size: @fontSize;
   line-height: @lineHeight;
   font-weight: 400;
