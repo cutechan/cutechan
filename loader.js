@@ -1,21 +1,3 @@
-(function loadFonts() {
-  var font1 = new FontFaceObserver("Open Sans");
-  var font2 = new FontFaceObserver("Open Sans", {style: "italic"});
-  var font3 = new FontFaceObserver("Open Sans", {weight: 700});
-  var font4 = new FontFaceObserver("Open Sans", {style: "italic", weight: 700});
-  Promise.all([
-    font1.load(null, 20000),
-    font2.load(null, 20000),
-    font3.load(null, 20000),
-    font4.load(null, 20000),
-  ]).then(function () {
-    var d = new Date();
-    d.setDate(d.getDate() + 7);
-    document.documentElement.className += " fonts_loaded";
-    document.cookie = "fonts_loaded=1; expires=" + d.toUTCString() + "; path=/";
-  });
-}());
-
 define("loader", [
   "almond",
   "events",
@@ -25,7 +7,6 @@ define("loader", [
   "textarea-caret",
   "vmsg",
   "ruhangul",
-  "fontfaceobserver",
 ], function () {
   var scriptCount = 0;
   var scripts = [];

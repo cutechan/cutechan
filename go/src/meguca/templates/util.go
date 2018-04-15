@@ -2,13 +2,14 @@ package templates
 
 import (
 	"html"
+	"strings"
 	"time"
 
 	"meguca/auth"
 	"meguca/common"
 )
 
-func posClasses(pos auth.Positions) []string {
+func posClasses(pos auth.Positions) string {
 	var classes []string
 	// Any next moderation level can do anything that previous can.
 	// Add them all for simpler handling in CSS.
@@ -21,7 +22,7 @@ func posClasses(pos auth.Positions) []string {
 	if auth.IsPowerUser(pos) {
 		classes = append(classes, "user_power")
 	}
-	return classes
+	return strings.Join(classes, " ")
 }
 
 // Extract reverse links to linked posts on a page

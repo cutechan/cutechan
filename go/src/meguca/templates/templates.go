@@ -7,7 +7,6 @@ package templates
 import (
 	"bytes"
 	"fmt"
-	"net/http"
 	"strings"
 
 	"meguca/auth"
@@ -21,19 +20,13 @@ var (
 	mustacheTemplates = map[string]*mustache.Template{}
 )
 
-func Page(r *http.Request, pos auth.Positions, title string, html string) []byte {
+func Page(pos auth.Positions, title string, html string) []byte {
 	var buf bytes.Buffer
-	classes := posClasses(pos)
-	if _, err := r.Cookie("fonts_loaded"); err == nil {
-		classes = append(classes, "fonts_loaded")
-	}
-	cls := strings.Join(classes, " ")
-	writerenderPage(&buf, cls, pos, title, html)
+	writerenderPage(&buf, pos, title, html)
 	return buf.Bytes()
 }
 
 func Board(
-	r *http.Request,
 	b string,
 	page, total int,
 	pos auth.Positions,
@@ -55,11 +48,10 @@ func Board(
 	if minimal {
 		return []byte(html)
 	}
-	return Page(r, pos, title, html)
+	return Page(pos, title, html)
 }
 
 func Thread(
-	r *http.Request,
 	id uint64,
 	board, title string,
 	abbrev bool,
@@ -67,19 +59,19 @@ func Thread(
 	postHTML []byte,
 ) []byte {
 	html := renderThread(postHTML, id, board, title)
-	return Page(r, pos, title, html)
+	return Page(pos, title, html)
 }
 
-func Landing(r *http.Request, pos auth.Positions) []byte {
+func Landing(pos auth.Positions) []byte {
 	title := lang.Get().UI["main"]
 	html := renderLanding()
-	return Page(r, pos, title, html)
+	return Page(pos, title, html)
 }
 
-func Stickers(r *http.Request, pos auth.Positions, stickHTML []byte) []byte {
+func Stickers(pos auth.Positions, stickHTML []byte) []byte {
 	html := renderStickers(stickHTML)
 	title := lang.Get().UI["stickers"]
-	return Page(r, pos, title, html)
+	return Page(pos, title, html)
 }
 
 func CompileMustache() (err error) {

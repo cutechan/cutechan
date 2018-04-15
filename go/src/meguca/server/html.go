@@ -43,7 +43,7 @@ func serveLanding(w http.ResponseWriter, r *http.Request) {
 	if !ok {
 		return
 	}
-	html := templates.Landing(r, pos)
+	html := templates.Landing(pos)
 	serveHTML(w, r, "", html, nil)
 }
 
@@ -95,7 +95,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		n = p.pageNumber
 		total = p.pageTotal
 	}
-	html = templates.Board(r, b, n, total, pos, isMinimal(r), catalog, html)
+	html = templates.Board(b, n, total, pos, isMinimal(r), catalog, html)
 	serveHTML(w, r, etag, html, nil)
 }
 
@@ -132,7 +132,7 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 
 	b := extractParam(r, "board")
 	title := data.(common.Thread).Subject
-	html = templates.Thread(r, id, b, title, lastN != 0, pos, html)
+	html = templates.Thread(id, b, title, lastN != 0, pos, html)
 	serveHTML(w, r, etag, html, nil)
 }
 

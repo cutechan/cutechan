@@ -30,13 +30,13 @@
 	</header>
 {% endstripspace %}{% endfunc %}
 
-{% func renderPage(cls string, pos auth.Positions, title string, page string) %}{% stripspace %}
+{% func renderPage(pos auth.Positions, title string, page string) %}{% stripspace %}
 	{% code conf := config.Get() %}
 	{% code confJSON, _ := config.GetClient() %}
 	{% code boards := config.GetBoardTitles() %}
 	{% code boardJSON, _ := json.Marshal(boards) %}
 	<!DOCTYPE html>
-	<html class="{%s cls %}">
+	<html class="{%s posClasses(pos) %}">
 	<head>
 		<meta charset="utf-8">
 		<meta name="viewport" content="width=device-width, initial-scale=1">
