@@ -261,6 +261,11 @@ class Reply extends Component<any, any> {
       }
     }
   }
+  public componentDidUpdate({}, { width, height }: any) {
+    if (this.state.width !== width || this.state.height !== height) {
+      this.setBodyScroll();
+    }
+  }
   public render({}, { float, fwraps, staffTitle }: any) {
     const manyf = fwraps.length > 1;
     return (
