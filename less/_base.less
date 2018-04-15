@@ -15,7 +15,7 @@ html {
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: @scrollbarWidth;
   height: 5px;
 }
 ::-webkit-scrollbar-thumb {
@@ -1599,15 +1599,36 @@ html:not(.pos_moderators) {
 
 .reply-body {
   flex: 1;
+  position: relative;
+}
+
+.reply-body-inner {
+  height: 100%;
   display: block;
-  box-sizing: border-box;
   width: 100%;
   padding: 0;
-  overflow: hidden;
   resize: none;
   border: none;
   outline: none;
   background: none;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.reply-body-coverbar {
+  position: absolute;
+  background: @replyBG;
+  top: 0;
+  right: 0;
+  width: 0;
+  height: 100%;
+  opacity: 1;
+  transition: opacity .5s;
+}
+.reply-body_scrollable:hover {
+  .reply-body-coverbar {
+    opacity: 0;
+  }
 }
 
 .reply-controls {
@@ -1827,11 +1848,10 @@ html:not(.pos_moderators) {
   overflow-x: hidden;
   overflow-y: scroll;
   // Hide scrollbar but keep it scrollable.
-  // Should be ~12px but cut a bit more.
-  right: -15px;
+  right: -17px;
   &::-webkit-scrollbar {
-    // Same width as FF on Linux.
-    width: 12px;
+    // Same width as FF on Windows.
+    width: 17px;
   }
 
   &:empty {

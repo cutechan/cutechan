@@ -197,6 +197,7 @@ class Reply extends Component<any, any> {
   };
   private mainEl: HTMLElement = null;
   private bodyEl: HTMLTextAreaElement = null;
+  private coverEl: HTMLElement = null;
   private fileEl: HTMLInputElement = null;
   private sendAPI: FutureAPI = {};
   private moving = false;
@@ -607,7 +608,15 @@ class Reply extends Component<any, any> {
   private handleBoardChange = (e: any) => {
     this.setState({board: e.target.value});
   }
+  private setBodyScroll() {
+    const hasScroll = this.bodyEl.scrollHeight > this.bodyEl.clientHeight;
+    (this.bodyEl.parentNode as HTMLElement)
+      .classList.toggle("reply-body_scrollable", hasScroll);
+    const scrollWidth = this.bodyEl.offsetWidth - this.bodyEl.clientWidth;
+    this.coverEl.style.width = scrollWidth + "px";
+  }
   private handleBodyChange = (e: any) => {
+    this.setBodyScroll();
     const smileBoxAC = autocomplete(this.bodyEl);
     const smileBox = !!smileBoxAC;
     this.setState({body: e.target.value, smileBox, smileBoxAC});
@@ -789,13 +798,16 @@ class Reply extends Component<any, any> {
   private renderBody() {
     const { editing, sending, body } = this.state;
     return editing ? (
-      <textarea
-        class="reply-body"
-        ref={s(this, "bodyEl")}
-        value={body}
-        disabled={sending}
-        onInput={this.handleBodyChange}
-      />
+      <div class="reply-body">
+        <textarea
+          class="reply-body-inner"
+          ref={s(this, "bodyEl")}
+          value={body}
+          disabled={sending}
+          onInput={this.handleBodyChange}
+        />
+        <div class="reply-body-coverbar" ref={s(this, "coverEl")} />
+      </div>
     ) : (
       <BodyPreview body={body} />
     );
