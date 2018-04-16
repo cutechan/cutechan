@@ -175,9 +175,14 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 		Token:        f.Get("token"),
 		Sign:         f.Get("sign"),
 	}
-	if f.Get("staffTitle") == "on" || config.IsModOnly(f.Get("board")) {
+
+	showBadge := f.Get("showBadge") == "on" || config.IsModOnly(f.Get("board"))
+	showName := f.Get("showName") == "on"
+	if showBadge || showName {
 		creds, err := extractLoginCreds(r)
 		if err == nil {
+			req.ShowBadge = showBadge
+			req.ShowName = showName
 			req.Creds = creds
 		}
 	}

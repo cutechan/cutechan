@@ -40,6 +40,8 @@ type PostCreationRequest struct {
 	Body         string
 	Token        string
 	Sign         string
+	ShowBadge    bool
+	ShowName     bool
 	Creds        *auth.SessionCreds
 }
 
@@ -170,7 +172,7 @@ func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
 	}
 
 	// Attach staff position title after validation.
-	if req.Creds != nil {
+	if req.ShowBadge {
 		var pos auth.Positions
 		pos, err = db.GetPositions(board, req.Creds.UserID)
 		if err != nil {
@@ -179,6 +181,11 @@ func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
 		if pos.CurBoard >= auth.Moderator {
 			post.Auth = pos.CurBoard.String()
 		}
+	}
+
+	// Attach name if requested.
+	if req.ShowName {
+		post.Name = req.Creds.UserID
 	}
 
 	post.Links, post.Commands, err = parser.ParseBody([]byte(req.Body))

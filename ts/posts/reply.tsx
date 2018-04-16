@@ -6,6 +6,7 @@ import API from "../api";
 import { PostData } from "../common";
 import { ln, printf } from "../lang";
 import { isModerator } from "../mod";
+import options from "../options";
 import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {
@@ -193,7 +194,7 @@ class Reply extends Component<any, any> {
     smileBox: false,
     smileBoxAC: null as string[],
     fwraps: [] as Array<{file: File, info: Dict}>,
-    staffTitle: false,
+    showBadge: false,
   };
   private mainEl: HTMLElement = null;
   private bodyEl: HTMLTextAreaElement = null;
@@ -266,7 +267,7 @@ class Reply extends Component<any, any> {
       this.setBodyScroll();
     }
   }
-  public render({}, { float, fwraps, staffTitle }: any) {
+  public render({}, { float, fwraps, showBadge }: any) {
     const manyf = fwraps.length > 1;
     return (
       <div
@@ -274,7 +275,7 @@ class Reply extends Component<any, any> {
         class={cx("reply", {
           reply_float: float,
           reply_files: manyf,
-          reply_mod: staffTitle,
+          reply_mod: showBadge,
         })}
         style={this.style}
         onMouseDown={this.handleFormDown}
@@ -682,7 +683,8 @@ class Reply extends Component<any, any> {
   }
   private handleSend = () => {
     if (this.disabled) return;
-    const { board, thread, subject, body, staffTitle } = this.state;
+    const { board, thread, subject, body, showBadge } = this.state;
+    const { showName } = options;
     const files = this.state.fwraps.map((f) => f.file);
     const sendFn = page.thread ? API.post.create : API.thread.create;
     this.setState({sending: true});
@@ -690,7 +692,8 @@ class Reply extends Component<any, any> {
       const sign = signature.gen(token);
       return sendFn({
         board, thread,
-        subject, body, files, staffTitle,
+        subject, body, files,
+        showBadge, showName,
         token, sign,
       }, this.handleSendProgress, this.sendAPI);
     }).then((res: Dict) => {
@@ -722,9 +725,9 @@ class Reply extends Component<any, any> {
     const editing = !this.state.editing;
     this.setState({editing, smileBox: false}, this.focus);
   }
-  private handleToggleStaffTitle = () => {
-    const staffTitle = !this.state.staffTitle;
-    this.setState({staffTitle}, this.focus);
+  private handleToggleShowBadge = () => {
+    const showBadge = !this.state.showBadge;
+    this.setState({showBadge}, this.focus);
   }
   private handleToggleSmileBox = (e: MouseEvent) => {
     // Needed because of https://github.com/developit/preact/issues/838
@@ -847,7 +850,7 @@ class Reply extends Component<any, any> {
     );
   }
   private renderFooterControls() {
-    const { editing, sending, progress, staffTitle } = this.state;
+    const { editing, sending, progress, showBadge } = this.state;
     const sendTitle = sending ? `${progress}% (${ln.UI.clickToCancel})` : "";
     return (
       <div class="reply-controls reply-footer-controls">
@@ -911,10 +914,10 @@ class Reply extends Component<any, any> {
         <ShowHide show={isModerator()}>
           <button
             class={cx("control", "reply-footer-control", "reply-badge-control",
-                      {control_active: staffTitle})}
+                      {control_active: showBadge})}
             title={ln.Forms.modBadge[0]}
             disabled={sending}
-            onClick={this.handleToggleStaffTitle}
+            onClick={this.handleToggleShowBadge}
           >
             <i class="fa fa-id-badge" />
           </button>

@@ -2,12 +2,14 @@ package server
 
 import (
 	"database/sql"
+	"net/http"
+	"regexp"
+	"strings"
+	"time"
+
 	"meguca/auth"
 	"meguca/common"
 	"meguca/db"
-	"net/http"
-	"strings"
-	"time"
 
 	"golang.org/x/crypto/bcrypt"
 )
@@ -15,6 +17,8 @@ import (
 var (
 	// Add "secure" flag to auth cookies.
 	SecureCookie bool
+
+	userIdRe = regexp.MustCompile(`^[\p{Latin}\p{Cyrillic}\d]+$`)
 )
 
 type loginCreds struct {
@@ -59,7 +63,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 
 // Separate function for easier chaining of validations
 func validateUserID(w http.ResponseWriter, id string) bool {
-	if id == "" || len(id) > common.MaxLenUserID {
+	if id == "" || len(id) > common.MaxLenUserID || !userIdRe.MatchString(id) {
 		text400(w, errInvalidUserID)
 		return false
 	}
