@@ -47,6 +47,7 @@ type Post struct {
 	ID       uint64   `json:"id"`
 	Time     int64    `json:"time"`
 	Auth     string   `json:"auth,omitempty"`
+	Name     string   `json:"name,omitempty"`
 	Body     string   `json:"body"`
 	Links    Links    `json:"links,omitempty"`
 	Commands Commands `json:"commands,omitempty"`

@@ -413,6 +413,11 @@ var upgrades = []func(*sql.Tx) error{
 				ADD CONSTRAINT idol_previews_image_id_fkey FOREIGN KEY (image_id) REFERENCES images(sha1)`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`DROP FUNCTION insert_thread(id bigint, op bigint, now bigint, board text, auth character varying, body text, ip inet, links bigint[], commands json[], file_cnt bigint, subject character varying)`,
+		)
+	},
 }
 
 func StartDb() (err error) {

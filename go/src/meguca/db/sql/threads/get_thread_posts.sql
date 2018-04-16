@@ -1,5 +1,5 @@
 WITH t AS (
-  SELECT id, time, auth, body, links, commands
+  SELECT id, time, auth, name, body, links, commands
   FROM posts
   WHERE op = $1 AND id != $1
   ORDER BY id DESC

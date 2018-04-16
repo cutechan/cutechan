@@ -250,16 +250,19 @@ func NewPostID(tx *sql.Tx) (id uint64, err error) {
 
 func getPostCreationArgs(p Post) []interface{} {
 	// Don't store empty strings in the database. Zero value != NULL.
-	var auth, ip *string
+	var auth, name, ip *string
 	if p.Auth != "" {
 		auth = &p.Auth
+	}
+	if p.Name != "" {
+		name = &p.Name
 	}
 	if p.IP != "" {
 		ip = &p.IP
 	}
 	fileCnt := len(p.Files)
 	return []interface{}{
-		p.ID, p.OP, p.Time, p.Board, auth, p.Body, ip,
+		p.ID, p.OP, p.Time, p.Board, auth, name, p.Body, ip,
 		linkRow(p.Links), commandRow(p.Commands),
 		fileCnt,
 	}
