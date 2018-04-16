@@ -1192,13 +1192,14 @@ html.work-mode {
       }
     }
     &:hover {
-      &, a {
-        cursor: text;
+      & a {
+        cursor: pointer;
         padding: 0.1ex 0 0;
-        color: @body;
-        a:hover {
-          color:@spoilerlink;
+        color: @spoilerlink;
         }
+        a:hover {
+          cursor: pointer;
+          color:@spoilerlink;
       }
     }
   }
