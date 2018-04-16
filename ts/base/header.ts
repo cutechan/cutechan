@@ -51,10 +51,10 @@ export class HeaderModal extends View<null> {
   }
 }
 
-// A view that supports switching between multiple tabs
+// A view that supports switching between multiple tabs.
 export class TabbedModal extends HeaderModal {
-  // Hook a function to execute on tab switching
-  protected tabHook: (id: number) => void;
+  // Hook a function to execute on tab switching.
+  protected tabHook: (id: number, el: HTMLElement) => void;
 
   constructor(el: HTMLElement) {
     super(el);
@@ -64,27 +64,26 @@ export class TabbedModal extends HeaderModal {
     });
   }
 
-  // Switch to a tab, when clicking the tab butt
+  // Switch to a tab, when clicking the tab header.
   private switchTab(event: Event) {
-    const el = event.target as Element;
-
-    // Deselect previous tab
+    // Deselect previous tab.
     for (const selected of this.el.querySelectorAll(".tab-sel")) {
       selected.classList.remove("tab-sel");
     }
 
-    // Select the new one
+    // Select the new one.
+    const el = event.target as HTMLElement;
     el.classList.add("tab-sel");
     const id = el.getAttribute("data-id");
-    for (const tabEl of this.el.querySelectorAll(`.tab-cont > div`)) {
-      if (tabEl.getAttribute("data-id") !== id) {
-        continue;
+    let tabEl = null;
+    for (tabEl of this.el.querySelectorAll(".tab-cont > div")) {
+      if (tabEl.getAttribute("data-id") === id) {
+        tabEl.classList.add("tab-sel");
+        break;
       }
-      tabEl.classList.add("tab-sel");
     }
-
     if (this.tabHook) {
-      this.tabHook(parseInt(id, 10));
+      this.tabHook(+id, tabEl as HTMLElement);
     }
   }
 }

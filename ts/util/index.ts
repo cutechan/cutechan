@@ -12,6 +12,10 @@ export * from "./changes";
 
 import { POST_SEL } from "../vars";
 
+export interface Constructable {
+  new (): any;
+}
+
 // Retrieve element id.
 export function getID(el: Element): number {
   return el ? +el.getAttribute("data-id") : 0;

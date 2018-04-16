@@ -1,7 +1,7 @@
-import { validatePasswordMatch } from ".";
 import { AccountForm } from "./form";
+import { validatePasswordMatch } from "./login-form";
 
-// View for changing a password
+// Changing password form.
 export class PasswordChangeForm extends AccountForm {
   constructor() {
     super({ tag: "form" });

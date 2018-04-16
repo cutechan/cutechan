@@ -1,6 +1,6 @@
-import { AccountForm } from "../account/form";
 import { View, ViewAttrs } from "../base";
 import { makeFrag, postJSON, uncachedGET } from "../util";
+import { AccountForm } from "./form";
 
 // Render the <select> for picking the owned board you want to manipulate
 class OwnedBoardSelection extends View<null> {
