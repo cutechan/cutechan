@@ -19,11 +19,12 @@ type PostContext struct {
 	TID       uint64
 	Index     bool
 	OP        bool
-	Badge     bool
+	HasBoard  bool
 	Board     string
 	Subject   string
-	Staff     bool
+	Badge     bool
 	Auth      string
+	Name      string
 	Time      string
 	HasFiles  bool
 	post      *common.Post
@@ -68,11 +69,12 @@ func MakePostContext(t common.Thread, p *common.Post, bls common.Backlinks, inde
 		TID:       t.ID,
 		Index:     index,
 		OP:        t.ID == p.ID,
-		Badge:     t.ID == p.ID && index && all,
+		HasBoard:  t.ID == p.ID && index && all,
 		Board:     t.Board,
 		Subject:   t.Subject,
-		Staff:     p.Auth != "",
+		Badge:     p.Auth != "",
 		Auth:      ln.Common.Posts[p.Auth],
+		Name:      p.Name,
 		Time:      readableTime(postTime),
 		HasFiles:  len(p.Files) > 0,
 		post:      p,

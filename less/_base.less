@@ -997,6 +997,9 @@ header {
 
 .post-header-item {
   display: inline-block;
+  &:empty {
+    display: none;
+  }
 }
 
 .post-header-item ~ .post-header-item {
@@ -1033,7 +1036,13 @@ header {
     display: none;
 }
 
-.post-staff {
+.post-name {
+  color: #999;
+  cursor: default;
+  user-select: none;
+}
+
+.post-badge {
   font-weight: bold;
   color: @admin;
 }
@@ -1041,6 +1050,8 @@ header {
 .post-time {
   font-size: @posttimeFontSize;
   float: right;
+  position: relative;
+  bottom: -2px;
   font-style: italic;
   cursor: default;
   text-decoration: dotted underline;

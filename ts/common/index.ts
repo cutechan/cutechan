@@ -19,6 +19,7 @@ export interface PostData {
   time: number;
   body: string;
   auth: string;
+  name: string;
   links?: PostLink[];
   commands?: Command[];
   files?: ImageData[];

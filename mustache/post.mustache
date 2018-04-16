@@ -2,15 +2,17 @@
 
   <header class="post-header">
     <a class="post-anchor" name="{{ ID }}"></a>
-    {{#Badge}}
+    {{#HasBoard}}
       <a class="post-header-item post-board" href="/{{ Board }}/">{{ Board }}</a>
-    {{/Badge}}
+    {{/HasBoard}}
     <a class="post-header-item post-id" href="{{ URL }}">#{{ ID }}</a>
     {{#OP}}
       <h3 class="post-header-item post-subject">{{ Subject }}</h3>
-    {{/OP}}{{#Staff}}
-      <span class="post-header-item post-staff">## {{ Auth }} ##</span>
-    {{/Staff}}
+    {{/OP}}
+    <span class="post-header-item post-name">{{ Name }}</span>
+    {{#Badge}}
+      <span class="post-header-item post-badge">## {{ Auth }} ##</span>
+    {{/Badge}}
     <time class="post-header-item post-time">{{ Time }}</time>
   </header>
 
