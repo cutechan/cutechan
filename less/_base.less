@@ -1176,17 +1176,6 @@ html.work-mode {
 // POST FORMATTING
 //////////////////////////////
 
-.post-message, .reply-message {
-  // Link.
-  a {
-    color: @messagelink;
-    padding: 0.1ex 0 0;
-    &:hover {
-      color: @linkHover;
-      padding: 0.1ex 0 0;
-    }
-  }
-
   // Spoiler.
   del {
     padding: 0.1ex 0 0;
@@ -1206,7 +1195,21 @@ html.work-mode {
         cursor: text;
         padding: 0.1ex 0 0;
         color: @body;
+        a:hover {
+          color:@control;
+        }
       }
+    }
+  }
+  .post-message, .reply-message {
+  // Link.
+  a {
+    color: @messagelink;
+    padding: 0.1ex 0 0;
+    &:hover {
+      cursor: pointer;
+      color: @linkHover;
+      padding: 0.1ex 0 0;
     }
   }
 
