@@ -4,9 +4,12 @@
  * @module cutechan/account
  */
 
+import { Component, h, render } from "preact";
 import { showAlert } from "../alerts";
 import { TabbedModal } from "../base";
+import { ln } from "../lang";
 import { ModerationLevel, position } from "../mod";
+import options from "../options";
 import { Constructable } from "../util";
 import {
   BoardConfigForm, BoardCreationForm, BoardDeletionForm, StaffAssignmentForm,
@@ -14,6 +17,28 @@ import {
 import { LoginForm, validatePasswordMatch } from "./login-form";
 import { PasswordChangeForm } from "./password-form";
 import { ServerConfigForm } from "./server-form";
+
+class IdentityTab extends Component<{}, {}> {
+  public render() {
+    const [label, title] = ln.Forms.showName;
+    return (
+      <div class="account-identity-tab">
+        <label class="option-label" title={title}>
+          <input
+            class="option-checkbox"
+            type="checkbox"
+            checked={options.showName}
+            onInput={this.handleShowNameChange}
+          />
+          {label}
+        </label>
+      </div>
+    );
+  }
+  private handleShowNameChange = (e: Event) => {
+    options.showName = (e.target as HTMLInputElement).checked;
+  }
+}
 
 // Terminate the user session(s) server-side and reset the panel
 async function logout(url: string) {
@@ -30,7 +55,7 @@ async function logout(url: string) {
   }
 }
 
-// Account login and registration
+// Account login and registration.
 class AccountPanel extends TabbedModal {
   constructor() {
     super(document.getElementById("account-panel"));
@@ -46,14 +71,20 @@ class AccountPanel extends TabbedModal {
     });
   }
 
-  // Either hide or show the selection menu
+  // Either hide or show the selection menu.
   public toggleMenu(show: boolean) {
     const form = document.getElementById("form-selection");
     form.style.display = show ? "block" : "none";
   }
 
-  // Create handler for dynamically loading and rendering conditional view
-  // modules
+  protected tabHook(id: number, el: Element) {
+    if (id === 1) {
+      render(<IdentityTab/>, el, el.lastChild as Element);
+    }
+  }
+
+  // Create handler for dynamically loading and rendering conditional
+  // view modules.
   private loadConditional(m: Constructable): EventListener {
     return () => {
       this.toggleMenu(false);

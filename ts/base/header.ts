@@ -53,15 +53,18 @@ export class HeaderModal extends View<null> {
 
 // A view that supports switching between multiple tabs.
 export class TabbedModal extends HeaderModal {
-  // Hook a function to execute on tab switching.
-  protected tabHook: (id: number, el: HTMLElement) => void;
-
   constructor(el: HTMLElement) {
     super(el);
     this.onClick({
       ".tab-link": (e) =>
         this.switchTab(e),
     });
+  }
+
+  // Function to execute on tab switching.
+  // Do nothing by default.
+  protected tabHook(id: number, el: Element) {
+    /* empty */
   }
 
   // Switch to a tab, when clicking the tab header.
@@ -74,6 +77,8 @@ export class TabbedModal extends HeaderModal {
     // Select the new one.
     const el = event.target as HTMLElement;
     el.classList.add("tab-sel");
+
+    // Select tab content.
     const id = el.getAttribute("data-id");
     let tabEl = null;
     for (tabEl of this.el.querySelectorAll(".tab-cont > div")) {
@@ -82,8 +87,6 @@ export class TabbedModal extends HeaderModal {
         break;
       }
     }
-    if (this.tabHook) {
-      this.tabHook(+id, tabEl as HTMLElement);
-    }
+    this.tabHook(+id, tabEl);
   }
 }

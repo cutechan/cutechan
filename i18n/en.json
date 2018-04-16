@@ -40,9 +40,13 @@
       "Operations",
       ""
     ],
-    "identify": [
-      "Identify",
+    "identity": [
+      "Identity",
       ""
+    ],
+    "showName": [
+      "Show username",
+      "Show username for your posts"
     ],
     "popupBackdrop": [
       "Popup backdrop",

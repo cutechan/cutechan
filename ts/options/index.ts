@@ -23,6 +23,7 @@ interface Options extends ChangeEmitter {
   spoiler: number;
   search: number;
   volume: number;
+  showName: boolean;
 }
 
 // Types of option models
@@ -144,6 +145,9 @@ const specs: { [id: string]: OptionSpec } = {
   // Other settings.
   volume: {
     default: 1,
+  },
+  showName: {
+    default: false,
   },
 };
 

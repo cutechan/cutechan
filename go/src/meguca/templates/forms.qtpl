@@ -234,7 +234,7 @@ Renders the tab selection butts in tabbed windows
 				</div>
 			</div>
 		{% else %}
-			{%= tabButts([]string{f["ops"][0], f["identify"][0]}) %}
+			{%= tabButts([]string{f["ops"][0], f["identity"][0]}) %}
 			<div class="tab-cont">
 				<div class="tab-sel" data-id="0" id="form-selection">
 					{% for _, l := range [...]string{
