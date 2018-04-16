@@ -256,7 +256,7 @@ Renders the tab selection butts in tabbed windows
 						</a>
 					{% endif %}
 				</div>
-				<div data-id="1"></div>
+				<div data-id="1" class="account-identity-tab"></div>
 			</div>
 		</div>
 		{% endif %}

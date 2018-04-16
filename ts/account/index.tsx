@@ -18,25 +18,38 @@ import { LoginForm, validatePasswordMatch } from "./login-form";
 import { PasswordChangeForm } from "./password-form";
 import { ServerConfigForm } from "./server-form";
 
-class IdentityTab extends Component<{}, {}> {
-  public render() {
+interface IdentityState {
+  showName: boolean;
+}
+
+class IdentityTab extends Component<{}, IdentityState> {
+  constructor() {
+    super();
+    this.state = {
+      showName: options.showName,
+    };
+  }
+  public render({}, { showName }: IdentityState) {
     const [label, title] = ln.Forms.showName;
     return (
-      <div class="account-identity-tab">
+      <div class="account-identity-tab-inner">
         <label class="option-label" title={title}>
           <input
             class="option-checkbox"
             type="checkbox"
-            checked={options.showName}
-            onInput={this.handleShowNameChange}
+            checked={showName}
+            onChange={this.handleShowNameToggle}
           />
           {label}
         </label>
       </div>
     );
   }
-  private handleShowNameChange = (e: Event) => {
-    options.showName = (e.target as HTMLInputElement).checked;
+  private handleShowNameToggle = (e: Event) => {
+    e.preventDefault();
+    const showName = !this.state.showName;
+    options.showName = showName;
+    this.setState({showName});
   }
 }
 
@@ -78,7 +91,7 @@ class AccountPanel extends TabbedModal {
   }
 
   protected tabHook(id: number, el: Element) {
-    if (id === 1) {
+    if (id === 1 && el.classList.contains("account-identity-tab")) {
       render(<IdentityTab/>, el, el.lastChild as Element);
     }
   }
