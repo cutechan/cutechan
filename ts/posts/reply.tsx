@@ -5,7 +5,7 @@ import { showAlert } from "../alerts";
 import API from "../api";
 import { PostData } from "../common";
 import { ln, printf } from "../lang";
-import { isMod } from "../mod";
+import { isModerator } from "../mod";
 import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {
@@ -908,7 +908,7 @@ class Reply extends Component<any, any> {
         >
           <i class={cx("fa", editing ? "fa-print" : "fa-pencil")} />
         </button>
-        <ShowHide show={isMod()}>
+        <ShowHide show={isModerator()}>
           <button
             class={cx("control", "reply-footer-control", "reply-badge-control",
                       {control_active: staffTitle})}

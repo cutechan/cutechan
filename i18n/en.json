@@ -36,6 +36,14 @@
       "Login",
       ""
     ],
+    "ops": [
+      "Operations",
+      ""
+    ],
+    "identify": [
+      "Identify",
+      ""
+    ],
     "popupBackdrop": [
       "Popup backdrop",
       "Close popups by clicking on background"

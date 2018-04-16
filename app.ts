@@ -12,6 +12,7 @@
 // FIXME(Kagami): Circular imports, must go before client module.
 import { init as initOptions } from "./ts/options";
 
+import { init as initAccount } from "./ts/account";
 import { init as initAlerts, showAlert } from "./ts/alerts";
 import { init as initHandlers } from "./ts/client";
 import { init as initConnection } from "./ts/connection";
@@ -51,6 +52,7 @@ async function init() {
   }
 
   initUI();
+  initAccount();
   initModeration();
 
   initProfiles();

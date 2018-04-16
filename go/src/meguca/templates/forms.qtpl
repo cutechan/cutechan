@@ -213,49 +213,52 @@ Renders the tab selection butts in tabbed windows
 
 {% func accountModal(pos auth.Positions) %}{% stripspace %}
 	{% code ln := lang.Get() %}
+	{% code f := ln.Forms %}
 	<div id="account-panel" class="modal">
 		{% if pos.CurBoard == auth.NotLoggedIn %}
-			<div id="login-forms">
-				{% code f := ln.Forms %}
-				{%= tabButts([]string{f["id"][0], f["register"][0]}) %}
-				<div class="tab-cont">
-					<div class="tab-sel" data-id="0">
-						<form id="login-form">
-							{%= table(specs["login"]) %}
-							{%= captcha() %}
-							{%= submit(false) %}
-						</form>
-					</div>
-					<div data-id="1">
-						<form id="registration-form">
-							{%= table(specs["register"]) %}
-							{%= captcha() %}
-							{%= submit(false) %}
-						</form>
-					</div>
+			{%= tabButts([]string{f["id"][0], f["register"][0]}) %}
+			<div class="tab-cont">
+				<div class="tab-sel" data-id="0">
+					<form id="login-form">
+						{%= table(specs["login"]) %}
+						{%= captcha() %}
+						{%= submit(false) %}
+					</form>
+				</div>
+				<div data-id="1">
+					<form id="registration-form">
+						{%= table(specs["register"]) %}
+						{%= captcha() %}
+						{%= submit(false) %}
+					</form>
 				</div>
 			</div>
 		{% else %}
-			<div id="form-selection">
-				{% for _, l := range [...]string{
-					"logout", "logoutAll", "changePassword",
-					"createBoard",
-					"configureBoard", "assignStaff",
-					"deleteBoard",
-				} %}
-					<a class="form-selection-link" id="{%s l %}">
-						{%s ln.UI[l] %}
-						{% if l == "logout" %}
-							,{% space %}{%s pos.UserID %}
-						{% endif %}
-					</a>
-				{% endfor %}
-				{% if pos.CurBoard == auth.Admin %}
-					<a class="form-selection-link" id="configureServer">
-						{%s ln.UI["configureServer"] %}
-					</a>
-				{% endif %}
+			{%= tabButts([]string{f["ops"][0], f["identify"][0]}) %}
+			<div class="tab-cont">
+				<div class="tab-sel" data-id="0" id="form-selection">
+					{% for _, l := range [...]string{
+						"logout", "logoutAll", "changePassword",
+						"createBoard",
+						"configureBoard", "assignStaff",
+						"deleteBoard",
+					} %}
+						<a class="form-selection-link" id="{%s l %}">
+							{%s ln.UI[l] %}
+							{% if l == "logout" %}
+								,{% space %}{%s pos.UserID %}
+							{% endif %}
+						</a>
+					{% endfor %}
+					{% if pos.CurBoard == auth.Admin %}
+						<a class="form-selection-link" id="configureServer">
+							{%s ln.UI["configureServer"] %}
+						</a>
+					{% endif %}
+				</div>
+				<div data-id="1"></div>
 			</div>
+		</div>
 		{% endif %}
 	</div>
 {% endstripspace %}{% endfunc %}
