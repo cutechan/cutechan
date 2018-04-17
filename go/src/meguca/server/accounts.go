@@ -18,7 +18,7 @@ var (
 	// Add "secure" flag to auth cookies.
 	SecureCookie bool
 
-	userIdRe = regexp.MustCompile(`^[\p{Latin}\p{Cyrillic}\d]+$`)
+	userIdRe = regexp.MustCompile(`^[-_ \p{Latin}\p{Cyrillic}\d]+$`)
 )
 
 type loginCreds struct {

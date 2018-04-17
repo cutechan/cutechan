@@ -184,7 +184,6 @@ Renders the tab selection butts in tabbed windows
 			</a>
 		{% endfor %}
 	</div>
-	<hr>
 {% endstripspace %}{% endfunc %}
 
 {% func faqModal() %}{% stripspace %}
@@ -214,7 +213,7 @@ Renders the tab selection butts in tabbed windows
 {% func accountModal(pos auth.Positions) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	{% code f := ln.Forms %}
-	<div id="account-panel" class="modal">
+	<div class="modal tabmodal" id="account-panel">
 		{% if pos.CurBoard == auth.NotLoggedIn %}
 			{%= tabButts([]string{f["id"][0], f["register"][0]}) %}
 			<div class="tab-cont">
@@ -236,7 +235,7 @@ Renders the tab selection butts in tabbed windows
 		{% else %}
 			{%= tabButts([]string{f["ops"][0], f["identity"][0]}) %}
 			<div class="tab-cont">
-				<div class="tab-sel" data-id="0" id="form-selection">
+				<div class="tab-sel" data-id="0">
 					{% for _, l := range [...]string{
 						"logout", "logoutAll", "changePassword",
 						"createBoard",
@@ -256,7 +255,7 @@ Renders the tab selection butts in tabbed windows
 						</a>
 					{% endif %}
 				</div>
-				<div data-id="1" class="account-identity-tab"></div>
+				<div class="account-identity-tab" data-id="1"></div>
 			</div>
 		</div>
 		{% endif %}

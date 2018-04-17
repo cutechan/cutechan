@@ -84,14 +84,8 @@ class AccountPanel extends TabbedModal {
     });
   }
 
-  // Either hide or show the selection menu.
-  public toggleMenu(show: boolean) {
-    const form = document.getElementById("form-selection");
-    form.style.display = show ? "block" : "none";
-  }
-
   protected tabHook(id: number, el: Element) {
-    if (id === 1 && el.classList.contains("account-identity-tab")) {
+    if (el.classList.contains("account-identity-tab")) {
       render(<IdentityTab/>, el, el.lastChild as Element);
     }
   }
@@ -100,7 +94,7 @@ class AccountPanel extends TabbedModal {
   // view modules.
   private loadConditional(m: Constructable): EventListener {
     return () => {
-      this.toggleMenu(false);
+      this.toggleContent(false);
       // tslint:disable-next-line:no-unused-expression
       new m();
     };

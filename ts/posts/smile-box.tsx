@@ -261,7 +261,7 @@ export default class extends Component<any, any> {
       <div class="smiles-group">
         {this.renderList(recent)}
       </div>,
-      <hr class="separator smiles-separator" />,
+      <hr class="smiles-separator" />,
     ];
   }
   private renderAll() {
@@ -269,11 +269,11 @@ export default class extends Component<any, any> {
       <div class="smiles-group">
         {this.renderList(smileList.filter(isThingSmile))}
       </div>,
-      <hr class="separator smiles-separator" />,
+      <hr class="smiles-separator" />,
       <div class="smiles-group">
         {this.renderList(smileList.filter(isMemeSmile))}
       </div>,
-      <hr class="separator smiles-separator" />,
+      <hr class="smiles-separator" />,
       <div class="smiles-group">
         {this.renderList(smileList.filter(isIdolSmile))}
       </div>,

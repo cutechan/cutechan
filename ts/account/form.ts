@@ -9,7 +9,7 @@ export abstract class AccountForm extends FormView {
   // Unhide the parent AccountPanel, when this view is removed
   public remove() {
     super.remove();
-    accountPanel.toggleMenu(true);
+    accountPanel.toggleContent(true);
   }
 
   // Reset any views and state on 403, which means an inconsistency between
@@ -23,7 +23,7 @@ export abstract class AccountForm extends FormView {
   // Render a form field and embed the input fields inside it. Then append it
   // to the parent view.
   protected render() {
-    accountPanel.toggleMenu(false);
+    accountPanel.toggleContent(false);
     accountPanel.el.append(this.el);
   }
 

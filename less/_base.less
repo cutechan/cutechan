@@ -123,12 +123,6 @@ h2 {
   text-shadow: #8e3523 1px 1px 0px;
 }
 
-hr {
-  border: none;
-  clear: both;
-  border-top: 1px solid #bac9b7;
-}
-
 .separator {
   width: 100%;
   margin: 20px 0;
@@ -680,14 +674,18 @@ html, body {
 // TABS
 //////////////////////////////
 
+.tabmodal_empty {
+  .tab-butts, .tab-cont {
+    display: none;
+  }
+}
+
 .tab-butts {
   text-align: center;
+  border-bottom: 1px solid #bac9b7;
   a {
     display: inline-block;
     padding: 3px 7px;
-  }
-  & + hr {
-    margin: 0;
   }
 }
 
@@ -1760,7 +1758,9 @@ html:not(.pos_moderators) {
 }
 
 .smiles-separator {
+  width: 100%;
   margin: 0 0 5px 0;
+  border-top: @separatorBorder;
 }
 
 .smiles-item {

@@ -61,6 +61,12 @@ export class TabbedModal extends HeaderModal {
     });
   }
 
+  // Show/hide modal content.
+  // XXX(Kagami): These modals are awful.
+  public toggleContent(show: boolean) {
+    this.el.classList.toggle("tabmodal_empty", !show);
+  }
+
   // Function to execute on tab switching.
   // Do nothing by default.
   protected tabHook(id: number, el: Element) {
