@@ -5,8 +5,6 @@ const os = require("os");
 const path = require("path");
 const assert = require("assert");
 const { spawn, spawnSync } = require("child_process");
-const Vinyl = require("vinyl");
-const through = require("through2");
 const del = require("del");
 const merge = require("merge-stream");
 const colors = require("ansi-colors");
@@ -60,6 +58,9 @@ const KPOPNET_FILE_PREFIX = watch
 const KPOPNET_WEBPACK_CONFIG = path.resolve(__dirname,
   "go/src/github.com/Kagami/kpopnet",
   "webpack.config.js");
+
+// Tasks which needs to finish before main tasks.
+const preTasks = [];
 
 // Dependency tasks for the default tasks.
 const tasks = [];
@@ -173,32 +174,13 @@ function typescriptGulp(opts) {
     .on("error", handleError);
 }
 
-// Wait compilation result from tsc and pass it further.
 function typescriptTsc() {
-  const stream = through.obj(function(chunk, enc, cb) {
-    function passFile() {
-      try {
-        chunk.contents = fs.readFileSync(chunk.path)
-      } catch(e) {
-        return false;
-      }
-      cb(null, new Vinyl(chunk));
-      return true;
-    }
-
-    if (!passFile()) {
-      const tid = setInterval(() => {
-        if (passFile()) {
-          clearInterval(tid);
-        }
-      }, 200);
-    }
-  });
-  stream.end({path: TSC_TMP_FILE});
-  return stream;
+  return gulp.src(TSC_TMP_FILE);
 }
 
 function injectLivereload() {
+  const Vinyl = require("vinyl");
+  const through = require("through2");
   const stream = through.obj(function(chunk, enc, cb) {
     chunk.contents = Buffer.concat([
       Buffer.from("(function() {\n"),
@@ -214,8 +196,8 @@ function injectLivereload() {
 }
 
 function buildClient(tsOpts) {
-  const tsFn = watch ? typescriptTsc : typescriptGulp;
-  const stream = merge(langs(), templates(), tsFn(tsOpts));
+  const typescript = watch ? typescriptTsc : typescriptGulp;
+  const stream = merge(langs(), templates(), typescript(tsOpts));
   if (watch) {
     stream.add(injectLivereload());
   }
@@ -224,25 +206,34 @@ function buildClient(tsOpts) {
     .pipe(concat(tsOpts.outFile));
 }
 
-// Builds the client files of the appropriate ECMAScript version.
-function buildES6() {
-  const name = "es6";
-  tasks.push(name);
-  gulp.task(name, () =>
-    buildClient({target: "ES6", outFile: "app.js"})
-      .pipe(gulpif(!watch, uglify({
-        mangle: {safari10: true},
-        compress: {inline: 1},
-      })))
-      .pipe(sourcemaps.write("maps"))
-      .pipe(gulp.dest(JS_DIR))
-      .pipe(gulpif("**/*.js", livereload()))
-  );
+// Build modern client.
+gulp.task("es6", () =>
+  buildClient({target: "ES6", outFile: "app.js"})
+    .pipe(gulpif(!watch, uglify({
+      mangle: {safari10: true},
+      compress: {inline: 1},
+    })))
+    .pipe(sourcemaps.write("maps"))
+    .pipe(gulp.dest(JS_DIR))
+    .pipe(gulpif("**/*.js", livereload()))
+);
+tasks.push("es6");
 
-  // Recompile on source update, if running with the `-w` flag.
-  if (watch) {
-    // Much faster than gulp-typescript, see:
-    // https://github.com/ivogabe/gulp-typescript/issues/549
+// Build legacy ES5 client for old browsers.
+gulp.task("es5", () =>
+  buildClient({target: "ES5", outFile: "app.es5.js"})
+    .pipe(uglify())
+    .pipe(sourcemaps.write("maps"))
+    .pipe(gulp.dest(JS_DIR))
+);
+if (!watch) {
+  tasks.push("es5");
+}
+
+// Much faster than gulp-typescript, see:
+// https://github.com/ivogabe/gulp-typescript/issues/549
+function spawnTsc() {
+  return new Promise((resolve, reject) => {
     tsc = spawn("node_modules/.bin/tsc", [
       "-w", "-p", "tsconfig.json",
       "--outFile", TSC_TMP_FILE,
@@ -274,27 +265,26 @@ function buildES6() {
       } else {
         console.log(data);
       }
-    });
 
+      if (data.includes("Compilation complete")) {
+        resolve();
+      }
+    });
+  });
+}
+
+gulp.task("tsc", () =>
+  spawnTsc().then(() => {
     gulp.watch([
       LANGS_GLOB,
       TEMPLATES_GLOB,
       SMILESJS_GLOB,
       TSC_TMP_FILE,
-    ], [name]);
-  }
-}
-
-// Build legacy ES5 client for old browsers.
-function buildES5() {
-  const name = "es5";
-  tasks.push(name);
-  gulp.task(name, () =>
-    buildClient({target: "ES5", outFile: "app.es5.js"})
-      .pipe(uglify())
-      .pipe(sourcemaps.write("maps"))
-      .pipe(gulp.dest(JS_DIR))
-  );
+    ], ["es6"]);
+  })
+);
+if (watch) {
+  preTasks.push("tsc");
 }
 
 // Special task, run separately.
@@ -363,10 +353,6 @@ gulp.task("clean", () =>
   del([LABELS_TMP_DIR, DIST_DIR])
 );
 
-// Client JS files.
-buildES6();
-if (!watch) buildES5();
-
 // Third-party dependencies and loader.
 createTask("loader", "loader.js", src =>
   src
@@ -426,6 +412,7 @@ gulp.task("labels", () =>
       gulp.dest(LABELS_TMP_DIR)
     ))
 );
+preTasks.push("labels");
 
 // Compile Less to CSS.
 createTask("css", "less/[^_]*.less", src =>
@@ -452,19 +439,19 @@ createTask("css", "less/[^_]*.less", src =>
 , ["less/*.less", "smiles-pp/smiles*.css"]);
 
 // Static assets.
-createTask("assets", ["assets/**/*", "smiles-pp/smiles*.png"], src =>
+createTask("assets", [
+  "assets/**/*",
+  "smiles-pp/smiles*.png",
+  "node_modules/font-awesome/fonts/fontawesome-webfont.*",
+], src =>
   src
     .pipe(gulpif("smiles*.png",
       gulp.dest(IMG_DIR),
-      gulp.dest(STATIC_DIR)
+      gulpif("fontawesome*",
+        gulp.dest(FONTS_DIR),
+        gulp.dest(STATIC_DIR)
+      )
     ))
-);
-
-// Fonts.
-createTask("fonts", "node_modules/font-awesome/fonts/fontawesome-webfont.*",
-           src =>
-  src
-    .pipe(gulp.dest(FONTS_DIR))
 );
 
 // Kpopnet static.
@@ -495,7 +482,7 @@ if (!watch || all) {
 
 // Build everything.
 gulp.task("default", (cb) => {
-  runSequence("clean", "labels", tasks, cb)
+  runSequence("clean", preTasks, tasks, cb)
 });
 
 if (watch) {
