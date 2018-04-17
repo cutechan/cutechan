@@ -4,9 +4,16 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
-// SessionCreds is embed in every request that needs logged in authentication
-type SessionCreds struct {
-	UserID, Session string
+// Contains user data and settings of the request's session.
+type Session struct {
+	UserID   string
+	Token    string
+	Settings AccountSettings
+}
+
+type AccountSettings struct {
+	Name     string `json:"name"`
+	ShowName bool   `json:"show_name"`
 }
 
 // BcryptCompare compares a bcrypt hash with a user-supplied string

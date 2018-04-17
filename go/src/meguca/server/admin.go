@@ -85,7 +85,7 @@ func canPerform(
 	level auth.ModerationLevel,
 	captcha *auth.Captcha,
 ) (
-	creds *auth.SessionCreds, can bool,
+	ss *auth.Session, can bool,
 ) {
 	if !auth.IsBoard(board) {
 		text400(w, errInvalidBoardName)
@@ -95,12 +95,12 @@ func canPerform(
 		text403(w, errInvalidCaptcha)
 		return
 	}
-	creds, ok := isLoggedIn(w, r)
+	ss, ok := isLoggedIn(w, r)
 	if !ok {
 		return
 	}
 
-	can, err := db.CanPerform(creds.UserID, board, level)
+	can, err := db.CanPerform(ss.UserID, board, level)
 	switch {
 	case err != nil:
 		text500(w, r, err)
@@ -135,13 +135,13 @@ func canModeratePost(
 		return
 	}
 
-	creds, can := canPerform(w, r, board, level, nil)
+	ss, can := canPerform(w, r, board, level, nil)
 	if !can {
 		text403(w, errAccessDenied)
 		return
 	}
 
-	userID = creds.UserID
+	userID = ss.UserID
 	return
 }
 
@@ -175,11 +175,11 @@ func servePrivateBoardConfigs(w http.ResponseWriter, r *http.Request) {
 }
 
 func isAdmin(w http.ResponseWriter, r *http.Request) bool {
-	creds, ok := isLoggedIn(w, r)
+	ss, ok := isLoggedIn(w, r)
 	if !ok {
 		return false
 	}
-	if creds.UserID != "admin" {
+	if ss.UserID != "admin" {
 		text403(w, errAccessDenied)
 		return false
 	}
@@ -215,7 +215,7 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	creds, ok := isLoggedIn(w, r)
+	ss, ok := isLoggedIn(w, r)
 	if !ok {
 		return
 	}
@@ -233,7 +233,7 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 	// Validate request data
 	var err error
 	switch {
-	case creds.UserID != "admin" && config.Get().DisableUserBoards:
+	case ss.UserID != "admin" && config.Get().DisableUserBoards:
 		err = errAccessDenied
 	case !boardNameValidation.MatchString(msg.ID),
 		msg.ID == "",
@@ -277,7 +277,7 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 	}
 
 	err = db.WriteStaff(tx, msg.ID, map[string][]string{
-		"owners": []string{creds.UserID},
+		"owners": []string{ss.UserID},
 	})
 	if err != nil {
 		text500(w, r, err)
@@ -384,11 +384,11 @@ func ban(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	creds, ok := isLoggedIn(w, r)
+	ss, ok := isLoggedIn(w, r)
 	switch {
 	case !ok:
 		return
-	case msg.Global && creds.UserID != "admin":
+	case msg.Global && ss.UserID != "admin":
 		text403(w, errAccessDenied)
 		return
 	case len(msg.Reason) > common.MaxBanReasonLength:
@@ -433,7 +433,7 @@ func ban(w http.ResponseWriter, r *http.Request) {
 	// Apply bans
 	expires := time.Now().Add(time.Duration(msg.Duration) * time.Minute)
 	for board, ids := range byBoard {
-		ips, err := db.Ban(board, msg.Reason, creds.UserID, expires, ids...)
+		ips, err := db.Ban(board, msg.Reason, ss.UserID, expires, ids...)
 		if err != nil {
 			text500(w, r, err)
 			return
@@ -591,18 +591,18 @@ func detectCanPerform(
 ) (
 	can bool,
 ) {
-	creds, err := extractLoginCreds(r)
+	ss, err := getSession(r)
 	if err != nil {
 		return
 	}
-	can, err = db.CanPerform(creds.UserID, board, level)
+	can, err = db.CanPerform(ss.UserID, board, level)
 	return
 }
 
 // Unban a specific board -> banned post combination
 func unban(w http.ResponseWriter, r *http.Request) {
 	board := extractParam(r, "board")
-	creds, ok := canPerform(w, r, board, auth.Moderator, nil)
+	ss, ok := canPerform(w, r, board, auth.Moderator, nil)
 	if !ok {
 		return
 	}
@@ -632,7 +632,7 @@ func unban(w http.ResponseWriter, r *http.Request) {
 
 	// Unban posts
 	for _, id := range ids {
-		switch err := db.Unban(board, id, creds.UserID); err {
+		switch err := db.Unban(board, id, ss.UserID); err {
 		case nil, sql.ErrNoRows:
 		default:
 			text500(w, r, err)

@@ -42,7 +42,7 @@ type PostCreationRequest struct {
 	Sign         string
 	ShowBadge    bool
 	ShowName     bool
-	Creds        *auth.SessionCreds
+	Session      *auth.Session
 }
 
 type FilesRequest struct {
@@ -171,21 +171,23 @@ func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
 		return
 	}
 
-	// Attach staff position title after validation.
-	if req.ShowBadge {
-		var pos auth.Positions
-		pos, err = db.GetPositions(board, req.Creds.UserID)
-		if err != nil {
-			return
+	ss := req.Session
+	if ss != nil {
+		// Attach staff badge if requested after validation.
+		if req.ShowBadge {
+			var pos auth.Positions
+			pos, err = db.GetPositions(board, ss.UserID)
+			if err != nil {
+				return
+			}
+			if pos.CurBoard >= auth.Moderator {
+				post.Auth = pos.CurBoard.String()
+			}
 		}
-		if pos.CurBoard >= auth.Moderator {
-			post.Auth = pos.CurBoard.String()
+		// Attach name if requested.
+		if req.ShowName || ss.Settings.ShowName {
+			post.Name = ss.UserID
 		}
-	}
-
-	// Attach name if requested.
-	if req.ShowName {
-		post.Name = req.Creds.UserID
 	}
 
 	post.Links, post.Commands, err = parser.ParseBody([]byte(req.Body))

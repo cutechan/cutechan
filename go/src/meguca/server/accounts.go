@@ -136,13 +136,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 func commitLogout(
 	w http.ResponseWriter,
 	r *http.Request,
-	fn func(*auth.SessionCreds) error,
+	fn func(*auth.Session) error,
 ) {
-	creds, ok := isLoggedIn(w, r)
+	ss, ok := isLoggedIn(w, r)
 	if !ok {
 		return
 	}
-	if err := fn(creds); err != nil {
+	if err := fn(ss); err != nil {
 		text500(w, r, err)
 		return
 	}
@@ -161,15 +161,15 @@ func commitLogout(
 
 // Log out user from session and remove the session key from the database
 func logout(w http.ResponseWriter, r *http.Request) {
-	commitLogout(w, r, func(req *auth.SessionCreds) error {
-		return db.LogOut(req.UserID, req.Session)
+	commitLogout(w, r, func(ss *auth.Session) error {
+		return db.LogOut(ss.UserID, ss.Token)
 	})
 }
 
 // Log out all sessions of the specific user
 func logoutAll(w http.ResponseWriter, r *http.Request) {
-	commitLogout(w, r, func(req *auth.SessionCreds) error {
-		return db.LogOutAll(req.UserID)
+	commitLogout(w, r, func(ss *auth.Session) error {
+		return db.LogOutAll(ss.UserID)
 	})
 }
 
@@ -179,13 +179,13 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	creds, ok := isLoggedIn(w, r)
+	ss, ok := isLoggedIn(w, r)
 	if !ok || !checkPasswordAndCaptcha(w, r, msg.New, msg.Captcha) {
 		return
 	}
 
 	// Get old hash
-	hash, err := db.GetPassword(creds.UserID)
+	hash, err := db.GetPassword(ss.UserID)
 	if err != nil {
 		text500(w, r, err)
 		return
@@ -208,7 +208,7 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 		text500(w, r, err)
 		return
 	}
-	if err := db.ChangePassword(creds.UserID, hash); err != nil {
+	if err := db.ChangePassword(ss.UserID, hash); err != nil {
 		text500(w, r, err)
 	}
 }
@@ -237,35 +237,23 @@ func trimLoginID(id *string) bool {
 	return true
 }
 
-// Extract login credentials.
-// Return pointer in order to avoid potential use of unauthenticated
-// user data.
-func extractLoginCreds(r *http.Request) (*auth.SessionCreds, error) {
+// Get request session data if any.
+func getSession(r *http.Request) (*auth.Session, error) {
 	c, err := r.Cookie("session")
 	if err != nil {
 		return nil, common.ErrInvalidCreds
 	}
-	session := c.Value
-	if len(session) != common.LenSession {
+	token := c.Value
+	if len(token) != common.LenSession {
 		return nil, common.ErrInvalidCreds
 	}
-
 	// FIXME(Kagami): This might be affected to timing attack.
-	userID, err := db.GetUserID(session)
-	if err != nil {
-		return nil, err
-	}
-
-	creds := auth.SessionCreds{UserID: userID, Session: session}
-	return &creds, nil
+	return db.GetSession(token)
 }
 
-// Assert the user login session ID is valid and returns the login
-// credentials.
-func isLoggedIn(w http.ResponseWriter, r *http.Request) (
-	creds *auth.SessionCreds, ok bool,
-) {
-	creds, err := extractLoginCreds(r)
+// Assert the user login session ID is valid.
+func isLoggedIn(w http.ResponseWriter, r *http.Request) (ss *auth.Session, ok bool) {
+	ss, err := getSession(r)
 	switch err {
 	case nil:
 		ok = true

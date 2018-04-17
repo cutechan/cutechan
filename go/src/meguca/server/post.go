@@ -59,7 +59,7 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !checkReadOnly(board) {
-		text403(w, errInvalidBoard)
+		text403(w, errReadOnly)
 		return
 	}
 
@@ -111,7 +111,7 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	if !checkReadOnly(board) {
-		text403(w, errInvalidBoard)
+		text403(w, errReadOnly)
 		return
 	}
 
@@ -176,16 +176,11 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 		Sign:         f.Get("sign"),
 	}
 
-	modOnly := config.IsModOnly(f.Get("board"))
-	showBadge := f.Get("showBadge") == "on" || modOnly
-	showName := f.Get("showName") == "on" || modOnly
-	if showBadge || showName {
-		creds, err := extractLoginCreds(r)
-		if err == nil {
-			req.ShowBadge = showBadge
-			req.ShowName = showName
-			req.Creds = creds
-		}
+	req.Session, err = getSession(r)
+	if err == nil {
+		modOnly := config.IsModOnly(f.Get("board"))
+		req.ShowBadge = f.Get("showBadge") == "on" || modOnly
+		req.ShowName = modOnly
 	}
 
 	ok = true

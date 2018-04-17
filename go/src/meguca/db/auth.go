@@ -2,24 +2,48 @@ package db
 
 import (
 	"database/sql"
+	"encoding/json"
 	"errors"
+	"time"
+
 	"meguca/auth"
 	"meguca/common"
 	"meguca/config"
-	"time"
 )
 
-// Common errors
 var (
 	ErrUserNameTaken = errors.New("user name already taken")
 )
 
-// Return logged user ID for the specified session
-func GetUserID(session string) (userID string, err error) {
-	err = prepared["get_account_by_session"].QueryRow(session).Scan(&userID)
-	if err == sql.ErrNoRows {
-		err = common.ErrInvalidCreds
+// Get user's session by token.
+func GetSession(token string) (ss *auth.Session, err error) {
+	var userID string
+	var userName string
+	var settingsData []byte
+	q := prepared["get_account_by_token"].QueryRow(token)
+	err = q.Scan(&userID, &userName, &settingsData)
+	if err != nil {
+		if err == sql.ErrNoRows {
+			err = common.ErrInvalidCreds
+		}
+		return
 	}
+	var settings auth.AccountSettings
+	// TODO(Kagami): easyjson.
+	err = json.Unmarshal(settingsData, &settings)
+	if err != nil {
+		return
+	}
+	settings.Name = userName
+	ss = &auth.Session{
+		UserID:   userID,
+		Token:    token,
+		Settings: settings,
+	}
+	return
+}
+
+func SetAccountSettings(userID string, as *auth.AccountSettings) (err error) {
 	return
 }
 

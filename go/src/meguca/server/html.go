@@ -152,12 +152,12 @@ func staticTemplate(
 
 // Serve a form for selecting one of several boards owned by the user
 func ownedBoardSelection(w http.ResponseWriter, r *http.Request) {
-	creds, ok := isLoggedIn(w, r)
+	ss, ok := isLoggedIn(w, r)
 	if !ok {
 		return
 	}
 
-	owned, err := db.GetOwnedBoards(creds.UserID)
+	owned, err := db.GetOwnedBoards(ss.UserID)
 	if err != nil {
 		text500(w, r, err)
 		return

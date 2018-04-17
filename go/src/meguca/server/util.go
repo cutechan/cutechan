@@ -157,11 +157,11 @@ func extractPositions(w http.ResponseWriter, r *http.Request) (pos auth.Position
 	pos.CurBoard = auth.NotLoggedIn
 	pos.AnyBoard = auth.NotLoggedIn
 	ok = true
-	creds, err := extractLoginCreds(r)
+	ss, err := getSession(r)
 	switch err {
 	case nil:
 		board := getParam(r, "board")
-		pos, err = db.GetPositions(board, creds.UserID)
+		pos, err = db.GetPositions(board, ss.UserID)
 		if err != nil {
 			text500(w, r, err)
 			ok = false
@@ -188,12 +188,12 @@ func checkModOnly(r *http.Request, board string) bool {
 		return true
 	}
 
-	creds, err := extractLoginCreds(r)
+	ss, err := getSession(r)
 	if err != nil {
 		return false
 	}
 
-	pos, err := db.GetPositions(board, creds.UserID)
+	pos, err := db.GetPositions(board, ss.UserID)
 	if err != nil {
 		return false
 	}
@@ -211,12 +211,12 @@ func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string) bool
 
 // Currently any janitor or above pass.
 func checkPowerUser(r *http.Request) bool {
-	creds, err := extractLoginCreds(r)
+	ss, err := getSession(r)
 	if err != nil {
 		return false
 	}
 
-	pos, err := db.GetPositions("", creds.UserID)
+	pos, err := db.GetPositions("", ss.UserID)
 	if err != nil {
 		return false
 	}
