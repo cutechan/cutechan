@@ -230,7 +230,10 @@ function buildES6() {
   tasks.push(name);
   gulp.task(name, () =>
     buildClient({target: "ES6", outFile: "app.js"})
-      .pipe(gulpif(!watch, uglify({mangle: {safari10: true}})))
+      .pipe(gulpif(!watch, uglify({
+        mangle: {safari10: true},
+        compress: {inline: 1},
+      })))
       .pipe(sourcemaps.write("maps"))
       .pipe(gulp.dest(JS_DIR))
       .pipe(gulpif("**/*.js", livereload()))
