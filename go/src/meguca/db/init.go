@@ -418,6 +418,50 @@ var upgrades = []func(*sql.Tx) error{
 			`DROP FUNCTION insert_thread(id bigint, op bigint, now bigint, board text, auth character varying, body text, ip inet, links bigint[], commands json[], file_cnt bigint, subject character varying)`,
 		)
 	},
+	// Account settings migration.
+	func(tx *sql.Tx) (err error) {
+		err = execAll(tx,
+			`ALTER TABLE accounts
+				ADD COLUMN name varchar(20) NOT NULL DEFAULT '',
+				ADD COLUMN settings jsonb NOT NULL DEFAULT '{}'`,
+		)
+		if err != nil {
+			return
+		}
+
+		// Get accounts.
+		var accounts []string
+		rs, err := tx.Query("SELECT id FROM accounts")
+		if err != nil {
+			return
+		}
+		defer rs.Close()
+		for rs.Next() {
+			var id string
+			if err = rs.Scan(&id); err != nil {
+				return
+			}
+			accounts = append(accounts, id)
+		}
+		if err = rs.Err(); err != nil {
+			return
+		}
+
+		// Fill names.
+		for _, id := range accounts {
+			_, err = tx.Exec("UPDATE accounts SET name = $1 WHERE id = $1", id)
+			if err != nil {
+				return
+			}
+		}
+
+		return execAll(tx,
+			`ALTER TABLE accounts
+				ADD UNIQUE (name),
+				ALTER COLUMN name DROP DEFAULT,
+				ALTER COLUMN settings DROP DEFAULT`,
+		)
+	},
 }
 
 func StartDb() (err error) {

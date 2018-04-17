@@ -8,7 +8,9 @@ insert into main (id, val) values
 
 create table accounts (
   id varchar(20) primary key,
-  password bytea not null
+  password bytea not null,
+  name varchar(20) NOT NULL UNIQUE,
+  settings jsonb NOT NULL
 );
 
 create table sessions (

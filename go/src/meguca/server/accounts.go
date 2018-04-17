@@ -276,3 +276,6 @@ func isLoggedIn(w http.ResponseWriter, r *http.Request) (
 	}
 	return
 }
+
+func setAccountSettings(w http.ResponseWriter, r *http.Request) {
+}
