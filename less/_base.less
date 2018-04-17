@@ -78,6 +78,7 @@ body, textarea {
 a {
   color: @link;
   border: none;
+  outline: none;
   text-decoration: none !important;
   &:hover {
     color: @linkHover;
@@ -1143,6 +1144,7 @@ html.work-mode {
 
 .post-message {
   margin: 0;
+  padding: 1px 0;
   max-height: 500px;
   overflow-y: auto;
 }
@@ -1198,7 +1200,7 @@ html.work-mode {
     background-color: @spoiler;
     &:not(:hover) {
       &, a, .post-embed-icon {
-            padding: 0.1ex 0 0;
+        padding: 0.1ex 0 0;
         color: transparent;
       }
       .smile {
@@ -1207,14 +1209,10 @@ html.work-mode {
     }
     &:hover {
       cursor: text;
-      & a {
+      a, a:hover {
         cursor: pointer;
         padding: 0.1ex 0 0;
         color: @spoilerlink;
-        }
-        a:hover {
-          cursor: pointer;
-          color:@spoilerlink;
       }
     }
   }
@@ -1348,6 +1346,7 @@ html:not(.pos_moderators) {
 
   .post-time {
     float: none;
+    position: static;
     font-size: @posttimeFontSize;
     color: @posttimeop;
   }
