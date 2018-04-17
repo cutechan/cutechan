@@ -3,7 +3,7 @@
  */
 // TODO(Kagami): Port everything to the use of this module.
 
-import { ln } from "../lang";
+import { _ } from "../lang";
 import {
   Dict, FutureAPI, postFormProgress,
   postJSON, ProgressFn, uncachedGET,
@@ -14,45 +14,56 @@ type ReqFn = (
   onProgress?: ProgressFn, api?: FutureAPI,
 ) => Promise<Response>;
 
-function handleErr(res: Response): Promise<Dict> {
-  const type = res.headers.get("Content-Type");
-  if (type.startsWith("application/json")) {
+function isJson(res: Response): boolean {
+  const ctype = res.headers.get("Content-Type") || "";
+  return ctype.startsWith("application/json");
+}
+
+function isHtml(res: Response): boolean {
+  const ctype = res.headers.get("Content-Type") || "";
+  return ctype.startsWith("text/html");
+}
+
+function handleResponse(res: Response): Promise<any> {
+  return res.ok ? res.json() : handleErrorCode(res);
+}
+
+function handleErrorCode(res: Response): Promise<any> {
+  if (isHtml(res)) {
+    // Probably 404/500 page, don't bother parsing.
+    throw new Error(_("unknownErr"));
+  } else if (isJson(res)) {
+    // Probably standardly-shaped JSON error.
     return res.json().then((data) => {
-      throw new Error(data.error || data.message || ln.UI.unknownErr);
+      throw new Error(data && data.error || _("unknownErr"));
     });
   } else {
+    // Probably text/plain or something like this.
     return res.text().then((data) => {
-      // XXX(Kagami): Might be quite huge HTML dump (e.g. 500 error).
-      // Maybe do it more elegantly...
-      const message = data.slice(0, 200);
-      throw new Error(message);
+      throw new Error(data || _("unknownErr"));
     });
   }
 }
 
-function req(reqFn: ReqFn, method: string, url: string) {
-  url = `/api/${url}`;
-  return (data?: Dict, onProgress?: ProgressFn, api?: FutureAPI) => {
-    return reqFn(url, data, onProgress, api).then((res) => {
-      if (!res.ok) return handleErr(res);
-      return res.json().catch(() => {
-        throw new Error(ln.UI.unknownErr);
-      });
-    }, (err) => {
-      err.message = err.message || ln.UI.networkErr;
-      throw err;
-    });
-  };
+function handleError(err: Error) {
+  throw new Error(err.message || _("unknownErr"));
+}
+
+function makeReq(reqFn: ReqFn) {
+  return (url: string) =>
+    (data?: Dict, onProgress?: ProgressFn, api?: FutureAPI) =>
+      reqFn(`/api/${url}`, data, onProgress, api)
+        .then(handleResponse, handleError);
 }
 
 // Convenient helper.
 const emit = {
   GET: {
-    JSON: req.bind(null, uncachedGET, "GET"),
+    JSON: makeReq(uncachedGET),
   },
   POST: {
-    Form: req.bind(null, postFormProgress, "POST"),
-    JSON: req.bind(null, postJSON, "POST"),
+    Form: makeReq(postFormProgress),
+    JSON: makeReq(postJSON),
   },
 };
 
@@ -68,6 +79,9 @@ export const API = {
   },
   user: {
     banByPost: emit.POST.JSON("ban"),
+  },
+  account: {
+    setSettings: emit.POST.JSON("account/settings"),
   },
 };
 
