@@ -4,12 +4,13 @@
  * @module cutechan/account
  */
 
+import * as cx from "classnames";
 import { Component, h, render } from "preact";
-import { showAlert } from "../alerts";
+import { showAlert, showSendAlert } from "../alerts";
+import API from "../api";
 import { TabbedModal } from "../base";
-import { ln } from "../lang";
+import { _ } from "../lang";
 import { ModerationLevel, position } from "../mod";
-import options from "../options";
 import { Constructable } from "../util";
 import {
   BoardConfigForm, BoardCreationForm, BoardDeletionForm, StaffAssignmentForm,
@@ -20,36 +21,65 @@ import { ServerConfigForm } from "./server-form";
 
 interface IdentityState {
   showName: boolean;
+  name: string;
+  saving: boolean;
 }
 
 class IdentityTab extends Component<{}, IdentityState> {
   constructor() {
     super();
     this.state = {
-      showName: options.showName,
+      showName: false,
+      name: "",
+      saving: false,
     };
   }
-  public render({}, { showName }: IdentityState) {
-    const [label, title] = ln.Forms.showName;
+  public render({}, { showName, saving }: IdentityState) {
     return (
       <div class="account-identity-tab-inner">
-        <label class="option-label" title={title}>
+        <h3 class="account-form-header">
+          {_("Show name")}
+        </h3>
+        <div class="account-form-section">
           <input
-            class="option-checkbox"
+            class="account-form-showname option-checkbox"
             type="checkbox"
             checked={showName}
             onChange={this.handleShowNameToggle}
           />
-          {label}
-        </label>
+          <input
+            class="account-form-name"
+            placeholder={_("Name")}
+            value={name}
+            onChange={this.handleNameChange}
+          />
+        </div>
+        <button class="button account-save-button" onClick={this.handleSave}>
+          <i class={cx("account-save-icon fa", {
+            "fa-spinner fa-pulse fa-fw": saving,
+            "fa-check-circle": !saving,
+          })} />
+          {_("Save")}
+        </button>
       </div>
     );
   }
   private handleShowNameToggle = (e: Event) => {
     e.preventDefault();
     const showName = !this.state.showName;
-    options.showName = showName;
     this.setState({showName});
+  }
+  private handleNameChange = (e: Event) => {
+    const name = (e.target as HTMLInputElement).value;
+    this.setState({name});
+  }
+  private handleSave = () => {
+    const { name, showName } = this.state;
+    const settings = { name, show_name: showName };
+    this.setState({saving: true});
+    API.account.setSettings(settings).then(null, showSendAlert).then(() => {
+      this.setState({saving: false});
+    });
   }
 }
 

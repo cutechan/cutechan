@@ -124,9 +124,9 @@ h2 {
 }
 
 .separator {
-  box-sizing: border-box;
   width: 100%;
   margin: 20px 0;
+  border: none;
   border-top: @separatorBorder;
 }
 
@@ -518,6 +518,11 @@ html, body {
   .clearfix;
 }
 
+.alert_closing {
+  opacity: 0;
+  transition: opacity 1s;
+}
+
 .alert-close-control {
   float: right;
   margin-left: 5px;
@@ -796,6 +801,41 @@ input[type=number], input[type=text], input[type=password], textarea {
 // instead.
 #deleteBoard {
   display: none;
+}
+
+//////////////////////////////
+// ACCOUNT FORM
+//////////////////////////////
+
+.account-form-header {
+  display: block;
+  font-weight: bold;
+  color: #000;
+}
+
+.account-form-section {
+  display: flex;
+}
+
+.account-form-showname {
+  height: 22px;
+  margin-top: 1px;
+}
+
+.account-form-name {
+  flex: 1;
+  box-sizing: border-box;
+  height: 22px;
+}
+
+.account-save-button {
+  display: block;
+  width: 100%;
+  margin-top: 20px;
+}
+
+.account-save-icon {
+  width: 20px;
 }
 
 //////////////////////////////
@@ -1759,9 +1799,9 @@ html:not(.pos_moderators) {
 }
 
 .smiles-separator {
-  box-sizing: border-box;
   width: 100%;
   margin: 0 0 5px 0;
+  border: none;
   border-top: @separatorBorder;
 }
 

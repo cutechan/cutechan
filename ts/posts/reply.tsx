@@ -6,7 +6,6 @@ import API from "../api";
 import { PostData } from "../common";
 import { ln, printf } from "../lang";
 import { isModerator } from "../mod";
-import options from "../options";
 import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {
@@ -684,7 +683,6 @@ class Reply extends Component<any, any> {
   private handleSend = () => {
     if (this.disabled) return;
     const { board, thread, subject, body, showBadge } = this.state;
-    const { showName } = options;
     const files = this.state.fwraps.map((f) => f.file);
     const sendFn = page.thread ? API.post.create : API.thread.create;
     this.setState({sending: true});
@@ -692,8 +690,7 @@ class Reply extends Component<any, any> {
       const sign = signature.gen(token);
       return sendFn({
         board, thread,
-        subject, body, files,
-        showBadge, showName,
+        subject, body, files, showBadge,
         token, sign,
       }, this.handleSendProgress, this.sendAPI);
     }).then((res: Dict) => {
