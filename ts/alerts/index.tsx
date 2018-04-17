@@ -1,9 +1,13 @@
 /**
  * Simple notification system with auto-disposable messages.
  * Can be triggered from anywhere.
+ *
+ * @module cutechan/alerts
  */
 
+import * as cx from "classnames";
 import { Component, h, render } from "preact";
+import { _ } from "../lang";
 import { hook, HOOKS, trigger, unhook } from "../util";
 import { ALERT_HIDE_TIMEOUT_SECS, ALERTS_CONTAINER_SEL } from "../vars";
 
@@ -12,6 +16,7 @@ interface Alert {
   title?: string;
   message: string;
   sticky?: boolean;
+  closing?: boolean;
 }
 
 class Alerts extends Component<any, any> {
@@ -37,44 +42,52 @@ class Alerts extends Component<any, any> {
     const alerts = [a].concat(this.state.alerts);
     this.setState({alerts});
     if (!a.sticky) {
-      setTimeout(this.makeHide(a.id), ALERT_HIDE_TIMEOUT_SECS * 1000);
+      setTimeout(this.makeClose(a.id), ALERT_HIDE_TIMEOUT_SECS * 1000);
     }
   }
-  private makeHide(id: number) {
+  private makeClose(id: number) {
     return () => {
-      const alerts = this.state.alerts.filter((a) => a.id !== id);
+      const alerts = this.state.alerts.map((a) =>
+        a.id === id ? {...a, closing: true} : a,
+      );
       this.setState({alerts});
+      setTimeout(() => {
+        // tslint:disable-next-line:no-shadowed-variable
+        const alerts = this.state.alerts.filter((a) => a.id !== id);
+        this.setState({alerts});
+      }, 1000);
     };
   }
-  private renderTitle(title: string) {
-    if (!title) return null;
+  private renderAlert = ({ id, title, message, closing }: Alert) => {
     return (
-      <div class="alert-title">{title}</div>
-    );
-  }
-  private renderAlert = ({ id, title, message }: Alert) => {
-    return (
-      <div class="alert" key={id.toString()}>
-        <a class="control alert-close-control" onClick={this.makeHide(id)}>
+      <article class={cx("alert", closing && "alert_closing")} key={id.toString()}>
+        <a class="control alert-close-control" onClick={this.makeClose(id)}>
           <i class="fa fa-remove" />
         </a>
         {this.renderTitle(title)}
-        <div class="alert-message">{message}</div>
-      </div>
+        <section class="alert-message">{message}</section>
+      </article>
     );
+  }
+  private renderTitle(title: string) {
+    return title ? <header class="alert-title">{title}</header> : null;
   }
 }
 
-function show(a: Alert | Error | string) {
+export function showAlert(a: Alert | Error | string | [string, Error]) {
   if (typeof a === "string") {
     a = {message: a};
   } else if (a instanceof Error) {
     a = {message: a.message};
+  } else if (Array.isArray(a)) {
+    a = {title: a[0], message: a[1].message};
   }
   trigger(HOOKS.showAlert, a);
 }
-export { show };
-export { show as showAlert };
+
+export function showSendAlert(err: Error) {
+  showAlert([_("sendErr"), err]);
+}
 
 export function init() {
   const container = document.querySelector(ALERTS_CONTAINER_SEL);

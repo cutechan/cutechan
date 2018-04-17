@@ -34,7 +34,7 @@ export const TRIGGER_PAGE_NAV_TOP_SEL = ".trigger-page-nav-top";
 export const TRIGGER_PAGE_NAV_BOTTOM_SEL = ".trigger-page-nav-bottom";
 
 // Constants.
-export const ALERT_HIDE_TIMEOUT_SECS = 5;
+export const ALERT_HIDE_TIMEOUT_SECS = 4;
 export const RELATIVE_TIME_PERIOD_SECS = 60;
 export const HOVER_TRIGGER_TIMEOUT_SECS = 0.1;
 export const POST_HOVER_TIMEOUT_SECS = 0.5;
