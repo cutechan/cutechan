@@ -275,5 +275,26 @@ func setAccountSettings(w http.ResponseWriter, r *http.Request) {
 	if ss == nil {
 		return
 	}
+
+	var settings auth.AccountSettings
+	if !decodeJSON(w, r, &settings) {
+		return
+	}
+	if !validateUserID(w, settings.Name) {
+		return
+	}
+
+	err := db.SetAccountSettings(ss.UserID, settings)
+	switch err {
+	case nil:
+		// Do nothing.
+	case db.ErrUserNameTaken:
+		serveErrorJSON(w, r, aerrNameTaken)
+		return
+	default:
+		serveErrorJSON(w, r, aerrInternal.Hide(err))
+		return
+	}
+
 	serveEmptyJSON(w, r)
 }

@@ -23,7 +23,7 @@ export class HeaderModal extends View<null> {
 
   // Show the element, if hidden, hide - if shown. Hide already visible
   // header modal, if any.
-  private toggle() {
+  public toggle = () => {
     if (visible) {
       const old = visible;
       visible.hide();
@@ -36,7 +36,7 @@ export class HeaderModal extends View<null> {
   }
 
   // Unhide the element. If the element has not been rendered yet, do it.
-  private show() {
+  public show = () => {
     this.el.style.display = "block";
     visible = this;
     if (this.showHook) {
@@ -45,7 +45,7 @@ export class HeaderModal extends View<null> {
   }
 
   // Hide the element
-  private hide() {
+  public hide = () => {
     this.el.style.display = "none";
     visible = null;
   }

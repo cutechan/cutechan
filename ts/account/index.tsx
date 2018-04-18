@@ -19,22 +19,33 @@ import { LoginForm, validatePasswordMatch } from "./login-form";
 import { PasswordChangeForm } from "./password-form";
 import { ServerConfigForm } from "./server-form";
 
-interface IdentityState {
-  showName: boolean;
-  name: string;
+interface AccountSettings {
+  name?: string;
+  showName?: boolean;
+}
+
+declare global {
+  interface Window {
+    account: AccountSettings;
+  }
+}
+
+export const account = window.account;
+
+interface IdentityProps {
+  modal: AccountPanel;
+}
+
+interface IdentityState extends AccountSettings {
   saving: boolean;
 }
 
-class IdentityTab extends Component<{}, IdentityState> {
-  constructor() {
-    super();
-    this.state = {
-      showName: false,
-      name: "",
-      saving: false,
-    };
+class IdentityTab extends Component<IdentityProps, IdentityState> {
+  constructor(props: IdentityProps) {
+    super(props);
+    this.state = {saving: false, ...account};
   }
-  public render({}, { showName, saving }: IdentityState) {
+  public render({}, { name, showName, saving }: IdentityState) {
     return (
       <div class="account-identity-tab-inner">
         <h3 class="account-form-header">
@@ -74,12 +85,15 @@ class IdentityTab extends Component<{}, IdentityState> {
     this.setState({name});
   }
   private handleSave = () => {
+    const { modal } = this.props;
     const { name, showName } = this.state;
-    const settings = { name, show_name: showName };
+    const settings = { name, showName };
     this.setState({saving: true});
-    API.account.setSettings(settings).then(null, showSendAlert).then(() => {
-      this.setState({saving: false});
-    });
+    API.account.setSettings(settings)
+      .then(modal.hide, showSendAlert)
+      .then(() => {
+        this.setState({saving: false});
+      });
   }
 }
 
@@ -116,7 +130,8 @@ class AccountPanel extends TabbedModal {
 
   protected tabHook(id: number, el: Element) {
     if (el.classList.contains("account-identity-tab")) {
-      render(<IdentityTab/>, el, el.lastChild as Element);
+      el.innerHTML = "";
+      render(<IdentityTab modal={this} />, el);
     }
   }
 
