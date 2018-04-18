@@ -13,6 +13,19 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+// Contains user data and settings of the request's session.
+type Session struct {
+	UserID    string
+	Token     string
+	Positions Positions
+	Settings  AccountSettings
+}
+
+type AccountSettings struct {
+	Name     string `json:"name"`
+	ShowName bool   `json:"show_name"`
+}
+
 var (
 	// IsReverseProxied specifies, if the server is deployed behind a reverse
 	// proxy.
@@ -80,4 +93,9 @@ func RandomID(length int) (string, error) {
 // BcryptHash generates a bcrypt hash from the passed string
 func BcryptHash(password string, rounds int) ([]byte, error) {
 	return bcrypt.GenerateFromPassword([]byte(password), rounds)
+}
+
+// BcryptCompare compares a bcrypt hash with a user-supplied string
+func BcryptCompare(password string, hash []byte) error {
+	return bcrypt.CompareHashAndPassword(hash, []byte(password))
 }
