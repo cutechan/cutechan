@@ -50,7 +50,7 @@ func GetSession(board, token string) (ss *auth.Session, err error) {
 	return
 }
 
-func SetAccountSettings(userID string, as *auth.AccountSettings) (err error) {
+func SetAccountSettings(userID string, as auth.AccountSettings) (err error) {
 	return
 }
 

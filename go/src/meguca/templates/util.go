@@ -1,6 +1,7 @@
 package templates
 
 import (
+	"encoding/json"
 	"html"
 	"strings"
 	"time"
@@ -9,11 +10,13 @@ import (
 	"meguca/common"
 )
 
-func GetSessionPositions(ss *auth.Session) auth.Positions {
-	if ss == nil {
-		return auth.NullPositions
+// Make sure we always return valid JSON to template.
+func tryMarshal(v interface{}) []byte {
+	data, err := json.Marshal(v)
+	if err != nil {
+		return []byte("null")
 	}
-	return ss.Positions
+	return data
 }
 
 func posClasses(pos auth.Positions) string {

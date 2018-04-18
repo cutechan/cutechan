@@ -1,4 +1,3 @@
-{% import "encoding/json" %}
 {% import "meguca/config" %}
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
@@ -34,8 +33,9 @@
 	{% code conf := config.Get() %}
 	{% code confJSON, _ := config.GetClient() %}
 	{% code boards := config.GetBoardTitles() %}
-	{% code boardJSON, _ := json.Marshal(boards) %}
-	{% code pos := GetSessionPositions(ss) %}
+	{% code boardJSON := tryMarshal(boards) %}
+	{% code accountJSON := tryMarshal(ss.GetSettings()) %}
+	{% code pos := ss.GetPositions() %}
 	<!DOCTYPE html>
 	<html class="{%s posClasses(pos) %}">
 	<head>
@@ -51,7 +51,7 @@
 			<link rel="dns-prefetch" href="{%s conf.ImageRootOverride %}">
 		{% endif %}
 		<script>
-			var config={%z= confJSON %},boards={%z= boardJSON %};
+			var config={%z= confJSON %},boards={%z= boardJSON %},account={%z= accountJSON %};
 			var position={%d int(pos.CurBoard) %},anyposition={%d int(pos.AnyBoard) %};
 			if (localStorage.theme !== config.DefaultCSS) {
 				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";

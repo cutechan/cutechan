@@ -22,8 +22,22 @@ type Session struct {
 }
 
 type AccountSettings struct {
-	Name     string `json:"name"`
-	ShowName bool   `json:"show_name"`
+	Name     string `json:"name,omitempty"`
+	ShowName bool   `json:"show_name,omitempty"`
+}
+
+func (ss *Session) GetPositions() Positions {
+	if ss == nil {
+		return NullPositions
+	}
+	return ss.Positions
+}
+
+func (ss *Session) GetSettings() AccountSettings {
+	if ss == nil {
+		return AccountSettings{}
+	}
+	return ss.Settings
 }
 
 var (

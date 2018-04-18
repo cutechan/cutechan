@@ -81,8 +81,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 	}
 
 	_, hash := config.GetClient()
-	pos := templates.GetSessionPositions(ss)
-	etag := formatEtag(ctr, hash, pos)
+	etag := formatEtag(ctr, hash, ss.GetPositions())
 	if checkClientEtag(w, r, etag) {
 		return
 	}
@@ -118,7 +117,7 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, hash := config.GetClient()
-	etag := formatEtag(ctr, hash, templates.GetSessionPositions(ss))
+	etag := formatEtag(ctr, hash, ss.GetPositions())
 	if checkClientEtag(w, r, etag) {
 		return
 	}
