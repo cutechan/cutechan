@@ -9,6 +9,7 @@ export * from "./fetch";
 export * from "./hooks";
 export * from "./render";
 export * from "./changes";
+export * from "./mixins";
 
 import { POST_SEL } from "../vars";
 

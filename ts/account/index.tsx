@@ -11,7 +11,10 @@ import API from "../api";
 import { TabbedModal } from "../base";
 import { _ } from "../lang";
 import { ModerationLevel, position } from "../mod";
-import { Constructable, hook, HOOKS, on, trigger, unhook } from "../util";
+import {
+  BackgroundClickMixin, Constructable, EscapePressMixin,
+  hook, HOOKS, on, trigger, unhook,
+} from "../util";
 import { MODAL_CONTAINER_SEL, TRIGGER_IGNORE_USER_SEL } from "../vars";
 import {
   BoardConfigForm, BoardCreationForm, BoardDeletionForm, StaffAssignmentForm,
@@ -114,7 +117,7 @@ interface IgnoreState {
   top: number;
 }
 
-class IgnoreModal extends Component<{}, IgnoreState> {
+class IgnoreModalBase extends Component<{}, IgnoreState> {
   public state: IgnoreState = {
     target: null,
     shown: false,
@@ -123,11 +126,9 @@ class IgnoreModal extends Component<{}, IgnoreState> {
   };
   public componentDidMount() {
     hook(HOOKS.openIgnoreModal, this.showModal);
-    document.addEventListener("click", this.handleGlobalClick);
   }
   public componentWillUnmount() {
     unhook(HOOKS.openIgnoreModal, this.showModal);
-    document.removeEventListener("click", this.handleGlobalClick);
   }
   public render({}, { shown, left, top }: IgnoreState) {
     if (!shown) return null;
@@ -149,6 +150,15 @@ class IgnoreModal extends Component<{}, IgnoreState> {
       </div>
     );
   }
+  public onBackgroundClick = (e: MouseEvent) => {
+    if (e.target === this.state.target) return;
+    if (this.state.shown) {
+      this.setState({target: null, shown: false});
+    }
+  }
+  public onEscapePress = (e: KeyboardEvent) => {
+    this.setState({target: null, shown: false});
+  }
   private showModal = (target: HTMLElement) => {
     if (target === this.state.target) {
       this.setState({target: null, shown: false});
@@ -162,13 +172,9 @@ class IgnoreModal extends Component<{}, IgnoreState> {
   private handleModalClick = (e: Event) => {
     e.stopPropagation();
   }
-  private handleGlobalClick = (e: MouseEvent) => {
-    if (e.target === this.state.target) return;
-    if (e.button === 0 && this.state.shown) {
-      this.setState({target: null, shown: false});
-    }
-  }
 }
+
+const IgnoreModal = EscapePressMixin(BackgroundClickMixin(IgnoreModalBase));
 
 // Terminate the user session(s) server-side and reset the panel
 async function logout(url: string) {
