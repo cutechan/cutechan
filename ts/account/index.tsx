@@ -11,6 +11,7 @@ import API from "../api";
 import { TabbedModal } from "../base";
 import { _ } from "../lang";
 import { ModerationLevel, position } from "../mod";
+import { getModel } from "../state";
 import {
   BackgroundClickMixin, Constructable, EscapePressMixin,
   hook, HOOKS, on, trigger, unhook,
@@ -115,11 +116,13 @@ interface IgnoreState {
   shown: boolean;
   left: number;
   top: number;
+  userId: string;
 }
 
 class IgnoreModalBase extends Component<{}, IgnoreState> {
   public state: IgnoreState = {
     target: null,
+    userId: "",
     shown: false,
     left: 0,
     top: 0,
@@ -130,7 +133,7 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
   public componentWillUnmount() {
     unhook(HOOKS.openIgnoreModal, this.showModal);
   }
-  public render({}, { shown, left, top }: IgnoreState) {
+  public render({}, { userId, shown, left, top }: IgnoreState) {
     if (!shown) return null;
     const style = {left, top};
     return (
@@ -139,6 +142,9 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
         style={style}
         onClick={this.handleModalClick}
       >
+        <div class="ignore-modal-info">
+          {userId}
+        </div>
         <div class="ignore-modal-item">
           <i class="control fa fa-check-circle" />
           <span> {_("To whitelist")}</span>
@@ -164,10 +170,11 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
       this.setState({target: null, shown: false});
       return;
     }
+    const post = getModel(target);
     let { left, top } = target.getBoundingClientRect();
     left += window.pageXOffset;
     top += window.pageYOffset + 20;
-    this.setState({left, top, target, shown: true});
+    this.setState({left, top, target, userId: post.name, shown: true});
   }
   private handleModalClick = (e: Event) => {
     e.stopPropagation();
