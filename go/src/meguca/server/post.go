@@ -5,7 +5,6 @@ package server
 import (
 	"fmt"
 	"meguca/auth"
-	"meguca/common"
 	"meguca/config"
 	"meguca/db"
 	"meguca/feeds"
@@ -114,15 +113,7 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	if !assertBoardAPI(w, r, board) {
 		return
 	}
-	ss, err := getSession(r, board)
-	switch err {
-	case nil:
-		// Do nothing.
-	case common.ErrInvalidCreds:
-		// Do nothing.
-	default:
-		text500(w, r, err)
-	}
+	ss, _ := getSession(r, board)
 	if !assertNotModOnlyAPI(w, r, board, ss) {
 		return
 	}
