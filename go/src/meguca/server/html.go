@@ -170,7 +170,7 @@ func boardConfigurationForm(w http.ResponseWriter, r *http.Request) {
 
 // Render a form for assigning staff to a board
 func staffAssignmentForm(w http.ResponseWriter, r *http.Request) {
-	s, err := db.GetStaff(extractParam(r, "board"))
+	s, err := db.GetStaff(getParam(r, "board"))
 	if err != nil {
 		text500(w, r, err)
 		return

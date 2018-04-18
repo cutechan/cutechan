@@ -14,7 +14,7 @@ import (
 // Serve uploads directory. Only makes sense for dev server, on
 // production you normally use nginx or CDN.
 func serveFiles(w http.ResponseWriter, r *http.Request) {
-	path := extractParam(r, "path")
+	path := getParam(r, "path")
 	file, err := os.Open(cleanJoin(common.ImageWebRoot, path))
 	if err != nil {
 		serve404(w, r)
@@ -64,7 +64,7 @@ func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 
 // Server static assets
 func serveStatic(w http.ResponseWriter, r *http.Request) {
-	serveFile(w, r, cleanJoin(common.WebRoot, "static", extractParam(r, "path")))
+	serveFile(w, r, cleanJoin(common.WebRoot, "static", getParam(r, "path")))
 }
 
 func sendFileError(w http.ResponseWriter, h *multipart.FileHeader, msg string) {

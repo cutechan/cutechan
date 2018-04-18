@@ -260,11 +260,6 @@ func assertPowerUserAPI(w http.ResponseWriter, r *http.Request, ss *auth.Session
 	return true
 }
 
-// Deprecated: use getParam instead.
-func extractParam(r *http.Request, id string) string {
-	return getParam(r, id)
-}
-
 // Extract URL paramater from request context
 func getParam(r *http.Request, id string) string {
 	return httptreemux.ContextParams(r.Context())[id]

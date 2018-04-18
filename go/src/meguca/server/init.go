@@ -51,11 +51,11 @@ func createRouter(debugRoutes bool) http.Handler {
 	r.GET("/404.html", serve404)
 	r.GET("/stickers/", serveStickers)
 	r.GET("/:board/", func(w http.ResponseWriter, r *http.Request) {
-		boardHTML(w, r, extractParam(r, "board"), false)
+		boardHTML(w, r, getParam(r, "board"), false)
 	})
 	r.GET("/:board/:thread", threadHTML)
 	r.GET("/:board/catalog", func(w http.ResponseWriter, r *http.Request) {
-		boardHTML(w, r, extractParam(r, "board"), true)
+		boardHTML(w, r, getParam(r, "board"), true)
 	})
 	r.GET("/all/:id", crossRedirect)
 	r.GET("/all/catalog", func(w http.ResponseWriter, r *http.Request) {

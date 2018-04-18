@@ -95,7 +95,7 @@ func detectLastN(r *http.Request) int {
 
 // Serve a single post as JSON
 func servePost(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseUint(extractParam(r, "post"), 10, 64)
+	id, err := strconv.ParseUint(getParam(r, "post"), 10, 64)
 	if err != nil {
 		text400(w, err)
 		return
@@ -138,7 +138,7 @@ func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 		return 0, false
 	}
 
-	id, err := strconv.ParseUint(extractParam(r, "thread"), 10, 64)
+	id, err := strconv.ParseUint(getParam(r, "thread"), 10, 64)
 	if err != nil {
 		serve404(w, r)
 		return 0, false

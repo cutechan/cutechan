@@ -176,7 +176,7 @@ func boardConfData(w http.ResponseWriter, r *http.Request) (
 ) {
 	var (
 		conf  config.BoardConfigs
-		board = extractParam(r, "board")
+		board = getParam(r, "board")
 	)
 	if _, ok := assertCanPerform(w, r, board, auth.BoardOwner); !ok {
 		return conf, false
@@ -277,7 +277,7 @@ func configureBoard(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	msg.ID = extractParam(r, "board")
+	msg.ID = getParam(r, "board")
 	_, ok := assertCanPerform(w, r, msg.ID, auth.BoardOwner)
 	if !ok || !validateBoardConfigs(w, msg.BoardConfigs) {
 		return
@@ -521,7 +521,7 @@ func assignStaff(w http.ResponseWriter, r *http.Request) {
 
 // Retrieve posts with the same IP on the target board
 func getSameIPPosts(w http.ResponseWriter, r *http.Request) {
-	id, err := strconv.ParseUint(extractParam(r, "id"), 10, 64)
+	id, err := strconv.ParseUint(getParam(r, "id"), 10, 64)
 	if err != nil {
 		text400(w, err)
 		return
@@ -586,7 +586,7 @@ func banList(w http.ResponseWriter, r *http.Request) {
 
 // Unban a specific board -> banned post combination
 func unban(w http.ResponseWriter, r *http.Request) {
-	board := extractParam(r, "board")
+	board := getParam(r, "board")
 	ss, ok := assertCanPerform(w, r, board, auth.Moderator)
 	if !ok {
 		return
