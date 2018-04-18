@@ -25,21 +25,19 @@ export class Post extends Model implements PostData {
   public view: PostView;
   public seenOnce: boolean;
 
-  public op: number;
-  public editing: boolean;
-  public deleted: boolean;
-  public banned: boolean;
-  public sticky: boolean;
   public time: number;
+  public auth?: string;
+  public name?: string;
+  public nick?: string;
   public body: string;
-  public name: string;
-  public trip: string;
-  public auth: string;
-  public subject: string;
-  public board: string;
-  public backlinks: PostBacklinks;
   public links?: PostLink[];
   public files?: ImageData[];
+  public backlinks: PostBacklinks;
+  public op?: number;
+  public board?: string;
+  public sticky?: boolean;
+  public deleted?: boolean;
+  public subject?: string;
 
   constructor(attrs: PostData) {
     super();

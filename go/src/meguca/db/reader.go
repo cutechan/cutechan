@@ -28,17 +28,19 @@ type postScanner struct {
 	common.Post
 	auth     sql.NullString
 	name     sql.NullString
+	nick     sql.NullString
 	links    linkRow
 	commands commandRow
 }
 
 func (p *postScanner) ScanArgs() []interface{} {
-	return []interface{}{&p.ID, &p.Time, &p.auth, &p.name, &p.Body, &p.links, &p.commands}
+	return []interface{}{&p.ID, &p.Time, &p.auth, &p.name, &p.nick, &p.Body, &p.links, &p.commands}
 }
 
 func (p *postScanner) Val() common.Post {
 	p.Auth = p.auth.String
 	p.Name = p.name.String
+	p.Nick = p.nick.String
 	p.Links = [][2]uint64(p.links)
 	p.Commands = []common.Command(p.commands)
 	return p.Post

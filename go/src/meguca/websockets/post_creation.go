@@ -182,7 +182,8 @@ func constructPost(tx *sql.Tx, req PostCreationRequest) (post db.Post, err error
 		}
 		// Attach name if requested.
 		if req.ShowName || ss.Settings.ShowName {
-			post.Name = ss.Settings.Name
+			post.Name = ss.UserID
+			post.Nick = ss.Settings.Name
 		}
 	}
 

@@ -17,9 +17,10 @@ export interface ThreadData extends PostData {
 export interface PostData {
   id: number;
   time: number;
+  auth?: string;
+  name?: string;
+  nick?: string;
   body: string;
-  auth: string;
-  name: string;
   links?: PostLink[];
   commands?: Command[];
   files?: ImageData[];

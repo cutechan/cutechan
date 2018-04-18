@@ -24,7 +24,7 @@ type PostContext struct {
 	Subject   string
 	Badge     bool
 	Auth      string
-	Name      string
+	Nick      string
 	Time      string
 	HasFiles  bool
 	post      *common.Post
@@ -64,6 +64,12 @@ type BacklinksContext struct {
 func MakePostContext(t common.Thread, p *common.Post, bls common.Backlinks, index bool, all bool) PostContext {
 	ln := lang.Get()
 	postTime := time.Unix(p.Time, 0)
+	// TODO(Kagami): Currently name field of posts table doesn't
+	// reference accounts so it might contain invalid data.
+	nick := p.Nick
+	if nick == "" {
+		nick = p.Name
+	}
 	return PostContext{
 		ID:        p.ID,
 		TID:       t.ID,
@@ -74,7 +80,7 @@ func MakePostContext(t common.Thread, p *common.Post, bls common.Backlinks, inde
 		Subject:   t.Subject,
 		Badge:     p.Auth != "",
 		Auth:      ln.Common.Posts[p.Auth],
-		Name:      p.Name,
+		Nick:      nick,
 		Time:      readableTime(postTime),
 		HasFiles:  len(p.Files) > 0,
 		post:      p,
