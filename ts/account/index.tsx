@@ -20,9 +20,18 @@ import { LoginForm, validatePasswordMatch } from "./login-form";
 import { PasswordChangeForm } from "./password-form";
 import { ServerConfigForm } from "./server-form";
 
-interface AccountSettings {
+export const enum IgnoreMode {
+  disabled,
+  byWhitelist,
+  byBlacklist,
+}
+
+export interface AccountSettings {
   name?: string;
   showName?: boolean;
+  ignoreMode?: IgnoreMode;
+  whitelist?: string[];
+  blacklist?: string[];
 }
 
 declare global {

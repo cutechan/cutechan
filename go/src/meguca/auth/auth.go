@@ -13,6 +13,24 @@ import (
 	"golang.org/x/crypto/bcrypt"
 )
 
+type IgnoreMode int
+
+const (
+	IgnoreDisabled IgnoreMode = iota
+	IgnoreByWhitelist
+	IgnoreByBlacklist
+)
+
+var (
+	// IsReverseProxied specifies, if the server is deployed behind a reverse
+	// proxy.
+	IsReverseProxied bool
+
+	// ReverseProxyIP specifies the IP of a non-localhost reverse proxy. Used
+	// for filtering in XFF IP determination.
+	ReverseProxyIP string
+)
+
 // Contains user data and settings of the request's session.
 type Session struct {
 	UserID    string
@@ -22,8 +40,11 @@ type Session struct {
 }
 
 type AccountSettings struct {
-	Name     string `json:"name,omitempty"`
-	ShowName bool   `json:"showName,omitempty"`
+	Name       string     `json:"name,omitempty"`
+	ShowName   bool       `json:"showName,omitempty"`
+	IgnoreMode IgnoreMode `json:"ignoreMode,omitempty"`
+	Whitelist  []string   `json:"whitelist,omitempty"`
+	Blacklist  []string   `json:"blacklist,omitempty"`
 }
 
 func (ss *Session) GetPositions() Positions {
@@ -39,16 +60,6 @@ func (ss *Session) GetSettings() AccountSettings {
 	}
 	return ss.Settings
 }
-
-var (
-	// IsReverseProxied specifies, if the server is deployed behind a reverse
-	// proxy.
-	IsReverseProxied bool
-
-	// ReverseProxyIP specifies the IP of a non-localhost reverse proxy. Used
-	// for filtering in XFF IP determination.
-	ReverseProxyIP string
-)
 
 // GetIP extracts the IP of a request, honouring reverse proxies, if set
 func GetIP(r *http.Request) (string, error) {

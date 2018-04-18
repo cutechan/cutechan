@@ -270,21 +270,38 @@ func assertSession(w http.ResponseWriter, r *http.Request, b string) *auth.Sessi
 	return ss
 }
 
+// FIXME(Kagami): Don't mix text/plain and application/json errors.
 func setAccountSettings(w http.ResponseWriter, r *http.Request) {
 	ss := assertSession(w, r, "")
 	if ss == nil {
 		return
 	}
 
-	var settings auth.AccountSettings
-	if !decodeJSON(w, r, &settings) {
+	var as auth.AccountSettings
+	if !decodeJSON(w, r, &as) {
 		return
 	}
-	if !validateUserID(w, settings.Name) {
+	if !validateUserID(w, as.Name) {
 		return
+	}
+	if len(as.Whitelist) > common.MaxLenIgnoreList ||
+		len(as.Blacklist) > common.MaxLenIgnoreList {
+		serveErrorJSON(w, r, aerrTooManyIgnores)
+	}
+	// Don't bother matching against DB values. It's user's problem if
+	// they passed wrong user IDs (not possible via UI).
+	for _, id := range as.Whitelist {
+		if !validateUserID(w, id) {
+			return
+		}
+	}
+	for _, id := range as.Blacklist {
+		if !validateUserID(w, id) {
+			return
+		}
 	}
 
-	err := db.SetAccountSettings(ss.UserID, settings)
+	err := db.SetAccountSettings(ss.UserID, as)
 	switch err {
 	case nil:
 		// Do nothing.

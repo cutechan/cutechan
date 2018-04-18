@@ -12,6 +12,7 @@ const (
 	MaxLenBoardID      = 10
 	MaxLenBoardTitle   = 100
 	MaxBanReasonLength = 100
+	MaxLenIgnoreList   = 100
 )
 
 // Various cryptographic token exact lengths
