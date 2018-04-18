@@ -230,6 +230,8 @@ if (!watch) {
   tasks.push("es5");
 }
 
+let tscDone = false;
+
 // Much faster than gulp-typescript, see:
 // https://github.com/ivogabe/gulp-typescript/issues/549
 function spawnTsc() {
@@ -266,7 +268,10 @@ function spawnTsc() {
         console.log(data);
       }
 
-      if (data.includes("Compilation complete")) {
+      if (!tscDone
+          && data.includes("Compilation complete")
+          && fs.existsSync(TSC_TMP_FILE)) {
+        tscDone = true;
         resolve();
       }
     });
