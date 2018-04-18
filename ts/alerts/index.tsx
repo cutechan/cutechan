@@ -45,15 +45,20 @@ class Alerts extends Component<any, any> {
       setTimeout(this.makeClose(a.id), ALERT_HIDE_TIMEOUT_SECS * 1000);
     }
   }
-  private makeClose(id: number) {
+  private makeClose(id: number, force = false) {
     return () => {
-      const alerts = this.state.alerts.map((a) =>
-        a.id === id ? {...a, closing: true} : a,
-      );
+      let alerts = this.state.alerts;
+
+      if (force) {
+        alerts = alerts.filter((a) => a.id !== id);
+        this.setState({alerts});
+        return;
+      }
+
+      alerts = alerts.map((a) => a.id === id ? {...a, closing: true} : a);
       this.setState({alerts});
       setTimeout(() => {
-        // tslint:disable-next-line:no-shadowed-variable
-        const alerts = this.state.alerts.filter((a) => a.id !== id);
+        alerts = this.state.alerts.filter((a) => a.id !== id);
         this.setState({alerts});
       }, 1000);
     };
@@ -61,7 +66,7 @@ class Alerts extends Component<any, any> {
   private renderAlert = ({ id, title, message, closing }: Alert) => {
     return (
       <article class={cx("alert", closing && "alert_closing")} key={id.toString()}>
-        <a class="control alert-close-control" onClick={this.makeClose(id)}>
+        <a class="control alert-close-control" onClick={this.makeClose(id, true)}>
           <i class="fa fa-remove" />
         </a>
         {this.renderTitle(title)}
