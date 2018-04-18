@@ -9,14 +9,15 @@ import "C"
 import (
 	"database/sql"
 	"errors"
-	"meguca/auth"
-	"meguca/common"
-	"meguca/db"
-	"meguca/parser"
 	"strings"
 	"time"
 	"unicode/utf8"
 	"unsafe"
+
+	"meguca/auth"
+	"meguca/common"
+	"meguca/db"
+	"meguca/parser"
 )
 
 var (
@@ -30,13 +31,15 @@ var (
 // ThreadCreationRequest contains data for creating a new thread.
 type ThreadCreationRequest struct {
 	PostCreationRequest
-	Subject, Board string
+	Subject string
 }
 
 // PostCreationRequest contains common fields for both thread and post
 // creation.
 type PostCreationRequest struct {
 	FilesRequest FilesRequest
+	Board        string
+	Ip           string
 	Body         string
 	Token        string
 	Sign         string
@@ -50,10 +53,10 @@ type FilesRequest struct {
 }
 
 // CreateThread creates a new thread and writes it to the database.
-func CreateThread(req ThreadCreationRequest, ip string) (
+func CreateThread(req ThreadCreationRequest) (
 	post db.Post, err error,
 ) {
-	ok := db.CanCreateThread(ip)
+	ok := db.CanCreateThread(req.Ip)
 	if !ok {
 		err = errPostingTooFast
 		return
@@ -70,7 +73,7 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 		return
 	}
 
-	post, err = constructPost(tx, req.PostCreationRequest, ip, req.Board)
+	post, err = constructPost(tx, req.PostCreationRequest)
 	if err != nil {
 		return
 	}
@@ -91,10 +94,10 @@ func CreateThread(req ThreadCreationRequest, ip string) (
 }
 
 // CreatePost creates a new post and writes it to the database.
-func CreatePost(req PostCreationRequest, ip string, op uint64, board string) (
+func CreatePost(req PostCreationRequest, op uint64) (
 	post db.Post, msg []byte, err error,
 ) {
-	ok := db.CanCreatePost(ip)
+	ok := db.CanCreatePost(req.Ip)
 	if !ok {
 		err = errPostingTooFast
 		return
@@ -106,7 +109,7 @@ func CreatePost(req PostCreationRequest, ip string, op uint64, board string) (
 	}
 	defer db.RollbackOnError(tx, &err)
 
-	post, err = constructPost(tx, req, ip, board)
+	post, err = constructPost(tx, req)
 	if err != nil {
 		return
 	}
@@ -132,9 +135,7 @@ func CreatePost(req PostCreationRequest, ip string, op uint64, board string) (
 }
 
 // Construct the common parts of the new post.
-func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
-	post db.Post, err error,
-) {
+func constructPost(tx *sql.Tx, req PostCreationRequest) (post db.Post, err error) {
 	if req.Body == "" && len(req.FilesRequest.Tokens) == 0 {
 		err = errNoTextOrFiles
 		return
@@ -146,9 +147,9 @@ func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
 				Time: time.Now().Unix(),
 				Body: req.Body,
 			},
-			Board: board,
+			Board: req.Board,
 		},
-		IP: ip,
+		IP: req.Ip,
 	}
 
 	// Check token and its signature.
@@ -175,18 +176,13 @@ func constructPost(tx *sql.Tx, req PostCreationRequest, ip, board string) (
 	if ss != nil {
 		// Attach staff badge if requested after validation.
 		if req.ShowBadge {
-			var pos auth.Positions
-			pos, err = db.GetPositions(board, ss.UserID)
-			if err != nil {
-				return
-			}
-			if pos.CurBoard >= auth.Moderator {
-				post.Auth = pos.CurBoard.String()
+			if ss.Positions.CurBoard >= auth.Moderator {
+				post.Auth = ss.Positions.CurBoard.String()
 			}
 		}
 		// Attach name if requested.
 		if req.ShowName || ss.Settings.ShowName {
-			post.Name = ss.UserID
+			post.Name = ss.Settings.Name
 		}
 	}
 

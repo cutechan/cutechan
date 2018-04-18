@@ -182,23 +182,6 @@ func GetStaff(board string) (staff map[string][]string, err error) {
 	return
 }
 
-// CanPerform returns, if the account can perform an action of ModerationLevel
-// 'action' on the target board
-func CanPerform(account, board string, action auth.ModerationLevel) (
-	can bool, err error,
-) {
-	switch {
-	case account == "admin": // admin account can do anything
-		return true, nil
-	case action == auth.Admin: // Only admin account can perform Admin actions
-		return false, nil
-	}
-
-	pos, err := GetPositions(board, account)
-	can = pos.CurBoard >= action
-	return
-}
-
 // GetSameIPPosts returns posts with the same IP and on the same board as the
 // target post
 func GetSameIPPosts(id uint64, board string) (

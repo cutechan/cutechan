@@ -6,9 +6,10 @@ import (
 
 // Contains user data and settings of the request's session.
 type Session struct {
-	UserID   string
-	Token    string
-	Settings AccountSettings
+	UserID    string
+	Token     string
+	Positions Positions
+	Settings  AccountSettings
 }
 
 type AccountSettings struct {

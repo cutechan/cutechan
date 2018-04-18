@@ -186,7 +186,18 @@ func IsBoard(b string) bool {
 	return ok
 }
 
-func IsModOnly(b string) bool {
+func IsServeBoard(b string) bool {
+	return b == "all" || IsBoard(b)
+}
+
+func IsReadOnlyBoard(b string) bool {
+	boardMu.RLock()
+	defer boardMu.RUnlock()
+	conf, ok := boardConfigs[b]
+	return ok && conf.ReadOnly
+}
+
+func IsModOnlyBoard(b string) bool {
 	boardMu.RLock()
 	defer boardMu.RUnlock()
 	conf, ok := boardConfigs[b]

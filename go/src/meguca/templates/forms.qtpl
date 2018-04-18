@@ -210,11 +210,11 @@ Renders the tab selection butts in tabbed windows
 	</div>
 {% endstripspace %}{% endfunc %}
 
-{% func accountModal(pos auth.Positions) %}{% stripspace %}
+{% func accountModal(ss *auth.Session) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	{% code f := ln.Forms %}
 	<div class="modal tabmodal" id="account-panel">
-		{% if pos.CurBoard == auth.NotLoggedIn %}
+		{% if ss == nil %}
 			{%= tabButts([]string{f["id"][0], f["register"][0]}) %}
 			<div class="tab-cont">
 				<div class="tab-sel" data-id="0">
@@ -245,11 +245,11 @@ Renders the tab selection butts in tabbed windows
 						<a class="form-selection-link" id="{%s l %}">
 							{%s ln.UI[l] %}
 							{% if l == "logout" %}
-								,{% space %}{%s pos.UserID %}
+								,{% space %}{%s ss.UserID %}
 							{% endif %}
 						</a>
 					{% endfor %}
-					{% if pos.CurBoard == auth.Admin %}
+					{% if ss.Positions.CurBoard == auth.Admin %}
 						<a class="form-selection-link" id="configureServer">
 							{%s ln.UI["configureServer"] %}
 						</a>

@@ -912,7 +912,7 @@ class Reply extends Component<any, any> {
           <button
             class={cx("control", "reply-footer-control", "reply-badge-control",
                       {control_active: showBadge})}
-            title={ln.Forms.modBadge[0]}
+            title={ln.Forms.staffBadge[0]}
             disabled={sending}
             onClick={this.handleToggleShowBadge}
           >

@@ -59,59 +59,42 @@ func decodeJSON(w http.ResponseWriter, r *http.Request, dest interface{}) bool {
 	return true
 }
 
-// Set board-specific configurations to the user's owned board
-func configureBoard(w http.ResponseWriter, r *http.Request) {
-	var msg boardConfigSettingRequest
-	if !decodeJSON(w, r, &msg) {
-		return
+// Detect, if a client can perform moderation on a board.
+func canPerform(ss *auth.Session, level auth.ModerationLevel) bool {
+	if ss == nil {
+		return false
 	}
-	msg.ID = extractParam(r, "board")
-	_, ok := canPerform(w, r, msg.ID, auth.BoardOwner, &msg.Captcha)
-	if !ok || !validateBoardConfigs(w, msg.BoardConfigs) {
-		return
+	if ss.UserID == "admin" {
+		// Admin account can do anything.
+		return true
 	}
-	if err := db.UpdateBoard(msg.BoardConfigs); err != nil {
-		text500(w, r, err)
-		return
+	if level == auth.Admin {
+		// Only admin account can perform Admin actions.
+		return false
 	}
+	return ss.Positions.CurBoard >= level
 }
 
-// Assert user can perform a moderation action. If the action does not need a
-// captcha verification, pass captcha as nil.
-func canPerform(
+// Assert user can perform a moderation action.
+func assertCanPerform(
 	w http.ResponseWriter,
 	r *http.Request,
 	board string,
 	level auth.ModerationLevel,
-	captcha *auth.Captcha,
-) (
-	ss *auth.Session, can bool,
-) {
-	if !auth.IsBoard(board) {
-		text400(w, errInvalidBoardName)
+) (ss *auth.Session, can bool) {
+	if !assertServeBoardAPI(w, r, board) {
 		return
 	}
-	if captcha != nil && !auth.AuthenticateCaptcha(*captcha) {
-		text403(w, errInvalidCaptcha)
-		return
-	}
-	ss, ok := isLoggedIn(w, r)
+	ss, ok := assertSession(w, r, board)
 	if !ok {
 		return
 	}
-
-	can, err := db.CanPerform(ss.UserID, board, level)
-	switch {
-	case err != nil:
-		text500(w, r, err)
-		return
-	case !can:
+	can = canPerform(ss, level)
+	if !can {
 		text403(w, errAccessDenied)
 		return
-	default:
-		can = true
-		return
 	}
+	return
 }
 
 // Assert client can moderate a post of unknown parenthood and return userID
@@ -135,7 +118,7 @@ func canModeratePost(
 		return
 	}
 
-	ss, can := canPerform(w, r, board, level, nil)
+	ss, can := assertCanPerform(w, r, board, level)
 	if !can {
 		text403(w, errAccessDenied)
 		return
@@ -175,7 +158,7 @@ func servePrivateBoardConfigs(w http.ResponseWriter, r *http.Request) {
 }
 
 func isAdmin(w http.ResponseWriter, r *http.Request) bool {
-	ss, ok := isLoggedIn(w, r)
+	ss, ok := assertSession(w, r, "")
 	if !ok {
 		return false
 	}
@@ -195,7 +178,7 @@ func boardConfData(w http.ResponseWriter, r *http.Request) (
 		conf  config.BoardConfigs
 		board = extractParam(r, "board")
 	)
-	if _, ok := canPerform(w, r, board, auth.BoardOwner, nil); !ok {
+	if _, ok := assertCanPerform(w, r, board, auth.BoardOwner); !ok {
 		return conf, false
 	}
 
@@ -215,7 +198,7 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	ss, ok := isLoggedIn(w, r)
+	ss, ok := assertSession(w, r, "")
 	if !ok {
 		return
 	}
@@ -288,15 +271,20 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Set the server configuration to match the one sent from the admin account
-// user
-func configureServer(w http.ResponseWriter, r *http.Request) {
-	var msg config.Configs
-	if !decodeJSON(w, r, &msg) || !isAdmin(w, r) {
+// Set board-specific configurations to the user's owned board
+func configureBoard(w http.ResponseWriter, r *http.Request) {
+	var msg boardConfigSettingRequest
+	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	if err := db.WriteConfigs(msg); err != nil {
+	msg.ID = extractParam(r, "board")
+	_, ok := assertCanPerform(w, r, msg.ID, auth.BoardOwner)
+	if !ok || !validateBoardConfigs(w, msg.BoardConfigs) {
+		return
+	}
+	if err := db.UpdateBoard(msg.BoardConfigs); err != nil {
 		text500(w, r, err)
+		return
 	}
 }
 
@@ -306,12 +294,24 @@ func deleteBoard(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	_, ok := canPerform(w, r, msg.Board, auth.BoardOwner, &msg.Captcha)
+	_, ok := assertCanPerform(w, r, msg.Board, auth.BoardOwner)
 	if !ok {
 		return
 	}
 
 	if err := db.DeleteBoard(msg.Board); err != nil {
+		text500(w, r, err)
+	}
+}
+
+// Set the server configuration to match the one sent from the admin account
+// user
+func configureServer(w http.ResponseWriter, r *http.Request) {
+	var msg config.Configs
+	if !decodeJSON(w, r, &msg) || !isAdmin(w, r) {
+		return
+	}
+	if err := db.WriteConfigs(msg); err != nil {
 		text500(w, r, err)
 	}
 }
@@ -384,7 +384,7 @@ func ban(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	ss, ok := isLoggedIn(w, r)
+	ss, ok := assertSession(w, r, "")
 	switch {
 	case !ok:
 		return
@@ -424,7 +424,7 @@ func ban(w http.ResponseWriter, r *http.Request) {
 
 		// Assert rights to moderate for all affected boards
 		for b := range byBoard {
-			if _, ok := canPerform(w, r, b, auth.Moderator, nil); !ok {
+			if _, ok := assertCanPerform(w, r, b, auth.Moderator); !ok {
 				return
 			}
 		}
@@ -476,7 +476,7 @@ func assignStaff(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	_, ok := canPerform(w, r, msg.Board, auth.BoardOwner, &msg.Captcha)
+	_, ok := assertCanPerform(w, r, msg.Board, auth.BoardOwner)
 	if !ok {
 		return
 	}
@@ -563,9 +563,12 @@ func setThreadSticky(w http.ResponseWriter, r *http.Request) {
 
 // Render list of bans on a board with unban links for authenticated staff
 func banList(w http.ResponseWriter, r *http.Request) {
-	board := extractParam(r, "board")
-	if !auth.IsBoard(board) {
-		serve404(w, r)
+	board := getParam(r, "board")
+	if !assertServeBoard(w, r, board) {
+		return
+	}
+	ss, _ := getSession(r, board)
+	if !assertNotModOnly(w, r, board, ss) {
 		return
 	}
 
@@ -575,34 +578,16 @@ func banList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	canUnban := detectCanPerform(r, board, auth.Moderator)
+	canUnban := canPerform(ss, auth.Moderator)
 	content := []byte(templates.BanList(bans, board, canUnban))
 	html := []byte(templates.BasePage(content))
 	serveHTML(w, r, "", html, nil)
 }
 
-// Detect, if a client can perform moderation on a board. Unlike
-// canPerform, this will not send any errors to the client, if no access
-// rights detected.
-func detectCanPerform(
-	r *http.Request,
-	board string,
-	level auth.ModerationLevel,
-) (
-	can bool,
-) {
-	ss, err := getSession(r)
-	if err != nil {
-		return
-	}
-	can, err = db.CanPerform(ss.UserID, board, level)
-	return
-}
-
 // Unban a specific board -> banned post combination
 func unban(w http.ResponseWriter, r *http.Request) {
 	board := extractParam(r, "board")
-	ss, ok := canPerform(w, r, board, auth.Moderator, nil)
+	ss, ok := assertCanPerform(w, r, board, auth.Moderator)
 	if !ok {
 		return
 	}
@@ -645,9 +630,12 @@ func unban(w http.ResponseWriter, r *http.Request) {
 
 // Serve moderation log for a specific board
 func modLog(w http.ResponseWriter, r *http.Request) {
-	board := extractParam(r, "board")
-	if !auth.IsBoard(board) {
-		serve404(w, r)
+	board := getParam(r, "board")
+	if !assertServeBoard(w, r, board) {
+		return
+	}
+	ss, _ := getSession(r, board)
+	if !assertNotModOnly(w, r, board, ss) {
 		return
 	}
 

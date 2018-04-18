@@ -6,6 +6,7 @@ import (
 	"errors"
 	"meguca/auth"
 	"meguca/common"
+	"meguca/config"
 	"meguca/db"
 	"meguca/feeds"
 )
@@ -34,7 +35,7 @@ func (c *Client) synchronise(data []byte) error {
 	switch {
 	case err != nil:
 		return err
-	case !auth.IsBoard(msg.Board):
+	case !config.IsServeBoard(msg.Board):
 		return errInvalidBoard
 	case auth.IsBanned(msg.Board, c.ip):
 		return errBanned

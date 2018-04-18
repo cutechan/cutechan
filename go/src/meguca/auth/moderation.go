@@ -14,7 +14,6 @@ var (
 )
 
 type Positions struct {
-	UserID   string
 	CurBoard ModerationLevel
 	AnyBoard ModerationLevel
 }

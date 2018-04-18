@@ -5,6 +5,7 @@ package server
 import (
 	"fmt"
 	"meguca/auth"
+	"meguca/common"
 	"meguca/config"
 	"meguca/db"
 	"meguca/feeds"
@@ -46,35 +47,12 @@ func createThread(w http.ResponseWriter, r *http.Request) {
 
 	// Map form data to websocket thread creation request.
 	subject := r.Form.Get("subject")
-	board := r.Form.Get("board")
 	req := websockets.ThreadCreationRequest{
 		PostCreationRequest: postReq,
 		Subject:             subject,
-		Board:               board,
 	}
 
-	// Check board.
-	if !auth.IsNonMetaBoard(board) || !checkModOnly(r, board) {
-		text400(w, errInvalidBoard)
-		return
-	}
-	if !checkReadOnly(board) {
-		text403(w, errReadOnly)
-		return
-	}
-
-	// Check IP.
-	ip, err := auth.GetIP(r)
-	if err != nil {
-		text400(w, err)
-		return
-	}
-	if auth.IsBanned(board, ip) {
-		text403(w, errBanned)
-		return
-	}
-
-	post, err := websockets.CreateThread(req, ip)
+	post, err := websockets.CreateThread(req)
 	if err != nil {
 		// TODO(Kagami): Not all errors are 400.
 		// TODO(Kagami): Write JSON errors instead.
@@ -94,39 +72,23 @@ func createPost(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Check board and thread.
-	board := r.Form.Get("board")
 	thread := r.Form.Get("thread")
 	op, err := strconv.ParseUint(thread, 10, 64)
 	if err != nil {
 		text400(w, err)
 		return
 	}
-	ok, err = db.ValidateOP(op, board)
-	switch {
-	case err != nil:
+	ok, err = db.ValidateOP(op, req.Board)
+	if err != nil {
 		text500(w, r, err)
 		return
-	case !ok || !checkModOnly(r, board):
-		text400(w, fmt.Errorf("invalid thread: /%s/%d", board, op))
-		return
 	}
-	if !checkReadOnly(board) {
-		text403(w, errReadOnly)
+	if !ok {
+		text400(w, fmt.Errorf("invalid thread: /%s/%d", req.Board, op))
 		return
 	}
 
-	// Check IP.
-	ip, err := auth.GetIP(r)
-	if err != nil {
-		text400(w, err)
-		return
-	}
-	if auth.IsBanned(board, ip) {
-		text403(w, errBanned)
-		return
-	}
-
-	post, msg, err := websockets.CreatePost(req, ip, op, board)
+	post, msg, err := websockets.CreatePost(req, op)
 	if err != nil {
 		text400(w, err)
 		return
@@ -144,6 +106,31 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	f, m, err := parseUploadForm(w, r)
 	if err != nil {
 		serveErrorJSON(w, r, err)
+		return
+	}
+
+	// Board and user validation.
+	board := f.Get("board")
+	if !assertBoardAPI(w, r, board) {
+		return
+	}
+	ss, err := getSession(r, board)
+	switch err {
+	case nil:
+		// Do nothing.
+	case common.ErrInvalidCreds:
+		// Do nothing.
+	default:
+		text500(w, r, err)
+	}
+	if !assertNotModOnlyAPI(w, r, board, ss) {
+		return
+	}
+	if !assertNotReadOnlyAPI(w, r, board, ss) {
+		return
+	}
+	var ip string
+	if ip, ok = assertNotBannedAPI(w, r, board); !ok {
 		return
 	}
 
@@ -169,20 +156,18 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	body := f.Get("body")
 	body = strings.Replace(body, "\r\n", "\n", -1)
 
+	modOnly := config.IsModOnlyBoard(board)
 	req = websockets.PostCreationRequest{
 		FilesRequest: websockets.FilesRequest{tokens},
+		Board:        board,
+		Ip:           ip,
 		Body:         body,
 		Token:        f.Get("token"),
 		Sign:         f.Get("sign"),
+		ShowBadge:    f.Get("showBadge") == "on" || modOnly,
+		ShowName:     modOnly,
+		Session:      ss,
 	}
-
-	req.Session, err = getSession(r)
-	if err == nil {
-		modOnly := config.IsModOnly(f.Get("board"))
-		req.ShowBadge = f.Get("showBadge") == "on" || modOnly
-		req.ShowName = modOnly
-	}
-
 	ok = true
 	return
 }

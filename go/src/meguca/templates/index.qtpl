@@ -30,11 +30,12 @@
 	</header>
 {% endstripspace %}{% endfunc %}
 
-{% func renderPage(pos auth.Positions, title string, page string) %}{% stripspace %}
+{% func renderPage(ss *auth.Session, title string, page string) %}{% stripspace %}
 	{% code conf := config.Get() %}
 	{% code confJSON, _ := config.GetClient() %}
 	{% code boards := config.GetBoardTitles() %}
 	{% code boardJSON, _ := json.Marshal(boards) %}
+	{% code pos := GetSessionPositions(ss) %}
 	<!DOCTYPE html>
 	<html class="{%s posClasses(pos) %}">
 	<head>
@@ -50,18 +51,13 @@
 			<link rel="dns-prefetch" href="{%s conf.ImageRootOverride %}">
 		{% endif %}
 		<script>
-			var config={%z= confJSON %},
-				boards={%z= boardJSON %},
-				position={%d int(pos.CurBoard) %},
-				anyposition={%d int(pos.AnyBoard) %};
-			if (localStorage.theme === "photon") {
-				localStorage.theme = "light";
-			}
+			var config={%z= confJSON %},boards={%z= boardJSON %};
+			var position={%d int(pos.CurBoard) %},anyposition={%d int(pos.AnyBoard) %};
 			if (localStorage.theme !== config.DefaultCSS) {
 				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
 			}
 		</script>
-		{% if pos.CurBoard > auth.NotLoggedIn %}
+		{% if ss != nil %}
 			<template name="keyValue">{%= keyValueForm("", "") %}</template>
 			<template name="arrayItem">{%= arrayItemForm("") %}</template>
 		{% endif %}
@@ -74,7 +70,7 @@
 		<aside class="popup-container"></aside>
 		<aside class="modal-container">
 			{%= faqModal() %}
-			{%= accountModal(pos) %}
+			{%= accountModal(ss) %}
 			{%= optionsModal() %}
 		</aside>
 		<script src="/static/js/loader.js"></script>

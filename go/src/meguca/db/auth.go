@@ -16,7 +16,7 @@ var (
 )
 
 // Get user's session by token.
-func GetSession(token string) (ss *auth.Session, err error) {
+func GetSession(board, token string) (ss *auth.Session, err error) {
 	var userID string
 	var userName string
 	var settingsData []byte
@@ -28,6 +28,12 @@ func GetSession(token string) (ss *auth.Session, err error) {
 		}
 		return
 	}
+
+	pos, err := getPositions(board, userID)
+	if err != nil {
+		return
+	}
+
 	var settings auth.AccountSettings
 	// TODO(Kagami): easyjson.
 	err = json.Unmarshal(settingsData, &settings)
@@ -36,9 +42,10 @@ func GetSession(token string) (ss *auth.Session, err error) {
 	}
 	settings.Name = userName
 	ss = &auth.Session{
-		UserID:   userID,
-		Token:    token,
-		Settings: settings,
+		UserID:    userID,
+		Token:     token,
+		Positions: pos,
+		Settings:  settings,
 	}
 	return
 }
@@ -64,9 +71,7 @@ func GetPassword(id string) (hash []byte, err error) {
 }
 
 // Get highest positions of specified user.
-func GetPositions(board, userID string) (pos auth.Positions, err error) {
-	pos.UserID = userID
-
+func getPositions(board, userID string) (pos auth.Positions, err error) {
 	if userID == "admin" {
 		pos.CurBoard = auth.Admin
 		pos.AnyBoard = auth.Admin
@@ -98,6 +103,9 @@ func GetPositions(board, userID string) (pos auth.Positions, err error) {
 		if level > pos.AnyBoard {
 			pos.AnyBoard = level
 		}
+		// NOTE(Kagami): It's fine to pass board = "" to getPositions.
+		// posBoard can't be empty so resulting CurBoard will be "notStaff"
+		// which is perfectly ok.
 		if posBoard == board && level > pos.CurBoard {
 			pos.CurBoard = level
 		}

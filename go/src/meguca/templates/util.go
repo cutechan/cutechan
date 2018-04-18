@@ -9,6 +9,13 @@ import (
 	"meguca/common"
 )
 
+func GetSessionPositions(ss *auth.Session) auth.Positions {
+	if ss == nil {
+		return auth.NullPositions
+	}
+	return ss.Positions
+}
+
 func posClasses(pos auth.Positions) string {
 	var classes []string
 	// Any next moderation level can do anything that previous can.

@@ -6,7 +6,6 @@ import (
 	"crypto/rand"
 	"encoding/base64"
 	"fmt"
-	"meguca/config"
 	"net"
 	"net/http"
 	"strings"
@@ -23,17 +22,6 @@ var (
 	// for filtering in XFF IP determination.
 	ReverseProxyIP string
 )
-
-// IsBoard confirms the string is a valid board
-func IsBoard(board string) bool {
-	return board == "all" || IsNonMetaBoard(board)
-}
-
-// IsNonMetaBoard returns whether a valid board is a classic board and not
-// some other path that emulates a board
-func IsNonMetaBoard(b string) bool {
-	return config.IsBoard(b)
-}
 
 // GetIP extracts the IP of a request, honouring reverse proxies, if set
 func GetIP(r *http.Request) (string, error) {

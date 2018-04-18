@@ -9,6 +9,7 @@ import (
 
 	"meguca/auth"
 	"meguca/common"
+	"meguca/config"
 	"meguca/db"
 
 	"golang.org/x/crypto/bcrypt"
@@ -138,7 +139,7 @@ func commitLogout(
 	r *http.Request,
 	fn func(*auth.Session) error,
 ) {
-	ss, ok := isLoggedIn(w, r)
+	ss, ok := assertSession(w, r, "")
 	if !ok {
 		return
 	}
@@ -179,7 +180,7 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	ss, ok := isLoggedIn(w, r)
+	ss, ok := assertSession(w, r, "")
 	if !ok || !checkPasswordAndCaptcha(w, r, msg.New, msg.Captcha) {
 		return
 	}
@@ -238,7 +239,7 @@ func trimLoginID(id *string) bool {
 }
 
 // Get request session data if any.
-func getSession(r *http.Request) (*auth.Session, error) {
+func getSession(r *http.Request, board string) (*auth.Session, error) {
 	c, err := r.Cookie("session")
 	if err != nil {
 		return nil, common.ErrInvalidCreds
@@ -247,13 +248,17 @@ func getSession(r *http.Request) (*auth.Session, error) {
 	if len(token) != common.LenSession {
 		return nil, common.ErrInvalidCreds
 	}
+	// Just in case, to avoid search for invalid board in DB.
+	if board != "" && !config.IsServeBoard(board) {
+		return nil, errInvalidBoard
+	}
 	// FIXME(Kagami): This might be affected to timing attack.
-	return db.GetSession(token)
+	return db.GetSession(board, token)
 }
 
 // Assert the user login session ID is valid.
-func isLoggedIn(w http.ResponseWriter, r *http.Request) (ss *auth.Session, ok bool) {
-	ss, err := getSession(r)
+func assertSession(w http.ResponseWriter, r *http.Request, b string) (ss *auth.Session, ok bool) {
+	ss, err := getSession(r, b)
 	switch err {
 	case nil:
 		ok = true

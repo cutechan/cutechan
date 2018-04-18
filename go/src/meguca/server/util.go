@@ -11,7 +11,6 @@ import (
 	"strconv"
 
 	"meguca/auth"
-	"meguca/common"
 	"meguca/config"
 	"meguca/db"
 	"meguca/templates"
@@ -151,82 +150,110 @@ func assertNotBanned(
 	}
 }
 
-// Extract positions of the current user. If ok == false, caller should
-// return.
-func extractPositions(w http.ResponseWriter, r *http.Request) (pos auth.Positions, ok bool) {
-	pos.CurBoard = auth.NotLoggedIn
-	pos.AnyBoard = auth.NotLoggedIn
-	ok = true
-	ss, err := getSession(r)
-	switch err {
-	case nil:
-		board := getParam(r, "board")
-		pos, err = db.GetPositions(board, ss.UserID)
-		if err != nil {
-			text500(w, r, err)
-			ok = false
-		}
-	case common.ErrInvalidCreds:
-		// Do nothing.
-	default:
-		text500(w, r, err)
-		ok = false
+// API version of banned response.
+func assertNotBannedAPI(w http.ResponseWriter, r *http.Request, board string) (ip string, ok bool) {
+	ip, err := auth.GetIP(r)
+	if err != nil {
+		text400(w, err)
+		return
 	}
+	if auth.IsBanned(board, ip) {
+		text403(w, errBanned)
+		return
+	}
+	ok = true
 	return
 }
 
-func checkReadOnly(board string) bool {
-	conf := config.GetBoardConfigs(board).BoardConfigs
-	if conf.ReadOnly {
-		return false
-	}
-	return true
-}
-
-func checkModOnly(r *http.Request, board string) bool {
-	if !config.IsModOnly(board) {
-		return true
-	}
-
-	ss, err := getSession(r)
-	if err != nil {
-		return false
-	}
-
-	pos, err := db.GetPositions(board, ss.UserID)
-	if err != nil {
-		return false
-	}
-
-	return pos.CurBoard >= auth.Moderator
-}
-
-func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string) bool {
-	if !checkModOnly(r, board) {
+func assertBoard(w http.ResponseWriter, r *http.Request, board string) bool {
+	if !config.IsBoard(board) {
 		serve404(w, r)
 		return false
 	}
 	return true
 }
 
-// Currently any janitor or above pass.
-func checkPowerUser(r *http.Request) bool {
-	ss, err := getSession(r)
-	if err != nil {
+func assertBoardAPI(w http.ResponseWriter, r *http.Request, board string) bool {
+	if !config.IsBoard(board) {
+		text400(w, errInvalidBoard)
 		return false
 	}
+	return true
+}
 
-	pos, err := db.GetPositions("", ss.UserID)
-	if err != nil {
+func assertServeBoard(w http.ResponseWriter, r *http.Request, board string) bool {
+	if !config.IsServeBoard(board) {
+		serve404(w, r)
 		return false
 	}
+	return true
+}
 
-	return auth.IsPowerUser(pos)
+func assertServeBoardAPI(w http.ResponseWriter, r *http.Request, board string) bool {
+	if !config.IsServeBoard(board) {
+		text400(w, errInvalidBoard)
+		return false
+	}
+	return true
+}
+
+func checkReadOnly(board string, ss *auth.Session) bool {
+	if !config.IsReadOnlyBoard(board) {
+		return true
+	}
+	if ss == nil {
+		return false
+	}
+	return ss.Positions.CurBoard >= auth.Moderator
+}
+
+// Eunsure only mods and above can post at read-only boards.
+func assertNotReadOnlyAPI(w http.ResponseWriter, r *http.Request, board string, ss *auth.Session) bool {
+	if !checkReadOnly(board, ss) {
+		text403(w, errReadOnly)
+		return false
+	}
+	return true
+}
+
+func checkModOnly(board string, ss *auth.Session) bool {
+	if !config.IsModOnlyBoard(board) {
+		return true
+	}
+	if ss == nil {
+		return false
+	}
+	return ss.Positions.CurBoard >= auth.Moderator
+}
+
+// Eunsure only mods and above can view mod-only boards.
+func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string, ss *auth.Session) bool {
+	if !checkModOnly(board, ss) {
+		serve404(w, r)
+		return false
+	}
+	return true
+}
+
+// Eunsure only mods and above can post at mod-only boards.
+func assertNotModOnlyAPI(w http.ResponseWriter, r *http.Request, board string, ss *auth.Session) bool {
+	if !checkModOnly(board, ss) {
+		text400(w, errInvalidBoard)
+		return false
+	}
+	return true
+}
+
+func checkPowerUser(ss *auth.Session) bool {
+	if ss == nil {
+		return false
+	}
+	return auth.IsPowerUser(ss.Positions)
 }
 
 // Eunsure only power users can pass.
-func assertPowerUser(w http.ResponseWriter, r *http.Request) bool {
-	if !checkPowerUser(r) {
+func assertPowerUserAPI(w http.ResponseWriter, r *http.Request, ss *auth.Session) bool {
+	if !checkPowerUser(ss) {
 		serveErrorJSON(w, r, aerrPowerUserOnly)
 		return false
 	}

@@ -39,11 +39,8 @@ func serveHTML(
 }
 
 func serveLanding(w http.ResponseWriter, r *http.Request) {
-	pos, ok := extractPositions(w, r)
-	if !ok {
-		return
-	}
-	html := templates.Landing(pos)
+	ss, _ := getSession(r, "")
+	html := templates.Landing(ss)
 	serveHTML(w, r, "", html, nil)
 }
 
@@ -56,11 +53,11 @@ func serve404(w http.ResponseWriter, r *http.Request) {
 
 // Serves board HTML to regular or noscript clients
 func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
-	if !auth.IsBoard(b) {
-		serve404(w, r)
+	if !assertServeBoard(w, r, b) {
 		return
 	}
-	if !assertNotModOnly(w, r, b) {
+	ss, _ := getSession(r, b)
+	if !assertNotModOnly(w, r, b, ss) {
 		return
 	}
 	if !assertNotBanned(w, r, b) {
@@ -78,12 +75,8 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		return
 	}
 
-	pos, ok := extractPositions(w, r)
-	if !ok {
-		return
-	}
-
 	_, hash := config.GetClient()
+	pos := templates.GetSessionPositions(ss)
 	etag := formatEtag(ctr, hash, pos)
 	if checkClientEtag(w, r, etag) {
 		return
@@ -95,7 +88,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		n = p.pageNumber
 		total = p.pageTotal
 	}
-	html = templates.Board(b, n, total, pos, isMinimal(r), catalog, html)
+	html = templates.Board(b, n, total, ss, isMinimal(r), catalog, html)
 	serveHTML(w, r, etag, html, nil)
 }
 
@@ -119,20 +112,18 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	pos, ok := extractPositions(w, r)
-	if !ok {
-		return
-	}
+	b := getParam(r, "board")
+	ss, _ := getSession(r, b)
 
 	_, hash := config.GetClient()
+	pos := templates.GetSessionPositions(ss)
 	etag := formatEtag(ctr, hash, pos)
 	if checkClientEtag(w, r, etag) {
 		return
 	}
 
-	b := extractParam(r, "board")
 	title := data.(common.Thread).Subject
-	html = templates.Thread(id, b, title, lastN != 0, pos, html)
+	html = templates.Thread(id, b, title, lastN != 0, ss, html)
 	serveHTML(w, r, etag, html, nil)
 }
 
@@ -152,7 +143,7 @@ func staticTemplate(
 
 // Serve a form for selecting one of several boards owned by the user
 func ownedBoardSelection(w http.ResponseWriter, r *http.Request) {
-	ss, ok := isLoggedIn(w, r)
+	ss, ok := assertSession(w, r, "")
 	if !ok {
 		return
 	}
@@ -232,7 +223,7 @@ func noscriptCaptcha(w http.ResponseWriter, r *http.Request) {
 
 // Redirect the client to the appropriate board through a cross-board redirect
 func crossRedirect(w http.ResponseWriter, r *http.Request) {
-	idStr := extractParam(r, "id")
+	idStr := getParam(r, "id")
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
 		serve404(w, r)
@@ -242,7 +233,9 @@ func crossRedirect(w http.ResponseWriter, r *http.Request) {
 	board, op, err := db.GetPostParenthood(id)
 	switch err {
 	case nil:
-		if !assertNotModOnly(w, r, board) {
+		// Don't allow cross-redirects to mod-only boards.
+		// TODO(Kagami): We shouldn't make links to mod-only clickable?
+		if !assertNotModOnly(w, r, board, nil) {
 			return
 		}
 		url := r.URL
@@ -256,11 +249,8 @@ func crossRedirect(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveStickers(w http.ResponseWriter, r *http.Request) {
-	pos, ok := extractPositions(w, r)
-	if !ok {
-		return
-	}
+	ss, _ := getSession(r, "")
 	stickHTML := []byte{}
-	html := templates.Stickers(pos, stickHTML)
+	html := templates.Stickers(ss, stickHTML)
 	serveHTML(w, r, "", html, nil)
 }

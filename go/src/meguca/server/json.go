@@ -103,7 +103,8 @@ func servePost(w http.ResponseWriter, r *http.Request) {
 
 	switch post, err := db.GetPost(id); err {
 	case nil:
-		if !assertNotModOnly(w, r, post.Board) {
+		ss, _ := getSession(r, post.Board)
+		if !assertNotModOnly(w, r, post.Board, ss) {
 			return
 		}
 		serveJSON(w, r, post)
@@ -125,12 +126,15 @@ func respondToJSONError(w http.ResponseWriter, r *http.Request, err error) {
 // Confirms a the thread exists on the board and returns its ID. If an error
 // occurred and the calling function should return, ok = false.
 func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
-	board := extractParam(r, "board")
-
-	if !assertNotModOnly(w, r, board) {
+	b := getParam(r, "board")
+	if !assertBoard(w, r, b) {
 		return 0, false
 	}
-	if !assertNotBanned(w, r, board) {
+	ss, _ := getSession(r, b)
+	if !assertNotModOnly(w, r, b, ss) {
+		return 0, false
+	}
+	if !assertNotBanned(w, r, b) {
 		return 0, false
 	}
 
@@ -140,7 +144,7 @@ func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 		return 0, false
 	}
 
-	valid, err := db.ValidateOP(id, board)
+	valid, err := db.ValidateOP(id, b)
 	if err != nil {
 		text500(w, r, err)
 		return 0, false
@@ -155,12 +159,12 @@ func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 
 // Serves board page JSON
 func boardJSON(w http.ResponseWriter, r *http.Request, catalog bool) {
-	b := extractParam(r, "board")
-	if !auth.IsBoard(b) {
-		serve404(w, r)
+	b := getParam(r, "board")
+	if !assertServeBoard(w, r, b) {
 		return
 	}
-	if !assertNotModOnly(w, r, b) {
+	ss, _ := getSession(r, b)
+	if !assertNotModOnly(w, r, b, ss) {
 		return
 	}
 	if !assertNotBanned(w, r, b) {

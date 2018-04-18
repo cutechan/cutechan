@@ -28,7 +28,8 @@ func serveIdolRecognize(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveSetIdolPreview(w http.ResponseWriter, r *http.Request) {
-	if !assertPowerUser(w, r) {
+	ss, _ := getSession(r, "")
+	if !assertPowerUserAPI(w, r, ss) {
 		return
 	}
 	answer, err := setIdolPreview(w, r)
