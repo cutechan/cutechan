@@ -20,6 +20,8 @@ create table sessions (
   primary key (account, token)
 );
 
+CREATE INDEX sessions_token ON sessions (token);
+
 create table bans (
   board text not null,
   ip inet not null,

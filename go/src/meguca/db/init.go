@@ -462,6 +462,11 @@ var upgrades = []func(*sql.Tx) error{
 				ALTER COLUMN settings DROP DEFAULT`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`CREATE INDEX sessions_token ON sessions (token)`,
+		)
+	},
 }
 
 func StartDb() (err error) {
