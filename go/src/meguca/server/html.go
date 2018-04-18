@@ -104,7 +104,7 @@ func isMinimal(r *http.Request) bool {
 
 // Asserts a thread exists on the specific board and renders the index template
 func threadHTML(w http.ResponseWriter, r *http.Request) {
-	id, ok := validateThread(w, r)
+	ss, id, ok := validateThread(w, r)
 	if !ok {
 		return
 	}
@@ -117,16 +117,13 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	b := getParam(r, "board")
-	ss, _ := getSession(r, b)
-
 	_, hash := config.GetClient()
-	pos := templates.GetSessionPositions(ss)
-	etag := formatEtag(ctr, hash, pos)
+	etag := formatEtag(ctr, hash, templates.GetSessionPositions(ss))
 	if checkClientEtag(w, r, etag) {
 		return
 	}
 
+	b := getParam(r, "board")
 	title := data.(common.Thread).Subject
 	html = templates.Thread(id, b, title, lastN != 0, ss, html)
 	serveHTML(w, r, etag, html, nil)

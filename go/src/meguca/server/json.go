@@ -125,36 +125,41 @@ func respondToJSONError(w http.ResponseWriter, r *http.Request, err error) {
 
 // Confirms a the thread exists on the board and returns its ID. If an error
 // occurred and the calling function should return, ok = false.
-func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
+func validateThread(w http.ResponseWriter, r *http.Request) (
+	ss *auth.Session,
+	id uint64,
+	ok bool,
+) {
 	b := getParam(r, "board")
 	if !assertBoard(w, b) {
-		return 0, false
+		return
 	}
-	ss, _ := getSession(r, b)
+	ss, _ = getSession(r, b)
 	if !assertNotModOnly(w, b, ss) {
-		return 0, false
+		return
 	}
 	if !assertNotBanned(w, r, b) {
-		return 0, false
+		return
 	}
 
 	id, err := strconv.ParseUint(getParam(r, "thread"), 10, 64)
 	if err != nil {
 		serve404(w)
-		return 0, false
+		return
 	}
 
 	valid, err := db.ValidateOP(id, b)
 	if err != nil {
 		text500(w, r, err)
-		return 0, false
+		return
 	}
 	if !valid {
 		serve404(w)
-		return 0, false
+		return
 	}
 
-	return id, true
+	ok = true
+	return
 }
 
 // Serves board page JSON
