@@ -74,6 +74,7 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
           />
           <input
             class="account-form-name"
+            type="text"
             placeholder={_("Name")}
             value={name}
             onChange={this.handleNameChange}
