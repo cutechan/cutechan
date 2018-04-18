@@ -10,8 +10,9 @@ import { reverse, rotateRecent, setter } from "../util";
 
 const smileList = Array.from(smiles).sort();
 const thingSmiles = new Set(`
-  chips coffee cola corvalol goose gun gun2 heart heart2 heart3 heart4
-  karandash knife nogoose ovsyanka popcorn prev ramyun rope soju pringles
+  heart heart2 heart3 heart4 cigarette soju wine coffee 
+  cola chips goose nogoose gun gun2 karandash knife 
+  ovsyanka ramyun
 `.trim().split(/\s+/));
 const memeSmiles = new Set(`
   beast cool frukt heechul hyunsuk jyp jyp2 kwangsoo lookup priunil sooman
