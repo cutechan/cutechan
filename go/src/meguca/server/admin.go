@@ -82,7 +82,7 @@ func assertCanPerform(
 	board string,
 	level auth.ModerationLevel,
 ) (ss *auth.Session, can bool) {
-	if !assertServeBoardAPI(w, r, board) {
+	if !assertServeBoardAPI(w, board) {
 		return
 	}
 	ss, ok := assertSession(w, r, board)
@@ -185,7 +185,7 @@ func boardConfData(w http.ResponseWriter, r *http.Request) (
 	conf = config.GetBoardConfigs(board).BoardConfigs
 	conf.ID = board
 	if conf.ID == "" {
-		serve404(w, r)
+		serve404(w)
 		return conf, false
 	}
 
@@ -564,11 +564,11 @@ func setThreadSticky(w http.ResponseWriter, r *http.Request) {
 // Render list of bans on a board with unban links for authenticated staff
 func banList(w http.ResponseWriter, r *http.Request) {
 	board := getParam(r, "board")
-	if !assertServeBoard(w, r, board) {
+	if !assertServeBoard(w, board) {
 		return
 	}
 	ss, _ := getSession(r, board)
-	if !assertNotModOnly(w, r, board, ss) {
+	if !assertNotModOnly(w, board, ss) {
 		return
 	}
 
@@ -631,11 +631,11 @@ func unban(w http.ResponseWriter, r *http.Request) {
 // Serve moderation log for a specific board
 func modLog(w http.ResponseWriter, r *http.Request) {
 	board := getParam(r, "board")
-	if !assertServeBoard(w, r, board) {
+	if !assertServeBoard(w, board) {
 		return
 	}
 	ss, _ := getSession(r, board)
-	if !assertNotModOnly(w, r, board, ss) {
+	if !assertNotModOnly(w, board, ss) {
 		return
 	}
 

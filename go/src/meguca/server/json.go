@@ -104,12 +104,12 @@ func servePost(w http.ResponseWriter, r *http.Request) {
 	switch post, err := db.GetPost(id); err {
 	case nil:
 		ss, _ := getSession(r, post.Board)
-		if !assertNotModOnly(w, r, post.Board, ss) {
+		if !assertNotModOnly(w, post.Board, ss) {
 			return
 		}
 		serveJSON(w, r, post)
 	case sql.ErrNoRows:
-		serve404(w, r)
+		serve404(w)
 	default:
 		respondToJSONError(w, r, err)
 	}
@@ -117,7 +117,7 @@ func servePost(w http.ResponseWriter, r *http.Request) {
 
 func respondToJSONError(w http.ResponseWriter, r *http.Request, err error) {
 	if err == sql.ErrNoRows {
-		serve404(w, r)
+		serve404(w)
 	} else {
 		text500(w, r, err)
 	}
@@ -127,11 +127,11 @@ func respondToJSONError(w http.ResponseWriter, r *http.Request, err error) {
 // occurred and the calling function should return, ok = false.
 func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 	b := getParam(r, "board")
-	if !assertBoard(w, r, b) {
+	if !assertBoard(w, b) {
 		return 0, false
 	}
 	ss, _ := getSession(r, b)
-	if !assertNotModOnly(w, r, b, ss) {
+	if !assertNotModOnly(w, b, ss) {
 		return 0, false
 	}
 	if !assertNotBanned(w, r, b) {
@@ -140,7 +140,7 @@ func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 
 	id, err := strconv.ParseUint(getParam(r, "thread"), 10, 64)
 	if err != nil {
-		serve404(w, r)
+		serve404(w)
 		return 0, false
 	}
 
@@ -150,7 +150,7 @@ func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 		return 0, false
 	}
 	if !valid {
-		serve404(w, r)
+		serve404(w)
 		return 0, false
 	}
 
@@ -160,11 +160,11 @@ func validateThread(w http.ResponseWriter, r *http.Request) (uint64, bool) {
 // Serves board page JSON
 func boardJSON(w http.ResponseWriter, r *http.Request, catalog bool) {
 	b := getParam(r, "board")
-	if !assertServeBoard(w, r, b) {
+	if !assertServeBoard(w, b) {
 		return
 	}
 	ss, _ := getSession(r, b)
-	if !assertNotModOnly(w, r, b, ss) {
+	if !assertNotModOnly(w, b, ss) {
 		return
 	}
 	if !assertNotBanned(w, r, b) {
@@ -176,7 +176,7 @@ func boardJSON(w http.ResponseWriter, r *http.Request, catalog bool) {
 	case nil:
 		writeJSON(w, r, formatEtag(ctr, "", auth.NullPositions), data)
 	case errPageOverflow:
-		serve404(w, r)
+		serve404(w)
 	default:
 		text500(w, r, err)
 	}

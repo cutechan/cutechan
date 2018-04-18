@@ -44,20 +44,25 @@ func serveLanding(w http.ResponseWriter, r *http.Request) {
 	serveHTML(w, r, "", html, nil)
 }
 
-func serve404(w http.ResponseWriter, r *http.Request) {
+func serve404(w http.ResponseWriter) {
 	html := templates.NotFound()
 	w.Header().Set("Content-Type", "text/html")
 	w.WriteHeader(404)
 	io.WriteString(w, html)
 }
 
+// Helper in case if another signature required.
+func serve404wr(w http.ResponseWriter, r *http.Request) {
+	serve404(w)
+}
+
 // Serves board HTML to regular or noscript clients
 func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
-	if !assertServeBoard(w, r, b) {
+	if !assertServeBoard(w, b) {
 		return
 	}
 	ss, _ := getSession(r, b)
-	if !assertNotModOnly(w, r, b, ss) {
+	if !assertNotModOnly(w, b, ss) {
 		return
 	}
 	if !assertNotBanned(w, r, b) {
@@ -68,7 +73,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 	switch err {
 	case nil:
 	case errPageOverflow:
-		serve404(w, r)
+		serve404(w)
 		return
 	default:
 		text500(w, r, err)
@@ -226,7 +231,7 @@ func crossRedirect(w http.ResponseWriter, r *http.Request) {
 	idStr := getParam(r, "id")
 	id, err := strconv.ParseUint(idStr, 10, 64)
 	if err != nil {
-		serve404(w, r)
+		serve404(w)
 		return
 	}
 
@@ -235,14 +240,14 @@ func crossRedirect(w http.ResponseWriter, r *http.Request) {
 	case nil:
 		// Don't allow cross-redirects to mod-only boards.
 		// TODO(Kagami): We shouldn't make links to mod-only clickable?
-		if !assertNotModOnly(w, r, board, nil) {
+		if !assertNotModOnly(w, board, nil) {
 			return
 		}
 		url := r.URL
 		url.Path = fmt.Sprintf("/%s/%d", board, op)
 		http.Redirect(w, r, url.String(), 301)
 	case sql.ErrNoRows:
-		serve404(w, r)
+		serve404(w)
 	default:
 		text500(w, r, err)
 	}

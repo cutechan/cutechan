@@ -165,15 +165,15 @@ func assertNotBannedAPI(w http.ResponseWriter, r *http.Request, board string) (i
 	return
 }
 
-func assertBoard(w http.ResponseWriter, r *http.Request, board string) bool {
+func assertBoard(w http.ResponseWriter, board string) bool {
 	if !config.IsBoard(board) {
-		serve404(w, r)
+		serve404(w)
 		return false
 	}
 	return true
 }
 
-func assertBoardAPI(w http.ResponseWriter, r *http.Request, board string) bool {
+func assertBoardAPI(w http.ResponseWriter, board string) bool {
 	if !config.IsBoard(board) {
 		text400(w, errInvalidBoard)
 		return false
@@ -181,15 +181,15 @@ func assertBoardAPI(w http.ResponseWriter, r *http.Request, board string) bool {
 	return true
 }
 
-func assertServeBoard(w http.ResponseWriter, r *http.Request, board string) bool {
+func assertServeBoard(w http.ResponseWriter, board string) bool {
 	if !config.IsServeBoard(board) {
-		serve404(w, r)
+		serve404(w)
 		return false
 	}
 	return true
 }
 
-func assertServeBoardAPI(w http.ResponseWriter, r *http.Request, board string) bool {
+func assertServeBoardAPI(w http.ResponseWriter, board string) bool {
 	if !config.IsServeBoard(board) {
 		text400(w, errInvalidBoard)
 		return false
@@ -208,7 +208,7 @@ func checkReadOnly(board string, ss *auth.Session) bool {
 }
 
 // Eunsure only mods and above can post at read-only boards.
-func assertNotReadOnlyAPI(w http.ResponseWriter, r *http.Request, board string, ss *auth.Session) bool {
+func assertNotReadOnlyAPI(w http.ResponseWriter, board string, ss *auth.Session) bool {
 	if !checkReadOnly(board, ss) {
 		text403(w, errReadOnly)
 		return false
@@ -227,16 +227,16 @@ func checkModOnly(board string, ss *auth.Session) bool {
 }
 
 // Eunsure only mods and above can view mod-only boards.
-func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string, ss *auth.Session) bool {
+func assertNotModOnly(w http.ResponseWriter, board string, ss *auth.Session) bool {
 	if !checkModOnly(board, ss) {
-		serve404(w, r)
+		serve404(w)
 		return false
 	}
 	return true
 }
 
 // Eunsure only mods and above can post at mod-only boards.
-func assertNotModOnlyAPI(w http.ResponseWriter, r *http.Request, board string, ss *auth.Session) bool {
+func assertNotModOnlyAPI(w http.ResponseWriter, board string, ss *auth.Session) bool {
 	if !checkModOnly(board, ss) {
 		text400(w, errInvalidBoard)
 		return false
@@ -252,9 +252,9 @@ func checkPowerUser(ss *auth.Session) bool {
 }
 
 // Eunsure only power users can pass.
-func assertPowerUserAPI(w http.ResponseWriter, r *http.Request, ss *auth.Session) bool {
+func assertPowerUserAPI(w http.ResponseWriter, ss *auth.Session) bool {
 	if !checkPowerUser(ss) {
-		serveErrorJSON(w, r, aerrPowerUserOnly)
+		text403(w, aerrPowerUserOnly)
 		return false
 	}
 	return true

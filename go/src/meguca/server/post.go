@@ -110,14 +110,14 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 
 	// Board and user validation.
 	board := f.Get("board")
-	if !assertBoardAPI(w, r, board) {
+	if !assertBoardAPI(w, board) {
 		return
 	}
 	ss, _ := getSession(r, board)
-	if !assertNotModOnlyAPI(w, r, board, ss) {
+	if !assertNotModOnlyAPI(w, board, ss) {
 		return
 	}
-	if !assertNotReadOnlyAPI(w, r, board, ss) {
+	if !assertNotReadOnlyAPI(w, board, ss) {
 		return
 	}
 	var ip string
