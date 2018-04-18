@@ -10,7 +10,7 @@ import (
 	"meguca/common"
 )
 
-// Make sure we always return valid JSON to template.
+// Make sure we always put valid JSON to HTML template.
 func tryMarshal(v interface{}) []byte {
 	data, err := json.Marshal(v)
 	if err != nil {
@@ -28,6 +28,9 @@ func posClasses(pos auth.Positions) string {
 	}
 	for level := pos.AnyBoard; level >= auth.Moderator; level-- {
 		classes = append(classes, "anypos_"+level.String())
+	}
+	if pos.AnyBoard > auth.NotLoggedIn {
+		classes = append(classes, "user")
 	}
 	if auth.IsPowerUser(pos) {
 		classes = append(classes, "user_power")

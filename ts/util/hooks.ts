@@ -17,6 +17,7 @@ export const enum HOOKS {
   italicMarkup,
   spoilerMarkup,
   focusSearch,
+  openIgnoreModal,
 }
 
 const hooks = new EventEmitter();

@@ -1,5 +1,5 @@
 /**
- * Account modal handling.
+ * Account handling.
  *
  * @module cutechan/account
  */
@@ -11,7 +11,8 @@ import API from "../api";
 import { TabbedModal } from "../base";
 import { _ } from "../lang";
 import { ModerationLevel, position } from "../mod";
-import { Constructable } from "../util";
+import { Constructable, hook, HOOKS, on, trigger, unhook } from "../util";
+import { MODAL_CONTAINER_SEL, TRIGGER_IGNORE_USER_SEL } from "../vars";
 import {
   BoardConfigForm, BoardCreationForm, BoardDeletionForm, StaffAssignmentForm,
 } from "./board-form";
@@ -97,6 +98,69 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
   }
 }
 
+interface IgnoreState {
+  target?: HTMLElement;
+  shown: boolean;
+  left: number;
+  top: number;
+}
+
+class IgnoreModal extends Component<{}, IgnoreState> {
+  public state: IgnoreState = {
+    target: null,
+    shown: false,
+    left: 0,
+    top: 0,
+  };
+  public componentDidMount() {
+    hook(HOOKS.openIgnoreModal, this.showModal);
+    document.addEventListener("click", this.handleGlobalClick);
+  }
+  public componentWillUnmount() {
+    unhook(HOOKS.openIgnoreModal, this.showModal);
+    document.removeEventListener("click", this.handleGlobalClick);
+  }
+  public render({}, { shown, left, top }: IgnoreState) {
+    if (!shown) return null;
+    const style = {left, top};
+    return (
+      <div
+        class="ignore-modal"
+        style={style}
+        onClick={this.handleModalClick}
+      >
+        <div class="ignore-modal-item">
+          <i class="control fa fa-check-circle" />
+          <span> {_("To whitelist")}</span>
+        </div>
+        <div class="ignore-modal-item">
+          <i class="control fa fa-times-circle" />
+          <span> {_("To blacklist")}</span>
+        </div>
+      </div>
+    );
+  }
+  private showModal = (target: HTMLElement) => {
+    if (target === this.state.target) {
+      this.setState({target: null, shown: false});
+      return;
+    }
+    let { left, top } = target.getBoundingClientRect();
+    left += window.pageXOffset;
+    top += window.pageYOffset + 20;
+    this.setState({left, top, target, shown: true});
+  }
+  private handleModalClick = (e: Event) => {
+    e.stopPropagation();
+  }
+  private handleGlobalClick = (e: MouseEvent) => {
+    if (e.target === this.state.target) return;
+    if (e.button === 0 && this.state.shown) {
+      this.setState({target: null, shown: false});
+    }
+  }
+}
+
 // Terminate the user session(s) server-side and reset the panel
 async function logout(url: string) {
   const res = await fetch(url, {
@@ -155,5 +219,14 @@ export function init() {
     new LoginForm("login-form", "login");
     const registrationForm = new LoginForm("registration-form", "register");
     validatePasswordMatch(registrationForm.el, "password", "repeat");
+  }
+  if (position > ModerationLevel.notLoggedIn) {
+    const container = document.querySelector(MODAL_CONTAINER_SEL);
+    if (container) {
+      render(<IgnoreModal />, container);
+      on(document, "click", (e) => {
+        trigger(HOOKS.openIgnoreModal, e.target);
+      }, {selector: TRIGGER_IGNORE_USER_SEL});
+    }
   }
 }

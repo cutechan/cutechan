@@ -624,18 +624,12 @@ html, body {
 // MODALS
 //////////////////////////////
 
-.modal-container {
+.modal {
+  display: none;
   position: fixed;
   top: @headerHeight;
   right: 0;
   z-index: 500;
-
-  .modal {
-    display: none;
-  }
-}
-
-.modal {
   text-align: left;
   min-width: 250px;
   max-height: 90vh;
@@ -676,15 +670,36 @@ html, body {
   }
 }
 
-//////////////////////////////
-// TABS
-//////////////////////////////
-
-.tabmodal_empty {
+.tab-modal_empty {
   .tab-butts, .tab-cont {
     display: none;
   }
 }
+
+.ignore-modal {
+  box-sizing: border-box;
+  position: absolute;
+  width: 200px;
+  background: @postBG;
+  box-shadow: @postShadow;
+}
+
+.ignore-modal-item {
+  box-sizing: border-box;
+  padding: 4px 4px;
+  border-bottom: @separatorBorder;
+  cursor: pointer;
+  &:hover {
+    background: @headerBGHover;
+  }
+  &:last-child {
+    border-bottom: none;
+  }
+}
+
+//////////////////////////////
+// TABS
+//////////////////////////////
 
 .tab-butts {
   text-align: center;
@@ -1077,12 +1092,18 @@ header {
 .post-nick {
   color: #999;
   cursor: default;
-  user-select: none;
+}
+
+html.user {
+  .post-nick {
+    cursor: pointer;
+  }
 }
 
 .post-badge {
   font-weight: bold;
   color: @admin;
+  cursor: default;
 }
 
 .post-time {

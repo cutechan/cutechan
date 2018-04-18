@@ -7,6 +7,7 @@
 export const ALERTS_CONTAINER_SEL = ".alerts-container";
 export const HOVER_CONTAINER_SEL = ".hover-container";
 export const POPUP_CONTAINER_SEL = ".popup-container";
+export const MODAL_CONTAINER_SEL = ".modal-container";
 export const REPLY_CONTAINER_SEL = ".reply-container";
 export const PROFILES_CONTAINER_SEL = ".header-profiles";
 export const BOARD_SEARCH_INPUT_SEL = ".board-search-input";
@@ -28,6 +29,7 @@ export const TRIGGER_OPEN_REPLY_SEL = ".trigger-open-reply";
 export const TRIGGER_QUOTE_POST_SEL = ".trigger-quote-post";
 export const TRIGGER_DELETE_POST_SEL = ".trigger-delete-post";
 export const TRIGGER_BAN_BY_POST_SEL = ".trigger-ban-by-post";
+export const TRIGGER_IGNORE_USER_SEL = ".trigger-ignore-user";
 export const TRIGGER_MEDIA_HOVER_SEL = ".trigger-media-hover";
 export const TRIGGER_MEDIA_POPUP_SEL = ".trigger-media-popup";
 export const TRIGGER_PAGE_NAV_TOP_SEL = ".trigger-page-nav-top";
