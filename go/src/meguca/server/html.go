@@ -144,8 +144,8 @@ func staticTemplate(
 
 // Serve a form for selecting one of several boards owned by the user
 func ownedBoardSelection(w http.ResponseWriter, r *http.Request) {
-	ss, ok := assertSession(w, r, "")
-	if !ok {
+	ss := assertSession(w, r, "")
+	if ss == nil {
 		return
 	}
 

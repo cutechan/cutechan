@@ -23,7 +23,7 @@ type Session struct {
 
 type AccountSettings struct {
 	Name     string `json:"name,omitempty"`
-	ShowName bool   `json:"show_name,omitempty"`
+	ShowName bool   `json:"showName,omitempty"`
 }
 
 func (ss *Session) GetPositions() Positions {

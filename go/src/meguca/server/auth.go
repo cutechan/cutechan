@@ -139,8 +139,8 @@ func commitLogout(
 	r *http.Request,
 	fn func(*auth.Session) error,
 ) {
-	ss, ok := assertSession(w, r, "")
-	if !ok {
+	ss := assertSession(w, r, "")
+	if ss == nil {
 		return
 	}
 	if err := fn(ss); err != nil {
@@ -180,8 +180,8 @@ func changePassword(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	ss, ok := assertSession(w, r, "")
-	if !ok || !checkPasswordAndCaptcha(w, r, msg.New, msg.Captcha) {
+	ss := assertSession(w, r, "")
+	if ss == nil || !checkPasswordAndCaptcha(w, r, msg.New, msg.Captcha) {
 		return
 	}
 
@@ -257,18 +257,23 @@ func getSession(r *http.Request, board string) (*auth.Session, error) {
 }
 
 // Assert the user login session ID is valid.
-func assertSession(w http.ResponseWriter, r *http.Request, b string) (ss *auth.Session, ok bool) {
+func assertSession(w http.ResponseWriter, r *http.Request, b string) *auth.Session {
 	ss, err := getSession(r, b)
 	switch err {
 	case nil:
-		ok = true
+		// Do nothing.
 	case common.ErrInvalidCreds:
 		text403(w, err)
 	default:
 		text500(w, r, err)
 	}
-	return
+	return ss
 }
 
 func setAccountSettings(w http.ResponseWriter, r *http.Request) {
+	ss := assertSession(w, r, "")
+	if ss == nil {
+		return
+	}
+	serveEmptyJSON(w, r)
 }

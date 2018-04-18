@@ -36,7 +36,6 @@ func serveErrorJSON(w http.ResponseWriter, r *http.Request, err error) {
 }
 
 // API helper. Server should always return valid JSON to the clients.
-// TODO(Kagami): Remove.
 func serveEmptyJSON(w http.ResponseWriter, r *http.Request) {
 	res := map[string]int{}
 	serveJSON(w, r, res)

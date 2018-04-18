@@ -85,8 +85,8 @@ func assertCanPerform(
 	if !assertServeBoardAPI(w, board) {
 		return
 	}
-	ss, ok := assertSession(w, r, board)
-	if !ok {
+	ss = assertSession(w, r, board)
+	if ss == nil {
 		return
 	}
 	can = canPerform(ss, level)
@@ -158,8 +158,8 @@ func servePrivateBoardConfigs(w http.ResponseWriter, r *http.Request) {
 }
 
 func isAdmin(w http.ResponseWriter, r *http.Request) bool {
-	ss, ok := assertSession(w, r, "")
-	if !ok {
+	ss := assertSession(w, r, "")
+	if ss == nil {
 		return false
 	}
 	if ss.UserID != "admin" {
@@ -198,8 +198,8 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	ss, ok := assertSession(w, r, "")
-	if !ok {
+	ss := assertSession(w, r, "")
+	if ss == nil {
 		return
 	}
 
@@ -384,9 +384,9 @@ func ban(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) {
 		return
 	}
-	ss, ok := assertSession(w, r, "")
+	ss := assertSession(w, r, "")
 	switch {
-	case !ok:
+	case ss == nil:
 		return
 	case msg.Global && ss.UserID != "admin":
 		text403(w, errAccessDenied)
