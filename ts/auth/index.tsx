@@ -208,11 +208,11 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
       return;
     }
     const post = getModel(target);
-    if (post.name === session.userID) return;
+    if (post.userID === session.userID) return;
     let { left, top } = target.getBoundingClientRect();
     left += window.pageXOffset;
     top += window.pageYOffset + 20;
-    this.setState({left, top, target, userID: post.name, shown: true});
+    this.setState({left, top, target, userID: post.userID, shown: true});
   }
   private hide = () => {
     this.setState({target: null, shown: false});

@@ -254,8 +254,8 @@ func getPostCreationArgs(p Post) []interface{} {
 	if p.Auth != "" {
 		auth = &p.Auth
 	}
-	if p.Name != "" {
-		name = &p.Name
+	if p.UserID != "" {
+		name = &p.UserID
 	}
 	if p.IP != "" {
 		ip = &p.IP

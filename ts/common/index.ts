@@ -18,8 +18,8 @@ export interface PostData {
   id: number;
   time: number;
   auth?: string;
-  name?: string;
-  nick?: string;
+  userID?: string;
+  userName?: string;
   body: string;
   links?: PostLink[];
   commands?: Command[];

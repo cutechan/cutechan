@@ -42,7 +42,7 @@ export function makePostContext(
     Subject: p.subject,
     Badge: !!p.auth,
     Auth: ln.Common.Posts[p.auth],
-    Nick: p.nick || p.name,
+    Name: p.userName,
     HasFiles: !!p.files,
     post: p,
     backlinks: bls,

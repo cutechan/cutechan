@@ -1,6 +1,6 @@
 SELECT
   t.sticky, t.board, t.postCtr, t.imageCtr, t.replyTime, t.bumpTime, t.subject,
-  t.id, p.time, p.auth, p.name, a.name, p.body, p.links, p.commands,
+  t.id, p.time, p.auth, a.id, a.name, p.body, p.links, p.commands,
   i.*
 FROM threads t
 JOIN boards b ON b.id = t.board

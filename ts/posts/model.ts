@@ -27,8 +27,8 @@ export class Post extends Model implements PostData {
 
   public time: number;
   public auth?: string;
-  public name?: string;
-  public nick?: string;
+  public userID?: string;
+  public userName?: string;
   public body: string;
   public links?: PostLink[];
   public files?: ImageData[];
