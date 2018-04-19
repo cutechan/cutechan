@@ -36,7 +36,7 @@ type passwordChangeRequest struct {
 func register(w http.ResponseWriter, r *http.Request) {
 	var req loginCreds
 	isValid := decodeJSON(w, r, &req) &&
-		trimLoginID(&req.ID) &&
+		trimUserID(&req.ID) &&
 		validateUserID(w, req.ID) &&
 		checkPasswordAndCaptcha(w, r, req.Password, req.Captcha)
 	if !isValid {
@@ -105,7 +105,7 @@ func login(w http.ResponseWriter, r *http.Request) {
 	switch {
 	case !decodeJSON(w, r, &req):
 		return
-	case !trimLoginID(&req.ID):
+	case !trimUserID(&req.ID):
 		return
 	case !auth.AuthenticateCaptcha(req.Captcha):
 		text403(w, errInvalidCaptcha)
@@ -232,8 +232,8 @@ func checkPasswordAndCaptcha(
 	return true
 }
 
-// Trim spaces from loginID. Chainable with other authenticators.
-func trimLoginID(id *string) bool {
+// Trim spaces from userID. Chainable with other authenticators.
+func trimUserID(id *string) bool {
 	*id = strings.TrimSpace(*id)
 	return true
 }
@@ -281,6 +281,7 @@ func setAccountSettings(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &as) {
 		return
 	}
+	trimUserID(&as.Name)
 	if !validateUserID(w, as.Name) {
 		return
 	}
