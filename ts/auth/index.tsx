@@ -153,13 +153,13 @@ interface IgnoreState {
   shown: boolean;
   left: number;
   top: number;
-  userId: string;
+  userID: string;
 }
 
 class IgnoreModalBase extends Component<{}, IgnoreState> {
   public state: IgnoreState = {
     target: null,
-    userId: "",
+    userID: "",
     shown: false,
     left: 0,
     top: 0,
@@ -170,7 +170,7 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
   public componentWillUnmount() {
     unhook(HOOKS.openIgnoreModal, this.show);
   }
-  public render({}, { userId, shown, left, top }: IgnoreState) {
+  public render({}, { userID, shown, left, top }: IgnoreState) {
     if (!shown) return null;
     const style = {left, top};
     return (
@@ -180,7 +180,7 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
         onClick={this.handleModalClick}
       >
         <div class="ignore-modal-info">
-          {userId}
+          {userID}
         </div>
         <div class="ignore-modal-item" onClick={this.addToWhitelist}>
           <i class="control fa fa-check-circle" />
@@ -211,7 +211,7 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
     let { left, top } = target.getBoundingClientRect();
     left += window.pageXOffset;
     top += window.pageYOffset + 20;
-    this.setState({left, top, target, userId: post.name, shown: true});
+    this.setState({left, top, target, userID: post.name, shown: true});
   }
   private hide = () => {
     this.setState({target: null, shown: false});
@@ -220,13 +220,13 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
     e.stopPropagation();
   }
   private addToWhitelist = () => {
-    const { userId } = this.state;
+    const { userID } = this.state;
     const whitelist = (account.whitelist || []).slice();
-    if (whitelist.includes(userId)) {
+    if (whitelist.includes(userID)) {
       this.hide();
       return;
     }
-    whitelist.push(userId);
+    whitelist.push(userID);
     const settings = {...account, whitelist};
     API.account.setSettings(settings)
       .then(() => {
@@ -235,13 +235,13 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
       }, showSendAlert);
   }
   private addToBlacklist = () => {
-    const { userId } = this.state;
+    const { userID } = this.state;
     const blacklist = (account.blacklist || []).slice();
-    if (blacklist.includes(userId)) {
+    if (blacklist.includes(userID)) {
       this.hide();
       return;
     }
-    blacklist.push(userId);
+    blacklist.push(userID);
     const settings = {...account, blacklist};
     API.account.setSettings(settings)
       .then(() => {
