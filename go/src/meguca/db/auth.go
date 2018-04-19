@@ -43,7 +43,6 @@ func GetSession(board, token string) (ss *auth.Session, err error) {
 	settings.Name = userName
 	ss = &auth.Session{
 		UserID:    userID,
-		Token:     token,
 		Positions: pos,
 		Settings:  settings,
 	}

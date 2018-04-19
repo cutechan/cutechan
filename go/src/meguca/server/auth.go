@@ -137,13 +137,13 @@ func login(w http.ResponseWriter, r *http.Request) {
 func commitLogout(
 	w http.ResponseWriter,
 	r *http.Request,
-	fn func(*auth.Session) error,
+	fn func(*http.Request, *auth.Session) error,
 ) {
 	ss := assertSession(w, r, "")
 	if ss == nil {
 		return
 	}
-	if err := fn(ss); err != nil {
+	if err := fn(r, ss); err != nil {
 		text500(w, r, err)
 		return
 	}
@@ -162,14 +162,18 @@ func commitLogout(
 
 // Log out user from session and remove the session key from the database
 func logout(w http.ResponseWriter, r *http.Request) {
-	commitLogout(w, r, func(ss *auth.Session) error {
-		return db.LogOut(ss.UserID, ss.Token)
+	commitLogout(w, r, func(r *http.Request, ss *auth.Session) error {
+		token, err := getLoginToken(r)
+		if err != nil {
+			return err
+		}
+		return db.LogOut(ss.UserID, token)
 	})
 }
 
 // Log out all sessions of the specific user
 func logoutAll(w http.ResponseWriter, r *http.Request) {
-	commitLogout(w, r, func(ss *auth.Session) error {
+	commitLogout(w, r, func(r *http.Request, ss *auth.Session) error {
 		return db.LogOutAll(ss.UserID)
 	})
 }
@@ -238,19 +242,28 @@ func trimUserID(id *string) bool {
 	return true
 }
 
-// Get request session data if any.
-func getSession(r *http.Request, board string) (*auth.Session, error) {
+func getLoginToken(r *http.Request) (string, error) {
 	c, err := r.Cookie("session")
 	if err != nil {
-		return nil, common.ErrInvalidCreds
+		return "", common.ErrInvalidCreds
 	}
 	token := c.Value
 	if len(token) != common.LenSession {
-		return nil, common.ErrInvalidCreds
+		return "", common.ErrInvalidCreds
+	}
+	return token, nil
+}
+
+// Get request session data if any.
+func getSession(r *http.Request, board string) (ss *auth.Session, err error) {
+	token, err := getLoginToken(r)
+	if err != nil {
+		return
 	}
 	// Just in case, to avoid search for invalid board in DB.
 	if board != "" && !config.IsServeBoard(board) {
-		return nil, errInvalidBoard
+		err = errInvalidBoard
+		return
 	}
 	// FIXME(Kagami): This might be affected to timing attack.
 	return db.GetSession(board, token)

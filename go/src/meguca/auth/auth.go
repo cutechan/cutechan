@@ -34,7 +34,6 @@ var (
 // Contains user data and settings of the request's session.
 type Session struct {
 	UserID    string          `json:"userID"`
-	Token     string          `json:"-"`
 	Positions Positions       `json:"positions"`
 	Settings  AccountSettings `json:"settings"`
 }
