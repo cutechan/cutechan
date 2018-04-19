@@ -855,13 +855,25 @@ input[type=number], input[type=text], input[type=password], textarea {
 // ACCOUNT FORM
 //////////////////////////////
 
-.account-form-header {
+.account-form-section {
+  margin-bottom: 15px;
+}
+
+.account-form-section_row {
+  display: flex;
+  .account-form-section {
+    flex: 1;
+    justify-content: space-between;
+  }
+}
+
+.account-form-sheader {
   display: block;
   font-weight: bold;
   color: #000;
 }
 
-.account-form-section {
+.account-form-sbody {
   display: flex;
 }
 
@@ -874,10 +886,22 @@ input[type=number], input[type=text], input[type=password], textarea {
   flex: 1;
 }
 
+.account-form-ignoremode {
+  flex: 1;
+}
+
+.account-form-ignorelist {
+  box-sizing: border-box;
+  max-height: 250px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  overflow-y: auto;
+}
+
 .account-save-button {
   display: block;
   width: 100%;
-  margin-top: 20px;
 }
 
 .account-save-icon {

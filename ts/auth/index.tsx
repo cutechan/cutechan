@@ -94,26 +94,70 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
     this.state = {saving: false, ...account};
   }
   public render({}, { name, showName, saving }: IdentityState) {
+    const whitelist = account.whitelist || [];
+    const blacklist = account.blacklist || [];
     return (
       <div class="account-identity-tab-inner">
-        <h3 class="account-form-header">
-          {_("Show name")}
-        </h3>
-        <div class="account-form-section">
-          <input
-            class="account-form-showname option-checkbox"
-            type="checkbox"
-            checked={showName}
-            onChange={this.handleShowNameToggle}
-          />
-          <input
-            class="account-form-name"
-            type="text"
-            placeholder={_("Name")}
-            value={name}
-            onChange={this.handleNameChange}
-          />
-        </div>
+        <article class="account-form-section">
+          <h3 class="account-form-sheader">
+            {_("Show name")}
+          </h3>
+          <section class="account-form-sbody">
+            <input
+              class="account-form-showname option-checkbox"
+              type="checkbox"
+              checked={showName}
+              onChange={this.handleShowNameToggle}
+            />
+            <input
+              class="account-form-name"
+              type="text"
+              placeholder={_("Name")}
+              value={name}
+              onChange={this.handleNameChange}
+            />
+          </section>
+        </article>
+        <article class="account-form-section">
+          <h3 class="account-form-sheader">
+            {_("Ignore mode")}
+          </h3>
+          <section class="account-form-sbody">
+            <select
+              class="account-form-ignoremode option-select"
+            >
+              <option>{_("No ignore")}</option>
+              <option>{_("Hide blacklisted")}</option>
+              <option>{_("Show whitelisted")}</option>
+            </select>
+          </section>
+        </article>
+        <article class="account-form-section account-form-section_row">
+          <article class="account-form-section">
+            <h3 class="account-form-sheader">
+              {_("Whitelist")}
+            </h3>
+            <ul class="account-form-sbody account-form-ignorelist">
+              {whitelist.map((ignoredID) =>
+                <li class="accont-form-ignoreitem">
+                  {ignoredID}
+                </li>,
+              )}
+            </ul>
+          </article>
+          <article class="account-form-section">
+            <h3 class="account-form-sheader">
+              {_("Blacklist")}
+            </h3>
+            <ul class="account-form-sbody account-form-ignorelist">
+              {blacklist.map((ignoredID) =>
+                <li class="accont-form-ignoreitem">
+                  {ignoredID}
+                </li>,
+              )}
+            </ul>
+          </article>
+        </article>
         <button class="button account-save-button" onClick={this.handleSave}>
           <i class={cx("account-save-icon fa", {
             "fa-spinner fa-pulse fa-fw": saving,
