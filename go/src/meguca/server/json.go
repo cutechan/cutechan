@@ -4,22 +4,40 @@ import (
 	"database/sql"
 	"encoding/json"
 	"fmt"
+	"io"
+	"net/http"
+	"strconv"
+
 	"meguca/auth"
 	"meguca/cache"
 	"meguca/db"
 	"meguca/util"
-	"net/http"
-	"strconv"
 )
 
-// Request to spoiler an already allocated image that the sender has created
-type spoilerRequest struct {
-	ID       uint64
-	Password string
+const (
+	// Body size limit for POST request JSON. Should never exceed 32 KB.
+	// Consider anything bigger an attack.
+	jsonLimit = 1 << 15
+)
+
+func readJSON(r *http.Request, dest interface{}) (err error) {
+	decoder := json.NewDecoder(io.LimitReader(r.Body, jsonLimit))
+	err = decoder.Decode(dest)
+	if err != nil {
+		err = aerrParseJSON
+	}
+	return
+}
+
+func decodeJSON(w http.ResponseWriter, r *http.Request, dest interface{}) bool {
+	if err := readJSON(r, dest); err != nil {
+		http.Error(w, fmt.Sprintf("400 %s", err), 400)
+		return false
+	}
+	return true
 }
 
 // API helper. Returns standardly shaped error message.
-// TODO(Kagami): Consistent naming.
 func serveErrorJSON(w http.ResponseWriter, r *http.Request, err error) {
 	// This function expects ApiError so assume any other values as bug.
 	aerr := aerrInternal
@@ -37,12 +55,10 @@ func serveErrorJSON(w http.ResponseWriter, r *http.Request, err error) {
 
 // API helper. Server should always return valid JSON to the clients.
 func serveEmptyJSON(w http.ResponseWriter, r *http.Request) {
-	res := map[string]int{}
-	serveJSON(w, r, res)
+	serveJSON(w, r, "")
 }
 
 // Marshal input data to JSON an write to client.
-// TODO(Kagami): Consistent naming.
 func serveJSON(w http.ResponseWriter, r *http.Request, data interface{}) {
 	buf, err := json.Marshal(data)
 	if err != nil {
@@ -55,7 +71,6 @@ func serveJSON(w http.ResponseWriter, r *http.Request, data interface{}) {
 // Write data as JSON to the client. If etag is "" generate a strong etag by
 // hashing the resulting buffer and perform a check against the "If-None-Match"
 // header. If etag is set, assume this check has already been done.
-// TODO(Kagami): Consistent naming.
 func writeJSON(
 	w http.ResponseWriter,
 	r *http.Request,

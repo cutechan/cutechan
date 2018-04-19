@@ -62,10 +62,13 @@ func register(w http.ResponseWriter, r *http.Request) {
 	commitLogin(w, r, req.ID)
 }
 
-// Separate function for easier chaining of validations
+func checkUserID(id string) bool {
+	return id != "" && len(id) <= common.MaxLenUserID && userIDRe.MatchString(id)
+}
+
 func validateUserID(w http.ResponseWriter, id string) bool {
-	if id == "" || len(id) > common.MaxLenUserID || !userIDRe.MatchString(id) {
-		text400(w, errInvalidUserID)
+	if !checkUserID(id) {
+		text400(w, aerrInvalidUserID)
 		return false
 	}
 	return true
@@ -283,49 +286,62 @@ func assertSession(w http.ResponseWriter, r *http.Request, b string) *auth.Sessi
 	return ss
 }
 
-// FIXME(Kagami): Don't mix text/plain and application/json errors.
-func setAccountSettings(w http.ResponseWriter, r *http.Request) {
+func serverSetAccountSettings(w http.ResponseWriter, r *http.Request) {
 	ss := assertSession(w, r, "")
 	if ss == nil {
 		return
 	}
+	err := setAccountSettings(r, ss)
+	if err != nil {
+		serveErrorJSON(w, r, err)
+		return
+	}
+	serveEmptyJSON(w, r)
+}
 
+// FIXME(Kagami): Don't mix text/plain and application/json errors.
+func setAccountSettings(r *http.Request, ss *auth.Session) (err error) {
 	var as auth.AccountSettings
-	if !decodeJSON(w, r, &as) {
+	if err = readJSON(r, &as); err != nil {
 		return
 	}
 	trimUserID(&as.Name)
-	if !validateUserID(w, as.Name) {
-		return
+	if !checkUserID(as.Name) {
+		return aerrInvalidUserID
 	}
 	if len(as.Whitelist) > common.MaxLenIgnoreList ||
 		len(as.Blacklist) > common.MaxLenIgnoreList {
-		serveErrorJSON(w, r, aerrTooManyIgnores)
+		return aerrTooManyIgnores
 	}
 	// Don't bother matching against DB values. It's user's problem if
 	// they passed wrong user IDs (not possible via UI).
+	ignores := make(map[string]bool)
 	for _, id := range as.Whitelist {
-		if !validateUserID(w, id) {
-			return
+		if !checkUserID(id) {
+			return aerrInvalidUserID
 		}
+		if ignores[id] {
+			return aerrDupIgnores
+		}
+		ignores[id] = true
 	}
 	for _, id := range as.Blacklist {
-		if !validateUserID(w, id) {
-			return
+		if !checkUserID(id) {
+			return aerrInvalidUserID
 		}
+		if ignores[id] {
+			return aerrDupIgnores
+		}
+		ignores[id] = true
 	}
 
-	err := db.SetAccountSettings(ss.UserID, as)
+	err = db.SetAccountSettings(ss.UserID, as)
 	switch err {
 	case nil:
-		// Do nothing.
+		return
 	case db.ErrUserNameTaken:
-		serveErrorJSON(w, r, aerrNameTaken)
-		return
+		return aerrNameTaken
 	default:
-		serveErrorJSON(w, r, aerrInternal.Hide(err))
-		return
+		return aerrInternal.Hide(err)
 	}
-
-	serveEmptyJSON(w, r)
 }

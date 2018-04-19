@@ -4,25 +4,18 @@ package server
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
-	"io"
+	"net/http"
+	"regexp"
+	"strconv"
+	"time"
+
 	"meguca/auth"
 	"meguca/common"
 	"meguca/config"
 	"meguca/db"
 	"meguca/feeds"
 	"meguca/templates"
-	"net/http"
-	"regexp"
-	"strconv"
-	"time"
-)
-
-const (
-	// Body size limit for POST request JSON. Should never exceed 32 KB.
-	// Consider anything bigger an attack.
-	jsonLimit = 1 << 15
 )
 
 var (
@@ -46,17 +39,6 @@ type boardConfigSettingRequest struct {
 type boardCreationRequest struct {
 	auth.Captcha
 	ID, Title string
-}
-
-// Decode JSON sent in a request with a read limit. Returns if the
-// decoding succeeded.
-func decodeJSON(w http.ResponseWriter, r *http.Request, dest interface{}) bool {
-	decoder := json.NewDecoder(io.LimitReader(r.Body, jsonLimit))
-	if err := decoder.Decode(dest); err != nil {
-		http.Error(w, fmt.Sprintf("400 %s", err), 400)
-		return false
-	}
-	return true
 }
 
 // Detect, if a client can perform moderation on a board.

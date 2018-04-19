@@ -85,7 +85,7 @@ func createRouter(debugRoutes bool) http.Handler {
 	api.POST("/logout", logout)
 	api.POST("/logout/all", logoutAll)
 	api.POST("/change-password", changePassword)
-	api.POST("/account/settings", setAccountSettings)
+	api.POST("/account/settings", serverSetAccountSettings)
 	api.POST("/board-config/:board", servePrivateBoardConfigs)
 	api.POST("/configure-board/:board", configureBoard)
 	api.POST("/configure-server", configureServer)
