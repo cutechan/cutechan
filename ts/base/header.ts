@@ -8,9 +8,6 @@ let visible: HeaderModal;
 
 // A modal element, that is positioned fixed right beneath the header
 export class HeaderModal extends View<null> {
-  // Hook to execute, when the the modal is displayed
-  protected showHook: () => void;
-
   constructor(el: HTMLElement) {
     super({ el });
     headerModals[this.id] = this;
@@ -39,15 +36,19 @@ export class HeaderModal extends View<null> {
   public show = () => {
     this.el.style.display = "block";
     visible = this;
-    if (this.showHook) {
-      this.showHook();
-    }
+    this.showHook();
   }
 
   // Hide the element
   public hide = () => {
     this.el.style.display = "none";
     visible = null;
+  }
+
+  // Hook to execute when the the modal is displayed.
+  // Do nothing by default.
+  protected showHook() {
+    /* empty */
   }
 }
 
@@ -67,32 +68,30 @@ export class TabbedModal extends HeaderModal {
     this.el.classList.toggle("tab-modal_empty", !show);
   }
 
+  // Trigger hook for current tab.
+  protected showHook() {
+    const tabEl = this.el.querySelector(".tab-cont .tab-sel");
+    if (tabEl) {
+      this.tabHook(tabEl);
+    }
+  }
+
   // Function to execute on tab switching.
   // Do nothing by default.
-  protected tabHook(id: number, el: Element) {
+  protected tabHook(tabEl: Element) {
     /* empty */
   }
 
   // Switch to a tab, when clicking the tab header.
   private switchTab(event: Event) {
-    // Deselect previous tab.
-    for (const selected of this.el.querySelectorAll(".tab-sel")) {
-      selected.classList.remove("tab-sel");
+    for (const el of this.el.querySelectorAll(".tab-sel")) {
+      el.classList.remove("tab-sel");
     }
-
-    // Select the new one.
-    const el = event.target as HTMLElement;
-    el.classList.add("tab-sel");
-
-    // Select tab content.
-    const id = el.getAttribute("data-id");
-    let tabEl = null;
-    for (tabEl of this.el.querySelectorAll(".tab-cont > div")) {
-      if (tabEl.getAttribute("data-id") === id) {
-        tabEl.classList.add("tab-sel");
-        break;
-      }
-    }
-    this.tabHook(+id, tabEl);
+    const tabHeadEl = event.target as Element;
+    tabHeadEl.classList.add("tab-sel");
+    const id = +tabHeadEl.getAttribute("data-id");
+    const tabEl = this.el.querySelector(`.tab-cont [data-id='${id}']`);
+    tabEl.classList.add("tab-sel");
+    this.tabHook(tabEl);
   }
 }

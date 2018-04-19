@@ -215,7 +215,7 @@ class AccountPanel extends TabbedModal {
     });
   }
 
-  protected tabHook(id: number, el: Element) {
+  protected tabHook(el: Element) {
     if (el.classList.contains("account-identity-tab")) {
       el.innerHTML = "";
       render(<IdentityTab modal={this} />, el);
