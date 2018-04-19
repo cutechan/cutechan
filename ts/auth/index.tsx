@@ -1,7 +1,7 @@
 /**
- * Account handling.
+ * Authorized actions handling.
  *
- * @module cutechan/account
+ * @module cutechan/auth
  */
 
 import * as cx from "classnames";
@@ -10,13 +10,16 @@ import { showAlert, showSendAlert } from "../alerts";
 import API from "../api";
 import { TabbedModal } from "../base";
 import { _ } from "../lang";
-import { ModerationLevel, position } from "../mod";
-import { getModel } from "../state";
+import { Post } from "../posts";
+import { getModel, page } from "../state";
 import {
   BackgroundClickMixin, Constructable, EscapePressMixin,
   hook, HOOKS, on, trigger, unhook,
 } from "../util";
-import { MODAL_CONTAINER_SEL, TRIGGER_IGNORE_USER_SEL } from "../vars";
+import {
+  MODAL_CONTAINER_SEL, TRIGGER_BAN_BY_POST_SEL,
+  TRIGGER_DELETE_POST_SEL, TRIGGER_IGNORE_USER_SEL,
+} from "../vars";
 import {
   BoardConfigForm, BoardCreationForm, BoardDeletionForm, StaffAssignmentForm,
 } from "./board-form";
@@ -24,10 +27,30 @@ import { LoginForm, validatePasswordMatch } from "./login-form";
 import { PasswordChangeForm } from "./password-form";
 import { ServerConfigForm } from "./server-form";
 
+export const enum ModerationLevel {
+  notLoggedIn = - 1,
+  notStaff,
+  janitor,
+  moderator,
+  boardOwner,
+  admin,
+}
+
 export const enum IgnoreMode {
   disabled,
   byWhitelist,
   byBlacklist,
+}
+
+export interface Session {
+  userID: string;
+  positions: Positions;
+  settings: AccountSettings;
+}
+
+export interface Positions {
+  curBoard: ModerationLevel;
+  anyBoard: ModerationLevel;
 }
 
 export interface AccountSettings {
@@ -40,11 +63,22 @@ export interface AccountSettings {
 
 declare global {
   interface Window {
-    account: AccountSettings;
+    session?: Session;
   }
 }
 
-export const account = window.account;
+export const session = window.session;
+export const account = session ? session.settings : {};
+export const position = session ? session.positions.curBoard : ModerationLevel.notLoggedIn;
+export const anyposition = session ? session.positions.curBoard : ModerationLevel.notLoggedIn;
+
+export function isModerator(): boolean {
+  return position >= ModerationLevel.moderator;
+}
+
+export function isPowerUser(): boolean {
+  return anyposition >= ModerationLevel.janitor;
+}
 
 interface IdentityProps {
   modal: AccountPanel;
@@ -270,6 +304,34 @@ class AccountPanel extends TabbedModal {
 
 export let accountPanel: AccountPanel = null;
 
+function getModelByEvent(e: Event): Post {
+  return getModel(e.target as Element);
+}
+
+function deletePost(post: Post, force?: boolean) {
+  if (!force && !confirm(_("delConfirm"))) return;
+  API.post.delete([post.id]).then(() => {
+    // In thread we should delete on WebSocket event.
+    if (!page.thread) {
+      post.setDeleted();
+    }
+  }, showAlert);
+}
+
+function banUser(post: Post) {
+  if (!confirm(_("banConfirm"))) return;
+  const YEAR = 365 * 24 * 60;
+  API.user.banByPost({
+    // Hardcode for now.
+    duration: YEAR,
+    global: position >= ModerationLevel.admin,
+    ids: [post.id],
+    reason: "default",
+  }).then(() => {
+    deletePost(post, true);
+  }).catch(showAlert);
+}
+
 export function init() {
   accountPanel = new AccountPanel();
   if (position === ModerationLevel.notLoggedIn) {
@@ -286,5 +348,14 @@ export function init() {
         trigger(HOOKS.openIgnoreModal, e.target);
       }, {selector: TRIGGER_IGNORE_USER_SEL});
     }
+  }
+  if (position >= ModerationLevel.moderator) {
+    on(document, "click", (e) => {
+      deletePost(getModelByEvent(e));
+    }, {selector: TRIGGER_DELETE_POST_SEL});
+
+    on(document, "click", (e) => {
+      banUser(getModelByEvent(e));
+    }, {selector: TRIGGER_BAN_BY_POST_SEL});
   }
 }

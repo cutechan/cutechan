@@ -13,8 +13,8 @@ import {
   searchIdols, setIdolPreview,
 } from "../../go/src/github.com/Kagami/kpopnet/ts/api";
 import { showAlert } from "../alerts";
+import { isPowerUser } from "../auth";
 import { _, printf } from "../lang";
-import { isPowerUser } from "../mod";
 import { getFilePrefix } from "../posts";
 import { hook, HOOKS } from "../util";
 import { PROFILES_CONTAINER_SEL } from "../vars";

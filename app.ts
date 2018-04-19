@@ -12,14 +12,13 @@
 // FIXME(Kagami): Circular imports, must go before client module.
 import { init as initOptions } from "./ts/options";
 
-import { init as initAccount } from "./ts/account";
 import { init as initAlerts, showAlert } from "./ts/alerts";
+import { init as initAuth } from "./ts/auth";
 import { init as initHandlers } from "./ts/client";
 import { init as initConnection } from "./ts/connection";
 import { init as initDB } from "./ts/db";
 import { initProfiles } from "./ts/idols";
 import { ln } from "./ts/lang";
-import { init as initModeration } from "./ts/mod";
 import { renderBoard, renderThread } from "./ts/page";
 import { init as initPosts } from "./ts/posts";
 import { loadPostStores, page } from "./ts/state";
@@ -52,9 +51,7 @@ async function init() {
   }
 
   initUI();
-  initAccount();
-  initModeration();
-
+  initAuth();
   initProfiles();
 }
 

@@ -3,9 +3,9 @@ import { Component, h, render } from "preact";
 import vmsg from "vmsg";
 import { showAlert } from "../alerts";
 import API from "../api";
+import { isModerator } from "../auth";
 import { PostData } from "../common";
 import { ln, printf } from "../lang";
-import { isModerator } from "../mod";
 import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {

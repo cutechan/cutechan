@@ -14,8 +14,8 @@ var (
 )
 
 type Positions struct {
-	CurBoard ModerationLevel
-	AnyBoard ModerationLevel
+	CurBoard ModerationLevel `json:"curBoard"`
+	AnyBoard ModerationLevel `json:"anyBoard"`
 }
 
 // ModerationLevel defines the level required to perform an action
