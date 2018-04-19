@@ -154,6 +154,8 @@ interface IgnoreState {
   left: number;
   top: number;
   userID: string;
+  savingWL: boolean;
+  savingBL: boolean;
 }
 
 class IgnoreModalBase extends Component<{}, IgnoreState> {
@@ -163,19 +165,24 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
     shown: false,
     left: 0,
     top: 0,
+    savingWL: false,
+    savingBL: false,
   };
+  public get saving() {
+    return this.state.savingWL || this.state.savingBL;
+  }
   public componentDidMount() {
     hook(HOOKS.openIgnoreModal, this.show);
   }
   public componentWillUnmount() {
     unhook(HOOKS.openIgnoreModal, this.show);
   }
-  public render({}, { userID, shown, left, top }: IgnoreState) {
+  public render({}, { userID, shown, left, top, savingWL, savingBL }: IgnoreState) {
     if (!shown) return null;
     const style = {left, top};
     return (
       <div
-        class="ignore-modal"
+        class={cx("ignore-modal", this.saving && "ignore-modal_saving")}
         style={style}
         onClick={this.handleModalClick}
       >
@@ -183,11 +190,17 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
           {userID}
         </div>
         <div class="ignore-modal-item" onClick={this.addToWhitelist}>
-          <i class="control fa fa-check-circle" />
+          <i class={cx("ignore-save-icon control fa", {
+            "fa-spinner fa-pulse fa-fw": savingWL,
+            "fa-check-circle": !savingWL,
+          })} />
           <span> {_("To whitelist")}</span>
         </div>
         <div class="ignore-modal-item" onClick={this.addToBlacklist}>
-          <i class="control fa fa-times-circle" />
+          <i class={cx("ignore-save-icon control fa", {
+            "fa-spinner fa-pulse fa-fw": savingBL,
+            "fa-times-circle": !savingBL,
+          })} />
           <span> {_("To blacklist")}</span>
         </div>
       </div>
@@ -215,40 +228,43 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
     this.setState({left, top, target, userID: post.userID, shown: true});
   }
   private hide = () => {
+    if (this.saving) return;
     this.setState({target: null, shown: false});
   }
   private handleModalClick = (e: Event) => {
     e.stopPropagation();
   }
   private addToWhitelist = () => {
+    if (this.saving) return;
     const { userID } = this.state;
     const whitelist = (account.whitelist || []).slice();
-    if (whitelist.includes(userID)) {
-      this.hide();
-      return;
-    }
     whitelist.push(userID);
     const settings = {...account, whitelist};
+    this.setState({savingWL: true});
     API.account.setSettings(settings)
       .then(() => {
         Object.assign(account, settings);
-        this.hide();
-      }, showSendAlert);
+        this.setState({savingWL: false}, this.hide);
+      }, (err) => {
+        showSendAlert(err);
+        this.setState({savingWL: false});
+      });
   }
   private addToBlacklist = () => {
+    if (this.saving) return;
     const { userID } = this.state;
     const blacklist = (account.blacklist || []).slice();
-    if (blacklist.includes(userID)) {
-      this.hide();
-      return;
-    }
     blacklist.push(userID);
     const settings = {...account, blacklist};
+    this.setState({savingBL: true});
     API.account.setSettings(settings)
       .then(() => {
         Object.assign(account, settings);
-        this.hide();
-      }, showSendAlert);
+        this.setState({savingBL: false}, this.hide);
+      }, (err) => {
+        showSendAlert(err);
+        this.setState({savingBL: false});
+      });
   }
 }
 
