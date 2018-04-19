@@ -14,7 +14,7 @@ import { Post } from "../posts";
 import { getModel, page } from "../state";
 import {
   BackgroundClickMixin, Constructable, EscapePressMixin,
-  hook, HOOKS, on, trigger, unhook,
+  hook, HOOKS, on, remove, trigger, unhook,
 } from "../util";
 import {
   MODAL_CONTAINER_SEL, TRIGGER_BAN_BY_POST_SEL,
@@ -171,6 +171,22 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
   public get saving() {
     return this.state.savingWL || this.state.savingBL;
   }
+  public get wled() {
+    return account.whitelist
+      ? account.whitelist.includes(this.state.userID)
+      : false;
+  }
+  public get bled() {
+    return account.blacklist
+      ? account.blacklist.includes(this.state.userID)
+      : false;
+  }
+  public get freshWL() {
+    return (account.whitelist || []).slice();
+  }
+  public get freshBL() {
+    return (account.blacklist || []).slice();
+  }
   public componentDidMount() {
     hook(HOOKS.openIgnoreModal, this.show);
   }
@@ -182,7 +198,11 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
     const style = {left, top};
     return (
       <div
-        class={cx("ignore-modal", this.saving && "ignore-modal_saving")}
+        class={cx("ignore-modal", {
+          "ignore-modal_saving": this.saving,
+          "ignore-modal_wled": this.wled,
+          "ignore-modal_bled": this.bled,
+        })}
         style={style}
         onClick={this.handleModalClick}
       >
@@ -194,14 +214,14 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
             "fa-spinner fa-pulse fa-fw": savingWL,
             "fa-check-circle": !savingWL,
           })} />
-          <span> {_("To whitelist")}</span>
+          <span> {_(this.wled ? "From whitelist" : "To whitelist")}</span>
         </div>
         <div class="ignore-modal-item" onClick={this.addToBlacklist}>
           <i class={cx("ignore-save-icon control fa", {
             "fa-spinner fa-pulse fa-fw": savingBL,
             "fa-times-circle": !savingBL,
           })} />
-          <span> {_("To blacklist")}</span>
+          <span> {_(this.bled ? "From blacklist" : "To blacklist")}</span>
         </div>
       </div>
     );
@@ -237,9 +257,15 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
   private addToWhitelist = () => {
     if (this.saving) return;
     const { userID } = this.state;
-    const whitelist = (account.whitelist || []).slice();
-    whitelist.push(userID);
-    const settings = {...account, whitelist};
+    const whitelist = this.freshWL;
+    const blacklist = this.freshBL;
+    if (this.wled) {
+      remove(whitelist, userID);
+    } else {
+      remove(blacklist, userID);
+      whitelist.push(userID);
+    }
+    const settings = {...account, whitelist, blacklist};
     this.setState({savingWL: true});
     API.account.setSettings(settings)
       .then(() => {
@@ -253,9 +279,15 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
   private addToBlacklist = () => {
     if (this.saving) return;
     const { userID } = this.state;
-    const blacklist = (account.blacklist || []).slice();
-    blacklist.push(userID);
-    const settings = {...account, blacklist};
+    const whitelist = this.freshWL;
+    const blacklist = this.freshBL;
+    if (this.bled) {
+      remove(blacklist, userID);
+    } else {
+      remove(whitelist, userID);
+      blacklist.push(userID);
+    }
+    const settings = {...account, whitelist, blacklist};
     this.setState({savingBL: true});
     API.account.setSettings(settings)
       .then(() => {

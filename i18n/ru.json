@@ -205,7 +205,9 @@
   },
   "ui": {
     "To whitelist": "В белый список",
+    "From whitelist": "Из белого списка",
     "To blacklist": "В чёрный список",
+    "From blacklist": "Из чёрного списка",
     "Show name": "Отображать имя",
     "Save": "Сохранить",
     "Name": "Псевдоним",
