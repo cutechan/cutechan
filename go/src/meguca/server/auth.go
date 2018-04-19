@@ -19,7 +19,7 @@ var (
 	// Add "secure" flag to auth cookies.
 	SecureCookie bool
 
-	userIdRe = regexp.MustCompile(`^[-_ \p{Latin}\p{Cyrillic}\d]+$`)
+	userIDRe = regexp.MustCompile(`^[-_ \p{Latin}\p{Cyrillic}\d]+$`)
 )
 
 type loginCreds struct {
@@ -64,7 +64,7 @@ func register(w http.ResponseWriter, r *http.Request) {
 
 // Separate function for easier chaining of validations
 func validateUserID(w http.ResponseWriter, id string) bool {
-	if id == "" || len(id) > common.MaxLenUserID || !userIdRe.MatchString(id) {
+	if id == "" || len(id) > common.MaxLenUserID || !userIDRe.MatchString(id) {
 		text400(w, errInvalidUserID)
 		return false
 	}
