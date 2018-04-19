@@ -100,12 +100,14 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
     this.setState({name});
   }
   private handleSave = () => {
-    const { modal } = this.props;
     const { name, showName } = this.state;
-    const settings = { name, showName };
+    const settings = {...account, name, showName};
     this.setState({saving: true});
     API.account.setSettings(settings)
-      .then(modal.hide, showSendAlert)
+      .then(() => {
+        Object.assign(account, settings);
+        this.props.modal.hide();
+      }, showSendAlert)
       .then(() => {
         this.setState({saving: false});
       });
@@ -113,7 +115,7 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
 }
 
 interface IgnoreState {
-  target?: HTMLElement;
+  target?: Element;
   shown: boolean;
   left: number;
   top: number;
@@ -129,10 +131,10 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
     top: 0,
   };
   public componentDidMount() {
-    hook(HOOKS.openIgnoreModal, this.showModal);
+    hook(HOOKS.openIgnoreModal, this.show);
   }
   public componentWillUnmount() {
-    unhook(HOOKS.openIgnoreModal, this.showModal);
+    unhook(HOOKS.openIgnoreModal, this.show);
   }
   public render({}, { userId, shown, left, top }: IgnoreState) {
     if (!shown) return null;
@@ -146,11 +148,11 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
         <div class="ignore-modal-info">
           {userId}
         </div>
-        <div class="ignore-modal-item">
+        <div class="ignore-modal-item" onClick={this.addToWhitelist}>
           <i class="control fa fa-check-circle" />
           <span> {_("To whitelist")}</span>
         </div>
-        <div class="ignore-modal-item">
+        <div class="ignore-modal-item" onClick={this.addToBlacklist}>
           <i class="control fa fa-times-circle" />
           <span> {_("To blacklist")}</span>
         </div>
@@ -160,15 +162,15 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
   public onBackgroundClick = (e: MouseEvent) => {
     if (e.target === this.state.target) return;
     if (this.state.shown) {
-      this.setState({target: null, shown: false});
+      this.hide();
     }
   }
   public onEscapePress = (e: KeyboardEvent) => {
-    this.setState({target: null, shown: false});
+    this.hide();
   }
-  private showModal = (target: HTMLElement) => {
+  private show = (target: Element) => {
     if (target === this.state.target) {
-      this.setState({target: null, shown: false});
+      this.hide();
       return;
     }
     const post = getModel(target);
@@ -177,8 +179,41 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
     top += window.pageYOffset + 20;
     this.setState({left, top, target, userId: post.name, shown: true});
   }
+  private hide = () => {
+    this.setState({target: null, shown: false});
+  }
   private handleModalClick = (e: Event) => {
     e.stopPropagation();
+  }
+  private addToWhitelist = () => {
+    const { userId } = this.state;
+    const whitelist = (account.whitelist || []).slice();
+    if (whitelist.includes(userId)) {
+      this.hide();
+      return;
+    }
+    whitelist.push(userId);
+    const settings = {...account, whitelist};
+    API.account.setSettings(settings)
+      .then(() => {
+        Object.assign(account, settings);
+        this.hide();
+      }, showSendAlert);
+  }
+  private addToBlacklist = () => {
+    const { userId } = this.state;
+    const blacklist = (account.blacklist || []).slice();
+    if (blacklist.includes(userId)) {
+      this.hide();
+      return;
+    }
+    blacklist.push(userId);
+    const settings = {...account, blacklist};
+    API.account.setSettings(settings)
+      .then(() => {
+        Object.assign(account, settings);
+        this.hide();
+      }, showSendAlert);
   }
 }
 
