@@ -208,6 +208,7 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
       return;
     }
     const post = getModel(target);
+    if (post.name === session.userID) return;
     let { left, top } = target.getBoundingClientRect();
     left += window.pageXOffset;
     top += window.pageYOffset + 20;
