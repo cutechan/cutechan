@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"net/url"
 	"runtime/debug"
-	"strconv"
 
 	"meguca/auth"
 	"meguca/config"
@@ -31,44 +30,6 @@ var (
 	}
 )
 
-// Check is any of the etags the client provides in the "If-None-Match" header
-// match the generated etag. If yes, write 304 and return true.
-func checkClientEtag(
-	w http.ResponseWriter,
-	r *http.Request,
-	etag string,
-) bool {
-	if etag == r.Header.Get("If-None-Match") {
-		w.WriteHeader(304)
-		return true
-	}
-	return false
-}
-
-// Combine the progress counter and optional configuration hash into a weak etag
-func formatEtag(ctr uint64, hash string, pos auth.Positions) string {
-	buf := make([]byte, 3, 128)
-	buf[0] = 'W'
-	buf[1] = '/'
-	buf[2] = '"'
-	buf = strconv.AppendUint(buf, ctr, 10)
-
-	addOpt := func(s string) {
-		buf = append(buf, '-')
-		buf = append(buf, s...)
-	}
-	if hash != "" {
-		addOpt(hash)
-	}
-	if pos.CurBoard != auth.NotLoggedIn {
-		addOpt(pos.CurBoard.String())
-	}
-	buf = append(buf, '"')
-
-	return string(buf)
-}
-
-// Write a []byte to the client
 func writeData(w http.ResponseWriter, r *http.Request, data []byte) {
 	_, err := w.Write(data)
 	if err != nil {

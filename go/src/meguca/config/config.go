@@ -5,7 +5,6 @@ package config
 
 import (
 	"meguca/common"
-	"meguca/util"
 	"reflect"
 	"sort"
 	"sync"
@@ -29,15 +28,10 @@ var (
 		BoardConfigs: BoardConfigs{
 			ID: "all",
 		},
-		Hash: "0",
 	}
 
 	// JSON of client-accessible configuration
 	clientJSON []byte
-
-	// Hash of the global configs. Used for live reloading configuration on the
-	// client.
-	hash string
 
 	// Defaults contains the default server configuration values
 	Defaults = Configs{
@@ -74,37 +68,22 @@ func Set(c Configs) error {
 	if err != nil {
 		return err
 	}
-	h := util.HashBuffer(client)
-
 	globalMu.Lock()
 	clientJSON = client
 	global = &c
-	hash = h
 	globalMu.Unlock()
 
 	return nil
 }
 
-// GetClient returns public availability configuration JSON and a truncated
-// configuration MD5 hash
-func GetClient() ([]byte, string) {
-	globalMu.RLock()
-	defer globalMu.RUnlock()
-	return clientJSON, hash
-}
-
-// SetClient sets the client configuration JSON and hash. To be used only in
-// tests.
-func SetClient(json []byte, cHash string) {
-	globalMu.Lock()
-	clientJSON = json
-	hash = cHash
-	globalMu.Unlock()
+// GetClient returns public availability configuration JSON.
+func GetClient() []byte {
+	return clientJSON
 }
 
 // GetBoardConfigs returns board-specific configurations for a board combined
-// with pregenerated public JSON of these configurations and their hash. Do
-// not modify the retrieved struct.
+// with pregenerated public JSON of these configurations. Do not modify
+// the retrieved struct.
 func GetBoardConfigs(b string) BoardConfContainer {
 	if b == "all" {
 		return AllBoardConfigs
@@ -205,7 +184,7 @@ func IsModOnlyBoard(b string) bool {
 }
 
 // SetBoardConfigs sets configurations for a specific board as well as
-// pregenerates their public JSON and hash. Returns if any changes were made to
+// pregenerates their public JSON. Returns if any changes were made to
 // the configs in result.
 func SetBoardConfigs(conf BoardConfigs) (bool, error) {
 	cont := BoardConfContainer{
@@ -216,7 +195,6 @@ func SetBoardConfigs(conf BoardConfigs) (bool, error) {
 	if err != nil {
 		return false, err
 	}
-	cont.Hash = util.HashBuffer(cont.JSON)
 
 	boardMu.Lock()
 	defer boardMu.Unlock()
@@ -240,27 +218,5 @@ func SetBoardConfigs(conf BoardConfigs) (bool, error) {
 func RemoveBoard(b string) {
 	boardMu.Lock()
 	defer boardMu.Unlock()
-
 	delete(boardConfigs, b)
-}
-
-// Clear resets package state. Only use in tests.
-func Clear() {
-	globalMu.RLock()
-	defer globalMu.RUnlock()
-
-	global = &Configs{}
-	clientJSON = nil
-	hash = ""
-
-	ClearBoards()
-}
-
-// ClearBoards clears any existing board configuration entries. Only use in
-// tests.
-func ClearBoards() {
-	boardMu.Lock()
-	defer boardMu.Unlock()
-
-	boardConfigs = map[string]BoardConfContainer{}
 }

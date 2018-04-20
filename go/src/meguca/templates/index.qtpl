@@ -31,7 +31,7 @@
 
 {% func renderPage(ss *auth.Session, title string, page string) %}{% stripspace %}
 	{% code conf := config.Get() %}
-	{% code confJSON, _ := config.GetClient() %}
+	{% code confJSON := config.GetClient() %}
 	{% code boards := config.GetBoardTitles() %}
 	{% code boardJSON := tryMarshal(boards) %}
 	{% code sessionJSON := tryMarshal(ss) %}

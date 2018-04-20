@@ -3,16 +3,40 @@
 package server
 
 import (
+	"database/sql"
 	"fmt"
+	"net/http"
+	"strconv"
+	"strings"
+
 	"meguca/auth"
 	"meguca/config"
 	"meguca/db"
 	"meguca/feeds"
 	"meguca/websockets"
-	"net/http"
-	"strconv"
-	"strings"
 )
+
+// Serve a single post as JSON
+func servePost(w http.ResponseWriter, r *http.Request) {
+	id, err := strconv.ParseUint(getParam(r, "post"), 10, 64)
+	if err != nil {
+		text400(w, err)
+		return
+	}
+
+	switch post, err := db.GetPost(id); err {
+	case nil:
+		ss, _ := getSession(r, post.Board)
+		if !assertNotModOnly(w, post.Board, ss) {
+			return
+		}
+		serveJSON(w, r, post)
+	case sql.ErrNoRows:
+		serve404(w)
+	default:
+		respondToJSONError(w, r, err)
+	}
+}
 
 // Client should get token and solve challenge in order to post.
 func createPostToken(w http.ResponseWriter, r *http.Request) {

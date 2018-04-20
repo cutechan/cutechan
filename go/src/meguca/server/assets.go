@@ -2,12 +2,13 @@ package server
 
 import (
 	"fmt"
-	"meguca/common"
 	"mime/multipart"
 	"net/http"
 	"os"
 	"path/filepath"
 	"time"
+
+	"meguca/common"
 )
 
 // Serve uploads directory. Only makes sense for dev server, on

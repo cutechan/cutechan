@@ -2,6 +2,7 @@ package server
 
 import (
 	"database/sql"
+	"fmt"
 	"log"
 	"net/http"
 
@@ -9,6 +10,7 @@ import (
 	"meguca/config"
 	"meguca/db"
 	"meguca/templates"
+	"meguca/util"
 )
 
 // Check client is not banned on specific board. Returns true, if all clear.
@@ -166,4 +168,23 @@ func assertPowerUserAPI(w http.ResponseWriter, ss *auth.Session) bool {
 		return false
 	}
 	return true
+}
+
+// Calculate and check provided ETag by simply hashing the content.
+// This doesn't make page generation faster, only saves network traffic.
+func assertCached(
+	w http.ResponseWriter,
+	r *http.Request,
+	buf []byte,
+) bool {
+	etag := fmt.Sprintf("\"%s\"", util.HashBuffer(buf))
+	if etag == r.Header.Get("If-None-Match") {
+		// https://tools.ietf.org/html/rfc2616#section-10.3.5
+		// https://stackoverflow.com/a/4226409
+		w.Header().Set("ETag", etag)
+		w.WriteHeader(304)
+		return true
+	}
+	w.Header().Set("ETag", etag)
+	return false
 }

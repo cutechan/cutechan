@@ -18,30 +18,28 @@ import (
 func serveHTML(
 	w http.ResponseWriter,
 	r *http.Request,
-	etag string,
-	data []byte,
+	buf []byte,
 	err error,
 ) {
 	if err != nil {
 		text500(w, r, err)
 		return
 	}
+	if assertCached(w, r, buf) {
+		return
+	}
 	head := w.Header()
 	for key, val := range vanillaHeaders {
 		head.Set(key, val)
 	}
-	if etag != "" {
-		head.Set("ETag", etag)
-	}
 	head.Set("Content-Type", "text/html")
-
-	writeData(w, r, data)
+	writeData(w, r, buf)
 }
 
 func serveLanding(w http.ResponseWriter, r *http.Request) {
 	ss, _ := getSession(r, "")
 	html := templates.Landing(ss)
-	serveHTML(w, r, "", html, nil)
+	serveHTML(w, r, html, nil)
 }
 
 func serve404(w http.ResponseWriter) {
@@ -69,7 +67,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		return
 	}
 
-	html, data, ctr, err := cache.GetHTML(boardCacheArgs(r, b, catalog))
+	html, data, _, err := cache.GetHTML(boardCacheArgs(r, b, catalog))
 	switch err {
 	case nil:
 	case errPageOverflow:
@@ -80,12 +78,6 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		return
 	}
 
-	_, hash := config.GetClient()
-	etag := formatEtag(ctr, hash, ss.GetPositions())
-	if checkClientEtag(w, r, etag) {
-		return
-	}
-
 	var n, total int
 	if !catalog {
 		p := data.(pageStore)
@@ -93,7 +85,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		total = p.pageTotal
 	}
 	html = templates.Board(b, n, total, ss, catalog, html)
-	serveHTML(w, r, etag, html, nil)
+	serveHTML(w, r, html, nil)
 }
 
 // Asserts a thread exists on the specific board and renders the index template
@@ -105,22 +97,16 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 
 	lastN := detectLastN(r)
 	k := cache.ThreadKey(id, lastN)
-	html, data, ctr, err := cache.GetHTML(k, threadCache)
+	html, data, _, err := cache.GetHTML(k, threadCache)
 	if err != nil {
 		respondToJSONError(w, r, err)
-		return
-	}
-
-	_, hash := config.GetClient()
-	etag := formatEtag(ctr, hash, ss.GetPositions())
-	if checkClientEtag(w, r, etag) {
 		return
 	}
 
 	b := getParam(r, "board")
 	title := data.(common.Thread).Subject
 	html = templates.Thread(id, b, title, lastN != 0, ss, html)
-	serveHTML(w, r, etag, html, nil)
+	serveHTML(w, r, html, nil)
 }
 
 // Render a board selection and navigation panel and write HTML to client
@@ -134,7 +120,7 @@ func staticTemplate(
 	r *http.Request,
 	fn func() string,
 ) {
-	serveHTML(w, r, "", []byte(fn()), nil)
+	serveHTML(w, r, []byte(fn()), nil)
 }
 
 // Serve a form for selecting one of several boards owned by the user
@@ -151,7 +137,7 @@ func ownedBoardSelection(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ownedTitles := config.GetBoardTitlesByList(owned)
-	serveHTML(w, r, "", []byte(templates.OwnedBoard(ownedTitles)), nil)
+	serveHTML(w, r, []byte(templates.OwnedBoard(ownedTitles)), nil)
 }
 
 // Renders a form for configuring a board owned by the user
@@ -161,7 +147,7 @@ func boardConfigurationForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	serveHTML(w, r, "", []byte(templates.ConfigureBoard(conf)), nil)
+	serveHTML(w, r, []byte(templates.ConfigureBoard(conf)), nil)
 }
 
 // Render a form for assigning staff to a board
@@ -174,7 +160,7 @@ func staffAssignmentForm(w http.ResponseWriter, r *http.Request) {
 	html := []byte(templates.StaffAssignment(
 		[...][]string{s["owners"], s["moderators"], s["janitors"]},
 	))
-	serveHTML(w, r, "", html, nil)
+	serveHTML(w, r, html, nil)
 }
 
 // Renders a form for creating new boards
@@ -189,7 +175,7 @@ func serverConfigurationForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := []byte(templates.ConfigureServer((*config.Get())))
-	serveHTML(w, r, "", data, nil)
+	serveHTML(w, r, data, nil)
 }
 
 // Render a form to change an account password
@@ -214,7 +200,7 @@ func noscriptCaptcha(w http.ResponseWriter, r *http.Request) {
 		text400(w, err)
 		return
 	}
-	serveHTML(w, r, "", []byte(templates.NoscriptCaptcha(ip)), nil)
+	serveHTML(w, r, []byte(templates.NoscriptCaptcha(ip)), nil)
 }
 
 // Redirect the client to the appropriate board through a cross-board redirect
@@ -248,7 +234,7 @@ func serveStickers(w http.ResponseWriter, r *http.Request) {
 	ss, _ := getSession(r, "")
 	stickHTML := []byte{}
 	html := templates.Stickers(ss, stickHTML)
-	serveHTML(w, r, "", html, nil)
+	serveHTML(w, r, html, nil)
 }
 
 // Confirms a the thread exists on the board and returns its ID. If an error
