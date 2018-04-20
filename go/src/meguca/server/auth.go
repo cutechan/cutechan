@@ -6,6 +6,7 @@ import (
 	"regexp"
 	"strings"
 	"time"
+	"unicode/utf8"
 
 	"meguca/auth"
 	"meguca/common"
@@ -63,7 +64,9 @@ func register(w http.ResponseWriter, r *http.Request) {
 }
 
 func checkUserID(id string) bool {
-	return id != "" && len(id) <= common.MaxLenUserID && userIDRe.MatchString(id)
+	return id != "" &&
+		utf8.RuneCountInString(id) <= common.MaxLenUserID &&
+		userIDRe.MatchString(id)
 }
 
 func validateUserID(w http.ResponseWriter, id string) bool {
