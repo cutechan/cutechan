@@ -5,6 +5,7 @@ export HTMLMIN = $(NODE_BIN)/html-minifier
 export GULP = $(NODE_BIN)/gulp
 
 all: templates smiles client server
+precommit: gofmt-staged server tslint-staged
 
 update-main-deps:
 	npm install
@@ -37,6 +38,9 @@ client: node_modules go/src/github.com/Kagami/kpopnet
 
 client-watch:
 	$(GULP) -w
+
+tslint-staged:
+	./tslint-staged.sh
 
 go/src/github.com/Kagami/kpopnet:
 	go get github.com/Kagami/kpopnet
@@ -85,9 +89,6 @@ deb: clean templates smiles client server
 	cp -a go/bin/cutechan* deb_dist/usr/bin
 	chmod -R go+rX deb_dist
 	fakeroot dpkg-deb -z0 -b deb_dist cutechan.deb
-
-test: gofmt-staged server
-	npm -s test
 
 gofmt:
 	go fmt meguca/...
