@@ -16,9 +16,9 @@ import (
 type IgnoreMode int
 
 const (
-	IgnoreDisabled IgnoreMode = iota
-	IgnoreByWhitelist
+	IgnoreDisabled IgnoreMode = iota - 1
 	IgnoreByBlacklist
+	IgnoreByWhitelist
 )
 
 var (
@@ -39,11 +39,12 @@ type Session struct {
 }
 
 type AccountSettings struct {
-	Name       string     `json:"name,omitempty"`
-	ShowName   bool       `json:"showName,omitempty"`
-	IgnoreMode IgnoreMode `json:"ignoreMode,omitempty"`
-	Whitelist  []string   `json:"whitelist,omitempty"`
-	Blacklist  []string   `json:"blacklist,omitempty"`
+	Name        string     `json:"name,omitempty"`
+	ShowName    bool       `json:"showName,omitempty"`
+	IgnoreMode  IgnoreMode `json:"ignoreMode,omitempty"`
+	IncludeAnon bool       `json:"includeAnon,omitempty"`
+	Whitelist   []string   `json:"whitelist,omitempty"`
+	Blacklist   []string   `json:"blacklist,omitempty"`
 }
 
 func (ss *Session) GetPositions() Positions {

@@ -37,9 +37,9 @@ export const enum ModerationLevel {
 }
 
 export const enum IgnoreMode {
-  disabled,
-  byWhitelist,
+  disabled = -1,
   byBlacklist,
+  byWhitelist,
 }
 
 export interface Session {
@@ -57,6 +57,7 @@ export interface AccountSettings {
   name?: string;
   showName?: boolean;
   ignoreMode?: IgnoreMode;
+  includeAnon?: boolean;
   whitelist?: string[];
   blacklist?: string[];
 }
@@ -89,22 +90,26 @@ interface IdentityState extends AccountSettings {
 }
 
 class IdentityTab extends Component<IdentityProps, IdentityState> {
-  constructor(props: IdentityProps) {
-    super(props);
-    this.state = {saving: false, ...account};
-  }
-  public render({}, { name, showName, saving }: IdentityState) {
-    const whitelist = account.whitelist || [];
-    const blacklist = account.blacklist || [];
+  public state = {
+    ...account,
+    saving: false,
+    ignoreMode: account.ignoreMode || 0,
+    whitelist: (account.whitelist || []).slice(),
+    blacklist: (account.blacklist || []).slice(),
+  };
+  public render({}, {
+    name, showName, ignoreMode, includeAnon, whitelist, blacklist,
+    saving,
+  }: IdentityState) {
     return (
       <div class="account-identity-tab-inner">
         <article class="account-form-section">
-          <h3 class="account-form-sheader">
+          <h3 class="account-form-shead">
             {_("Show name")}
           </h3>
-          <section class="account-form-sbody">
+          <div class="account-form-sbody">
             <input
-              class="account-form-showname option-checkbox"
+              class="account-form-checkbox option-checkbox"
               type="checkbox"
               checked={showName}
               onChange={this.handleShowNameToggle}
@@ -116,47 +121,67 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
               value={name}
               onChange={this.handleNameChange}
             />
-          </section>
+          </div>
         </article>
         <article class="account-form-section">
-          <h3 class="account-form-sheader">
+          <h3 class="account-form-shead">
             {_("Ignore mode")}
           </h3>
-          <section class="account-form-sbody">
+          <div class="account-form-sbody">
             <select
               class="account-form-ignoremode option-select"
+              value={ignoreMode.toString()}
             >
-              <option>{_("No ignore")}</option>
-              <option>{_("Hide blacklisted")}</option>
-              <option>{_("Show whitelisted")}</option>
+              <option value={IgnoreMode.disabled.toString()}>
+                {_("No ignore")}
+              </option>
+              <option value={IgnoreMode.byBlacklist.toString()}>
+                {_("Hide blacklisted")}
+              </option>
+              <option value={IgnoreMode.byWhitelist.toString()}>
+                {_("Show whitelisted")}
+              </option>
             </select>
-          </section>
+          </div>
         </article>
         <article class="account-form-section account-form-section_row">
           <article class="account-form-section">
-            <h3 class="account-form-sheader">
+            <h3 class="account-form-shead">
               {_("Whitelist")}
             </h3>
             <ul class="account-form-sbody account-form-ignorelist">
               {whitelist.map((ignoredID) =>
-                <li class="accont-form-ignoreitem">
+                <li class="account-form-ignoreitem">
                   {ignoredID}
                 </li>,
               )}
             </ul>
           </article>
           <article class="account-form-section">
-            <h3 class="account-form-sheader">
+            <h3 class="account-form-shead">
               {_("Blacklist")}
             </h3>
             <ul class="account-form-sbody account-form-ignorelist">
               {blacklist.map((ignoredID) =>
-                <li class="accont-form-ignoreitem">
+                <li class="account-form-ignoreitem">
                   {ignoredID}
                 </li>,
               )}
             </ul>
           </article>
+        </article>
+        <article class="account-form-section">
+          <div class="account-form-sbody">
+            <label class="option-label">
+              <input
+                class="account-form-checkbox option-checkbox"
+                type="checkbox"
+                checked={includeAnon}
+                onChange={this.handleIncludeAnonToggle}
+              />
+              {_("Including anonymous")}
+            </label>
+          </div>
         </article>
         <button class="button account-save-button" onClick={this.handleSave}>
           <i class={cx("account-save-icon fa", {
@@ -177,9 +202,22 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
     const name = (e.target as HTMLInputElement).value;
     this.setState({name});
   }
+  private handleIncludeAnonToggle = (e: Event) => {
+    e.preventDefault();
+    const includeAnon = !this.state.includeAnon;
+    this.setState({includeAnon});
+  }
   private handleSave = () => {
-    const { name, showName } = this.state;
-    const settings = {...account, name, showName};
+    const s = this.state;
+    const settings = {
+      ...account,
+      name: s.name,
+      showName: s.showName,
+      ignoreMode: s.ignoreMode,
+      includeAnon: s.includeAnon,
+      whitelist: s.whitelist,
+      blacklist: s.blacklist,
+    };
     this.setState({saving: true});
     API.account.setSettings(settings)
       .then(() => {
@@ -200,36 +238,30 @@ interface IgnoreState {
   userID: string;
   savingWL: boolean;
   savingBL: boolean;
+  whitelist: string[];
+  blacklist: string[];
 }
 
 class IgnoreModalBase extends Component<{}, IgnoreState> {
-  public state: IgnoreState = {
-    target: null,
-    userID: "",
+  public state = {
+    target: null as Element,
     shown: false,
     left: 0,
     top: 0,
+    userID: "",
     savingWL: false,
     savingBL: false,
+    whitelist: (account.whitelist || []).slice(),
+    blacklist: (account.blacklist || []).slice(),
   };
   public get saving() {
     return this.state.savingWL || this.state.savingBL;
   }
   public get wled() {
-    return account.whitelist
-      ? account.whitelist.includes(this.state.userID)
-      : false;
+    return this.state.whitelist.includes(this.state.userID);
   }
   public get bled() {
-    return account.blacklist
-      ? account.blacklist.includes(this.state.userID)
-      : false;
-  }
-  public get freshWL() {
-    return (account.whitelist || []).slice();
-  }
-  public get freshBL() {
-    return (account.blacklist || []).slice();
+    return this.state.blacklist.includes(this.state.userID);
   }
   public componentDidMount() {
     hook(HOOKS.openIgnoreModal, this.show);
@@ -237,7 +269,7 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
   public componentWillUnmount() {
     unhook(HOOKS.openIgnoreModal, this.show);
   }
-  public render({}, { userID, shown, left, top, savingWL, savingBL }: IgnoreState) {
+  public render({}, { shown, left, top, userID, savingWL, savingBL }: IgnoreState) {
     if (!shown) return null;
     const style = {left, top};
     return (
@@ -289,7 +321,7 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
     let { left, top } = target.getBoundingClientRect();
     left += window.pageXOffset;
     top += window.pageYOffset + 20;
-    this.setState({left, top, target, userID: post.userID, shown: true});
+    this.setState({target, left, top, shown: true, userID: post.userID});
   }
   private hide = () => {
     if (this.saving) return;
@@ -300,9 +332,7 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
   }
   private addToWhitelist = () => {
     if (this.saving) return;
-    const { userID } = this.state;
-    const whitelist = this.freshWL;
-    const blacklist = this.freshBL;
+    const { userID, whitelist, blacklist } = this.state;
     if (this.wled) {
       remove(whitelist, userID);
     } else {
@@ -322,9 +352,7 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
   }
   private addToBlacklist = () => {
     if (this.saving) return;
-    const { userID } = this.state;
-    const whitelist = this.freshWL;
-    const blacklist = this.freshBL;
+    const { userID, whitelist, blacklist } = this.state;
     if (this.bled) {
       remove(blacklist, userID);
     } else {

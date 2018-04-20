@@ -864,10 +864,11 @@ input[type=number], input[type=text], input[type=password], textarea {
   .account-form-section {
     flex: 1;
     justify-content: space-between;
+    margin-bottom: 0;
   }
 }
 
-.account-form-sheader {
+.account-form-shead {
   display: block;
   font-weight: bold;
   color: #000;
@@ -877,7 +878,7 @@ input[type=number], input[type=text], input[type=password], textarea {
   display: flex;
 }
 
-.account-form-showname {
+.account-form-checkbox {
   height: 22px;
   margin-top: 1px;
 }
@@ -897,6 +898,13 @@ input[type=number], input[type=text], input[type=password], textarea {
   padding: 0;
   list-style-type: none;
   overflow-y: auto;
+}
+
+.account-form-ignoreitem {
+  cursor: pointer;
+  &:hover {
+    text-decoration: line-through;
+  }
 }
 
 .account-save-button {
