@@ -223,6 +223,7 @@ h2 {
   }
   &:disabled {
     cursor: default;
+    opacity: 0.5;
   }
   &:focus {
     outline: none;
@@ -790,6 +791,9 @@ input[type=number], input[type=text], input[type=password], textarea {
 .option-select {
   cursor: pointer;
   outline: none;
+  &:disabled {
+    cursor: default;
+  }
 }
 
 .option-checkbox {
@@ -799,6 +803,9 @@ input[type=number], input[type=text], input[type=password], textarea {
   margin-right: 2px;
   cursor: pointer;
   outline: none;
+  &:disabled {
+    cursor: default;
+  }
 }
 
 .option-label {
@@ -806,6 +813,9 @@ input[type=number], input[type=text], input[type=password], textarea {
   min-width: 65px;
   cursor: pointer;
   user-select: none;
+}
+.option-label_disabled {
+  cursor: default;
 }
 
 .shortcut {
@@ -858,7 +868,6 @@ input[type=number], input[type=text], input[type=password], textarea {
 .account-form-section {
   margin-bottom: 15px;
 }
-
 .account-form-section_row {
   display: flex;
   .account-form-section {
@@ -872,6 +881,7 @@ input[type=number], input[type=text], input[type=password], textarea {
   display: block;
   font-weight: bold;
   color: #000;
+  cursor: default;
 }
 
 .account-form-sbody {

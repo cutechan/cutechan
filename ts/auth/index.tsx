@@ -112,6 +112,7 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
               class="account-form-checkbox option-checkbox"
               type="checkbox"
               checked={showName}
+              disabled={saving}
               onChange={this.handleShowNameToggle}
             />
             <input
@@ -119,6 +120,7 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
               type="text"
               placeholder={_("Name")}
               value={name}
+              disabled={saving}
               onChange={this.handleNameChange}
             />
           </div>
@@ -131,6 +133,8 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
             <select
               class="account-form-ignoremode option-select"
               value={ignoreMode.toString()}
+              disabled={saving}
+              onChange={this.handleIgnoreModeChange}
             >
               <option value={IgnoreMode.disabled.toString()}>
                 {_("No ignore")}
@@ -150,9 +154,13 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
               {_("Whitelist")}
             </h3>
             <ul class="account-form-sbody account-form-ignorelist">
-              {whitelist.map((ignoredID) =>
-                <li class="account-form-ignoreitem">
-                  {ignoredID}
+              {whitelist.map((userID) =>
+                <li
+                  key={userID}
+                  class="account-form-ignoreitem"
+                  onClick={() => this.handleWhitelistRemove(userID)}
+                >
+                  {userID}
                 </li>,
               )}
             </ul>
@@ -162,9 +170,13 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
               {_("Blacklist")}
             </h3>
             <ul class="account-form-sbody account-form-ignorelist">
-              {blacklist.map((ignoredID) =>
-                <li class="account-form-ignoreitem">
-                  {ignoredID}
+              {blacklist.map((userID) =>
+                <li
+                  key={userID}
+                  class="account-form-ignoreitem"
+                  onClick={() => this.handleBlacklistRemove(userID)}
+                >
+                  {userID}
                 </li>,
               )}
             </ul>
@@ -172,18 +184,19 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
         </article>
         <article class="account-form-section">
           <div class="account-form-sbody">
-            <label class="option-label">
+            <label class={cx("option-label", saving && "option-label_disabled")}>
               <input
                 class="account-form-checkbox option-checkbox"
                 type="checkbox"
                 checked={includeAnon}
+                disabled={saving}
                 onChange={this.handleIncludeAnonToggle}
               />
               {_("Including anonymous")}
             </label>
           </div>
         </article>
-        <button class="button account-save-button" onClick={this.handleSave}>
+        <button class="button account-save-button" disabled={saving} onClick={this.handleSave}>
           <i class={cx("account-save-icon fa", {
             "fa-spinner fa-pulse fa-fw": saving,
             "fa-check-circle": !saving,
@@ -201,6 +214,22 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
   private handleNameChange = (e: Event) => {
     const name = (e.target as HTMLInputElement).value;
     this.setState({name});
+  }
+  private handleIgnoreModeChange = (e: Event) => {
+    const ignoreMode = +(e.target as HTMLInputElement).value;
+    this.setState({ignoreMode});
+  }
+  private handleWhitelistRemove = (userID: string) => {
+    const { whitelist, saving } = this.state;
+    if (saving) return;
+    remove(whitelist, userID);
+    this.setState({whitelist});
+  }
+  private handleBlacklistRemove = (userID: string) => {
+    const { blacklist, saving } = this.state;
+    if (saving) return;
+    remove(blacklist, userID);
+    this.setState({blacklist});
   }
   private handleIncludeAnonToggle = (e: Event) => {
     e.preventDefault();
