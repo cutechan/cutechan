@@ -7,7 +7,6 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
-	"strconv"
 	"time"
 )
 
@@ -52,13 +51,11 @@ func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 		return
 	}
 	modTime := stats.ModTime()
-	etag := strconv.FormatInt(modTime.Unix(), 10)
 
 	head := w.Header()
 	for key, val := range vanillaHeaders {
 		head.Set(key, val)
 	}
-	head.Set("ETag", etag)
 	http.ServeContent(w, r, path, modTime, file)
 }
 
