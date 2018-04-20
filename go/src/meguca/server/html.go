@@ -25,12 +25,12 @@ func serveHTML(
 		text500(w, r, err)
 		return
 	}
-	if assertCached(w, r, buf) {
-		return
-	}
 	head := w.Header()
 	for key, val := range vanillaHeaders {
 		head.Set(key, val)
+	}
+	if assertCached(w, r, buf) {
+		return
 	}
 	head.Set("Content-Type", "text/html")
 	writeData(w, r, buf)
