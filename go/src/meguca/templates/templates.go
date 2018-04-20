@@ -30,7 +30,7 @@ func Board(
 	b string,
 	page, total int,
 	ss *auth.Session,
-	minimal, catalog bool,
+	catalog bool,
 	threadHTML []byte,
 ) []byte {
 	boardConf := config.GetBoardConfigs(b)
@@ -45,9 +45,6 @@ func Board(
 		page, total,
 		catalog,
 	)
-	if minimal {
-		return []byte(html)
-	}
 	return Page(ss, title, html)
 }
 

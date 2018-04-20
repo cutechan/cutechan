@@ -92,13 +92,8 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		n = p.pageNumber
 		total = p.pageTotal
 	}
-	html = templates.Board(b, n, total, ss, isMinimal(r), catalog, html)
+	html = templates.Board(b, n, total, ss, catalog, html)
 	serveHTML(w, r, etag, html, nil)
-}
-
-// Returns, if the minimal query string is not set
-func isMinimal(r *http.Request) bool {
-	return r.URL.Query().Get("minimal") == "true"
 }
 
 // Asserts a thread exists on the specific board and renders the index template
