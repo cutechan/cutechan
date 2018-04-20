@@ -250,3 +250,42 @@ func serveStickers(w http.ResponseWriter, r *http.Request) {
 	html := templates.Stickers(ss, stickHTML)
 	serveHTML(w, r, "", html, nil)
 }
+
+// Confirms a the thread exists on the board and returns its ID. If an error
+// occurred and the calling function should return, ok = false.
+func validateThread(w http.ResponseWriter, r *http.Request) (
+	ss *auth.Session,
+	id uint64,
+	ok bool,
+) {
+	b := getParam(r, "board")
+	if !assertBoard(w, b) {
+		return
+	}
+	ss, _ = getSession(r, b)
+	if !assertNotModOnly(w, b, ss) {
+		return
+	}
+	if !assertNotBanned(w, r, b) {
+		return
+	}
+
+	id, err := strconv.ParseUint(getParam(r, "thread"), 10, 64)
+	if err != nil {
+		serve404(w)
+		return
+	}
+
+	valid, err := db.ValidateOP(id, b)
+	if err != nil {
+		text500(w, r, err)
+		return
+	}
+	if !valid {
+		serve404(w)
+		return
+	}
+
+	ok = true
+	return
+}
