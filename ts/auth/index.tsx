@@ -70,6 +70,9 @@ declare global {
 
 export const session = window.session;
 export const account = session ? session.settings : {};
+account.ignoreMode = account.ignoreMode || 0;
+account.whitelist = account.whitelist || [];
+account.blacklist = account.blacklist || [];
 export const position = session ? session.positions.curBoard : ModerationLevel.notLoggedIn;
 export const anyposition = session ? session.positions.curBoard : ModerationLevel.notLoggedIn;
 
@@ -93,9 +96,9 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
   public state = {
     ...account,
     saving: false,
-    ignoreMode: account.ignoreMode || 0,
-    whitelist: (account.whitelist || []).slice(),
-    blacklist: (account.blacklist || []).slice(),
+    ignoreMode: account.ignoreMode,
+    whitelist: account.whitelist.slice(),
+    blacklist: account.blacklist.slice(),
   };
   public render({}, {
     name, showName, ignoreMode, includeAnon, whitelist, blacklist,
@@ -272,16 +275,16 @@ interface IgnoreState {
 }
 
 class IgnoreModalBase extends Component<{}, IgnoreState> {
-  public state = {
-    target: null as Element,
+  public state: IgnoreState = {
+    target: null,
     shown: false,
     left: 0,
     top: 0,
     userID: "",
     savingWL: false,
     savingBL: false,
-    whitelist: (account.whitelist || []).slice(),
-    blacklist: (account.blacklist || []).slice(),
+    whitelist: [],
+    blacklist: [],
   };
   public get saving() {
     return this.state.savingWL || this.state.savingBL;
@@ -350,7 +353,13 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
     let { left, top } = target.getBoundingClientRect();
     left += window.pageXOffset;
     top += window.pageYOffset + 20;
-    this.setState({target, left, top, shown: true, userID: post.userID});
+    this.setState({
+      shown: true,
+      target, left, top,
+      userID: post.userID,
+      whitelist: account.whitelist.slice(),
+      blacklist: account.blacklist.slice(),
+    });
   }
   private hide = () => {
     if (this.saving) return;
