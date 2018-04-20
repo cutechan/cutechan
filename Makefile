@@ -5,7 +5,7 @@ export HTMLMIN = $(NODE_BIN)/html-minifier
 export GULP = $(NODE_BIN)/gulp
 
 all: templates smiles client server
-precommit: gofmt-staged server tslint-staged
+precommit: gofmt-staged tslint-staged
 
 update-main-deps:
 	npm install
