@@ -313,10 +313,10 @@ func setAccountSettings(r *http.Request, ss *auth.Session) (err error) {
 		len(as.Blacklist) > common.MaxLenIgnoreList {
 		return aerrTooManyIgnores
 	}
-	// Don't bother matching against DB values. It's user's problem if
-	// they passed wrong user IDs (not possible via UI).
 	ignores := make(map[string]bool)
 	for _, id := range as.Whitelist {
+		// Don't bother matching against DB values. It's their problem if
+		// they passed wrong user IDs.
 		if !checkUserID(id) {
 			return aerrInvalidUserID
 		}

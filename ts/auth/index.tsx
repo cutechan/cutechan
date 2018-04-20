@@ -95,10 +95,9 @@ interface IdentityState extends AccountSettings {
 class IdentityTab extends Component<IdentityProps, IdentityState> {
   public state = {
     ...account,
-    saving: false,
-    ignoreMode: account.ignoreMode,
     whitelist: account.whitelist.slice(),
     blacklist: account.blacklist.slice(),
+    saving: false,
   };
   public render({}, {
     name, showName, ignoreMode, includeAnon, whitelist, blacklist,
@@ -159,7 +158,6 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
             <ul class="account-form-sbody account-form-ignorelist">
               {whitelist.map((userID) =>
                 <li
-                  key={userID}
                   class="account-form-ignoreitem"
                   onClick={() => this.handleWhitelistRemove(userID)}
                 >
@@ -167,6 +165,16 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
                 </li>,
               )}
             </ul>
+            <div class="account-form-newignoreitem">
+              <input
+                class="account-form-name"
+                type="text"
+                placeholder={_("Add name")}
+                title={_("Enter to add")}
+                disabled={saving}
+                onKeyDown={this.handleWLNameKey}
+              />
+            </div>
           </article>
           <article class="account-form-section">
             <h3 class="account-form-shead">
@@ -175,7 +183,6 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
             <ul class="account-form-sbody account-form-ignorelist">
               {blacklist.map((userID) =>
                 <li
-                  key={userID}
                   class="account-form-ignoreitem"
                   onClick={() => this.handleBlacklistRemove(userID)}
                 >
@@ -183,6 +190,16 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
                 </li>,
               )}
             </ul>
+            <div class="account-form-newignoreitem">
+              <input
+                class="account-form-name"
+                type="text"
+                placeholder={_("Add name")}
+                title={_("Enter to add")}
+                disabled={saving}
+                onKeyDown={this.handleBLNameKey}
+              />
+            </div>
           </article>
         </article>
         <article class="account-form-section">
@@ -215,6 +232,7 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
     this.setState({showName});
   }
   private handleNameChange = (e: Event) => {
+    // TODO(Kagami): Validate name properly.
     const name = (e.target as HTMLInputElement).value;
     this.setState({name});
   }
@@ -233,6 +251,41 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
     if (saving) return;
     remove(blacklist, userID);
     this.setState({blacklist});
+  }
+  private isValidIgnoreName(name: string): boolean {
+    // TODO(Kagami): Validate name chars and highlight invalid inputs?
+    return (
+      name.length >= 1
+      && name.length <= 20
+      && !this.state.whitelist.includes(name)
+      && !this.state.blacklist.includes(name)
+    );
+  }
+  private handleWLNameKey = (e: KeyboardEvent) => {
+    if (e.keyCode === 13) {
+      const { whitelist } = this.state;
+      const wlNameEl = e.target as HTMLInputElement;
+      const wlName = wlNameEl.value;
+      if (!this.isValidIgnoreName(wlName)) {
+        return;
+      }
+      whitelist.push(wlName);
+      this.setState({whitelist});
+      wlNameEl.value = "";
+    }
+  }
+  private handleBLNameKey = (e: KeyboardEvent) => {
+    if (e.keyCode === 13) {
+      const { blacklist } = this.state;
+      const blNameEl = e.target as HTMLInputElement;
+      const blName = blNameEl.value;
+      if (!this.isValidIgnoreName(blName)) {
+        return;
+      }
+      blacklist.push(blName);
+      this.setState({blacklist});
+      blNameEl.value = "";
+    }
   }
   private handleIncludeAnonToggle = (e: Event) => {
     e.preventDefault();

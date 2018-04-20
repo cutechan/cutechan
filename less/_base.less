@@ -874,6 +874,9 @@ input[type=number], input[type=text], input[type=password], textarea {
     flex: 1;
     justify-content: space-between;
     margin-bottom: 0;
+    &:first-child {
+      margin-right: 10px;
+    }
   }
 }
 
@@ -902,6 +905,7 @@ input[type=number], input[type=text], input[type=password], textarea {
 }
 
 .account-form-ignorelist {
+  display: block;
   box-sizing: border-box;
   max-height: 250px;
   margin: 0;
@@ -911,9 +915,21 @@ input[type=number], input[type=text], input[type=password], textarea {
 }
 
 .account-form-ignoreitem {
+  width: 0;
   cursor: pointer;
   &:hover {
     text-decoration: line-through;
+  }
+}
+
+.account-form-newignoreitem {
+  // FIXME(Kagami): Fix awful legacy styles.
+  .account-form-name[type=text] {
+    width: 8em;
+    height: 19px;
+    border: none;
+    background: none;
+    margin-right: 5px;
   }
 }
 
