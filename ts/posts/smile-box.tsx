@@ -57,7 +57,7 @@ function isIdolSmile(id: string): boolean {
 
 // Recent smiles list routines.
 
-const MAX_RECENT = 8;
+const MAX_RECENT = 16;
 let recent = [] as string[];
 
 function loadRecent() {
