@@ -177,7 +177,7 @@ func assertCached(
 	r *http.Request,
 	buf []byte,
 ) bool {
-	etag := fmt.Sprintf("\"%s\"", util.HashBuffer(buf))
+	etag := fmt.Sprintf("W/\"%s\"", util.HashBuffer(buf))
 	if etag == r.Header.Get("If-None-Match") {
 		// https://tools.ietf.org/html/rfc2616#section-10.3.5
 		// https://stackoverflow.com/a/4226409
