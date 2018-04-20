@@ -11,9 +11,12 @@ import (
 	"time"
 
 	"meguca/assets"
+	"meguca/auth"
 	"meguca/common"
 	"meguca/config"
 	"meguca/lang"
+
+	"github.com/valyala/quicktemplate"
 )
 
 type PostContext struct {
@@ -106,11 +109,9 @@ func (ctx *PostContext) PostClass() string {
 		}
 	}
 	if ctx.post.UserID == "" {
-		classes = append(classes, "post_by-anon")
+		classes = append(classes, getByAnonCls())
 	} else {
-		src := []byte(ctx.post.UserID)
-		id := base64.RawStdEncoding.EncodeToString(src)
-		classes = append(classes, "post_by-"+id)
+		classes = append(classes, getByIDCls(ctx.post.UserID))
 	}
 	return strings.Join(classes, " ")
 }
@@ -288,5 +289,71 @@ func pluralize2(n1, n2 int, plurals []string) string {
 		return plurals[0]
 	} else {
 		return plurals[1]
+	}
+}
+
+func getByAnonCls() string {
+	return "post_by-anon"
+}
+
+func getByIDCls(id string) string {
+	src := []byte(id)
+	s := base64.RawStdEncoding.EncodeToString(src)
+	return "post_by-" + s
+}
+
+func getByAnonSel() string {
+	return ".post_by-anon"
+}
+
+func getByIDSel(id string) string {
+	src := []byte(id)
+	s := base64.RawStdEncoding.EncodeToString(src)
+	// https://mathiasbynens.be/notes/css-escapes
+	s = strings.Replace(s, "+", "\\+", -1)
+	s = strings.Replace(s, "/", "\\/", -1)
+	return ".post_by-" + s
+}
+
+func streamgenerateIgnoreCSS(qw *quicktemplate.Writer, ss *auth.Session) {
+	if ss == nil {
+		return
+	}
+	as := ss.Settings
+	switch as.IgnoreMode {
+	case auth.IgnoreDisabled:
+		// Do nothing.
+	case auth.IgnoreByBlacklist:
+		hadRule := false
+		for _, id := range as.Blacklist {
+			if hadRule {
+				qw.N().S(",")
+			}
+			qw.N().S(getByIDSel(id))
+			hadRule = true
+		}
+		if as.IncludeAnon {
+			if hadRule {
+				qw.N().S(",")
+			}
+			qw.N().S(getByAnonSel())
+			hadRule = true
+		}
+		if hadRule {
+			qw.N().S("{visibility:hidden;height:0;margin:0;padding:0}")
+		}
+	case auth.IgnoreByWhitelist:
+		qw.N().S(".post{visibility:hidden;height:0;margin:0;padding:0}")
+		// Always show own posts.
+		qw.N().S(getByIDSel(ss.UserID))
+		for _, id := range as.Whitelist {
+			qw.N().S(",")
+			qw.N().S(getByIDSel(id))
+		}
+		if as.IncludeAnon {
+			qw.N().S(",")
+			qw.N().S(getByAnonSel())
+		}
+		qw.N().S("{visibility:visible;height:auto;margin:0 0 10px 0;padding:4px 10px}")
 	}
 }

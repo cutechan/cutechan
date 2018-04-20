@@ -1098,9 +1098,11 @@ input[type=number], input[type=text], input[type=password], textarea {
 //////////////////////////////
 
 .post {
-  box-sizing: border-box;
-  margin: @postMargin;
+  // NOTE(Kagami): MUST BE IN SYNC WITH isomorph.go and isomorph.ts!!!
+  margin: 0 0 10px 0;
   padding: 4px 10px;
+
+  box-sizing: border-box;
   min-width: 200px;
   max-width: 1000px;
   border-radius: 2px;

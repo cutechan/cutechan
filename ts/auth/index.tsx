@@ -259,6 +259,7 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
       && name.length <= 20
       && !this.state.whitelist.includes(name)
       && !this.state.blacklist.includes(name)
+      && name !== session.userID
     );
   }
   private handleWLNameKey = (e: KeyboardEvent) => {

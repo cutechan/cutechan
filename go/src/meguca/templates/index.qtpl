@@ -50,6 +50,9 @@
 		{% if conf.ImageRootOverride != "" %}
 			<link rel="dns-prefetch" href="{%s conf.ImageRootOverride %}">
 		{% endif %}
+		<style id="ignore-css">
+			{%= generateIgnoreCSS(ss) %}
+		</style>
 		<script>
 			var config={%z= confJSON %},boards={%z= boardJSON %},session={%z= sessionJSON %};
 			if (localStorage.theme !== config.DefaultCSS) {
