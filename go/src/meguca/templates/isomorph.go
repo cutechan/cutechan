@@ -3,15 +3,17 @@
 package templates
 
 import (
+	"encoding/base64"
 	"fmt"
-	"meguca/assets"
-	"meguca/common"
-	"meguca/config"
-	"meguca/lang"
 	"sort"
 	"strconv"
 	"strings"
 	"time"
+
+	"meguca/assets"
+	"meguca/common"
+	"meguca/config"
+	"meguca/lang"
 )
 
 type PostContext struct {
@@ -102,6 +104,13 @@ func (ctx *PostContext) PostClass() string {
 			classes = append(classes, "post_embed")
 			break
 		}
+	}
+	if ctx.post.UserID == "" {
+		classes = append(classes, "post_by-anon")
+	} else {
+		src := []byte(ctx.post.UserID)
+		id := base64.RawStdEncoding.EncodeToString(src)
+		classes = append(classes, "post_by-"+id)
 	}
 	return strings.Join(classes, " ")
 }

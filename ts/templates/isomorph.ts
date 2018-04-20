@@ -65,6 +65,13 @@ export function makePostContext(
         break;
       }
     }
+    if (p.userID === "") {
+      classes.push("post_by-anon");
+    } else {
+      const src = unescape(encodeURIComponent(p.userID));
+      const id = btoa(src).replace(/=+$/, "");
+      classes.push("post_by-" + id);
+    }
     return classes.join(" ");
   };
 
