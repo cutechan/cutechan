@@ -3,7 +3,7 @@
 {% import "meguca/auth" %}
 
 OwnedBoard renders a form for selecting one of several boards owned by the user
-{% func OwnedBoard(boards config.BoardTitles) %}{% stripspace %}
+{% func OwnedBoard(boards config.BoardConfigs) %}{% stripspace %}
 	{% if len(boards) != 0 %}
 		<select name="boards" required>
 			{% for _, b := range boards %}
@@ -41,7 +41,7 @@ BoardNavigation renders a board selection and search form
 			</label>
 		</span>
 		<div>
-			{% for _, b := range config.GetBoardTitles() %}
+			{% for _, b := range config.GetBoardConfigs() %}
 				<label class="board">
 					<input type="checkbox" name="{%s b.ID %}">
 					<a href="/{%s b.ID %}/">

@@ -154,7 +154,7 @@ func boardConfData(w http.ResponseWriter, r *http.Request) (
 		return conf, false
 	}
 
-	conf = config.GetBoardConfig(board).BoardConfig
+	conf = config.GetBoardConfig(board)
 	conf.ID = board
 	if conf.ID == "" {
 		serve404(w)
@@ -213,8 +213,8 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 	defer db.RollbackOnError(tx, &err)
 
 	err = db.WriteBoard(tx, config.BoardConfig{
-		ID: msg.ID,
 		BoardPublic: config.BoardPublic{
+			ID:    msg.ID,
 			Title: msg.Title,
 		},
 	})

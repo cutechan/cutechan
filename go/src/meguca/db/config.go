@@ -60,7 +60,7 @@ func loadBoardConfigs() error {
 		if err != nil {
 			return err
 		}
-		if _, err := config.SetBoardConfig(c); err != nil {
+		if err := config.SetBoardConfig(c); err != nil {
 			return err
 		}
 	}
@@ -85,6 +85,7 @@ func readBoardConfig(r rowScanner) (c config.BoardConfig, err error) {
 	if err = c.Unmarshal(stData); err != nil {
 		return
 	}
+	// Explicitly set fields which are stored in table columns.
 	c.ID = id
 	c.ModOnly = modOnly
 	return
@@ -101,7 +102,7 @@ func updateBoardConfig(board string) error {
 	default:
 		return err
 	}
-	if _, err = config.SetBoardConfig(conf); err != nil {
+	if err = config.SetBoardConfig(conf); err != nil {
 		return util.WrapError("reloading board configuration", err)
 	}
 	return nil

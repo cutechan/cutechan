@@ -134,8 +134,8 @@ func ownedBoardSelection(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	ownedTitles := config.GetBoardTitlesByList(owned)
-	serveHTML(w, r, []byte(templates.OwnedBoard(ownedTitles)), nil)
+	ownedConfigs := config.GetBoardConfigsByID(owned)
+	serveHTML(w, r, []byte(templates.OwnedBoard(ownedConfigs)), nil)
 }
 
 // Renders a form for configuring a board owned by the user

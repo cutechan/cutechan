@@ -1,6 +1,5 @@
 {% import "fmt" %}
 {% import "strconv" %}
-{% import "meguca/config" %}
 {% import "meguca/common" %}
 {% import "meguca/lang" %}
 {% import "meguca/assets" %}
@@ -56,7 +55,7 @@
 	</nav>
 {% endstripspace %}{% endfunc %}
 
-{% func renderBoard(threadHTML []byte, id, title string, conf config.BoardConfContainer, page, total int, catalog bool) %}{% stripspace %}
+{% func renderBoard(threadHTML []byte, id, title string, page, total int, catalog bool) %}{% stripspace %}
 	<section class="board" id="threads">
 		<h1 class="page-title">{%s title %}</h1>
 		<aside class="reply-container reply-container_board"></aside>

@@ -1,9 +1,8 @@
-{% import "encoding/json" %}
 {% import "meguca/config" %}
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
 
-{% func renderHeader(boards config.BoardTitles) %}{% stripspace %}
+{% func renderHeader(boards config.BoardConfigs) %}{% stripspace %}
 	{% code ln := lang.Get() %}
 	<header class="header">
 		<a class="header-item header-logo" href="/" title="{%s ln.UI["main"] %}">
@@ -32,9 +31,9 @@
 
 {% func renderPage(ss *auth.Session, title string, page string) %}{% stripspace %}
 	{% code conf := config.Get() %}
-	{% code confJSON := config.GetClient() %}
-	{% code boards := config.GetBoardTitles() %}
-	{% code boardJSON, _ := json.Marshal(boards) %}
+	{% code confJSON := config.GetJSON() %}
+	{% code boards := config.GetBoardConfigs() %}
+	{% code boardsJSON := config.GetBoardsJSON() %}
 	{% code sessionJSON := ss.TryMarshal() %}
 	{% code pos := ss.GetPositions() %}
 	<!DOCTYPE html>
@@ -55,7 +54,7 @@
 			{%= generateIgnoreCSS(ss) %}
 		</style>
 		<script>
-			var config={%z= confJSON %},boards={%z= boardJSON %},session={%z= sessionJSON %};
+			var config={%z= confJSON %},boards={%z= boardsJSON %},session={%z= sessionJSON %};
 			if (localStorage.theme !== config.DefaultCSS) {
 				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
 			}

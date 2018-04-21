@@ -1,2 +1,3 @@
-select board from staff
-  where account = $1 and position = 'owners'
+SELECT board FROM staff
+WHERE account = $1 AND position = 'owners'
+ORDER BY board

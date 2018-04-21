@@ -41,7 +41,6 @@ func Board(
 	html := renderBoard(
 		threadHTML,
 		b, title,
-		boardConf,
 		page, total,
 		catalog,
 	)

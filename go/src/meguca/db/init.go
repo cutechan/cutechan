@@ -2,9 +2,9 @@ package db
 
 import (
 	"database/sql"
-	"encoding/json"
 	"fmt"
 	"log"
+
 	"meguca/auth"
 	"meguca/common"
 	"meguca/config"
@@ -101,7 +101,7 @@ var upgrades = []func(*sql.Tx) error{
 
 		// conf.ThreadExpiryMin = config.Defaults.ThreadExpiryMin
 		// conf.ThreadExpiryMax = config.Defaults.ThreadExpiryMax
-		buf, err = json.Marshal(conf)
+		buf, err = conf.Marshal()
 		if err != nil {
 			return
 		}
@@ -498,7 +498,7 @@ var upgrades = []func(*sql.Tx) error{
 		// Fill settings.
 		for _, b := range boards {
 			var settings []byte
-			settings, err = json.Marshal(b)
+			settings, err = b.Marshal()
 			if err != nil {
 				return
 			}
@@ -552,7 +552,7 @@ func StartDb() (err error) {
 func initDb() error {
 	log.Println("initializing database")
 
-	conf, err := json.Marshal(config.Defaults)
+	conf, err := config.DefaultServerConfig.Marshal()
 	if err != nil {
 		return err
 	}

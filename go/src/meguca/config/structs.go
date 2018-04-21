@@ -34,11 +34,15 @@ func (c *ServerPublic) Marshal() ([]byte, error) {
 
 type BoardConfig struct {
 	BoardPublic
-	ID      string `json:"-"`
-	ModOnly bool   `json:"-"`
+	ModOnly bool `json:"-"`
+	// Pregenerated public JSON.
+	json []byte
 }
 
 type BoardPublic struct {
+	// ID will be duplicated in DB because we need to pass it to client
+	// but that doesn't matter.
+	ID       string `json:"id"`
 	Title    string `json:"title"`
 	ReadOnly bool   `json:"readOnly,omitempty"`
 }
@@ -55,27 +59,17 @@ func (c *BoardPublic) Marshal() ([]byte, error) {
 	return easyjson.Marshal(c)
 }
 
-type BoardConfContainer struct {
-	BoardConfig
-	JSON []byte
-}
-
-type BoardTitle struct {
-	ID    string `json:"id"`
-	Title string `json:"title"`
-}
-
 // Implements sort.Interface
-type BoardTitles []BoardTitle
+type BoardConfigs []BoardConfig
 
-func (b BoardTitles) Len() int {
+func (b BoardConfigs) Len() int {
 	return len(b)
 }
 
-func (b BoardTitles) Less(i, j int) bool {
+func (b BoardConfigs) Less(i, j int) bool {
 	return b[i].ID < b[j].ID
 }
 
-func (b BoardTitles) Swap(i, j int) {
+func (b BoardConfigs) Swap(i, j int) {
 	b[i], b[j] = b[j], b[i]
 }
