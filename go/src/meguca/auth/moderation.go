@@ -13,13 +13,23 @@ var (
 	NullPositions = Positions{CurBoard: NotLoggedIn, AnyBoard: NotLoggedIn}
 )
 
+// ModerationLevel defines the level required to perform an action
+type ModerationLevel int8
+
+// All available moderation levels
+const (
+	NotLoggedIn ModerationLevel = iota - 1
+	NotStaff
+	Janitor
+	Moderator
+	BoardOwner
+	Admin
+)
+
 type Positions struct {
 	CurBoard ModerationLevel `json:"curBoard"`
 	AnyBoard ModerationLevel `json:"anyBoard"`
 }
-
-// ModerationLevel defines the level required to perform an action
-type ModerationLevel int8
 
 // Reads moderation level from string representation
 func (l *ModerationLevel) FromString(s string) {
@@ -52,18 +62,6 @@ func (l ModerationLevel) String() string {
 		return ""
 	}
 }
-
-// All available moderation levels
-const (
-	NotLoggedIn ModerationLevel = iota - 1
-	NotStaff
-	Janitor
-	Moderator
-	BoardOwner
-	Admin
-)
-
-const MaxModerationLevel = Admin
 
 func IsPowerUser(pos Positions) bool {
 	return pos.AnyBoard >= Janitor
@@ -109,7 +107,6 @@ func IsBanned(board, ip string) (banned bool) {
 	defer bansMu.RUnlock()
 	global := bans["all"]
 	ips := bans[board]
-
 	if global != nil && global[ip] {
 		return true
 	}
@@ -131,17 +128,16 @@ func GetBannedLevels(board, ip string) (globally, locally bool) {
 
 // SetBans replaces the ban cache with the new set
 func SetBans(b ...Ban) {
-	new := map[string]map[string]bool{}
+	newBans := map[string]map[string]bool{}
 	for _, b := range b {
-		board, ok := new[b.Board]
+		board, ok := newBans[b.Board]
 		if !ok {
 			board = map[string]bool{}
-			new[b.Board] = board
+			newBans[b.Board] = board
 		}
 		board[b.IP] = true
 	}
-
 	bansMu.Lock()
-	bans = new
+	bans = newBans
 	bansMu.Unlock()
 }
