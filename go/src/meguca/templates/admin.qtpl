@@ -94,7 +94,4 @@ Renders a moderation log page
 {% endstripspace %}{% endfunc %}
 
 {% func renderAdmin() %}{% stripspace %}
-	<section class="admin">
-		<h1 class="page-title">{%s lang.GT("Admin") %}</h1>
-	</section>
 {% endstripspace %}{% endfunc %}

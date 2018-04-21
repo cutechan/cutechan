@@ -114,7 +114,6 @@ var specs = map[string][]inputSpec{
 		},
 	},
 	"configureServer": {
-		{ID: "captcha"},
 		{ID: "disableUserBoards"},
 		{
 			ID:      "defaultCSS",

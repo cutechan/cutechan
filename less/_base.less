@@ -303,14 +303,6 @@ html, body {
   color: @pagetitle;
 }
 
-.admin {
-  .page-title {
-    font-size: 36px;
-    margin: 20px 0;
-    text-align: center;
-  }
-}
-
 //////////////////////////////
 // HEADER
 //////////////////////////////
@@ -1939,10 +1931,8 @@ html:not(.pos_moderators) {
 }
 
 .smiles-separator {
-  width: 100%;
+  .separator;
   margin: 0 0 5px 0;
-  border: none;
-  border-top: @separatorBorder;
 }
 
 .smiles-item {
@@ -2133,6 +2123,105 @@ html.user_power {
   position: absolute;
   top: 4px;
   right: 4px;
+}
+
+//////////////////////////////
+// ADMIN
+//////////////////////////////
+
+.admin {
+  max-width: 1000px;
+  margin: 0 auto;
+
+  .page-title {
+    font-size: 36px;
+    margin: 30px 0;
+    text-align: center;
+  }
+}
+
+.admin-board-select {
+  font-size: 25px;
+  width: 120px;
+  margin-left: 20px;
+  text-align: center;
+  text-align-last: center;
+  cursor: pointer;
+  outline: none;
+}
+
+.admin-section-tabs {
+  display: flex;
+  justify-content: space-between;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.admin-section-tab {
+  font-size: 25px;
+  color: @link;
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    color: @linkHover;
+  }
+}
+
+.admin-content-header {
+  display: block;
+  font-size: 32px;
+  margin-bottom: 15px;
+  text-align: center;
+  color: @link;
+  cursor: pointer;
+  user-select: none;
+  &:hover {
+    color: @linkHover;
+  }
+}
+
+.settings-label {
+  display: flex;
+  width: 400px;
+  margin: 0 auto;
+  font-size: 20px;
+  cursor: pointer;
+}
+
+.settings-text {
+  width: 200px;
+}
+
+.settings-input {
+  flex: 1;
+  min-width: 0;
+  outline: none;
+  -moz-appearance: none;
+}
+
+.settings-checkbox {
+  height: 28px;
+  outline: none;
+}
+
+.admin-control {
+  font-size: 20px;
+  margin-left: 10px;
+}
+
+.bans {
+  text-align: center;
+}
+
+.ban-list {
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+}
+
+.ban2 {
+  font-size: 20px;
 }
 
 //////////////////////////////
