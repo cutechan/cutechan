@@ -2,6 +2,10 @@
 
 package config
 
+import (
+	"github.com/mailru/easyjson"
+)
+
 type ServerConfig struct {
 	ServerPublic
 }
@@ -16,6 +20,18 @@ type ServerPublic struct {
 	ImageRootOverride string `json:"imageRootOverride"`
 }
 
+func (c *ServerConfig) Marshal() ([]byte, error) {
+	return easyjson.Marshal(c)
+}
+
+func (c *ServerConfig) Unmarshal(data []byte) error {
+	return easyjson.Unmarshal(data, c)
+}
+
+func (c *ServerPublic) Marshal() ([]byte, error) {
+	return easyjson.Marshal(c)
+}
+
 type BoardConfig struct {
 	BoardPublic
 	ID      string `json:"-"`
@@ -25,6 +41,18 @@ type BoardConfig struct {
 type BoardPublic struct {
 	Title    string `json:"title"`
 	ReadOnly bool   `json:"readOnly,omitempty"`
+}
+
+func (c *BoardConfig) Marshal() ([]byte, error) {
+	return easyjson.Marshal(c)
+}
+
+func (c *BoardConfig) Unmarshal(data []byte) error {
+	return easyjson.Unmarshal(data, c)
+}
+
+func (c *BoardPublic) Marshal() ([]byte, error) {
+	return easyjson.Marshal(c)
 }
 
 type BoardConfContainer struct {

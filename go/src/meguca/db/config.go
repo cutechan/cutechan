@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"encoding/json"
 
 	"meguca/config"
 	"meguca/util"
@@ -28,7 +27,7 @@ func getServerConfig() (c config.ServerConfig, err error) {
 }
 
 func decodeServerConfig(data []byte) (c config.ServerConfig, err error) {
-	err = json.Unmarshal(data, &c)
+	err = c.Unmarshal(data)
 	return
 }
 
@@ -42,7 +41,7 @@ func updateServerConfig(msg string) error {
 }
 
 func SetServerConfig(c config.ServerConfig) error {
-	data, err := json.Marshal(c)
+	data, err := c.Marshal()
 	if err != nil {
 		return err
 	}
@@ -79,11 +78,11 @@ func GetBoardConfig(board string) (config.BoardConfig, error) {
 func readBoardConfig(r rowScanner) (c config.BoardConfig, err error) {
 	var id string
 	var modOnly bool
-	var settings []byte
-	if err = r.Scan(&id, &modOnly, &settings); err != nil {
+	var stData []byte
+	if err = r.Scan(&id, &modOnly, &stData); err != nil {
 		return
 	}
-	if err = json.Unmarshal(settings, &c); err != nil {
+	if err = c.Unmarshal(stData); err != nil {
 		return
 	}
 	c.ID = id
@@ -109,18 +108,18 @@ func updateBoardConfig(board string) error {
 }
 
 func WriteBoard(tx *sql.Tx, c config.BoardConfig) (err error) {
-	settings, err := json.Marshal(c)
+	stData, err := c.Marshal()
 	if err != nil {
 		return
 	}
-	_, err = getStatement(tx, "write_board").Exec(c.ID, c.ModOnly, settings)
+	_, err = getStatement(tx, "write_board").Exec(c.ID, c.ModOnly, stData)
 	return
 }
 
 func UpdateBoard(c config.BoardConfig) (err error) {
-	settings, err := json.Marshal(c)
+	stData, err := c.Marshal()
 	if err != nil {
 		return
 	}
-	return execPrepared("update_board", c.ID, c.ModOnly, settings)
+	return execPrepared("update_board", c.ID, c.ModOnly, stData)
 }

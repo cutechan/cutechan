@@ -2,7 +2,6 @@ package db
 
 import (
 	"database/sql"
-	"encoding/json"
 	"errors"
 	"time"
 
@@ -35,9 +34,7 @@ func GetSession(board, token string) (ss *auth.Session, err error) {
 	}
 
 	var settings auth.AccountSettings
-	// TODO(Kagami): easyjson.
-	err = json.Unmarshal(settingsData, &settings)
-	if err != nil {
+	if err = settings.Unmarshal(settingsData); err != nil {
 		return
 	}
 	settings.Name = userName
@@ -53,7 +50,7 @@ func SetAccountSettings(userID string, as auth.AccountSettings) (err error) {
 	// NOTE(Kagami): We store name as a field to ensure uniqueness by DB.
 	// So it will be duplicated in JSON settings structure. We don't mind
 	// of this for simplicity and it won't cause any inconsistency.
-	settingsData, err := json.Marshal(as)
+	settingsData, err := as.Marshal()
 	if err != nil {
 		return
 	}

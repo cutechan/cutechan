@@ -9,8 +9,6 @@ import (
 	"sync"
 
 	"meguca/common"
-
-	"github.com/mailru/easyjson"
 )
 
 var (
@@ -47,7 +45,7 @@ var (
 
 func init() {
 	var err error
-	AllBoardConfig.JSON, err = easyjson.Marshal(AllBoardConfig.BoardPublic)
+	AllBoardConfig.JSON, err = AllBoardConfig.BoardPublic.Marshal()
 	if err != nil {
 		panic(err)
 	}
@@ -60,7 +58,7 @@ func Get() *ServerConfig {
 }
 
 func Set(c ServerConfig) error {
-	client, err := easyjson.Marshal(c.ServerPublic)
+	client, err := c.ServerPublic.Marshal()
 	if err != nil {
 		return err
 	}
@@ -183,7 +181,7 @@ func SetBoardConfig(conf BoardConfig) (bool, error) {
 		BoardConfig: conf,
 	}
 	var err error
-	cont.JSON, err = easyjson.Marshal(conf.BoardPublic)
+	cont.JSON, err = conf.BoardPublic.Marshal()
 	if err != nil {
 		return false, err
 	}

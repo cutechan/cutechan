@@ -1,3 +1,4 @@
+{% import "encoding/json" %}
 {% import "meguca/config" %}
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
@@ -33,8 +34,8 @@
 	{% code conf := config.Get() %}
 	{% code confJSON := config.GetClient() %}
 	{% code boards := config.GetBoardTitles() %}
-	{% code boardJSON := tryMarshal(boards) %}
-	{% code sessionJSON := tryMarshal(ss) %}
+	{% code boardJSON, _ := json.Marshal(boards) %}
+	{% code sessionJSON := ss.TryMarshal() %}
 	{% code pos := ss.GetPositions() %}
 	<!DOCTYPE html>
 	<html class="{%s posClasses(pos) %}">

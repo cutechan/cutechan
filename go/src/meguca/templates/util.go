@@ -1,7 +1,6 @@
 package templates
 
 import (
-	"encoding/json"
 	"html"
 	"strings"
 	"time"
@@ -9,15 +8,6 @@ import (
 	"meguca/auth"
 	"meguca/common"
 )
-
-// Make sure we always put valid JSON to HTML template.
-func tryMarshal(v interface{}) []byte {
-	data, err := json.Marshal(v)
-	if err != nil {
-		return []byte("null")
-	}
-	return data
-}
 
 func posClasses(pos auth.Positions) string {
 	var classes []string

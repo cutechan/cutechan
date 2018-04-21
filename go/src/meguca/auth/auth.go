@@ -1,3 +1,5 @@
+//go:generate easyjson --all --no_std_marshalers $GOFILE
+
 // Package auth determines and asserts client permissions to access and modify
 // server resources.
 package auth
@@ -10,6 +12,7 @@ import (
 	"net/http"
 	"strings"
 
+	"github.com/mailru/easyjson"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -59,6 +62,25 @@ func (ss *Session) GetSettings() AccountSettings {
 		return AccountSettings{}
 	}
 	return ss.Settings
+}
+
+func (ss *Session) TryMarshal() []byte {
+	if ss == nil {
+		return []byte("null")
+	}
+	data, err := easyjson.Marshal(ss)
+	if err != nil {
+		return []byte("null")
+	}
+	return data
+}
+
+func (c *AccountSettings) Marshal() ([]byte, error) {
+	return easyjson.Marshal(c)
+}
+
+func (c *AccountSettings) Unmarshal(data []byte) error {
+	return easyjson.Unmarshal(data, c)
 }
 
 // GetIP extracts the IP of a request, honouring reverse proxies, if set
