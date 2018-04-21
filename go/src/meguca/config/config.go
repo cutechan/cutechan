@@ -4,10 +4,11 @@
 package config
 
 import (
-	"meguca/common"
 	"reflect"
 	"sort"
 	"sync"
+
+	"meguca/common"
 
 	"github.com/mailru/easyjson"
 )
@@ -17,15 +18,14 @@ var (
 	globalMu, boardMu sync.RWMutex
 
 	// Contains currently loaded global server configuration
-	global *Configs
+	global *ServerConfig
 
 	// Map of board IDs to their configuration structs
 	boardConfigs = map[string]BoardConfContainer{}
 
-	// AllBoardConfigs stores board-specific configurations for the /all/
-	// metaboard. Constant.
-	AllBoardConfigs = BoardConfContainer{
-		BoardConfigs: BoardConfigs{
+	// Configurations for the /all/ metaboard.
+	AllBoardConfig = BoardConfContainer{
+		BoardConfig: BoardConfig{
 			ID: "all",
 		},
 	}
@@ -34,8 +34,8 @@ var (
 	clientJSON []byte
 
 	// Defaults contains the default server configuration values
-	Defaults = Configs{
-		Public: Public{
+	Defaults = ServerConfig{
+		ServerPublic: ServerPublic{
 			DisableUserBoards: true,
 			MaxSize:           common.DefaultMaxSize,
 			MaxFiles:          common.DefaultMaxFiles,
@@ -45,26 +45,22 @@ var (
 	}
 )
 
-// Generate /all/ board configs
 func init() {
 	var err error
-	AllBoardConfigs.JSON, err = easyjson.Marshal(AllBoardConfigs.BoardPublic)
+	AllBoardConfig.JSON, err = easyjson.Marshal(AllBoardConfig.BoardPublic)
 	if err != nil {
 		panic(err)
 	}
 }
 
-// Get returns a pointer to the current server configuration struct. Callers
-// should not modify this struct.
-func Get() *Configs {
+func Get() *ServerConfig {
 	globalMu.RLock()
 	defer globalMu.RUnlock()
 	return global
 }
 
-// Set sets the internal configuration struct
-func Set(c Configs) error {
-	client, err := easyjson.Marshal(c.Public)
+func Set(c ServerConfig) error {
+	client, err := easyjson.Marshal(c.ServerPublic)
 	if err != nil {
 		return err
 	}
@@ -72,7 +68,6 @@ func Set(c Configs) error {
 	clientJSON = client
 	global = &c
 	globalMu.Unlock()
-
 	return nil
 }
 
@@ -81,21 +76,19 @@ func GetClient() []byte {
 	return clientJSON
 }
 
-// GetBoardConfigs returns board-specific configurations for a board combined
-// with pregenerated public JSON of these configurations. Do not modify
-// the retrieved struct.
-func GetBoardConfigs(b string) BoardConfContainer {
+// Return board configurations for a board combined with pregenerated
+// public JSON.
+func GetBoardConfig(b string) BoardConfContainer {
 	if b == "all" {
-		return AllBoardConfigs
+		return AllBoardConfig
 	}
 	boardMu.RLock()
 	defer boardMu.RUnlock()
 	return boardConfigs[b]
 }
 
-// GetAllBoardConfigs returns board-specific configurations for all boards. Do
-// not modify the retrieved structs.
-func GetAllBoardConfigs() []BoardConfContainer {
+// Return configurations for all boards.
+func GetBoardConfigs() []BoardConfContainer {
 	boardMu.RLock()
 	defer boardMu.RUnlock()
 
@@ -183,12 +176,11 @@ func IsModOnlyBoard(b string) bool {
 	return ok && conf.ModOnly
 }
 
-// SetBoardConfigs sets configurations for a specific board as well as
-// pregenerates their public JSON. Returns if any changes were made to
-// the configs in result.
-func SetBoardConfigs(conf BoardConfigs) (bool, error) {
+// Set configurations for a specific board as well as pregenerate its
+// public JSON. Return if any changes were made to the configs.
+func SetBoardConfig(conf BoardConfig) (bool, error) {
 	cont := BoardConfContainer{
-		BoardConfigs: conf,
+		BoardConfig: conf,
 	}
 	var err error
 	cont.JSON, err = easyjson.Marshal(conf.BoardPublic)
@@ -201,8 +193,8 @@ func SetBoardConfigs(conf BoardConfigs) (bool, error) {
 
 	// Nothing changed
 	noChange := reflect.DeepEqual(
-		boardConfigs[conf.ID].BoardConfigs,
-		cont.BoardConfigs,
+		boardConfigs[conf.ID].BoardConfig,
+		cont.BoardConfig,
 	)
 	if noChange {
 		return false, nil

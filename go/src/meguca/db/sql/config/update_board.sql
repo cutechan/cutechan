@@ -1,7 +1,4 @@
-update boards
-  set
-    title = $2,
-    readOnly = $3,
-    modOnly = $4
-  where id = $1
-  returning pg_notify('board_updated', $1)
+UPDATE boards
+SET modOnly = $2, settings = $3
+WHERE id = $1
+RETURNING pg_notify('board_updated', $1)

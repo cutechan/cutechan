@@ -2,13 +2,11 @@
 
 package config
 
-// Configs stores the global server configuration
-type Configs struct {
-	Public
+type ServerConfig struct {
+	ServerPublic
 }
 
-// Public contains configurations exposeable through public availability APIs
-type Public struct {
+type ServerPublic struct {
 	Captcha           bool   `json:"captcha"`
 	DisableUserBoards bool   `json:"disableUserBoards"`
 	MaxSize           int64  `json:"maxSize"`
@@ -18,34 +16,28 @@ type Public struct {
 	ImageRootOverride string `json:"imageRootOverride"`
 }
 
-// BoardConfigs stores board-specific configuration
-type BoardConfigs struct {
+type BoardConfig struct {
 	BoardPublic
-	ID      string `json:"id"`
-	ModOnly bool   `json:"modOnly"`
+	ID      string `json:"-"`
+	ModOnly bool   `json:"-"`
 }
 
-// BoardPublic contains publically accessible board-specific configurations
 type BoardPublic struct {
 	Title    string `json:"title"`
-	ReadOnly bool   `json:"readOnly"`
+	ReadOnly bool   `json:"readOnly,omitempty"`
 }
 
-// BoardConfContainer contains configurations for an individual board as well
-// as pregenerated public JSON and it's hash
 type BoardConfContainer struct {
-	BoardConfigs
+	BoardConfig
 	JSON []byte
-	Hash string
 }
 
-// BoardTitle contains a board's ID and title
 type BoardTitle struct {
 	ID    string `json:"id"`
 	Title string `json:"title"`
 }
 
-// BoardTitles implements sort.Interface
+// Implements sort.Interface
 type BoardTitles []BoardTitle
 
 func (b BoardTitles) Len() int {

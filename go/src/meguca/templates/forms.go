@@ -9,8 +9,8 @@ import (
 	"strings"
 )
 
-// ConfigureBoard renders a form for setting board configurations
-func ConfigureBoard(conf config.BoardConfigs) string {
+// Render a form for setting board configuration.
+func ConfigureBoard(conf config.BoardConfig) string {
 	v := reflect.ValueOf(conf)
 	return configurationTable(v, "configureBoard", true)
 }
@@ -37,8 +37,8 @@ func configurationTable(v reflect.Value, key string, needCaptcha bool) string {
 	return tableForm(withValues, needCaptcha)
 }
 
-// ConfigureServer renders the form for changing server configurations
-func ConfigureServer(conf config.Configs) string {
+// Renders the form for changing server configuration.
+func ConfigureServer(conf config.ServerConfig) string {
 	v := reflect.ValueOf(conf)
 	return configurationTable(v, "configureServer", false)
 }

@@ -89,19 +89,19 @@ var upgrades = []func(*sql.Tx) error{
 	},
 	// Set default expiry configs, to keep all threads from deleting
 	func(tx *sql.Tx) (err error) {
-		var s string
-		err = tx.QueryRow("SELECT val FROM main WHERE id = 'config'").Scan(&s)
+		var buf []byte
+		err = tx.QueryRow("SELECT val FROM main WHERE id = 'config'").Scan(&buf)
 		if err != nil {
 			return
 		}
-		conf, err := decodeConfigs(s)
+		conf, err := decodeServerConfig(buf)
 		if err != nil {
 			return
 		}
 
 		// conf.ThreadExpiryMin = config.Defaults.ThreadExpiryMin
 		// conf.ThreadExpiryMax = config.Defaults.ThreadExpiryMax
-		buf, err := json.Marshal(conf)
+		buf, err = json.Marshal(conf)
 		if err != nil {
 			return
 		}
@@ -467,6 +467,55 @@ var upgrades = []func(*sql.Tx) error{
 			`CREATE INDEX sessions_token ON sessions (token)`,
 		)
 	},
+	// Boards settings migration.
+	func(tx *sql.Tx) (err error) {
+		err = execAll(tx,
+			`ALTER TABLE boards
+				ADD COLUMN settings jsonb NOT NULL DEFAULT '{}'`,
+		)
+		if err != nil {
+			return
+		}
+
+		// Get boards.
+		var boards []config.BoardConfig
+		rs, err := tx.Query("SELECT id, title, readOnly, modOnly FROM boards")
+		if err != nil {
+			return
+		}
+		defer rs.Close()
+		for rs.Next() {
+			var b config.BoardConfig
+			if err = rs.Scan(&b.ID, &b.Title, &b.ReadOnly, &b.ModOnly); err != nil {
+				return
+			}
+			boards = append(boards, b)
+		}
+		if err = rs.Err(); err != nil {
+			return
+		}
+
+		// Fill settings.
+		for _, b := range boards {
+			var settings []byte
+			settings, err = json.Marshal(b)
+			if err != nil {
+				return
+			}
+			_, err = tx.Exec("UPDATE boards SET settings = $2 WHERE id = $1", b.ID, settings)
+			if err != nil {
+				return
+			}
+		}
+
+		return execAll(tx,
+			`ALTER TABLE boards
+				DROP COLUMN created,
+				DROP COLUMN title,
+				DROP COLUMN readOnly,
+				ALTER COLUMN settings DROP DEFAULT`,
+		)
+	},
 }
 
 func StartDb() (err error) {
@@ -491,7 +540,7 @@ func StartDb() (err error) {
 	if !exists {
 		tasks = append(tasks, createAdminAccount)
 	}
-	tasks = append(tasks, loadConfigs, loadBoardConfigs, loadBans)
+	tasks = append(tasks, loadServerConfig, loadBoardConfigs, loadBans)
 	if err = util.Waterfall(tasks...); err != nil {
 		return
 	}

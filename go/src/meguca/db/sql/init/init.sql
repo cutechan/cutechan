@@ -63,12 +63,10 @@ create table image_tokens (
   expires timestamp not null
 );
 
-create table boards (
-  id text primary key,
-  created timestamp not null,
-  title varchar(100) not null,
-  readOnly boolean not null,
-  modOnly boolean not null
+CREATE TABLE boards (
+  id text PRIMARY KEY,
+  modOnly boolean NOT NULL,
+  settings jsonb NOT NULL
 );
 
 create table staff (

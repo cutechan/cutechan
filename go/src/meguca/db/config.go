@@ -3,92 +3,37 @@ package db
 import (
 	"database/sql"
 	"encoding/json"
+
 	"meguca/config"
 	"meguca/util"
-	"time"
 )
 
-// BoardConfigs contains extra fields not exposed on database reads
-type BoardConfigs struct {
-	config.BoardConfigs
-	Created time.Time
-}
-
-// Load configs from the database and update on each change
-func loadConfigs() error {
-	conf, err := GetConfigs()
+func loadServerConfig() error {
+	conf, err := getServerConfig()
 	if err != nil {
 		return err
 	}
 	config.Set(conf)
-
-	return listenFunc("config_updates", updateConfigs)
+	return listenFunc("config_updates", updateServerConfig)
 }
 
-// GetConfigs retrieves global configurations. Only used in tests.
-func GetConfigs() (c config.Configs, err error) {
-	var enc string
-	err = db.QueryRow(`SELECT val FROM main WHERE id = 'config'`).Scan(&enc)
+func getServerConfig() (c config.ServerConfig, err error) {
+	var data []byte
+	err = db.QueryRow(`SELECT val FROM main WHERE id = 'config'`).Scan(&data)
 	if err != nil {
 		return
 	}
-	c, err = decodeConfigs(enc)
+	c, err = decodeServerConfig(data)
 	return
 }
 
-func decodeConfigs(data string) (c config.Configs, err error) {
-	err = json.Unmarshal([]byte(data), &c)
+func decodeServerConfig(data []byte) (c config.ServerConfig, err error) {
+	err = json.Unmarshal(data, &c)
 	return
 }
 
-func loadBoardConfigs() error {
-	r, err := prepared["get_all_board_configs"].Query()
-	if err != nil {
-		return err
-	}
-	defer r.Close()
-
-	for r.Next() {
-		c, err := scanBoardConfigs(r)
-		if err != nil {
-			return err
-		}
-		if _, err := config.SetBoardConfigs(c); err != nil {
-			return err
-		}
-	}
-	if err := r.Err(); err != nil {
-		return err
-	}
-
-	return listenFunc("board_updated", updateBoardConfigs)
-}
-
-func scanBoardConfigs(r rowScanner) (c config.BoardConfigs, err error) {
-	err = r.Scan(
-		&c.ID, &c.Title, &c.ReadOnly, &c.ModOnly,
-	)
-	return
-}
-
-// WriteBoard writes a board complete with configurations to the database
-func WriteBoard(tx *sql.Tx, c BoardConfigs) error {
-	_, err := getStatement(tx, "write_board").Exec(
-		c.ID, c.Created, c.Title, c.ReadOnly, c.ModOnly,
-	)
-	return err
-}
-
-// UpdateBoard updates board configurations
-func UpdateBoard(c config.BoardConfigs) error {
-	return execPrepared(
-		"update_board",
-		c.ID, c.Title, c.ReadOnly, c.ModOnly,
-	)
-}
-
-func updateConfigs(data string) error {
-	conf, err := decodeConfigs(data)
+func updateServerConfig(msg string) error {
+	conf, err := decodeServerConfig([]byte(msg))
 	if err != nil {
 		return util.WrapError("reloading configuration", err)
 	}
@@ -96,38 +41,86 @@ func updateConfigs(data string) error {
 	return nil
 }
 
-func updateBoardConfigs(board string) error {
-	conf, err := GetBoardConfigs(board)
+func SetServerConfig(c config.ServerConfig) error {
+	data, err := json.Marshal(c)
+	if err != nil {
+		return err
+	}
+	return execPrepared("update_server_config", data)
+}
+
+func loadBoardConfigs() error {
+	r, err := prepared["get_board_configs"].Query()
+	if err != nil {
+		return err
+	}
+	defer r.Close()
+
+	for r.Next() {
+		c, err := readBoardConfig(r)
+		if err != nil {
+			return err
+		}
+		if _, err := config.SetBoardConfig(c); err != nil {
+			return err
+		}
+	}
+	if err := r.Err(); err != nil {
+		return err
+	}
+
+	return listenFunc("board_updated", updateBoardConfig)
+}
+
+func GetBoardConfig(board string) (config.BoardConfig, error) {
+	return readBoardConfig(prepared["get_board_config"].QueryRow(board))
+}
+
+func readBoardConfig(r rowScanner) (c config.BoardConfig, err error) {
+	var id string
+	var modOnly bool
+	var settings []byte
+	if err = r.Scan(&id, &modOnly, &settings); err != nil {
+		return
+	}
+	if err = json.Unmarshal(settings, &c); err != nil {
+		return
+	}
+	c.ID = id
+	c.ModOnly = modOnly
+	return
+}
+
+func updateBoardConfig(board string) error {
+	conf, err := GetBoardConfig(board)
 	switch err {
 	case nil:
+		// Do nothing.
 	case sql.ErrNoRows:
 		config.RemoveBoard(board)
 		return nil
 	default:
 		return err
 	}
-
-	changed, err := config.SetBoardConfigs(conf)
-	switch {
-	case err != nil:
+	if _, err = config.SetBoardConfig(conf); err != nil {
 		return util.WrapError("reloading board configuration", err)
-	case changed:
-		return nil
-	default:
-		return nil
 	}
+	return nil
 }
 
-// GetBoardConfigs retrives the configurations of a specific board
-func GetBoardConfigs(board string) (config.BoardConfigs, error) {
-	return scanBoardConfigs(prepared["get_board_configs"].QueryRow(board))
-}
-
-// WriteConfigs writes new global configurations to the database
-func WriteConfigs(c config.Configs) error {
-	data, err := json.Marshal(c)
+func WriteBoard(tx *sql.Tx, c config.BoardConfig) (err error) {
+	settings, err := json.Marshal(c)
 	if err != nil {
-		return err
+		return
 	}
-	return execPrepared("write_configs", string(data))
+	_, err = getStatement(tx, "write_board").Exec(c.ID, c.ModOnly, settings)
+	return
+}
+
+func UpdateBoard(c config.BoardConfig) (err error) {
+	settings, err := json.Marshal(c)
+	if err != nil {
+		return
+	}
+	return execPrepared("update_board", c.ID, c.ModOnly, settings)
 }

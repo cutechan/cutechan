@@ -34,7 +34,7 @@ type boardActionRequest struct {
 
 type boardConfigSettingRequest struct {
 	auth.Captcha
-	config.BoardConfigs
+	config.BoardConfig
 }
 
 type boardCreationRequest struct {
@@ -112,9 +112,9 @@ func canModeratePost(
 }
 
 // Validate length limit compliance of various fields
-func validateBoardConfigs(
+func validateBoardConfig(
 	w http.ResponseWriter,
-	conf config.BoardConfigs,
+	conf config.BoardConfig,
 ) bool {
 	var err error
 	switch {
@@ -127,17 +127,6 @@ func validateBoardConfigs(
 	}
 
 	return true
-}
-
-// Serve the current board configurations to the client, including publically
-// unexposed ones. Intended to be used before setting the the configs with
-// configureBoard().
-func servePrivateBoardConfigs(w http.ResponseWriter, r *http.Request) {
-	conf, ok := boardConfData(w, r)
-	if !ok {
-		return
-	}
-	serveJSON(w, r, conf)
 }
 
 func isAdmin(w http.ResponseWriter, r *http.Request) bool {
@@ -155,17 +144,17 @@ func isAdmin(w http.ResponseWriter, r *http.Request) bool {
 // Determine, if the client has access rights to the configurations, and return
 // them, if so
 func boardConfData(w http.ResponseWriter, r *http.Request) (
-	config.BoardConfigs, bool,
+	config.BoardConfig, bool,
 ) {
 	var (
-		conf  config.BoardConfigs
+		conf  config.BoardConfig
 		board = getParam(r, "board")
 	)
 	if _, ok := assertCanPerform(w, r, board, auth.BoardOwner); !ok {
 		return conf, false
 	}
 
-	conf = config.GetBoardConfigs(board).BoardConfigs
+	conf = config.GetBoardConfig(board).BoardConfig
 	conf.ID = board
 	if conf.ID == "" {
 		serve404(w)
@@ -223,13 +212,10 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 	}
 	defer db.RollbackOnError(tx, &err)
 
-	err = db.WriteBoard(tx, db.BoardConfigs{
-		Created: time.Now(),
-		BoardConfigs: config.BoardConfigs{
-			BoardPublic: config.BoardPublic{
-				Title: msg.Title,
-			},
-			ID: msg.ID,
+	err = db.WriteBoard(tx, config.BoardConfig{
+		ID: msg.ID,
+		BoardPublic: config.BoardPublic{
+			Title: msg.Title,
 		},
 	})
 	switch {
@@ -262,10 +248,10 @@ func configureBoard(w http.ResponseWriter, r *http.Request) {
 	}
 	msg.ID = getParam(r, "board")
 	_, ok := assertCanPerform(w, r, msg.ID, auth.BoardOwner)
-	if !ok || !validateBoardConfigs(w, msg.BoardConfigs) {
+	if !ok || !validateBoardConfig(w, msg.BoardConfig) {
 		return
 	}
-	if err := db.UpdateBoard(msg.BoardConfigs); err != nil {
+	if err := db.UpdateBoard(msg.BoardConfig); err != nil {
 		text500(w, r, err)
 		return
 	}
@@ -290,11 +276,11 @@ func deleteBoard(w http.ResponseWriter, r *http.Request) {
 // Set the server configuration to match the one sent from the admin account
 // user
 func configureServer(w http.ResponseWriter, r *http.Request) {
-	var msg config.Configs
+	var msg config.ServerConfig
 	if !decodeJSON(w, r, &msg) || !isAdmin(w, r) {
 		return
 	}
-	if err := db.WriteConfigs(msg); err != nil {
+	if err := db.SetServerConfig(msg); err != nil {
 		text500(w, r, err)
 	}
 }

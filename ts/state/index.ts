@@ -21,6 +21,7 @@ interface Config {
 export interface BoardConfig {
   id: string;
   title: string;
+  readOnly?: boolean;
 }
 
 // The current state of a board or thread page

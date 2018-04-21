@@ -33,7 +33,7 @@ func Board(
 	catalog bool,
 	threadHTML []byte,
 ) []byte {
-	boardConf := config.GetBoardConfigs(b)
+	boardConf := config.GetBoardConfig(b)
 	title := boardConf.Title
 	if b == "all" {
 		title = lang.Get().UI["aggregator"]
