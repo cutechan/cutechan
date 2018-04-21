@@ -10,6 +10,11 @@ TODO: Remove
 	<head>
 		<meta charset="utf-8">
 		<link rel="icon" href="/static/favicons/default.ico">
+		<style>
+			table, th, td {
+				border: 1px solid black;
+			}
+		</style>
 	</head>
 	<body>
 		{%z= content %}
@@ -17,10 +22,14 @@ TODO: Remove
 	</html>
 {% endstripspace %}{% endfunc %}
 
+Post link, that will redirect to the post from any page
+{% func staticPostLink(id uint64) %}{% stripspace %}
+	{%s= renderPostLink(id, false, true) %}
+{% endstripspace %}{% endfunc %}
+
 Renders a list of bans for a specific page with optional unbanning API links
 {% func BanList(bans []auth.BanRecord, board string, canUnban bool) %}{% stripspace %}
 	{% code ln := lang.Get().UI %}
-	{%= tableStyle() %}
 	<form method="post" action="/api/unban/{%s board %}">
 		<table>
 			<tr>
@@ -51,24 +60,9 @@ Renders a list of bans for a specific page with optional unbanning API links
 	</form>
 {% endstripspace %}{% endfunc %}
 
-Common style for plain html tables
-{% func tableStyle() %}{% stripspace %}
-	<style>
-		table, th, td {
-			border: 1px solid black;
-		}
-	</style>
-{% endstripspace %}{% endfunc %}
-
-Post link, that will redirect to the post from any page
-{% func staticPostLink(id uint64) %}{% stripspace %}
-	{%s= renderPostLink(id, false, true) %}
-{% endstripspace %}{% endfunc %}
-
 Renders a moderation log page
 {% func ModLog(log []auth.ModLogEntry) %}{% stripspace %}
 	{% code ln := lang.Get().UI %}
-	{%= tableStyle() %}
 	<table>
 		<tr>
 			{% for _, id := range [...]string{"type", "by", "post", "time"} %}
