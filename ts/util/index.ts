@@ -5,11 +5,14 @@
 export { default as FSM } from "./fsm";
 export { default as Progress } from "./progress";
 export { default as ShowHide } from "./show-hide";
-export * from "./fetch";
-export * from "./hooks";
-export * from "./render";
-export * from "./changes";
-export * from "./mixins";
+export {
+  Dict, ProgressFn, FutureAPI, AbortError,
+  uncachedGET, fetchJSON, postJSON, postForm, postFormProgress,
+} from "./fetch";
+export { HOOKS, hook, unhook, trigger } from "./hooks";
+export { importTemplate } from "./render";
+export { ChangeEmitter, emitChanges } from "./changes";
+export { BackgroundClickMixin, EscapePressMixin } from "./mixins";
 
 import { POST_SEL } from "../vars";
 

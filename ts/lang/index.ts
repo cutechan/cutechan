@@ -3,7 +3,7 @@
  */
 
 // tslint:disable-next-line:no-reference
-/// <reference path="./index.d.ts" />
+/// <reference path="index.d.ts" />
 
 import langs from "cc-langs";
 
