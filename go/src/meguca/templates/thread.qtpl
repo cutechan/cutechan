@@ -11,7 +11,7 @@
 		{% if !top %}
 			<a name="bottom"></a>
 		{% endif %}
-		<a class="button thread-nav-item thread-nav-back" href="/all/">
+		<a class="button thread-nav-item thread-nav-back" href="/{%s b %}/">
 			{%s ln.UI["return"] %}
 		</a>
 		<a class="button thread-nav-item thread-nav-catalog" href="/{%s b %}/catalog">

@@ -127,10 +127,10 @@ func assertCached(
 	buf []byte,
 ) bool {
 	etag := fmt.Sprintf("W/\"%s\"", util.HashBuffer(buf))
+	// https://tools.ietf.org/html/rfc2616#section-10.3.5
+	// https://stackoverflow.com/a/4226409
 	w.Header().Set("ETag", etag)
 	if etag == r.Header.Get("If-None-Match") {
-		// https://tools.ietf.org/html/rfc2616#section-10.3.5
-		// https://stackoverflow.com/a/4226409
 		w.WriteHeader(304)
 		return true
 	}
