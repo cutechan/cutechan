@@ -116,16 +116,6 @@ func IsBanned(board, ip string) (banned bool) {
 	return false
 }
 
-// GetBannedLevels is like IsBanned, but returns, if the IP is banned globally
-// or only from the specific board.
-func GetBannedLevels(board, ip string) (globally, locally bool) {
-	bansMu.RLock()
-	defer bansMu.RUnlock()
-	global := bans["all"]
-	ips := bans[board]
-	return global != nil && global[ip], ips != nil && ips[ip]
-}
-
 // SetBans replaces the ban cache with the new set
 func SetBans(b ...Ban) {
 	newBans := map[string]map[string]bool{}

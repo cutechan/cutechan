@@ -31,6 +31,7 @@ type boardActionRequest struct {
 	Board string
 	auth.Captcha
 }
+
 type boardConfigSettingRequest struct {
 	auth.Captcha
 	config.BoardConfigs

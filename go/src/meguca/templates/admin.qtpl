@@ -1,22 +1,7 @@
-{% import "fmt" %}
 {% import "time" %}
 {% import "strconv" %}
 {% import "meguca/auth" %}
 {% import "meguca/lang" %}
-
-BanPage renders a ban page for a banned user
-{% func BanPage(rec auth.BanRecord) %}{% stripspace %}
-	{% code ln := lang.Get().Templates["banPage"] %}
-	<section class="ban">
-		{%s= fmt.Sprintf(ln[0], bold(rec.Board)) %}{% space %}
-		<b>{%s rec.Reason %}</b>
-		<br>
-		{% code exp := correctTimeZone(rec.Expires) %}
-		{% code date := exp.Format(time.UnixDate) %}
-		{% code till := exp.Sub(time.Now().Round(time.Second)).String() %}
-		{%s= fmt.Sprintf(ln[1], bold(date), bold(till)) %}
-	</section>
-{% endstripspace %}{% endfunc %}
 
 // Renders a list of bans for a specific page with optional unbanning API links
 {% func BanList(bans []auth.BanRecord, board string, canUnban bool) %}{% stripspace %}

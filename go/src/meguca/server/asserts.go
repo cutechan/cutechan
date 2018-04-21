@@ -1,66 +1,15 @@
 package server
 
 import (
-	"database/sql"
 	"fmt"
-	"log"
 	"net/http"
 
 	"meguca/auth"
 	"meguca/config"
-	"meguca/db"
-	"meguca/templates"
 	"meguca/util"
 )
 
-// Check client is not banned on specific board. Returns true, if all clear.
-// Renders ban page and returns false otherwise.
-func assertNotBanned(
-	w http.ResponseWriter,
-	r *http.Request,
-	board string,
-) bool {
-	ip, err := auth.GetIP(r)
-	if err != nil {
-		text400(w, err)
-		return false
-	}
-	globally, fromBoard := auth.GetBannedLevels(board, ip)
-	if !globally && !fromBoard {
-		return true
-	}
-	if globally {
-		board = "all"
-	}
-
-	rec, err := db.GetBanInfo(ip, board)
-	switch err {
-	case nil:
-		w.WriteHeader(403)
-		head := w.Header()
-		for key, val := range vanillaHeaders {
-			head.Set(key, val)
-		}
-		head.Set("Content-Type", "text/html")
-		head.Set("Cache-Control", "no-store")
-		content := []byte(templates.BanPage(rec))
-		html := []byte(templates.BasePage(content))
-		w.Write(html)
-		return false
-	case sql.ErrNoRows:
-		// If there is no row, that means the ban cache has not been updated
-		// yet with a cleared ban. Force a ban cache refresh.
-		if err := db.RefreshBanCache(); err != nil {
-			log.Printf("refreshing ban cache: %s", err)
-		}
-		return true
-	default:
-		text500(w, r, err)
-		return false
-	}
-}
-
-// API version of banned response.
+// Ensure API user is not banned.
 func assertNotBannedAPI(w http.ResponseWriter, r *http.Request, board string) (ip string, ok bool) {
 	ip, err := auth.GetIP(r)
 	if err != nil {

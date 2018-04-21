@@ -4,7 +4,7 @@ package websockets
 
 import (
 	"errors"
-	"meguca/auth"
+
 	"meguca/common"
 	"meguca/config"
 	"meguca/db"
@@ -14,7 +14,6 @@ import (
 var (
 	errInvalidBoard  = errors.New("invalid board")
 	errInvalidThread = errors.New("invalid thread")
-	errBanned        = errors.New("you are banned")
 )
 
 type syncRequest struct {
@@ -37,8 +36,6 @@ func (c *Client) synchronise(data []byte) error {
 		return err
 	case !config.IsServeBoard(msg.Board):
 		return errInvalidBoard
-	case auth.IsBanned(msg.Board, c.ip):
-		return errBanned
 	case msg.Thread != 0:
 		valid, err := db.ValidateOP(msg.Thread, msg.Board)
 		switch {

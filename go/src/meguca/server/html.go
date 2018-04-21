@@ -63,13 +63,11 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 	if !assertNotModOnly(w, b, ss) {
 		return
 	}
-	if !assertNotBanned(w, r, b) {
-		return
-	}
 
 	html, data, _, err := cache.GetHTML(boardCacheArgs(r, b, catalog))
 	switch err {
 	case nil:
+		// Do nothing.
 	case errPageOverflow:
 		serve404(w)
 		return
@@ -250,9 +248,6 @@ func validateThread(w http.ResponseWriter, r *http.Request) (
 	}
 	ss, _ = getSession(r, b)
 	if !assertNotModOnly(w, b, ss) {
-		return
-	}
-	if !assertNotBanned(w, r, b) {
 		return
 	}
 
