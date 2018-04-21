@@ -594,7 +594,7 @@ func banList(w http.ResponseWriter, r *http.Request) {
 	canUnban := canPerform(ss, auth.Moderator)
 	content := []byte(templates.BanList(bans, board, canUnban))
 	html := []byte(templates.BasePage(content))
-	serveHTML(w, r, html, nil)
+	serveHTML(w, r, html)
 }
 
 // Serve moderation log for a specific board
@@ -616,10 +616,10 @@ func modLog(w http.ResponseWriter, r *http.Request) {
 
 	content := []byte(templates.ModLog(log))
 	html := []byte(templates.BasePage(content))
-	serveHTML(w, r, html, nil)
+	serveHTML(w, r, html)
 }
 
 func serveAdmin(w http.ResponseWriter, r *http.Request, ss *auth.Session) {
 	html := templates.Admin(ss)
-	serveHTML(w, r, html, nil)
+	serveHTML(w, r, html)
 }

@@ -15,16 +15,7 @@ import (
 )
 
 // Apply headers and write HTML to client
-func serveHTML(
-	w http.ResponseWriter,
-	r *http.Request,
-	buf []byte,
-	err error,
-) {
-	if err != nil {
-		text500(w, r, err)
-		return
-	}
+func serveHTML(w http.ResponseWriter, r *http.Request, buf []byte) {
 	head := w.Header()
 	for key, val := range vanillaHeaders {
 		head.Set(key, val)
@@ -39,7 +30,7 @@ func serveHTML(
 func serveLanding(w http.ResponseWriter, r *http.Request) {
 	ss, _ := getSession(r, "")
 	html := templates.Landing(ss)
-	serveHTML(w, r, html, nil)
+	serveHTML(w, r, html)
 }
 
 func serve404(w http.ResponseWriter) {
@@ -83,7 +74,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		total = p.pageTotal
 	}
 	html = templates.Board(b, n, total, ss, catalog, html)
-	serveHTML(w, r, html, nil)
+	serveHTML(w, r, html)
 }
 
 // Asserts a thread exists on the specific board and renders the index template
@@ -104,7 +95,7 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 	b := getParam(r, "board")
 	title := data.(common.Thread).Subject
 	html = templates.Thread(id, b, title, lastN != 0, ss, html)
-	serveHTML(w, r, html, nil)
+	serveHTML(w, r, html)
 }
 
 // Render a board selection and navigation panel and write HTML to client
@@ -118,7 +109,7 @@ func staticTemplate(
 	r *http.Request,
 	fn func() string,
 ) {
-	serveHTML(w, r, []byte(fn()), nil)
+	serveHTML(w, r, []byte(fn()))
 }
 
 // Serve a form for selecting one of several boards owned by the user
@@ -135,7 +126,7 @@ func ownedBoardSelection(w http.ResponseWriter, r *http.Request) {
 	}
 
 	ownedConfigs := config.GetBoardConfigsByID(owned)
-	serveHTML(w, r, []byte(templates.OwnedBoard(ownedConfigs)), nil)
+	serveHTML(w, r, []byte(templates.OwnedBoard(ownedConfigs)))
 }
 
 // Renders a form for configuring a board owned by the user
@@ -145,7 +136,7 @@ func boardConfigurationForm(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	serveHTML(w, r, []byte(templates.ConfigureBoard(conf)), nil)
+	serveHTML(w, r, []byte(templates.ConfigureBoard(conf)))
 }
 
 // Render a form for assigning staff to a board
@@ -158,7 +149,7 @@ func staffAssignmentForm(w http.ResponseWriter, r *http.Request) {
 	html := []byte(templates.StaffAssignment(
 		[...][]string{s["owners"], s["moderators"], s["janitors"]},
 	))
-	serveHTML(w, r, html, nil)
+	serveHTML(w, r, html)
 }
 
 // Renders a form for creating new boards
@@ -173,7 +164,7 @@ func serverConfigurationForm(w http.ResponseWriter, r *http.Request) {
 	}
 
 	data := []byte(templates.ConfigureServer((*config.Get())))
-	serveHTML(w, r, data, nil)
+	serveHTML(w, r, data)
 }
 
 // Render a form to change an account password
@@ -198,7 +189,7 @@ func noscriptCaptcha(w http.ResponseWriter, r *http.Request) {
 		text400(w, err)
 		return
 	}
-	serveHTML(w, r, []byte(templates.NoscriptCaptcha(ip)), nil)
+	serveHTML(w, r, []byte(templates.NoscriptCaptcha(ip)))
 }
 
 // Redirect the client to the appropriate board through a cross-board redirect
@@ -232,7 +223,7 @@ func serveStickers(w http.ResponseWriter, r *http.Request) {
 	ss, _ := getSession(r, "")
 	stickHTML := []byte{}
 	html := templates.Stickers(ss, stickHTML)
-	serveHTML(w, r, html, nil)
+	serveHTML(w, r, html)
 }
 
 // Confirms a the thread exists on the board and returns its ID. If an error
