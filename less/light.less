@@ -21,6 +21,8 @@
 @replyBG: hsl(275, 9%, 90%);
 @replyfloatBG: hsl(275, 9%, 90%);
 @replyinfoBG: hsla(0, 0%, 100%, 0.8);
+@modalInput: #fff;
+@scrollbarBG: hsl(275, 15%, 40%);
 
 // Colors.
 @body: #0a0a0a;
@@ -47,10 +49,10 @@
 @quote: #00882d;
 @spoiler: #d0c9d4;
 @modal: #000000;
-@modallinkHover: #918466;
+@modallinkHover: #999;
 @pagetitle: hsl(275, 15%, 38%);
 @headeritem: hsl(275, 25%, 35%);
-@tabsel: #918466;
+@tabsel: #999;
 @omit: #8a8a8a;
 @control: @link;
 @controlHover: @linkHover;
@@ -62,6 +64,7 @@
 @searchplaceholder: #757575;
 @pagecurrent: inherit;
 @replyboard: @link;
+@accountformshead:#333;
 
 // Borders.
 @border: 1px solid hsl(275, 10%, 50%);
@@ -72,7 +75,6 @@
 @searchBorderHover: @border;
 @postcatalogBorder: 1px dashed #2c2f63;
 @previewBorder: none;
-@postBorder: none;
 @replyBorder: none;
 @buttonBorder: @border;
 @buttonBorderHover: @border;
@@ -86,7 +88,7 @@
 @buttonShadow: 0px 0px 2px 0px hsla(275, 30%, 30%, 0.6);
 @searchShadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 3px rgba(149, 92, 158, 0.9);
 @headerShadow: 0 0 2px 0 rgba(80, 64, 107, 0.8);
-@modalShadow: -1px 1px 2px 0px hsl(275, 8%, 57%), 0px 0px 2px 0px hsl(275, 8%, 57%);
+@modalShadow: @headerShadow;
 @previewShadow: 1px 1px 2px 0px hsl(275, 8%, 57%), 0px 0px 2px 0px hsl(275, 8%, 57%), 0 0 30px 0 hsla(0, 0%, 0%, 0.07);
 @postShadow: 1px 1px 3px 0px hsl(275, 8%, 57%), 0px 0px 2px 0px hsl(275, 8%, 57%);
 @postfilebadgeShadow: 1px 1px 2px #734474;

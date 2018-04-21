@@ -19,7 +19,7 @@ html {
   height: 5px;
 }
 ::-webkit-scrollbar-thumb {
-  background-color: hsl(275, 15%, 40%);
+  background-color: @scrollbarBG;
   border-radius: 4px;
 }
 
@@ -636,18 +636,15 @@ html, body {
   max-height: 90vh;
   max-width: 90vw;
   overflow: auto;
-  margin: 2px 3px 0.5em;
+  margin: 5px 3px 0.5em;
   padding: 10px;
   white-space: nowrap;
   background: @modalBG;
   color: @modal;
-  border: @modalBorder;
-  border-width: 0 0 1px;
-  border-radius: 0 0 0 9px;
   box-shadow: @modalShadow;
 
   a:hover, .control:not(:disabled):hover {
-    color: @modallinkHover;
+    color: @linkHover;
   }
 }
 
@@ -668,8 +665,7 @@ html, body {
 
 .ignore-modal-info {
   padding: 5px 10px;
-  font-style: italic;
-  background: #f0eef1;
+  background: @bodyBG;
 }
 
 .ignore-modal_wled {
@@ -694,6 +690,9 @@ html, body {
   }
   &:last-child {
     border-bottom: none;
+  }
+  & .control:not(:disabled):hover{
+    color:@control;
   }
 }
 
@@ -737,9 +736,21 @@ html, body {
 .tab-link {
   cursor: pointer;
   font-weight: bold;
-  &.tab-sel {
-    color: @tabsel;
+  transition:transform  0.1s;
+    &:hover {
+    color:@link;
+    transition:transform  0.07s;
+    padding-bottom: 4px;
   }
+  &.tab-sel {
+    transform: translateY(-3px);
+    margin-bottom: 3px;
+    transition:transform  0.07s;
+      &:hover {
+       padding-bottom: 3px;
+      }
+  }
+
 }
 
 //////////////////////////////
@@ -751,12 +762,15 @@ html, body {
     width: 5em;
   }
   input[type=text], input[type=password] {
+    background-color: @modalInput;
     box-sizing: border-box;
+    border: 1px solid rgb(169, 169, 169);
     width: 10em;
     height: 22px;
-    border: 1px solid #ccc;
     outline: none;
+    padding-left: 5px;
     -moz-appearance: none;
+    color:#111;
   }
 }
 
@@ -800,7 +814,7 @@ input[type=number], input[type=text], input[type=password], textarea {
   display: inline-block;
   vertical-align: middle;
   margin-top: -1px;
-  margin-right: 2px;
+  margin-right: 3px;
   cursor: pointer;
   outline: none;
   &:disabled {
@@ -819,7 +833,10 @@ input[type=number], input[type=text], input[type=password], textarea {
 }
 
 .shortcut {
-  border: none;
+  border: 1px solid grey;
+  text-align: center;
+  padding: 0;
+  margin-left: 1px;
   width: 2em;
 }
 
@@ -883,7 +900,7 @@ input[type=number], input[type=text], input[type=password], textarea {
 .account-form-shead {
   display: block;
   font-weight: bold;
-  color: #000;
+  color: @accountformshead;
   cursor: default;
 }
 
@@ -894,6 +911,9 @@ input[type=number], input[type=text], input[type=password], textarea {
 .account-form-checkbox {
   height: 22px;
   margin-top: 1px;
+  .option-label & {
+    margin-top: 0px;
+  }
 }
 
 .account-form-name {
@@ -902,6 +922,7 @@ input[type=number], input[type=text], input[type=password], textarea {
 
 .account-form-ignoremode {
   flex: 1;
+  background-color: @modalInput;
 }
 
 .account-form-ignorelist {
@@ -930,6 +951,7 @@ input[type=number], input[type=text], input[type=password], textarea {
     border: none;
     background: none;
     margin-right: 5px;
+    color:@body;
   }
 }
 
@@ -1105,8 +1127,6 @@ input[type=number], input[type=text], input[type=password], textarea {
   box-sizing: border-box;
   min-width: 200px;
   max-width: 1000px;
-  border-radius: 2px;
-  border: @postBorder;
   background: @postBG;
   box-shadow: @postShadow;
   word-wrap: break-word;
@@ -1180,7 +1200,7 @@ header {
 }
 
 .post-name {
-  color: #999;
+  color: #8a8a8a;
   cursor: default;
 }
 
@@ -2017,6 +2037,9 @@ html:not(.pos_moderators) {
 }
 
 .idols {
+  margin-top: 5px;
+  box-shadow: @headerShadow;
+  background: @modalBG;
   position: fixed;
   top: @headerHeight;
   max-height: ~"calc(100% - @{headerHeight})";
@@ -2042,8 +2065,6 @@ html:not(.pos_moderators) {
   width: 435px;
   padding: 5px 10px 5px 5px;
   margin-bottom: 8px;
-  background: @replyBG;
-  box-shadow: -1px 1px 3px 0 rgba(59, 26, 84, 0.6);
   // Adujust for shadow (because of overflow-y).
   margin-left: 3px;
   margin-right: 6px;
