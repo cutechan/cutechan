@@ -419,6 +419,50 @@ func ban(w http.ResponseWriter, r *http.Request) {
 	serveEmptyJSON(w, r)
 }
 
+// Unban a specific board -> banned post combination
+func unban(w http.ResponseWriter, r *http.Request) {
+	board := getParam(r, "board")
+	ss, ok := assertCanPerform(w, r, board, auth.Moderator)
+	if !ok {
+		return
+	}
+
+	// Extract post IDs from form
+	r.Body = http.MaxBytesReader(w, r.Body, jsonLimit)
+	err := r.ParseForm()
+	if err != nil {
+		text400(w, err)
+		return
+	}
+	var (
+		id  uint64
+		ids = make([]uint64, 0, 32)
+	)
+	for key, vals := range r.Form {
+		if len(vals) == 0 || vals[0] != "on" {
+			continue
+		}
+		id, err = strconv.ParseUint(key, 10, 64)
+		if err != nil {
+			text400(w, err)
+			return
+		}
+		ids = append(ids, id)
+	}
+
+	// Unban posts
+	for _, id := range ids {
+		switch err := db.Unban(board, id, ss.UserID); err {
+		case nil, sql.ErrNoRows:
+		default:
+			text500(w, r, err)
+			return
+		}
+	}
+
+	http.Redirect(w, r, fmt.Sprintf("/%s/", board), 303)
+}
+
 // Send a textual message to all connected clients
 func sendNotification(w http.ResponseWriter, r *http.Request) {
 	var msg string
@@ -551,50 +595,6 @@ func banList(w http.ResponseWriter, r *http.Request) {
 	content := []byte(templates.BanList(bans, board, canUnban))
 	html := []byte(templates.BasePage(content))
 	serveHTML(w, r, html, nil)
-}
-
-// Unban a specific board -> banned post combination
-func unban(w http.ResponseWriter, r *http.Request) {
-	board := getParam(r, "board")
-	ss, ok := assertCanPerform(w, r, board, auth.Moderator)
-	if !ok {
-		return
-	}
-
-	// Extract post IDs from form
-	r.Body = http.MaxBytesReader(w, r.Body, jsonLimit)
-	err := r.ParseForm()
-	if err != nil {
-		text400(w, err)
-		return
-	}
-	var (
-		id  uint64
-		ids = make([]uint64, 0, 32)
-	)
-	for key, vals := range r.Form {
-		if len(vals) == 0 || vals[0] != "on" {
-			continue
-		}
-		id, err = strconv.ParseUint(key, 10, 64)
-		if err != nil {
-			text400(w, err)
-			return
-		}
-		ids = append(ids, id)
-	}
-
-	// Unban posts
-	for _, id := range ids {
-		switch err := db.Unban(board, id, ss.UserID); err {
-		case nil, sql.ErrNoRows:
-		default:
-			text500(w, r, err)
-			return
-		}
-	}
-
-	http.Redirect(w, r, fmt.Sprintf("/%s/", board), 303)
 }
 
 // Serve moderation log for a specific board

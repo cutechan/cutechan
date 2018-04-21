@@ -3,7 +3,21 @@
 {% import "meguca/auth" %}
 {% import "meguca/lang" %}
 
-// Renders a list of bans for a specific page with optional unbanning API links
+TODO: Remove
+{% func BasePage(content []byte) %}{% stripspace %}
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="icon" href="/static/favicons/default.ico">
+	</head>
+	<body>
+		{%z= content %}
+	</body>
+	</html>
+{% endstripspace %}{% endfunc %}
+
+Renders a list of bans for a specific page with optional unbanning API links
 {% func BanList(bans []auth.BanRecord, board string, canUnban bool) %}{% stripspace %}
 	{% code ln := lang.Get().UI %}
 	{%= tableStyle() %}
