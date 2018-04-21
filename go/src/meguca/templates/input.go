@@ -21,7 +21,6 @@ const (
 	_select
 	_textarea
 	_password
-	_map
 	_array
 	_image
 	_shortcut
@@ -74,8 +73,6 @@ func (w *formWriter) input(spec inputSpec) {
 		w.sel(spec)
 	case _textarea:
 		w.textArea(spec)
-	case _map:
-		streamrenderMap(&w.Writer, spec)
 	case _array:
 		streamrenderArray(&w.Writer, spec)
 	case _shortcut:

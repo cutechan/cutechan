@@ -10,7 +10,6 @@ export {
   uncachedGET, fetchJSON, postJSON, postForm, postFormProgress,
 } from "./fetch";
 export { HOOKS, hook, unhook, trigger } from "./hooks";
-export { importTemplate } from "./render";
 export { ChangeEmitter, emitChanges } from "./changes";
 export { BackgroundClickMixin, EscapePressMixin } from "./mixins";
 

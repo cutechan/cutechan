@@ -81,18 +81,6 @@ CaptchaConfirmation renders a confirmation form with an optional captcha
 	</div>
 {% endstripspace %}{% endfunc %}
 
-Form for inputting key-value map-like data
-{% func keyValueForm(k, v string) %}{% stripspace %}
-	<span>
-		<input type="text" class="map-field" value="{%s k %}">
-		<input type="text" class="map-field" value="{%s v %}">
-		<a class="map-remove">
-			[X]
-		</a>
-		<br>
-	</span>
-{% endstripspace %}{% endfunc %}
-
 Form for inputting one array-like form item
 {% func arrayItemForm(v string) %}{% stripspace %}
 	<span>
@@ -111,20 +99,6 @@ Form formatted as a table, with cancel and submit buttons
 		{%= captcha() %}
 	{% endif %}
 	{%= submit(true) %}
-{% endstripspace %}{% endfunc %}
-
-Render a map form for inputting map-like data
-{% func renderMap(spec inputSpec) %}{% stripspace %}
-	{% code ln := lang.Get() %}
-	<div class="map-form" name="{%s spec.ID %}" title="{%s ln.Forms[spec.ID][1] %}">
-		{% for k, v := range spec.Val.(map[string]string) %}
-			{%= keyValueForm(k, v) %}
-		{% endfor %}
-		<a class="map-add">
-			{%s ln.UI["add"] %}
-		</a>
-		<br>
-	</div>
 {% endstripspace %}{% endfunc %}
 
 Render form for inputting array-like data

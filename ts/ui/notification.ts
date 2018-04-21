@@ -3,7 +3,6 @@ import lang from "../lang";
 import options from "../options";
 import { Post } from "../posts";
 import { mine } from "../state";
-import { importTemplate } from "../util";
 import { DEFAULT_NOTIFICATION_IMAGE_URL } from "../vars";
 import { repliedToMe } from "./tab";
 
@@ -49,7 +48,7 @@ export default function notifyAboutReply(post: Post) {
 // TODO(Kagami): Rework.
 export class OverlayNotification extends View<null> {
   constructor(text: string) {
-    super({ el: importTemplate("notification").firstChild as HTMLElement });
+    super({ el: null }); // importTemplate("notification").firstChild as HTMLElement });
     this.on("click", () =>
       this.remove());
     this.el.querySelector("b").textContent = text;

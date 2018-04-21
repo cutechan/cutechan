@@ -59,10 +59,6 @@
 				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
 			}
 		</script>
-		{% if ss != nil %}
-			<template name="keyValue">{%= keyValueForm("", "") %}</template>
-			<template name="arrayItem">{%= arrayItemForm("") %}</template>
-		{% endif %}
 	</head>
 	<body>
 		{%= renderHeader(boards) %}
