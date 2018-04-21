@@ -61,6 +61,7 @@ func createRouter(debugRoutes bool) http.Handler {
 	r.GET("/all/catalog", func(w http.ResponseWriter, r *http.Request) {
 		boardHTML(w, r, "all", true)
 	})
+	r.GET("/admin/", assertBoardOwner(serveAdmin))
 
 	// Assets.
 	r.GET("/static/*path", serveStatic)

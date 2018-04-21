@@ -65,6 +65,7 @@ var (
 	aerrNotSupportedURL = aerrorNew(400, "url not supported")
 	aerrInternal        = aerrorNew(500, "internal server error")
 	aerrPowerUserOnly   = aerrorNew(403, "only for power users")
+	aerrBoardOwnersOnly = aerrorNew(403, "only for board owners")
 	aerrParseForm       = aerrorNew(400, "error parsing form")
 	aerrParseJSON       = aerrorNew(400, "error parsing JSON")
 	aerrNoFile          = aerrorNew(400, "no file provided")

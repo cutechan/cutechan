@@ -70,6 +70,12 @@ func Stickers(ss *auth.Session, stickHTML []byte) []byte {
 	return Page(ss, title, html)
 }
 
+func Admin(ss *auth.Session) []byte {
+	html := renderAdmin()
+	title := lang.GT("Admin")
+	return Page(ss, title, html)
+}
+
 func CompileMustache() (err error) {
 	for _, name := range AssetNames() {
 		if strings.HasSuffix(name, ".mustache") {

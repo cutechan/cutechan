@@ -37,6 +37,8 @@ async function init() {
     /* skip */
   } else if (page.stickers) {
     /* skip */
+  } else if (page.admin) {
+    /* skip */
   } else {
     if (page.thread) {
       renderThread();

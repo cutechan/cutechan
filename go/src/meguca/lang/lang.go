@@ -59,3 +59,8 @@ func Gettext(id string) string {
 	}
 	return id
 }
+
+// Alias.
+func GT(id string) string {
+	return Gettext(id)
+}

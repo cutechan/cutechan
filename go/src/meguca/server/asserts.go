@@ -136,3 +136,16 @@ func assertCached(
 	}
 	return false
 }
+
+type WithSessionHandler func(w http.ResponseWriter, r *http.Request, ss *auth.Session)
+
+func assertBoardOwner(h WithSessionHandler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		ss, _ := getSession(r, "")
+		if ss == nil || ss.Positions.AnyBoard < auth.BoardOwner {
+			text403(w, aerrBoardOwnersOnly)
+			return
+		}
+		h(w, r, ss)
+	}
+}

@@ -21,7 +21,7 @@ import (
 var (
 	boardNameValidation = regexp.MustCompile(`^[a-z0-9]{1,10}$`)
 	reservedBoards      = [...]string{
-		"all", "stickers",
+		"all", "stickers", "admin",
 		"html", "api",
 		"static", "uploads",
 	}
@@ -616,5 +616,10 @@ func modLog(w http.ResponseWriter, r *http.Request) {
 
 	content := []byte(templates.ModLog(log))
 	html := []byte(templates.BasePage(content))
+	serveHTML(w, r, html, nil)
+}
+
+func serveAdmin(w http.ResponseWriter, r *http.Request, ss *auth.Session) {
+	html := templates.Admin(ss)
 	serveHTML(w, r, html, nil)
 }
