@@ -12,6 +12,7 @@
 // FIXME(Kagami): Circular imports, must go before client module.
 import { init as initOptions } from "./ts/options";
 
+import { init as initAdmin } from "./ts/admin";
 import { init as initAlerts, showAlert } from "./ts/alerts";
 import { init as initAuth } from "./ts/auth";
 import { init as initHandlers } from "./ts/client";
@@ -27,29 +28,25 @@ import { init as initUI } from "./ts/ui";
 // Load all stateful modules in dependency order.
 async function init() {
   initAlerts();
+  initOptions();
 
   await initDB();
   loadPostStores();
 
-  initOptions();
-
-  if (page.landing) {
-    /* skip */
-  } else if (page.stickers) {
+  if (page.stickers) {
     /* skip */
   } else if (page.admin) {
-    /* skip */
-  } else {
-    if (page.thread) {
-      renderThread();
-      initConnection();
-      initHandlers();
-    } else {
-      renderBoard();
-    }
+    initAdmin();
+  } else if (page.board) {
+    renderBoard();
     if (!page.catalog) {
       initPosts();
     }
+  } else if (page.thread) {
+    renderThread();
+    initConnection();
+    initHandlers();
+    initPosts();
   }
 
   initUI();

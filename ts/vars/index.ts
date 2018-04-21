@@ -9,6 +9,7 @@ export const HOVER_CONTAINER_SEL = ".hover-container";
 export const POPUP_CONTAINER_SEL = ".popup-container";
 export const MODAL_CONTAINER_SEL = ".modal-container";
 export const REPLY_CONTAINER_SEL = ".reply-container";
+export const ADMIN_CONTAINER_SEL = ".admin";
 export const PROFILES_CONTAINER_SEL = ".header-profiles";
 export const BOARD_SEARCH_INPUT_SEL = ".board-search-input";
 export const BOARD_SEARCH_SORT_SEL = ".board-search-sort";
