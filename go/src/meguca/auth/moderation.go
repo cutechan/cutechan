@@ -80,14 +80,6 @@ const (
 	DeleteThread
 )
 
-// Single entry in the moderation log
-type ModLogEntry struct {
-	Type    ModerationAction
-	ID      uint64
-	By      string
-	Created time.Time
-}
-
 // Ban holdsan entry of an IP being banned from a board
 type Ban struct {
 	IP, Board string

@@ -34,7 +34,7 @@ func GetSession(board, token string) (ss *auth.Session, err error) {
 	}
 
 	var settings auth.AccountSettings
-	if err = settings.Unmarshal(settingsData); err != nil {
+	if err = settings.UnmarshalJSON(settingsData); err != nil {
 		return
 	}
 	settings.Name = userName
@@ -50,7 +50,7 @@ func SetAccountSettings(userID string, as auth.AccountSettings) (err error) {
 	// NOTE(Kagami): We store name as a field to ensure uniqueness by DB.
 	// So it will be duplicated in JSON settings structure. We don't mind
 	// of this for simplicity and it won't cause any inconsistency.
-	settingsData, err := as.Marshal()
+	settingsData, err := as.MarshalJSON()
 	if err != nil {
 		return
 	}

@@ -608,7 +608,7 @@ func modLog(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	log, err := db.GetModLog(board)
+	log, err := db.GetModLog([]string{board})
 	if err != nil {
 		text500(w, r, err)
 		return
@@ -620,6 +620,19 @@ func modLog(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveAdmin(w http.ResponseWriter, r *http.Request, ss *auth.Session) {
-	html := templates.Admin(ss)
+	owned, err := db.GetOwnedBoards(ss.UserID)
+	if err != nil {
+		text500(w, r, err)
+		return
+	}
+	ownedConfigs := config.GetBoardConfigsByID(owned)
+
+	log, err := db.GetModLog(owned)
+	if err != nil {
+		text500(w, r, err)
+		return
+	}
+
+	html := templates.Admin(ss, ownedConfigs, log)
 	serveHTML(w, r, html)
 }

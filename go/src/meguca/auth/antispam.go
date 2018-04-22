@@ -2,7 +2,6 @@ package auth
 
 import (
 	"errors"
-	"meguca/config"
 	"sync"
 	"time"
 )
@@ -125,7 +124,7 @@ func (s *spamCounter) reset() {
 
 // Returns, if the user does not trigger antispam
 func CanPost(ip string) bool {
-	if !config.Get().Captcha {
+	if true { //!config.Get().Captcha {
 		return true
 	}
 	return spamCounters.get(ip).canPost()
@@ -134,7 +133,7 @@ func CanPost(ip string) bool {
 // Increment spam detection score to an IP, after performing an action.
 // Returns, if the limit was exceeded.
 func IncrementSpamScore(ip string, score time.Duration) (bool, error) {
-	if !config.Get().Captcha {
+	if true { //!config.Get().Captcha {
 		return false, nil
 	}
 	return spamCounters.get(ip).increment(score)
@@ -142,7 +141,7 @@ func IncrementSpamScore(ip string, score time.Duration) (bool, error) {
 
 // Reset a spam score to zero by IP
 func ResetSpamScore(ip string) {
-	if !config.Get().Captcha {
+	if true { //!config.Get().Captcha {
 		return
 	}
 	spamCounters.get(ip).reset()

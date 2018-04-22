@@ -2,9 +2,12 @@ package db
 
 import (
 	"database/sql"
+	"time"
+
 	"meguca/auth"
 	"meguca/common"
-	"time"
+
+	"github.com/lib/pq"
 )
 
 // Ban IPs from accessing a specific board. Need to target posts. Returns all
@@ -230,15 +233,16 @@ func SetThreadSticky(id uint64, sticky bool) error {
 	return execPrepared("set_sticky", id, sticky)
 }
 
-// Retrieve moderation log for a specific board
-func GetModLog(board string) (log []auth.ModLogEntry, err error) {
-	r, err := prepared["get_mod_log"].Query(board)
+// Retrieve moderation log for the specified boards.
+// TODO(Kagami): Pagination.
+func GetModLog(boards []string) (log auth.ModLogEntries, err error) {
+	bArr := pq.StringArray(boards)
+	r, err := prepared["get_mod_log"].Query(bArr)
 	if err != nil {
 		return
 	}
 	defer r.Close()
 
-	log = make([]auth.ModLogEntry, 0, 64)
 	var entry auth.ModLogEntry
 	for r.Next() {
 		err = r.Scan(&entry.Type, &entry.ID, &entry.By, &entry.Created)

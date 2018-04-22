@@ -101,7 +101,7 @@ var upgrades = []func(*sql.Tx) error{
 
 		// conf.ThreadExpiryMin = config.Defaults.ThreadExpiryMin
 		// conf.ThreadExpiryMax = config.Defaults.ThreadExpiryMax
-		buf, err = conf.Marshal()
+		buf, err = conf.MarshalJSON()
 		if err != nil {
 			return
 		}
@@ -498,7 +498,7 @@ var upgrades = []func(*sql.Tx) error{
 		// Fill settings.
 		for _, b := range boards {
 			var settings []byte
-			settings, err = b.Marshal()
+			settings, err = b.MarshalJSON()
 			if err != nil {
 				return
 			}
@@ -552,7 +552,7 @@ func StartDb() (err error) {
 func initDb() error {
 	log.Println("initializing database")
 
-	conf, err := config.DefaultServerConfig.Marshal()
+	conf, err := config.DefaultServerConfig.MarshalJSON()
 	if err != nil {
 		return err
 	}

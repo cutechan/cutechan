@@ -12,7 +12,6 @@ import (
 	"time"
 
 	"github.com/lib/pq"
-	"github.com/mailru/easyjson"
 )
 
 const (
@@ -179,7 +178,7 @@ func (c commandRow) Value() (driver.Value, error) {
 
 	var strArr = make(pq.StringArray, len(c))
 	for i := range strArr {
-		s, err := easyjson.Marshal(c[i])
+		s, err := c[i].MarshalJSON()
 		if err != nil {
 			return nil, err
 		}

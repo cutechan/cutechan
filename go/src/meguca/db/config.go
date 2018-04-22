@@ -27,7 +27,7 @@ func getServerConfig() (c config.ServerConfig, err error) {
 }
 
 func decodeServerConfig(data []byte) (c config.ServerConfig, err error) {
-	err = c.Unmarshal(data)
+	err = c.UnmarshalJSON(data)
 	return
 }
 
@@ -41,7 +41,7 @@ func updateServerConfig(msg string) error {
 }
 
 func SetServerConfig(c config.ServerConfig) error {
-	data, err := c.Marshal()
+	data, err := c.MarshalJSON()
 	if err != nil {
 		return err
 	}
@@ -82,7 +82,7 @@ func readBoardConfig(r rowScanner) (c config.BoardConfig, err error) {
 	if err = r.Scan(&id, &modOnly, &stData); err != nil {
 		return
 	}
-	if err = c.Unmarshal(stData); err != nil {
+	if err = c.UnmarshalJSON(stData); err != nil {
 		return
 	}
 	// Explicitly set fields which are stored in table columns.
@@ -109,7 +109,7 @@ func updateBoardConfig(board string) error {
 }
 
 func WriteBoard(tx *sql.Tx, c config.BoardConfig) (err error) {
-	stData, err := c.Marshal()
+	stData, err := c.MarshalJSON()
 	if err != nil {
 		return
 	}
@@ -118,7 +118,7 @@ func WriteBoard(tx *sql.Tx, c config.BoardConfig) (err error) {
 }
 
 func UpdateBoard(c config.BoardConfig) (err error) {
-	stData, err := c.Marshal()
+	stData, err := c.MarshalJSON()
 	if err != nil {
 		return
 	}

@@ -1,6 +1,7 @@
 {% import "time" %}
 {% import "strconv" %}
 {% import "meguca/auth" %}
+{% import "meguca/config" %}
 {% import "meguca/lang" %}
 
 TODO: Remove
@@ -61,7 +62,7 @@ Renders a list of bans for a specific page with optional unbanning API links
 {% endstripspace %}{% endfunc %}
 
 Renders a moderation log page
-{% func ModLog(log []auth.ModLogEntry) %}{% stripspace %}
+{% func ModLog(log auth.ModLogEntries) %}{% stripspace %}
 	{% code ln := lang.Get().UI %}
 	<table>
 		<tr>
@@ -93,5 +94,8 @@ Renders a moderation log page
 	</table>
 {% endstripspace %}{% endfunc %}
 
-{% func renderAdmin() %}{% stripspace %}
+{% func renderAdmin(cs config.BoardConfigs, log auth.ModLogEntries) %}{% stripspace %}
+	<script>
+		var modBoards={%z= cs.TryMarshal() %},modLog={%z= log.TryMarshal() %};
+	</script>
 {% endstripspace %}{% endfunc %}

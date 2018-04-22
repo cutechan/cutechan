@@ -36,7 +36,7 @@ func Board(
 	boardConf := config.GetBoardConfig(b)
 	title := boardConf.Title
 	if b == "all" {
-		title = lang.Get().UI["aggregator"]
+		title = lang.GT("aggregator")
 	}
 	html := renderBoard(
 		threadHTML,
@@ -59,19 +59,19 @@ func Thread(
 }
 
 func Landing(ss *auth.Session) []byte {
-	title := lang.Get().UI["main"]
+	title := lang.GT("main")
 	html := renderLanding()
 	return Page(ss, title, html)
 }
 
 func Stickers(ss *auth.Session, stickHTML []byte) []byte {
 	html := renderStickers(stickHTML)
-	title := lang.Get().UI["stickers"]
+	title := lang.GT("stickers")
 	return Page(ss, title, html)
 }
 
-func Admin(ss *auth.Session) []byte {
-	html := renderAdmin()
+func Admin(ss *auth.Session, cs config.BoardConfigs, log auth.ModLogEntries) []byte {
+	html := renderAdmin(cs, log)
 	title := lang.GT("Admin")
 	return Page(ss, title, html)
 }
@@ -81,7 +81,7 @@ func CompileMustache() (err error) {
 		if strings.HasSuffix(name, ".mustache") {
 			tmpl, err := mustache.ParseString(string(MustAsset(name)))
 			if err != nil {
-				return fmt.Errorf("Failed to compile %s: %v", name, err)
+				return fmt.Errorf("failed to compile %s: %v", name, err)
 			}
 			tmplName := name[:len(name)-9]
 			mustacheTemplates[tmplName] = tmpl

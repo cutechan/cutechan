@@ -1,4 +1,4 @@
-//go:generate easyjson --all --no_std_marshalers $GOFILE
+//go:generate easyjson $GOFILE
 
 // Package auth determines and asserts client permissions to access and modify
 // server resources.
@@ -11,8 +11,8 @@ import (
 	"net"
 	"net/http"
 	"strings"
+	"time"
 
-	"github.com/mailru/easyjson"
 	"golang.org/x/crypto/bcrypt"
 )
 
@@ -35,12 +35,14 @@ var (
 )
 
 // Contains user data and settings of the request's session.
+//easyjson:json
 type Session struct {
 	UserID    string          `json:"userID"`
 	Positions Positions       `json:"positions"`
 	Settings  AccountSettings `json:"settings"`
 }
 
+//easyjson:json
 type AccountSettings struct {
 	Name        string     `json:"name,omitempty"`
 	ShowName    bool       `json:"showName,omitempty"`
@@ -68,19 +70,30 @@ func (ss *Session) TryMarshal() []byte {
 	if ss == nil {
 		return []byte("null")
 	}
-	data, err := easyjson.Marshal(ss)
+	data, err := ss.MarshalJSON()
 	if err != nil {
 		return []byte("null")
 	}
 	return data
 }
 
-func (c *AccountSettings) Marshal() ([]byte, error) {
-	return easyjson.Marshal(c)
+// Single entry in the moderation log
+type ModLogEntry struct {
+	Type    ModerationAction `json:"type"`
+	ID      uint64           `json:"id"`
+	By      string           `json:"by"`
+	Created time.Time        `json:"created"`
 }
 
-func (c *AccountSettings) Unmarshal(data []byte) error {
-	return easyjson.Unmarshal(data, c)
+//easyjson:json
+type ModLogEntries []ModLogEntry
+
+func (l *ModLogEntries) TryMarshal() []byte {
+	data, err := l.MarshalJSON()
+	if err != nil {
+		return []byte("null")
+	}
+	return data
 }
 
 // GetIP extracts the IP of a request, honouring reverse proxies, if set

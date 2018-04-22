@@ -51,7 +51,7 @@ func GetJSON() []byte {
 }
 
 func Set(c ServerConfig) (err error) {
-	data, err := c.ServerPublic.Marshal()
+	data, err := c.ServerPublic.MarshalJSON()
 	if err != nil {
 		return
 	}
@@ -124,7 +124,7 @@ func GetBoardConfigsByID(ids []string) (cs BoardConfigs) {
 // Set configurations for a specific board as well as pregenerate its
 // public JSON. Return if any changes were made to the configs.
 func SetBoardConfig(conf BoardConfig) (err error) {
-	data, err := conf.BoardPublic.Marshal()
+	data, err := conf.BoardPublic.MarshalJSON()
 	if err != nil {
 		return
 	}

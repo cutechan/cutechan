@@ -67,7 +67,7 @@ CaptchaConfirmation renders a confirmation form with an optional captcha
 {% endstripspace %}{% endfunc %}
 
 {% func captcha() %}{% stripspace %}
-	{% if !config.Get().Captcha %}
+	{% if true %}
 		{% return %}
 	{% endif %}
 	{% code ln := lang.Get().UI %}

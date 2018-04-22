@@ -1,4 +1,4 @@
-select type, id, by, created
-  from mod_log
-  where board = $1
-  order by created desc
+SELECT type, id, by, created
+FROM mod_log
+WHERE board = ANY($1)
+ORDER BY created DESC

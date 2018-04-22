@@ -61,7 +61,6 @@ GENSRC += $(wildcard i18n/*.json)
 GENSRC += $(TEMPLATESPP)
 go/src/meguca/db/bin_data.go: export TMPDIR = $(PWD)/go
 go/src/meguca/db/bin_data.go: go/bin/go-bindata go/bin/easyjson go/bin/qtc $(GENSRC)
-	go generate meguca/config
 	go generate meguca/...
 
 GOSRC = $(shell find go/src/meguca -type f -name '*.go')

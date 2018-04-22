@@ -78,14 +78,18 @@ class Settings extends Component<SettingsProps, AdminBoardConfig> {
   }
 }
 
-class Bans extends Component<{}, {}> {
+interface BansProps {
+  id: string;
+}
+
+class Bans extends Component<BansProps, {}> {
   public render() {
     return (
       <div class="bans" id="bans">
         <h3 class="admin-content-header">
           <a href="#bans">{_("Bans")}</a>
         </h3>
-        <ul class="ban-list" id="bans">
+        <ul class="ban-list">
           <li class="ban2">
             127.0.0.1/32
             <button class="control admin-control">
@@ -122,6 +126,26 @@ class Bans extends Component<{}, {}> {
   }
 }
 
+interface LogProps {
+  id: string;
+}
+
+class Log extends Component<LogProps, {}> {
+  public render() {
+    return (
+      <div class="log" id="log">
+        <h3 class="admin-content-header">
+          <a href="#log">{_("Mod log")}</a>
+        </h3>
+        <ul class="log-list">
+          <li class="log-item">
+          </li>
+        </ul>
+      </div>
+    );
+  }
+}
+
 class Admin extends Component<{}, {}> {
   public render() {
     return (
@@ -130,7 +154,7 @@ class Admin extends Component<{}, {}> {
           <h1 class="page-title">
             {_("Admin")}
             <select class="admin-board-select">
-              <option>all</option>
+              <option>/b/</option>
             </select>
           </h1>
         </header>
@@ -154,7 +178,9 @@ class Admin extends Component<{}, {}> {
           <section class="admin-content">
             <Settings id="b" />
             <hr class="separator" />
-            <Bans />
+            <Bans id="b" />
+            <hr class="separator" />
+            <Log id="b" />
           </section>
         </section>
       </section>
