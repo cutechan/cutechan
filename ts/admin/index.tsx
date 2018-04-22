@@ -13,6 +13,8 @@ import { MAIN_CONTAINER_SEL } from "../vars";
 
 interface AdminBoardConfig extends BoardConfig {
   modOnly?: boolean;
+  whitelist?: string[];
+  blacklist?: string[];
 }
 
 type ModBoards = AdminBoardConfig[];
@@ -66,6 +68,9 @@ interface SettingsProps {
 }
 
 class Settings extends Component<SettingsProps, {}> {
+  public shouldComponentUpdate(nextProps: SettingsProps) {
+    return this.props.settings !== nextProps.settings;
+  }
   public render({ settings }: SettingsProps) {
     const { title, readOnly, modOnly } = settings;
     return (
@@ -119,6 +124,28 @@ class Settings extends Component<SettingsProps, {}> {
     const modOnly = !this.props.settings.modOnly;
     const settings = {...this.props.settings, modOnly};
     this.props.onChange({settings});
+  }
+}
+
+interface MembersProps {
+  settings: AdminBoardConfig;
+  onChange: ChangeFn;
+}
+
+class Members extends Component<MembersProps, {}> {
+  public shouldComponentUpdate(nextProps: MembersProps) {
+    return this.props.settings !== nextProps.settings;
+  }
+  public render({ settings }: SettingsProps) {
+    // const { whitelist, blacklist } = settings;
+    return (
+      <div class="members">
+        <a class="admin-content-anchor" name="members" />
+        <h3 class="admin-content-header">
+          <a class="admin-header-link" href="#members">{_("Members")}</a>
+        </h3>
+      </div>
+    );
   }
 }
 
@@ -318,6 +345,8 @@ class Admin extends Component<{}, AdminState> {
           <hr class="admin-separator" />
           <section class="admin-content">
             <Settings settings={settings} onChange={this.handleChange} />
+            <hr class="admin-separator" />
+            <Members settings={settings} onChange={this.handleChange} />
             <hr class="admin-separator" />
             <Bans bans={bans} onChange={this.handleChange} />
             <hr class="admin-separator" />
