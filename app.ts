@@ -33,20 +33,22 @@ async function init() {
   await initDB();
   loadPostStores();
 
-  if (page.stickers) {
+  if (page.landing) {
+    /* skip */
+  } else if (page.stickers) {
     /* skip */
   } else if (page.admin) {
     initAdmin();
-  } else if (page.board) {
-    renderBoard();
-    if (!page.catalog) {
-      initPosts();
-    }
   } else if (page.thread) {
     renderThread();
     initConnection();
     initHandlers();
     initPosts();
+  } else if (page.board) {
+    renderBoard();
+    if (!page.catalog) {
+      initPosts();
+    }
   }
 
   initUI();
