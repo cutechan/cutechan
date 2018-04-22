@@ -149,7 +149,7 @@ class Bans extends Component<BansProps, {}> {
         </thead>
         <tbody>
         {bans.map(({ id, reason, by, expires }) =>
-          <tr class="admin-table-item ban-item">
+          <tr class="admin-table-item ban-item" onClick={() => this.handleRemove(id)}>
             <td class="ban-id">
               <a class="post-link" href={`/all/${id}#${id}`}>
                 &gt;&gt;{id}
@@ -163,7 +163,7 @@ class Bans extends Component<BansProps, {}> {
           </tr>,
         )}
         {!bans.length &&
-          <tr class="admin-table-empty ban-item">
+          <tr class="admin-table-empty">
             <td class="bans-empty" colSpan={4}>{_("No bans")}</td>
           </tr>
         }
@@ -171,6 +171,10 @@ class Bans extends Component<BansProps, {}> {
         </table>
       </div>
     );
+  }
+  private handleRemove(id: number) {
+    const bans = this.props.bans.filter((b) => b.id !== id);
+    this.props.onChange({bans});
   }
 }
 
