@@ -42,8 +42,11 @@ declare global {
   }
 }
 
+export const modBoards = window.modBoards;
+export const modLog = window.modLog;
+
 function getBoardConfigByID(id: string): AdminBoardConfig {
-  return window.modBoards.find((b) => b.id === id);
+  return modBoards.find((b) => b.id === id);
 }
 
 interface SettingsProps {
@@ -160,17 +163,12 @@ interface LogProps {
   board: string;
 }
 
-interface LogState {
-  log: ModLogEntries;
-}
-
 class Log extends Component<LogProps, {}> {
-  constructor(props: SettingsProps) {
-    super(props);
-    const log = window.modLog.filter((l) => l.board === props.board);
-    this.state = {log};
+  public shouldComponentUpdate(nextProps: LogProps) {
+    return this.props.board !== nextProps.board;
   }
-  public render({}, { log }: LogState) {
+  public render({ board }: LogProps) {
+    const log = modLog.filter((l) => l.board === board);
     return (
       <div class="log">
         <a class="admin-content-anchor" name="log" />
@@ -203,6 +201,11 @@ class Log extends Component<LogProps, {}> {
             </td>
           </tr>,
         )}
+        {!log.length &&
+          <tr class="log-item">
+            <td class="log-empty" colSpan={4}>{_("Empty log")}</td>
+          </tr>
+        }
         </tbody>
         </table>
       </div>
@@ -231,15 +234,29 @@ class Log extends Component<LogProps, {}> {
   }
 }
 
-class Admin extends Component<{}, {}> {
-  public render() {
+interface AdminState {
+  board: string;
+}
+
+class Admin extends Component<{}, AdminState> {
+  public state = {
+    // User with access to admin page will have at least one board.
+    board: modBoards[0].id,
+  };
+  public render({}, { board }: AdminState) {
     return (
       <section class="admin">
         <header class="admin-header">
           <h1 class="page-title">
             {_("Admin")}
-            <select class="admin-board-select">
-              <option>/b/</option>
+            <select
+              class="admin-board-select"
+              value={board}
+              onChange={this.handleBoardChange}
+            >
+              {modBoards.map((b) =>
+                <option value={b.id}>/{b.id}/</option>,
+              )}
             </select>
           </h1>
         </header>
@@ -261,16 +278,20 @@ class Admin extends Component<{}, {}> {
           </ul>
           <hr class="separator" />
           <section class="admin-content">
-            <Settings board="b" />
+            <Settings board={board} />
             <hr class="separator" />
-            <Bans board="b" />
+            <Bans board={board} />
             <hr class="separator" />
-            <Log board="b" />
+            <Log board={board} />
           </section>
           <hr class="separator" />
         </section>
       </section>
     );
+  }
+  private handleBoardChange = (e: Event) => {
+    const board = (e.target as HTMLInputElement).value;
+    this.setState({board});
   }
 }
 
