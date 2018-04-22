@@ -3,7 +3,6 @@
  */
 
 export { default as FSM } from "./fsm";
-export { default as ShowHide } from "./show-hide";
 export {
   Dict, ProgressFn, FutureAPI, AbortError,
   uncachedGET, fetchJSON, postJSON, postForm, postFormProgress,

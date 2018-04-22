@@ -10,7 +10,7 @@ import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {
   AbortError, collect, Dict, FutureAPI, getID, hook, HOOKS, on,
-  scrollToTop, setter as s, ShowHide, unhook,
+  scrollToTop, setter as s, unhook,
 } from "../util";
 import {
   HEADER_HEIGHT_PX,
@@ -133,14 +133,12 @@ class FilePreview extends Component<any, any> {
         <a class="control reply-remove-file-control" onClick={props.onRemove}>
           <i class="fa fa-remove" />
         </a>
-        <ShowHide show={!record}>
-          <img class="reply-file-thumb" src={thumb} />
-        </ShowHide>
-        <ShowHide show={record}>
-          <div class="reply-file-thumb reply-file-thumb_record">
-            <i class="reply-file-thumb-icon fa fa-music" />
-          </div>
-        </ShowHide>
+        {record
+          ? <div class="reply-file-thumb reply-file-thumb_record">
+              <i class="reply-file-thumb-icon fa fa-music" />
+            </div>
+          : <img class="reply-file-thumb" src={thumb} />
+        }
         <div class="reply-file-info" title={infoText}>{infoText}</div>
       </div>
     );
@@ -348,14 +346,14 @@ class Reply extends Component<any, any> {
     }
     return o;
   }
-  private get invalid() {
+  private get valid() {
     const { subject, body, fwraps } = this.state;
     const hasSubject = !!subject || !!page.thread;
-    return !hasSubject || (!body && !fwraps.length);
+    return hasSubject && (body || fwraps.length);
   }
   private get disabled() {
     const { sending } = this.state;
-    return sending || this.invalid;
+    return sending || !this.valid;
   }
   private quote(e: MouseEvent) {
     const post = (e.target as Element).closest(POST_SEL);
@@ -823,14 +821,14 @@ class Reply extends Component<any, any> {
     return (
       <div class="reply-controls reply-side-controls">
         <div class="reply-side-controls-inner">
-          <ShowHide show={float}>
+          {float &&
             <a
               class="control reply-side-control reply-pin-control"
               onClick={this.handleFormPin}
             >
               <i class="fa fa-thumb-tack" />
             </a>
-          </ShowHide>
+          }
           <button
             class="control reply-side-control reply-hide-control"
             onClick={this.handleFormHide}
@@ -909,7 +907,7 @@ class Reply extends Component<any, any> {
         >
           <i class={cx("fa", editing ? "fa-print" : "fa-pencil")} />
         </button>
-        <ShowHide show={isModerator()}>
+        {isModerator() &&
           <button
             class={cx("control", "reply-footer-control", "reply-badge-control",
                       {control_active: showBadge})}
@@ -919,14 +917,14 @@ class Reply extends Component<any, any> {
           >
             <i class="fa fa-id-badge" />
           </button>
-        </ShowHide>
+        }
 
         <div
           class="reply-dragger"
           onMouseDown={this.handleMoveDown}
           onTouchStart={this.handleMoveDown}
         />
-        <ShowHide show={!this.invalid}>
+        {this.valid &&
           <Progress
             className="button reply-send-button"
             progress={progress}
@@ -935,7 +933,7 @@ class Reply extends Component<any, any> {
           >
             {sending ? "" : ln.UI.submit}
           </Progress>
-        </ShowHide>
+        }
       </div>
     );
   }
@@ -986,11 +984,9 @@ class ReplyContainer extends Component<any, any> {
     });
   }
   public render({}, { show, quoted, dropped }: any) {
-    return (
-      <ShowHide show={show}>
-        <Reply quoted={quoted} dropped={dropped} onHide={this.handleHide} />
-      </ShowHide>
-    );
+    return show
+      ? <Reply quoted={quoted} dropped={dropped} onHide={this.handleHide} />
+      : null;
   }
   private handleHide = () => {
     this.setState({show: false, quoted: null, dropped: null});
