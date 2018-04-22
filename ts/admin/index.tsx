@@ -16,6 +16,16 @@ interface AdminBoardConfig extends BoardConfig {
 
 type ModBoards = AdminBoardConfig[];
 
+interface BanRecord {
+  board: string;
+  id: number;
+  by: string;
+  expires: number;
+  reason: string;
+}
+
+type BanRecords = BanRecord[];
+
 const enum ModerationAction {
   banPost,
   unbanPost,
@@ -25,7 +35,7 @@ const enum ModerationAction {
   deleteThread,
 }
 
-interface ModLogEntry {
+interface ModLogRecord {
   board: string;
   id: number;
   type: ModerationAction;
@@ -33,16 +43,18 @@ interface ModLogEntry {
   created: number;
 }
 
-type ModLogEntries = ModLogEntry[];
+type ModLogRecords = ModLogRecord[];
 
 declare global {
   interface Window {
     modBoards?: ModBoards;
-    modLog?: ModLogEntries;
+    bans?: BanRecords;
+    modLog?: ModLogRecords;
   }
 }
 
 export const modBoards = window.modBoards;
+export const bans = window.bans;
 export const modLog = window.modLog;
 
 function getBoardConfigByID(id: string): AdminBoardConfig {
@@ -115,45 +127,48 @@ interface BansProps {
 }
 
 class Bans extends Component<BansProps, {}> {
-  public render() {
+  public shouldComponentUpdate(nextProps: LogProps) {
+    return this.props.board !== nextProps.board;
+  }
+  public render({ board }: LogProps) {
+    const boardBans = bans.filter((b) => b.board === board);
     return (
       <div class="bans">
         <a class="admin-content-anchor" name="bans" />
         <h3 class="admin-content-header">
           <a href="#bans">{_("Bans")}</a>
         </h3>
-        <ul class="ban-list">
-          <li class="ban2">
-            127.0.0.1/32
-            <button class="control admin-control">
-              <i class="fa fa-times-circle" />
-            </button>
-          </li>
-          <li class="ban2">
-            127.0.0.1/32
-            <button class="control admin-control">
-              <i class="fa fa-times-circle" />
-            </button>
-          </li>
-          <li class="ban2">
-            127.0.0.1/32
-            <button class="control admin-control">
-              <i class="fa fa-times-circle" />
-            </button>
-          </li>
-          <li class="ban2">
-            127.0.0.1/32
-            <button class="control admin-control">
-              <i class="fa fa-times-circle" />
-            </button>
-          </li>
-          <li class="ban2">
-            127.0.0.1/32
-            <button class="control admin-control">
-              <i class="fa fa-times-circle" />
-            </button>
-          </li>
-        </ul>
+        <table class="admin-table ban-list">
+        <thead>
+          <tr class="admin-table-header ban-item-header">
+            <th class="ban-id-header">#</th>
+            <th class="ban-reason-header">{_("Reason")}</th>
+            <th class="ban-by-header">{_("By")}</th>
+            <th class="ban-time-header">{_("Expires")}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {boardBans.map(({ id, reason, by, expires }) =>
+          <tr class="admin-table-item ban-item">
+            <td class="ban-id">
+              <a class="post-link" href={`/all/${id}#${id}`}>
+                &gt;&gt;{id}
+              </a>
+            </td>
+            <td class="ban-reason">{reason}</td>
+            <td class="ban-by">{by}</td>
+            <td class="ban-time" title={readableTime(expires)}>
+              {relativeTime(expires)}
+            </td>
+          </tr>,
+        )}
+        {!boardBans.length &&
+          <tr class="admin-table-empty ban-item">
+            <td class="bans-empty" colSpan={4}>{_("No bans")}</td>
+          </tr>
+        }
+        </tbody>
+        </table>
       </div>
     );
   }
@@ -168,16 +183,16 @@ class Log extends Component<LogProps, {}> {
     return this.props.board !== nextProps.board;
   }
   public render({ board }: LogProps) {
-    const log = modLog.filter((l) => l.board === board);
+    const boardLog = modLog.filter((l) => l.board === board);
     return (
       <div class="log">
         <a class="admin-content-anchor" name="log" />
         <h3 class="admin-content-header">
           <a href="#log">{_("Mod log")}</a>
         </h3>
-        <table class="log-list">
+        <table class="admin-table log-list">
         <thead>
-          <tr class="log-item-header">
+          <tr class="admin-table-header log-item-header">
             <th class="log-id-header">#</th>
             <th class="log-type-header">{_("Type")}</th>
             <th class="log-by-header">{_("By")}</th>
@@ -185,8 +200,8 @@ class Log extends Component<LogProps, {}> {
           </tr>
         </thead>
         <tbody>
-        {log.map(({ id, type, by, created }) =>
-          <tr class="log-item">
+        {boardLog.map(({ id, type, by, created }) =>
+          <tr class="admin-table-item log-item">
             <td class="log-id">
               <a class="post-link" href={`/all/${id}#${id}`}>
                 &gt;&gt;{id}
@@ -201,8 +216,8 @@ class Log extends Component<LogProps, {}> {
             </td>
           </tr>,
         )}
-        {!log.length &&
-          <tr class="log-item">
+        {!boardLog.length &&
+          <tr class="admin-table-empty log-item">
             <td class="log-empty" colSpan={4}>{_("Empty log")}</td>
           </tr>
         }
@@ -214,22 +229,22 @@ class Log extends Component<LogProps, {}> {
   private renderType(a: ModerationAction) {
     switch (a) {
     case ModerationAction.banPost:
-      return <i class="fa fa-gavel" />;
+      return <i class="fa fa-gavel" title={_("ban")} />;
     case ModerationAction.unbanPost:
       return (
-        <span class="fa-stack">
+        <span class="fa-stack" title={_("unban")}>
           <i class="fa fa-gavel fa-stack-1x" />
           <i class="fa fa-ban fa-stack-2x log-ban-icon" />
         </span>
       );
     case ModerationAction.deletePost:
-      return <i class="fa fa-trash" />;
+      return <i class="fa fa-trash" title={_("deletePost")} />;
     case ModerationAction.deleteImage:
       return null;
     case ModerationAction.spoilerImage:
       return null;
     case ModerationAction.deleteThread:
-      return <i class="fa fa-2x fa-trash-o" />;
+      return <i class="fa fa-2x fa-trash-o" title={_("deleteThread")} />;
     }
   }
 }
@@ -260,31 +275,29 @@ class Admin extends Component<{}, AdminState> {
             </select>
           </h1>
         </header>
-        <hr class="separator" />
         <section class="admin-inner">
           <ul class="admin-section-tabs">
             <li class="admin-section-tab">
               <a href="#settings">{_("Settings")}</a>
             </li>
             <li class="admin-section-tab">
-              <a href="#bans">{_("Bans")}</a>
+              <a href="#members">{_("Members")}</a>
             </li>
             <li class="admin-section-tab">
-              <a href="#members">{_("Members")}</a>
+              <a href="#bans">{_("Bans")}</a>
             </li>
             <li class="admin-section-tab">
               <a href="#log">{_("Mod log")}</a>
             </li>
           </ul>
-          <hr class="separator" />
+          <hr class="admin-separator" />
           <section class="admin-content">
             <Settings board={board} />
-            <hr class="separator" />
+            <hr class="admin-separator" />
             <Bans board={board} />
-            <hr class="separator" />
+            <hr class="admin-separator" />
             <Log board={board} />
           </section>
-          <hr class="separator" />
         </section>
       </section>
     );

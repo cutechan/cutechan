@@ -7,7 +7,6 @@ import (
 
 	"meguca/auth"
 	"meguca/common"
-	"meguca/config"
 )
 
 var (
@@ -145,65 +144,4 @@ func LogOutAll(account string) error {
 // ChangePassword changes an existing user's login password
 func ChangePassword(account string, hash []byte) error {
 	return execPrepared("change_password", account, hash)
-}
-
-// GetOwnedBoards returns boards the account holder owns
-func GetOwnedBoards(account string) (boards []string, err error) {
-	// admin account can perform actions on any board
-	if account == "admin" {
-		return config.GetBoardIDs(), nil
-	}
-	r, err := prepared["get_owned_boards"].Query(account)
-	if err != nil {
-		return
-	}
-	for r.Next() {
-		var board string
-		err = r.Scan(&board)
-		if err != nil {
-			return
-		}
-		boards = append(boards, board)
-	}
-	err = r.Err()
-	return
-}
-
-// GetBanInfo retrieves information about a specific ban
-func GetBanInfo(ip, board string) (b auth.BanRecord, err error) {
-	err = prepared["get_ban_info"].
-		QueryRow(ip, board).
-		Scan(&b.IP, &b.Board, &b.ForPost, &b.Reason, &b.By, &b.Expires)
-	return
-}
-
-// Get all bans on a specific board. "all" counts as a valid board value.
-func GetBoardBans(board string) (b []auth.BanRecord, err error) {
-	b = make([]auth.BanRecord, 0, 64)
-	r, err := prepared["get_bans_by_board"].Query(board)
-	if err != nil {
-		return
-	}
-	defer r.Close()
-
-	var rec auth.BanRecord
-	for r.Next() {
-		err = r.Scan(&rec.IP, &rec.ForPost, &rec.Reason, &rec.By, &rec.Expires)
-		if err != nil {
-			return
-		}
-		rec.Board = board
-		b = append(b, rec)
-	}
-	err = r.Err()
-
-	return
-}
-
-// GetIP returns an IP of the poster that created a post. Posts older than 7
-// days will not have this information.
-func GetIP(id uint64) (string, error) {
-	var ip sql.NullString
-	err := prepared["get_ip"].QueryRow(id).Scan(&ip)
-	return ip.String, err
 }

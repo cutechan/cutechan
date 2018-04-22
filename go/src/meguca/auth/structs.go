@@ -2,10 +2,6 @@
 
 package auth
 
-import (
-	"time"
-)
-
 // ModerationLevel defines the level required to perform an action
 type ModerationLevel int8
 
@@ -18,15 +14,6 @@ const (
 	BoardOwner
 	Admin
 )
-
-type Positions struct {
-	CurBoard ModerationLevel `json:"curBoard"`
-	AnyBoard ModerationLevel `json:"anyBoard"`
-}
-
-func (pos Positions) IsPowerUser() bool {
-	return pos.AnyBoard >= Janitor
-}
 
 // Reads moderation level from string representation
 func (l *ModerationLevel) FromString(s string) {
@@ -60,6 +47,33 @@ func (l ModerationLevel) String() string {
 	}
 }
 
+// Ban holdsan entry of an IP being banned from a board
+type Ban struct {
+	// Don't show IP in admin UI for privacy.
+	IP    string `json:"-"`
+	Board string `json:"board"`
+}
+
+// BanRecord stores information about a specific ban
+type BanRecord struct {
+	Ban
+	ID      uint64 `json:"id"`
+	By      string `json:"by"`
+	Expires int64  `json:"expires"`
+	Reason  string `json:"reason"`
+}
+
+//easyjson:json
+type BanRecords []BanRecord
+
+func (bans *BanRecords) TryMarshal() []byte {
+	data, err := bans.MarshalJSON()
+	if err != nil {
+		return []byte("null")
+	}
+	return data
+}
+
 // An action performable by moderation staff
 type ModerationAction uint8
 
@@ -75,17 +89,24 @@ const (
 	DeleteThread
 )
 
-// Ban holdsan entry of an IP being banned from a board
-type Ban struct {
-	IP, Board string
+// Single entry in the moderation log
+type ModLogRecord struct {
+	Board   string           `json:"board"`
+	ID      uint64           `json:"id"`
+	Type    ModerationAction `json:"type"`
+	By      string           `json:"by"`
+	Created int64            `json:"created"`
 }
 
-// BanRecord stores information about a specific ban
-type BanRecord struct {
-	Ban
-	ForPost    uint64
-	Reason, By string
-	Expires    time.Time
+//easyjson:json
+type ModLogRecords []ModLogRecord
+
+func (log *ModLogRecords) TryMarshal() []byte {
+	data, err := log.MarshalJSON()
+	if err != nil {
+		return []byte("null")
+	}
+	return data
 }
 
 type IgnoreMode int
@@ -95,6 +116,15 @@ const (
 	IgnoreByBlacklist
 	IgnoreByWhitelist
 )
+
+type Positions struct {
+	CurBoard ModerationLevel `json:"curBoard"`
+	AnyBoard ModerationLevel `json:"anyBoard"`
+}
+
+func (pos Positions) IsPowerUser() bool {
+	return pos.AnyBoard >= Janitor
+}
 
 // Contains user data and settings of the request's session.
 //easyjson:json
@@ -133,26 +163,6 @@ func (ss *Session) TryMarshal() []byte {
 		return []byte("null")
 	}
 	data, err := ss.MarshalJSON()
-	if err != nil {
-		return []byte("null")
-	}
-	return data
-}
-
-// Single entry in the moderation log
-type ModLogEntry struct {
-	Board   string           `json:"board"`
-	ID      uint64           `json:"id"`
-	Type    ModerationAction `json:"type"`
-	By      string           `json:"by"`
-	Created int64            `json:"created"`
-}
-
-//easyjson:json
-type ModLogEntries []ModLogEntry
-
-func (l *ModLogEntries) TryMarshal() []byte {
-	data, err := l.MarshalJSON()
 	if err != nil {
 		return []byte("null")
 	}

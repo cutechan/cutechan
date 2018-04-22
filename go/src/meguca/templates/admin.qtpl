@@ -1,4 +1,3 @@
-{% import "time" %}
 {% import "strconv" %}
 {% import "meguca/auth" %}
 {% import "meguca/config" %}
@@ -45,11 +44,11 @@ Renders a list of bans for a specific page with optional unbanning API links
 				<tr>
 					<td>{%s b.Reason %}</td>
 					<td>{%s b.By %}</td>
-					<td>{%= staticPostLink(b.ForPost) %}</td>
-					<td>{%s b.Expires.Format(time.UnixDate) %}</td>
+					<td>{%= staticPostLink(b.ID) %}</td>
+					<td>{%d int(b.Expires) %}</td>
 					{% if canUnban %}
 						<td>
-							<input type="checkbox" name="{%s strconv.FormatUint(b.ForPost, 10) %}">
+							<input type="checkbox" name="{%s strconv.FormatUint(b.ID, 10) %}">
 						</td>
 					{% endif %}
 				</tr>
@@ -62,7 +61,7 @@ Renders a list of bans for a specific page with optional unbanning API links
 {% endstripspace %}{% endfunc %}
 
 Renders a moderation log page
-{% func ModLog(log auth.ModLogEntries) %}{% stripspace %}
+{% func ModLog(log auth.ModLogRecords) %}{% stripspace %}
 	{% code ln := lang.Get().UI %}
 	<table>
 		<tr>
@@ -94,8 +93,10 @@ Renders a moderation log page
 	</table>
 {% endstripspace %}{% endfunc %}
 
-{% func renderAdmin(cs config.BoardConfigs, log auth.ModLogEntries) %}{% stripspace %}
+{% func renderAdmin(cs config.BoardConfigs, bans auth.BanRecords, log auth.ModLogRecords) %}{% stripspace %}
 	<script>
-		var modBoards={%z= cs.TryMarshal() %},modLog={%z= log.TryMarshal() %};
+		var modBoards={%z= cs.TryMarshal() %};
+		var bans={%z= bans.TryMarshal() %};
+		var modLog={%z= log.TryMarshal() %};
 	</script>
 {% endstripspace %}{% endfunc %}

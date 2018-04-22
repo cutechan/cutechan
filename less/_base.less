@@ -2132,12 +2132,17 @@ html.user_power {
 .admin {
   max-width: 1000px;
   margin: 0 auto;
+  margin-bottom: 100px;
 
   .page-title {
     font-size: 36px;
     margin: 30px 0;
     text-align: center;
   }
+}
+
+.admin-separator {
+  .separator;
 }
 
 .admin-board-select {
@@ -2212,49 +2217,49 @@ html.user_power {
   outline: none;
 }
 
-.admin-control {
-  font-size: 20px;
-  margin-left: 10px;
-}
-
-.bans {
-  text-align: center;
-}
-
-.ban-list {
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-}
-
-.ban2 {
-  font-size: 20px;
-}
-
-.log-list {
+.admin-table {
   width: 500px;
   margin: 0 auto;
   padding: 0;
+  font-size: 18px;
+  cursor: default;
 }
 
-.log-item-header {
+.admin-table-empty {
+  font-size: 20px;
+  font-style: italic;
+  text-align: center;
+}
+
+.admin-table-header {
   font-size: 20px;
   text-align: center;
   border-bottom: 3px solid #6b6c9a;
 }
 
-.log-item {
-  font-size: 18px;
+.ban-item {
+  cursor: pointer;
+  &:hover {
+    text-decoration: line-through;
+  }
 }
 
-.log-id {
+.ban-reason {
+  width: 100px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  text-align: center;
+}
+
+.ban-id, .log-id {
   width: 1%;
   text-align: center;
   padding-right: 5px;
 }
 
 .log-type {
-  width: 1%;
+  width: 100px;
   color: #8a8a8a;
   text-align: center;
 }
@@ -2263,13 +2268,13 @@ html.user_power {
   color: #d9534f;
 }
 
-.log-by {
+.ban-by, .log-by {
   white-space: nowrap;
   text-align: center;
 }
 
-.log-time {
-  width: 1%;
+.ban-time, .log-time {
+  width: 160px;
   white-space: nowrap;
   text-decoration: dotted underline;
   text-align: right;
@@ -2277,10 +2282,11 @@ html.user_power {
   cursor: default;
 }
 
-.log-empty {
-  font-size: 20px;
-  font-style: italic;
-  text-align: center;
+.log-item {
+  border-bottom: 1px solid transparent;
+  &:hover {
+    border-color: #6b6c9a;
+  }
 }
 
 //////////////////////////////

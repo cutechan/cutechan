@@ -585,7 +585,7 @@ func banList(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	bans, err := db.GetBoardBans(board)
+	bans, err := db.GetBans([]string{board})
 	if err != nil {
 		text500(w, r, err)
 		return
@@ -627,12 +627,18 @@ func serveAdmin(w http.ResponseWriter, r *http.Request, ss *auth.Session) {
 	}
 	ownedConfigs := config.GetBoardConfigsByID(owned)
 
+	bans, err := db.GetBans(owned)
+	if err != nil {
+		text500(w, r, err)
+		return
+	}
+
 	log, err := db.GetModLog(owned)
 	if err != nil {
 		text500(w, r, err)
 		return
 	}
 
-	html := templates.Admin(ss, ownedConfigs, log)
+	html := templates.Admin(ss, ownedConfigs, bans, log)
 	serveHTML(w, r, html)
 }

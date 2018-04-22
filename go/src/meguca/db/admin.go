@@ -6,9 +6,18 @@ import (
 
 	"meguca/auth"
 	"meguca/common"
+	"meguca/config"
 
 	"github.com/lib/pq"
 )
+
+// GetIP returns an IP of the poster that created a post. Posts older than 7
+// days will not have this information.
+func GetIP(id uint64) (string, error) {
+	var ip sql.NullString
+	err := prepared["get_ip"].QueryRow(id).Scan(&ip)
+	return ip.String, err
+}
 
 // Ban IPs from accessing a specific board. Need to target posts. Returns all
 // banned IPs.
@@ -233,16 +242,39 @@ func SetThreadSticky(id uint64, sticky bool) error {
 	return execPrepared("set_sticky", id, sticky)
 }
 
+// GetOwnedBoards returns boards the account holder owns
+func GetOwnedBoards(account string) (boards []string, err error) {
+	// admin account can perform actions on any board
+	if account == "admin" {
+		return config.GetBoardIDs(), nil
+	}
+	r, err := prepared["get_owned_boards"].Query(account)
+	if err != nil {
+		return
+	}
+	for r.Next() {
+		var board string
+		err = r.Scan(&board)
+		if err != nil {
+			return
+		}
+		boards = append(boards, board)
+	}
+	err = r.Err()
+	return
+}
+
 // Retrieve moderation log for the specified boards.
 // TODO(Kagami): Pagination.
-func GetModLog(boards []string) (log auth.ModLogEntries, err error) {
+func GetModLog(boards []string) (log auth.ModLogRecords, err error) {
+	log = make(auth.ModLogRecords, 0)
 	rs, err := prepared["get_mod_log"].Query(pq.Array(boards))
 	if err != nil {
 		return
 	}
 	defer rs.Close()
 	for rs.Next() {
-		var entry auth.ModLogEntry
+		var entry auth.ModLogRecord
 		var created time.Time
 		err = rs.Scan(&entry.Board, &entry.ID, &entry.Type, &entry.By, &created)
 		if err != nil {
@@ -252,6 +284,39 @@ func GetModLog(boards []string) (log auth.ModLogEntries, err error) {
 		log = append(log, entry)
 	}
 	err = rs.Err()
+	return
+}
+
+// Get bans for the specified boards.
+// TODO(Kagami): Pagination.
+func GetBans(boards []string) (bans auth.BanRecords, err error) {
+	bans = make(auth.BanRecords, 0)
+	rs, err := prepared["get_bans"].Query(pq.Array(boards))
+	if err != nil {
+		return
+	}
+	defer rs.Close()
+	for rs.Next() {
+		var rec auth.BanRecord
+		var expires time.Time
+		err = rs.Scan(&rec.Board, &rec.IP, &rec.ID, &rec.By, &expires, &rec.Reason)
+		if err != nil {
+			return
+		}
+		rec.Expires = expires.Unix()
+		bans = append(bans, rec)
+	}
+	err = rs.Err()
+	return
+}
+
+// GetBanInfo retrieves information about a specific ban
+func GetBanInfo(ip, board string) (b auth.BanRecord, err error) {
+	var expires time.Time
+	err = prepared["get_ban_info"].
+		QueryRow(ip, board).
+		Scan(&b.IP, &b.Board, &b.ID, &b.Reason, &b.By, &expires)
+	b.Expires = expires.Unix()
 	return
 }
 
