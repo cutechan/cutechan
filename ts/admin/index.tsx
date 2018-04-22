@@ -4,6 +4,7 @@
  * @module cutechan/admin
  */
 
+import * as cx from "classnames";
 import { Component, h, render } from "preact";
 import { _ } from "../lang";
 import { BoardConfig } from "../state";
@@ -48,34 +49,30 @@ type ModLogRecords = ModLogRecord[];
 declare global {
   interface Window {
     modBoards?: ModBoards;
-    bans?: BanRecords;
+    modBans?: BanRecords;
     modLog?: ModLogRecords;
   }
 }
 
 export const modBoards = window.modBoards;
-export const bans = window.bans;
+export const modBans = window.modBans;
 export const modLog = window.modLog;
 
-function getBoardConfigByID(id: string): AdminBoardConfig {
-  return modBoards.find((b) => b.id === id);
-}
+type ChangeFn = (changes: BoardStateChanges) => void;
 
 interface SettingsProps {
-  board: string;
+  settings: AdminBoardConfig;
+  onChange: ChangeFn;
 }
 
-class Settings extends Component<SettingsProps, AdminBoardConfig> {
-  constructor(props: SettingsProps) {
-    super(props);
-    this.state = {...getBoardConfigByID(props.board)};
-  }
-  public render({}, { title, readOnly, modOnly }: AdminBoardConfig) {
+class Settings extends Component<SettingsProps, {}> {
+  public render({ settings }: SettingsProps) {
+    const { title, readOnly, modOnly } = settings;
     return (
       <div class="settings">
         <a class="admin-content-anchor" name="settings" />
         <h3 class="admin-content-header">
-          <a href="#settings">{_("Settings")}</a>
+          <a class="admin-header-link" href="#settings">{_("Settings")}</a>
         </h3>
         <label class="settings-label">
           <span class="settings-text">{_("Title")}</span>
@@ -108,35 +105,38 @@ class Settings extends Component<SettingsProps, AdminBoardConfig> {
   }
   private handleTitleChange = (e: Event) => {
     const title = (e.target as HTMLInputElement).value;
-    this.setState({title});
+    const settings = {...this.props.settings, title};
+    this.props.onChange({settings});
   }
   private handleReadOnlyToggle = (e: Event) => {
     e.preventDefault();
-    const readOnly = !this.state.readOnly;
-    this.setState({readOnly});
+    const readOnly = !this.props.settings.readOnly;
+    const settings = {...this.props.settings, readOnly};
+    this.props.onChange({settings});
   }
   private handleModOnlyToggle = (e: Event) => {
     e.preventDefault();
-    const modOnly = !this.state.modOnly;
-    this.setState({modOnly});
+    const modOnly = !this.props.settings.modOnly;
+    const settings = {...this.props.settings, modOnly};
+    this.props.onChange({settings});
   }
 }
 
 interface BansProps {
-  board: string;
+  bans: BanRecords;
+  onChange: ChangeFn;
 }
 
 class Bans extends Component<BansProps, {}> {
-  public shouldComponentUpdate(nextProps: LogProps) {
-    return this.props.board !== nextProps.board;
+  public shouldComponentUpdate(nextProps: BansProps) {
+    return this.props.bans !== nextProps.bans;
   }
-  public render({ board }: LogProps) {
-    const boardBans = bans.filter((b) => b.board === board);
+  public render({ bans }: BansProps) {
     return (
       <div class="bans">
         <a class="admin-content-anchor" name="bans" />
         <h3 class="admin-content-header">
-          <a href="#bans">{_("Bans")}</a>
+          <a class="admin-header-link" href="#bans">{_("Bans")}</a>
         </h3>
         <table class="admin-table ban-list">
         <thead>
@@ -148,7 +148,7 @@ class Bans extends Component<BansProps, {}> {
           </tr>
         </thead>
         <tbody>
-        {boardBans.map(({ id, reason, by, expires }) =>
+        {bans.map(({ id, reason, by, expires }) =>
           <tr class="admin-table-item ban-item">
             <td class="ban-id">
               <a class="post-link" href={`/all/${id}#${id}`}>
@@ -162,7 +162,7 @@ class Bans extends Component<BansProps, {}> {
             </td>
           </tr>,
         )}
-        {!boardBans.length &&
+        {!bans.length &&
           <tr class="admin-table-empty ban-item">
             <td class="bans-empty" colSpan={4}>{_("No bans")}</td>
           </tr>
@@ -175,20 +175,19 @@ class Bans extends Component<BansProps, {}> {
 }
 
 interface LogProps {
-  board: string;
+  log: ModLogRecords;
 }
 
 class Log extends Component<LogProps, {}> {
   public shouldComponentUpdate(nextProps: LogProps) {
-    return this.props.board !== nextProps.board;
+    return this.props.log !== nextProps.log;
   }
-  public render({ board }: LogProps) {
-    const boardLog = modLog.filter((l) => l.board === board);
+  public render({ log }: LogProps) {
     return (
       <div class="log">
         <a class="admin-content-anchor" name="log" />
         <h3 class="admin-content-header">
-          <a href="#log">{_("Mod log")}</a>
+          <a class="admin-header-link" href="#log">{_("Mod log")}</a>
         </h3>
         <table class="admin-table log-list">
         <thead>
@@ -200,7 +199,7 @@ class Log extends Component<LogProps, {}> {
           </tr>
         </thead>
         <tbody>
-        {boardLog.map(({ id, type, by, created }) =>
+        {log.map(({ id, type, by, created }) =>
           <tr class="admin-table-item log-item">
             <td class="log-id">
               <a class="post-link" href={`/all/${id}#${id}`}>
@@ -216,7 +215,7 @@ class Log extends Component<LogProps, {}> {
             </td>
           </tr>,
         )}
-        {!boardLog.length &&
+        {!log.length &&
           <tr class="admin-table-empty log-item">
             <td class="log-empty" colSpan={4}>{_("Empty log")}</td>
           </tr>
@@ -249,16 +248,38 @@ class Log extends Component<LogProps, {}> {
   }
 }
 
+interface BoardState {
+  settings: AdminBoardConfig;
+  bans: BanRecords;
+  log: ModLogRecords;
+}
+
+interface BoardStateChanges {
+  settings?: AdminBoardConfig;
+  bans?: BanRecords;
+}
+
 interface AdminState {
-  board: string;
+  id: string;
+  boardState: BoardState;
+  needSaving: boolean;
+  saving: boolean;
 }
 
 class Admin extends Component<{}, AdminState> {
-  public state = {
+  constructor() {
+    super();
     // User with access to admin page will have at least one board.
-    board: modBoards[0].id,
-  };
-  public render({}, { board }: AdminState) {
+    const { id } = modBoards[0];
+    this.state = {
+      id,
+      boardState: this.getBoardState(id),
+      needSaving: false,
+      saving: false,
+    };
+  }
+  public render({}, { boardState, needSaving, saving }: AdminState) {
+    const { settings, bans, log } = boardState;
     return (
       <section class="admin">
         <header class="admin-header">
@@ -266,7 +287,7 @@ class Admin extends Component<{}, AdminState> {
             {_("Admin")}
             <select
               class="admin-board-select"
-              value={board}
+              value={boardState.settings.id}
               onChange={this.handleBoardChange}
             >
               {modBoards.map((b) =>
@@ -292,19 +313,58 @@ class Admin extends Component<{}, AdminState> {
           </ul>
           <hr class="admin-separator" />
           <section class="admin-content">
-            <Settings board={board} />
+            <Settings settings={settings} onChange={this.handleChange} />
             <hr class="admin-separator" />
-            <Bans board={board} />
+            <Bans bans={bans} onChange={this.handleChange} />
             <hr class="admin-separator" />
-            <Log board={board} />
+            <Log log={log} />
           </section>
         </section>
+        <footer class={cx("admin-footer", needSaving && "admin-footer_visible")}>
+          <button
+            class="button admin-button admin-save-button"
+            onClick={this.handleSave}
+          >
+            <i class={cx("admin-icon admin-save-icon fa", {
+              "fa-spinner fa-pulse fa-fw": saving,
+              "fa-check-circle": !saving,
+            })} />
+            {_("Save")}
+          </button>
+          <button
+            class="button admin-button admin-cancel-button"
+            onClick={this.handleReset}
+          >
+            <i class="admin-icon admin-reset-icon fa fa-times-circle" />
+            {_("Reset")}
+          </button>
+        </footer>
       </section>
     );
   }
+  private getBoardState(id: string) {
+    const board = modBoards.find((b) => b.id === id);
+    return {
+      settings: { ...board },
+      bans: modBans.filter((b) => b.board === id),
+      log: modLog.filter((l) => l.board === id),
+    };
+  }
   private handleBoardChange = (e: Event) => {
-    const board = (e.target as HTMLInputElement).value;
-    this.setState({board});
+    const id = (e.target as HTMLInputElement).value;
+    const boardState = this.getBoardState(id);
+    this.setState({id, boardState});
+  }
+  private handleChange = (changes: BoardStateChanges) => {
+    const boardState = Object.assign({}, this.state.boardState, changes);
+    this.setState({boardState, needSaving: true});
+  }
+  private handleSave = () => {
+    this.setState({needSaving: false});
+  }
+  private handleReset = () => {
+    const boardState = this.getBoardState(this.state.id);
+    this.setState({boardState, needSaving: false});
   }
 }
 

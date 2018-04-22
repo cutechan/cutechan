@@ -2127,6 +2127,7 @@ html.user_power {
     font-size: 36px;
     margin: 30px 0;
     text-align: center;
+    cursor: default;
   }
 }
 
@@ -2175,11 +2176,14 @@ html.user_power {
   margin-bottom: 15px;
   text-align: center;
   color: @link;
-  cursor: pointer;
   user-select: none;
   &:hover {
     color: @linkHover;
   }
+}
+
+.admin-header-link {
+  cursor: pointer;
 }
 
 .settings-label {
@@ -2188,6 +2192,7 @@ html.user_power {
   margin: 0 auto;
   font-size: 20px;
   cursor: pointer;
+  user-select: none;
 }
 
 .settings-text {
@@ -2203,6 +2208,7 @@ html.user_power {
 
 .settings-checkbox {
   height: 28px;
+  cursor: pointer;
   outline: none;
 }
 
@@ -2276,6 +2282,37 @@ html.user_power {
   &:hover {
     border-color: #6b6c9a;
   }
+}
+
+.admin-footer {
+  position: fixed;
+  left: 0;
+  right: 0;
+  height: 60px;
+  bottom: 0;
+  text-align: center;
+  background: @control;
+  opacity: 0;
+  transition: opacity .5s;
+}
+.admin-footer_visible {
+  opacity: 1;
+}
+
+.admin-button {
+  width: 200px;
+  height: 40px;
+  margin-top: 10px;
+  font-size: 20px;
+  background: @bodyBG;
+}
+
+.admin-save-button {
+  margin-right: 10px;
+}
+
+.admin-icon {
+  width: 30px;
 }
 
 //////////////////////////////
