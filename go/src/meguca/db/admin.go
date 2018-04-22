@@ -236,23 +236,22 @@ func SetThreadSticky(id uint64, sticky bool) error {
 // Retrieve moderation log for the specified boards.
 // TODO(Kagami): Pagination.
 func GetModLog(boards []string) (log auth.ModLogEntries, err error) {
-	bArr := pq.StringArray(boards)
-	r, err := prepared["get_mod_log"].Query(bArr)
+	rs, err := prepared["get_mod_log"].Query(pq.Array(boards))
 	if err != nil {
 		return
 	}
-	defer r.Close()
-
-	var entry auth.ModLogEntry
-	for r.Next() {
-		err = r.Scan(&entry.Type, &entry.ID, &entry.By, &entry.Created)
+	defer rs.Close()
+	for rs.Next() {
+		var entry auth.ModLogEntry
+		var created time.Time
+		err = rs.Scan(&entry.Board, &entry.ID, &entry.Type, &entry.By, &created)
 		if err != nil {
 			return
 		}
+		entry.Created = created.Unix()
 		log = append(log, entry)
 	}
-	err = r.Err()
-
+	err = rs.Err()
 	return
 }
 

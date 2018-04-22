@@ -6,30 +6,59 @@
 
 import { Component, h, render } from "preact";
 import { _ } from "../lang";
-import { BoardConfig, boards } from "../state";
+import { BoardConfig } from "../state";
+import { readableTime, relativeTime } from "../templates";
 import { MAIN_CONTAINER_SEL } from "../vars";
-
-// FIXME(Kagami): Get private board configs.
-function getBoardByID(id: string): BoardConfig {
-  return boards.find((b) => b.id === id);
-}
-
-interface SettingsProps {
-  id: string;
-}
 
 interface AdminBoardConfig extends BoardConfig {
   modOnly?: boolean;
 }
 
+type ModBoards = AdminBoardConfig[];
+
+const enum ModerationAction {
+  banPost,
+  unbanPost,
+  deletePost,
+  deleteImage,
+  spoilerImage,
+  deleteThread,
+}
+
+interface ModLogEntry {
+  board: string;
+  id: number;
+  type: ModerationAction;
+  by: string;
+  created: number;
+}
+
+type ModLogEntries = ModLogEntry[];
+
+declare global {
+  interface Window {
+    modBoards?: ModBoards;
+    modLog?: ModLogEntries;
+  }
+}
+
+function getBoardConfigByID(id: string): AdminBoardConfig {
+  return window.modBoards.find((b) => b.id === id);
+}
+
+interface SettingsProps {
+  board: string;
+}
+
 class Settings extends Component<SettingsProps, AdminBoardConfig> {
   constructor(props: SettingsProps) {
     super(props);
-    this.state = {...getBoardByID(props.id), modOnly: false};
+    this.state = {...getBoardConfigByID(props.board)};
   }
   public render({}, { title, readOnly, modOnly }: AdminBoardConfig) {
     return (
-      <div class="settings" id="settings">
+      <div class="settings">
+        <a class="admin-content-anchor" name="settings" />
         <h3 class="admin-content-header">
           <a href="#settings">{_("Settings")}</a>
         </h3>
@@ -79,13 +108,14 @@ class Settings extends Component<SettingsProps, AdminBoardConfig> {
 }
 
 interface BansProps {
-  id: string;
+  board: string;
 }
 
 class Bans extends Component<BansProps, {}> {
   public render() {
     return (
-      <div class="bans" id="bans">
+      <div class="bans">
+        <a class="admin-content-anchor" name="bans" />
         <h3 class="admin-content-header">
           <a href="#bans">{_("Bans")}</a>
         </h3>
@@ -127,22 +157,77 @@ class Bans extends Component<BansProps, {}> {
 }
 
 interface LogProps {
-  id: string;
+  board: string;
+}
+
+interface LogState {
+  log: ModLogEntries;
 }
 
 class Log extends Component<LogProps, {}> {
-  public render() {
+  constructor(props: SettingsProps) {
+    super(props);
+    const log = window.modLog.filter((l) => l.board === props.board);
+    this.state = {log};
+  }
+  public render({}, { log }: LogState) {
     return (
-      <div class="log" id="log">
+      <div class="log">
+        <a class="admin-content-anchor" name="log" />
         <h3 class="admin-content-header">
           <a href="#log">{_("Mod log")}</a>
         </h3>
-        <ul class="log-list">
-          <li class="log-item">
-          </li>
-        </ul>
+        <table class="log-list">
+        <thead>
+          <tr class="log-item-header">
+            <th class="log-id-header">#</th>
+            <th class="log-type-header">{_("Type")}</th>
+            <th class="log-by-header">{_("By")}</th>
+            <th class="log-time-header">{_("Date")}</th>
+          </tr>
+        </thead>
+        <tbody>
+        {log.map(({ id, type, by, created }) =>
+          <tr class="log-item">
+            <td class="log-id">
+              <a class="post-link" href={`/all/${id}#${id}`}>
+                &gt;&gt;{id}
+              </a>
+            </td>
+            <td class="log-type">
+              {this.renderType(type)}
+            </td>
+            <td class="log-by">{by}</td>
+            <td class="log-time" title={readableTime(created)}>
+              {relativeTime(created)}
+            </td>
+          </tr>,
+        )}
+        </tbody>
+        </table>
       </div>
     );
+  }
+  private renderType(a: ModerationAction) {
+    switch (a) {
+    case ModerationAction.banPost:
+      return <i class="fa fa-gavel" />;
+    case ModerationAction.unbanPost:
+      return (
+        <span class="fa-stack">
+          <i class="fa fa-gavel fa-stack-1x" />
+          <i class="fa fa-ban fa-stack-2x log-ban-icon" />
+        </span>
+      );
+    case ModerationAction.deletePost:
+      return <i class="fa fa-trash" />;
+    case ModerationAction.deleteImage:
+      return null;
+    case ModerationAction.spoilerImage:
+      return null;
+    case ModerationAction.deleteThread:
+      return <i class="fa fa-2x fa-trash-o" />;
+    }
   }
 }
 
@@ -176,12 +261,13 @@ class Admin extends Component<{}, {}> {
           </ul>
           <hr class="separator" />
           <section class="admin-content">
-            <Settings id="b" />
+            <Settings board="b" />
             <hr class="separator" />
-            <Bans id="b" />
+            <Bans board="b" />
             <hr class="separator" />
-            <Log id="b" />
+            <Log board="b" />
           </section>
+          <hr class="separator" />
         </section>
       </section>
     );

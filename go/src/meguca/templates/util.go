@@ -22,7 +22,7 @@ func posClasses(pos auth.Positions) string {
 	if pos.AnyBoard > auth.NotLoggedIn {
 		classes = append(classes, "user")
 	}
-	if auth.IsPowerUser(pos) {
+	if pos.IsPowerUser() {
 		classes = append(classes, "user_power")
 	}
 	return strings.Join(classes, " ")

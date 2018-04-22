@@ -1,5 +1,3 @@
-//go:generate easyjson $GOFILE
-
 // Package auth determines and asserts client permissions to access and modify
 // server resources.
 package auth
@@ -11,17 +9,9 @@ import (
 	"net"
 	"net/http"
 	"strings"
-	"time"
+	"sync"
 
 	"golang.org/x/crypto/bcrypt"
-)
-
-type IgnoreMode int
-
-const (
-	IgnoreDisabled IgnoreMode = iota - 1
-	IgnoreByBlacklist
-	IgnoreByWhitelist
 )
 
 var (
@@ -32,69 +22,13 @@ var (
 	// ReverseProxyIP specifies the IP of a non-localhost reverse proxy. Used
 	// for filtering in XFF IP determination.
 	ReverseProxyIP string
+
+	// board: IP: IsBanned
+	bans   = map[string]map[string]bool{}
+	bansMu sync.RWMutex
+
+	NullPositions = Positions{CurBoard: NotLoggedIn, AnyBoard: NotLoggedIn}
 )
-
-// Contains user data and settings of the request's session.
-//easyjson:json
-type Session struct {
-	UserID    string          `json:"userID"`
-	Positions Positions       `json:"positions"`
-	Settings  AccountSettings `json:"settings"`
-}
-
-//easyjson:json
-type AccountSettings struct {
-	Name        string     `json:"name,omitempty"`
-	ShowName    bool       `json:"showName,omitempty"`
-	IgnoreMode  IgnoreMode `json:"ignoreMode,omitempty"`
-	IncludeAnon bool       `json:"includeAnon,omitempty"`
-	Whitelist   []string   `json:"whitelist,omitempty"`
-	Blacklist   []string   `json:"blacklist,omitempty"`
-}
-
-func (ss *Session) GetPositions() Positions {
-	if ss == nil {
-		return NullPositions
-	}
-	return ss.Positions
-}
-
-func (ss *Session) GetSettings() AccountSettings {
-	if ss == nil {
-		return AccountSettings{}
-	}
-	return ss.Settings
-}
-
-func (ss *Session) TryMarshal() []byte {
-	if ss == nil {
-		return []byte("null")
-	}
-	data, err := ss.MarshalJSON()
-	if err != nil {
-		return []byte("null")
-	}
-	return data
-}
-
-// Single entry in the moderation log
-type ModLogEntry struct {
-	Type    ModerationAction `json:"type"`
-	ID      uint64           `json:"id"`
-	By      string           `json:"by"`
-	Created time.Time        `json:"created"`
-}
-
-//easyjson:json
-type ModLogEntries []ModLogEntry
-
-func (l *ModLogEntries) TryMarshal() []byte {
-	data, err := l.MarshalJSON()
-	if err != nil {
-		return []byte("null")
-	}
-	return data
-}
 
 // GetIP extracts the IP of a request, honouring reverse proxies, if set
 func GetIP(r *http.Request) (string, error) {
@@ -158,4 +92,35 @@ func BcryptHash(password string, rounds int) ([]byte, error) {
 // BcryptCompare compares a bcrypt hash with a user-supplied string
 func BcryptCompare(password string, hash []byte) error {
 	return bcrypt.CompareHashAndPassword(hash, []byte(password))
+}
+
+// IsBanned returns if the IP is banned on the target board
+func IsBanned(board, ip string) (banned bool) {
+	bansMu.RLock()
+	defer bansMu.RUnlock()
+	global := bans["all"]
+	ips := bans[board]
+	if global != nil && global[ip] {
+		return true
+	}
+	if ips != nil && ips[ip] {
+		return true
+	}
+	return false
+}
+
+// SetBans replaces the ban cache with the new set
+func SetBans(b ...Ban) {
+	newBans := map[string]map[string]bool{}
+	for _, b := range b {
+		board, ok := newBans[b.Board]
+		if !ok {
+			board = map[string]bool{}
+			newBans[b.Board] = board
+		}
+		board[b.IP] = true
+	}
+	bansMu.Lock()
+	bans = newBans
+	bansMu.Unlock()
 }

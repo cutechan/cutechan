@@ -107,7 +107,7 @@ func checkPowerUser(ss *auth.Session) bool {
 	if ss == nil {
 		return false
 	}
-	return auth.IsPowerUser(ss.Positions)
+	return ss.Positions.IsPowerUser()
 }
 
 // Eunsure only power users can pass.
