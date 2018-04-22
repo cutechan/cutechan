@@ -185,8 +185,7 @@ Renders the tab selection butts in tabbed windows
 {% endstripspace %}{% endfunc %}
 
 {% func accountModal(ss *auth.Session) %}{% stripspace %}
-	{% code ln := lang.Get() %}
-	{% code f := ln.Forms %}
+	{% code f := lang.Get().Forms %}
 	<div class="modal tab-modal" id="account-panel">
 		{% if ss == nil %}
 			{%= tabButts([]string{f["id"][0], f["register"][0]}) %}
@@ -210,22 +209,26 @@ Renders the tab selection butts in tabbed windows
 			{%= tabButts([]string{f["ops"][0], f["identity"][0]}) %}
 			<div class="tab-cont">
 				<div class="tab-sel" data-id="0">
-					{% for _, l := range [...]string{
-						"logout", "logoutAll", "changePassword",
-						"createBoard",
-						"configureBoard", "assignStaff",
-						"deleteBoard",
-					} %}
-						<a class="form-selection-link" id="{%s l %}">
-							{%s ln.UI[l] %}
-							{% if l == "logout" %}
-								,{% space %}{%s ss.UserID %}
-							{% endif %}
+					<a class="form-selection-link" id="logout">
+						{%s lang.GT("logout") %}, {%s ss.UserID %}
+					</a>
+					<a class="form-selection-link" id="logoutAll">
+						{%s lang.GT("logoutAll") %}
+					</a>
+					<a class="form-selection-link" id="changePassword">
+						{%s lang.GT("changePassword") %}
+					</a>
+					{% if ss.Positions.AnyBoard >= auth.BoardOwner %}
+						<a class="form-selection-link" id="configureBoard">
+							{%s lang.GT("configureBoard") %}
 						</a>
-					{% endfor %}
+					{% endif %}
 					{% if ss.Positions.CurBoard == auth.Admin %}
+						<a class="form-selection-link" id="createBoard">
+							{%s lang.GT("createBoard") %}
+						</a>
 						<a class="form-selection-link" id="configureServer">
-							{%s ln.UI["configureServer"] %}
+							{%s lang.GT("configureServer") %}
 						</a>
 					{% endif %}
 				</div>
