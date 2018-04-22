@@ -108,8 +108,6 @@ func createRouter(debugRoutes bool) http.Handler {
 	html.POST("/configure-board/:board", boardConfigurationForm)
 	html.POST("/configure-server", serverConfigurationForm)
 	html.GET("/assign-staff/:board", staffAssignmentForm)
-	html.GET("/bans/:board", banList)
-	html.GET("/mod-log/:board", modLog)
 
 	h := http.Handler(r)
 	return h

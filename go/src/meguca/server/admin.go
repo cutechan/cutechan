@@ -574,51 +574,6 @@ func setThreadSticky(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Render list of bans on a board with unban links for authenticated staff
-func banList(w http.ResponseWriter, r *http.Request) {
-	board := getParam(r, "board")
-	if !assertServeBoard(w, board) {
-		return
-	}
-	ss, _ := getSession(r, board)
-	if !assertNotModOnly(w, board, ss) {
-		return
-	}
-
-	bans, err := db.GetBans([]string{board})
-	if err != nil {
-		text500(w, r, err)
-		return
-	}
-
-	canUnban := canPerform(ss, auth.Moderator)
-	content := []byte(templates.BanList(bans, board, canUnban))
-	html := []byte(templates.BasePage(content))
-	serveHTML(w, r, html)
-}
-
-// Serve moderation log for a specific board
-func modLog(w http.ResponseWriter, r *http.Request) {
-	board := getParam(r, "board")
-	if !assertServeBoard(w, board) {
-		return
-	}
-	ss, _ := getSession(r, board)
-	if !assertNotModOnly(w, board, ss) {
-		return
-	}
-
-	log, err := db.GetModLog([]string{board})
-	if err != nil {
-		text500(w, r, err)
-		return
-	}
-
-	content := []byte(templates.ModLog(log))
-	html := []byte(templates.BasePage(content))
-	serveHTML(w, r, html)
-}
-
 func serveAdmin(w http.ResponseWriter, r *http.Request, ss *auth.Session) {
 	owned, err := db.GetOwnedBoards(ss.UserID)
 	if err != nil {
