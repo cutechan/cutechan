@@ -9,7 +9,7 @@ import { ln, printf } from "../lang";
 import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {
-  AbortError, collect, Dict, FutureAPI, getID, hook, HOOKS, on, Progress,
+  AbortError, collect, Dict, FutureAPI, getID, hook, HOOKS, on,
   scrollToTop, setter as s, ShowHide, unhook,
 } from "../util";
 import {
@@ -23,6 +23,7 @@ import {
   TRIGGER_OPEN_REPLY_SEL,
   TRIGGER_QUOTE_POST_SEL,
 } from "../vars";
+import { Progress } from "../widgets";
 import * as signature from "./signature";
 import SmileBox, { autocomplete } from "./smile-box";
 

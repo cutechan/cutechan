@@ -3,10 +3,10 @@
  */
 
 import { Component, h } from "preact";
+import { session } from "../auth";
 import { _ } from "../lang";
 
 interface MemberListProps {
-  myName: string;
   members: string[];
   disabled?: boolean;
   onChange: (members: string[]) => void;
@@ -41,13 +41,13 @@ class MemberList extends Component<MemberListProps, {}> {
     return (
       name.length >= 1
       && name.length <= 20
-      && name !== this.props.myName
+      && name !== session.userID
       && !this.props.members.includes(name)
     );
   }
   private handleRemove = (name: string) => {
     if (this.props.disabled) return;
-    if (name === this.props.myName) return;
+    if (name === session.userID) return;
     const members = this.props.members.filter((n) => n !== name);
     this.props.onChange(members);
   }

@@ -14,13 +14,13 @@ import { Post } from "../posts";
 import { getModel, page } from "../state";
 import {
   BackgroundClickMixin, Constructable, EscapePressMixin,
-  hook, HOOKS, MemberList, on, remove, trigger,
-  unhook,
+  hook, HOOKS, on, remove, trigger, unhook,
 } from "../util";
 import {
   MODAL_CONTAINER_SEL, TRIGGER_BAN_BY_POST_SEL,
   TRIGGER_DELETE_POST_SEL, TRIGGER_IGNORE_USER_SEL,
 } from "../vars";
+import { MemberList } from "../widgets";
 import {
   BoardConfigForm, BoardCreationForm, BoardDeletionForm, StaffAssignmentForm,
 } from "./board-form";
@@ -155,7 +155,6 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
           <article class="account-form-section">
             <h3 class="account-form-shead">{_("Whitelist")}</h3>
             <MemberList
-              myName={session.userID}
               members={whitelist}
               disabled={saving}
               onChange={this.handleWhitelistChange}
@@ -166,7 +165,6 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
               {_("Blacklist")}
             </h3>
             <MemberList
-              myName={session.userID}
               members={blacklist}
               disabled={saving}
               onChange={this.handleBlacklistChange}
