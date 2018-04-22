@@ -14,7 +14,8 @@ import { Post } from "../posts";
 import { getModel, page } from "../state";
 import {
   BackgroundClickMixin, Constructable, EscapePressMixin,
-  hook, HOOKS, on, remove, trigger, unhook,
+  hook, HOOKS, MemberList, on, remove, trigger,
+  unhook,
 } from "../util";
 import {
   MODAL_CONTAINER_SEL, TRIGGER_BAN_BY_POST_SEL,
@@ -152,54 +153,24 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
         </article>
         <article class="account-form-section account-form-section_row">
           <article class="account-form-section">
-            <h3 class="account-form-shead">
-              {_("Whitelist")}
-            </h3>
-            <ul class="account-form-sbody account-form-ignorelist">
-              {whitelist.map((userID) =>
-                <li
-                  class="account-form-ignoreitem"
-                  onClick={() => this.handleWhitelistRemove(userID)}
-                >
-                  {userID}
-                </li>,
-              )}
-            </ul>
-            <div class="account-form-newignoreitem">
-              <input
-                class="account-form-name"
-                type="text"
-                placeholder={_("Add name")}
-                title={_("Enter to add")}
-                disabled={saving}
-                onKeyDown={this.handleWLNameKey}
-              />
-            </div>
+            <h3 class="account-form-shead">{_("Whitelist")}</h3>
+            <MemberList
+              myName={session.userID}
+              members={whitelist}
+              disabled={saving}
+              onChange={this.handleWhitelistChange}
+            />
           </article>
           <article class="account-form-section">
             <h3 class="account-form-shead">
               {_("Blacklist")}
             </h3>
-            <ul class="account-form-sbody account-form-ignorelist">
-              {blacklist.map((userID) =>
-                <li
-                  class="account-form-ignoreitem"
-                  onClick={() => this.handleBlacklistRemove(userID)}
-                >
-                  {userID}
-                </li>,
-              )}
-            </ul>
-            <div class="account-form-newignoreitem">
-              <input
-                class="account-form-name"
-                type="text"
-                placeholder={_("Add name")}
-                title={_("Enter to add")}
-                disabled={saving}
-                onKeyDown={this.handleBLNameKey}
-              />
-            </div>
+            <MemberList
+              myName={session.userID}
+              members={blacklist}
+              disabled={saving}
+              onChange={this.handleBlacklistChange}
+            />
           </article>
         </article>
         <article class="account-form-section">
@@ -240,53 +211,11 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
     const ignoreMode = +(e.target as HTMLInputElement).value;
     this.setState({ignoreMode});
   }
-  private handleWhitelistRemove = (userID: string) => {
-    const { whitelist, saving } = this.state;
-    if (saving) return;
-    remove(whitelist, userID);
+  private handleWhitelistChange = (whitelist: string[]) => {
     this.setState({whitelist});
   }
-  private handleBlacklistRemove = (userID: string) => {
-    const { blacklist, saving } = this.state;
-    if (saving) return;
-    remove(blacklist, userID);
+  private handleBlacklistChange = (blacklist: string[]) => {
     this.setState({blacklist});
-  }
-  private isValidIgnoreName(name: string): boolean {
-    // TODO(Kagami): Validate name chars and highlight invalid inputs?
-    return (
-      name.length >= 1
-      && name.length <= 20
-      && !this.state.whitelist.includes(name)
-      && !this.state.blacklist.includes(name)
-      && name !== session.userID
-    );
-  }
-  private handleWLNameKey = (e: KeyboardEvent) => {
-    if (e.keyCode === 13) {
-      const { whitelist } = this.state;
-      const wlNameEl = e.target as HTMLInputElement;
-      const wlName = wlNameEl.value;
-      if (!this.isValidIgnoreName(wlName)) {
-        return;
-      }
-      whitelist.push(wlName);
-      this.setState({whitelist});
-      wlNameEl.value = "";
-    }
-  }
-  private handleBLNameKey = (e: KeyboardEvent) => {
-    if (e.keyCode === 13) {
-      const { blacklist } = this.state;
-      const blNameEl = e.target as HTMLInputElement;
-      const blName = blNameEl.value;
-      if (!this.isValidIgnoreName(blName)) {
-        return;
-      }
-      blacklist.push(blName);
-      this.setState({blacklist});
-      blNameEl.value = "";
-    }
   }
   private handleIncludeAnonToggle = (e: Event) => {
     e.preventDefault();

@@ -913,33 +913,11 @@ input[type=number], input[type=text], input[type=password], textarea {
   background-color: @modalInput;
 }
 
-.account-form-ignorelist {
-  display: block;
-  box-sizing: border-box;
-  max-height: 250px;
-  margin: 0;
-  padding: 0;
-  list-style-type: none;
-  overflow-y: auto;
-}
-
-.account-form-ignoreitem {
-  width: 0;
-  cursor: pointer;
-  &:hover {
-    text-decoration: line-through;
-  }
-}
-
-.account-form-newignoreitem {
-  // FIXME(Kagami): Fix awful legacy styles.
-  .account-form-name[type=text] {
+.account-form-section {
+  .member-list-name {
     width: 8em;
     height: 19px;
-    border: none;
-    background: none;
     margin-right: 5px;
-    color:@body;
   }
 }
 
@@ -2323,6 +2301,35 @@ html.user_power {
 
 .admin-icon {
   width: 30px;
+}
+
+//////////////////////////////
+// MEMBER LIST
+//////////////////////////////
+
+.member-list {
+  display: block;
+  box-sizing: border-box;
+  max-height: 250px;
+  margin: 0;
+  padding: 0;
+  list-style-type: none;
+  overflow-y: auto;
+}
+
+.member-list-item {
+  width: 0;
+  cursor: pointer;
+  &:hover {
+    text-decoration: line-through;
+  }
+}
+
+.member-list-name {
+  border: none;
+  background: none;
+  color: @body;
+  outline: none;
 }
 
 //////////////////////////////
