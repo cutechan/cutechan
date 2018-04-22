@@ -17,7 +17,6 @@ type Pack struct {
 	Tabs, SortModes []string
 	Forms           map[string][]string
 	UI              map[string]string
-	Templates       map[string][]string
 	Common          struct {
 		Posts   map[string]string
 		Sizes   map[string]string

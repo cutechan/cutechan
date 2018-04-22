@@ -231,9 +231,7 @@
     "account": "Account",
     "add": "Add",
     "apply": "Apply",
-    "assignStaff": "Assign staff",
     "ban": "Ban",
-    "bannerSpecs": "Accepts up to 20 JPEG, PNG, GIF or WEBM files with maximum dimensions of 300x100, maximum file size of 100 KB and no sound.",
     "by": "By",
     "cancel": "Cancel",
     "captcha": "Captcha",
@@ -267,7 +265,6 @@
     "return": "Return",
     "search": "Search",
     "searchTooltip": "Filter threads by subject, body or board name encased in backslashes. Accepts Regular expressions.",
-    "setBanners": "Set banners",
     "sortMode": "Sort threads by",
     "subject": "Subject",
     "submit": "Submit",
@@ -288,12 +285,6 @@
     "Options",
     "Shortcuts"
   ],
-  "templates": {
-    "banPage": [
-      "You have been banned from /%s/ for the reason:",
-      "Your ban will expire on %s or in %s."
-    ]
-  },
   "common": {
     "posts": {
       "clickToCopy": "Click to copy",
