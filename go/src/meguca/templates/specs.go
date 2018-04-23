@@ -6,11 +6,6 @@ import (
 	"meguca/common"
 )
 
-// NOTE: After adding inputSpec structs with new ID fields, be sure to add the
-// description to at least `lang/en_GB/server.json.forms`. Then run
-// `scripts/migrate_lang.js` to insert temporary placeholders into any language
-// packs missing translations.
-
 // Reused in multiple places
 var (
 	repeatPasswordSpec = inputSpec{
@@ -21,18 +16,9 @@ var (
 		Required:     true,
 		Autocomplete: "new-password",
 	}
-	staffTitleSpec = inputSpec{ID: "staffTitle"}
 )
 
 var specs = map[string][]inputSpec{
-	"noscriptPostCreation": {
-		inputSpec{
-			ID:        "body",
-			Type:      _textarea,
-			Rows:      5,
-			MaxLength: common.MaxLenBody,
-		},
-	},
 	"login": {
 		{
 			ID:           "id",
@@ -88,15 +74,6 @@ var specs = map[string][]inputSpec{
 			Autocomplete: "new-password",
 		},
 		repeatPasswordSpec,
-	},
-	"configureBoard": {
-		{
-			ID:        "title",
-			Type:      _string,
-			MaxLength: common.MaxLenBoardTitle,
-		},
-		{ID: "readOnly"},
-		{ID: "modOnly"},
 	},
 	"createBoard": {
 		{

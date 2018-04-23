@@ -4,9 +4,9 @@ package templates
 
 import (
 	"html"
-	"meguca/lang"
 	"strconv"
-	"strings"
+
+	"meguca/lang"
 
 	"github.com/valyala/quicktemplate"
 )
@@ -19,10 +19,7 @@ const (
 	_number
 	_string
 	_select
-	_textarea
 	_password
-	_array
-	_image
 	_shortcut
 )
 
@@ -71,10 +68,6 @@ func (w *formWriter) input(spec inputSpec) {
 	switch spec.Type {
 	case _select:
 		w.sel(spec)
-	case _textarea:
-		w.textArea(spec)
-	case _array:
-		streamrenderArray(&w.Writer, spec)
 	case _shortcut:
 		w.N().S("Alt+")
 		cont = true
@@ -122,9 +115,6 @@ func (w *formWriter) input(spec inputSpec) {
 		if spec.Autocomplete != "" {
 			w.attr("autocomplete", spec.Autocomplete)
 		}
-	case _image:
-		w.typ("file")
-		w.attr("accept", "image/png,image/gif,image/jpeg")
 	case _shortcut:
 		w.attr("maxlength", "1")
 		w.attr("class", "shortcut")
@@ -179,25 +169,6 @@ func (w *formWriter) sel(spec inputSpec) {
 	}
 
 	w.N().S("</select>")
-}
-
-// Render a text area input element
-func (w *formWriter) textArea(spec inputSpec) {
-	w.tag("textarea", spec)
-	if spec.MaxLength != 0 {
-		w.attr("maxlength", strconv.Itoa(spec.MaxLength))
-	}
-	w.attr("rows", strconv.Itoa(spec.Rows))
-	w.N().S(`>`)
-
-	switch spec.Val.(type) {
-	case string:
-		w.E().S(spec.Val.(string))
-	case []string:
-		w.E().S(strings.Join(spec.Val.([]string), "\n"))
-	}
-
-	w.N().S("</textarea>")
 }
 
 // Write an input element label from the spec to the buffer

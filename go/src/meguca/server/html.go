@@ -117,7 +117,6 @@ func serverConfigurationForm(w http.ResponseWriter, r *http.Request) {
 	if !isAdmin(w, r) {
 		return
 	}
-
 	data := []byte(templates.ConfigureServer((*config.Get())))
 	serveHTML(w, r, data)
 }
@@ -125,26 +124,6 @@ func serverConfigurationForm(w http.ResponseWriter, r *http.Request) {
 // Render a form to change an account password
 func changePasswordForm(w http.ResponseWriter, r *http.Request) {
 	staticTemplate(w, r, templates.ChangePassword)
-}
-
-// Render a form with nothing but captcha and confirmation buttons
-func renderCaptcha(w http.ResponseWriter, r *http.Request) {
-	staticTemplate(w, r, templates.CaptchaConfirmation)
-}
-
-// Render a link to request a new captcha
-func noscriptCaptchaLink(w http.ResponseWriter, r *http.Request) {
-	staticTemplate(w, r, templates.NoscriptCaptchaLink)
-}
-
-// Render the captcha for noscript browsers
-func noscriptCaptcha(w http.ResponseWriter, r *http.Request) {
-	ip, err := auth.GetIP(r)
-	if err != nil {
-		text400(w, err)
-		return
-	}
-	serveHTML(w, r, []byte(templates.NoscriptCaptcha(ip)))
 }
 
 // Redirect the client to the appropriate board through a cross-board redirect

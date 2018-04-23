@@ -3,63 +3,13 @@
 
 CreateBoard renders a the form for creating new boards
 {% func CreateBoard() %}{% stripspace %}
-	{%= table(specs["createBoard"]) %}
-	{%= CaptchaConfirmation() %}
-{% endstripspace %}{% endfunc %}
-
-CaptchaConfirmation renders a confirmation form with an optional captcha
-{% func CaptchaConfirmation() %}{% stripspace %}
-	{%= captcha() %}
-	{%= submit(true) %}
-{% endstripspace %}{% endfunc %}
-
-{% func captcha() %}{% stripspace %}
-	{% if true %}
-		{% return %}
-	{% endif %}
-	{% code ln := lang.Get().UI %}
-	<div class="captcha-container full-width">
-		<img>
-		<noscript>
-			<iframe width="240" height="100" marginwidth="0" marginheight="0" src="/api/captcha/noscript/load"></iframe>
-		</noscript>
-		<input type="text" name="captchaID" placeholder="{%s ln["captchaID"] %}" required>
-		<input name="captcha" placeholder="{%s ln["captcha"] %}" type="number" autocomplete="off" required>
-	</div>
-{% endstripspace %}{% endfunc %}
-
-Form for inputting one array-like form item
-{% func arrayItemForm(v string) %}{% stripspace %}
-	<span>
-		<input type="text" class="array-field" value="{%s v %}">
-		<a class="array-remove">
-			[X]
-		</a>
-		<br>
-	</span>
+	{%= tableForm(specs["createBoard"]) %}
 {% endstripspace %}{% endfunc %}
 
 Form formatted as a table, with cancel and submit buttons
-{% func tableForm(specs []inputSpec, needCaptcha bool) %}{% stripspace %}
+{% func tableForm(specs []inputSpec) %}{% stripspace %}
 	{%= table(specs) %}
-	{% if needCaptcha %}
-		{%= captcha() %}
-	{% endif %}
 	{%= submit(true) %}
-{% endstripspace %}{% endfunc %}
-
-Render form for inputting array-like data
-{% func renderArray(spec inputSpec) %}{% stripspace %}
-	{% code ln := lang.Get() %}
-	<div class="array-form" name="{%s spec.ID %}" title="{%s ln.Forms[spec.ID][1] %}">
-		{% for _, v := range spec.Val.([]string) %}
-			{%= arrayItemForm(v) %}
-		{% endfor %}
-		<a class="array-add">
-			{%s ln.UI["add"] %}
-		</a>
-		<br>
-	</div>
 {% endstripspace %}{% endfunc %}
 
 Render submit and cancel buttons
@@ -74,26 +24,6 @@ Render submit and cancel buttons
 Renders a cancel button
 {% func cancel() %}{% stripspace %}
 	<input type="button" name="cancel" value="{%s lang.Get().UI["cancel"] %}">
-{% endstripspace %}{% endfunc %}
-
-Render link to request new noscript captcha
-{% func NoscriptCaptchaLink() %}{% stripspace %}
-	<a href="/api/captcha/noscript/new" style="display: flex; width: 100%; height: 100%;">
-		<span style="align-self: center; margin: auto;">
-			{%s lang.Get().UI["loadCaptcha"] %}
-		</span>
-	</a>
-{% endstripspace %}{% endfunc %}
-
-Render the captcha for noscript browsers
-{% func NoscriptCaptcha(ip string) %}{% stripspace %}
-	{% code id := auth.GetNoscriptCaptcha(ip) %}
-	<div style="display: grid">
-		<span>
-			ID:{% space %}{%s id %}
-		</span>
-		<img src="/api/captcha/image/{%s id %}.png">
-	</div>
 {% endstripspace %}{% endfunc %}
 
 Renders the tab selection butts in tabbed windows
@@ -140,14 +70,12 @@ Renders the tab selection butts in tabbed windows
 				<div class="tab-sel" data-id="0">
 					<form id="login-form">
 						{%= table(specs["login"]) %}
-						{%= captcha() %}
 						{%= submit(false) %}
 					</form>
 				</div>
 				<div data-id="1">
 					<form id="registration-form">
 						{%= table(specs["register"]) %}
-						{%= captcha() %}
 						{%= submit(false) %}
 					</form>
 				</div>
@@ -157,7 +85,7 @@ Renders the tab selection butts in tabbed windows
 			<div class="tab-cont">
 				<div class="tab-sel" data-id="0">
 					<a class="form-selection-link" id="logout">
-						{%s lang.GT("logout") %}, {%s ss.UserID %}
+						{%s lang.GT("logout") %},{% space %}{%s ss.UserID %}
 					</a>
 					<a class="form-selection-link" id="logoutAll">
 						{%s lang.GT("logoutAll") %}
