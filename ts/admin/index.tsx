@@ -8,7 +8,7 @@ import * as cx from "classnames";
 import { Component, h, render } from "preact";
 import { ModerationLevel } from "../auth";
 import { _ } from "../lang";
-import { BoardConfig } from "../state";
+import { BoardConfig, page } from "../state";
 import { readableTime, relativeTime } from "../templates";
 import { MAIN_CONTAINER_SEL } from "../vars";
 import { MemberList } from "../widgets";
@@ -426,8 +426,13 @@ interface AdminState {
 class Admin extends Component<{}, AdminState> {
   constructor() {
     super();
-    // User with access to admin page will have at least one board.
-    const { id } = modBoards[0];
+    let id = page.admin;
+    if (!modBoards.some((b) => b.id === id)) {
+      // If user doesn't own board provided in URL, just use another.
+      // User with access to admin page will have at least one.
+      id = modBoards[0].id;
+    }
+    this.fixateBoardInURL(id);
     this.state = {
       id,
       boardState: this.getBoardState(id),
@@ -501,6 +506,9 @@ class Admin extends Component<{}, AdminState> {
       </section>
     );
   }
+  private fixateBoardInURL(id: string) {
+    history.pushState({}, "", `/admin/${id}`);
+  }
   private getBoardState(id: string) {
     const board = modBoards.find((b) => b.id === id);
     return {
@@ -512,6 +520,7 @@ class Admin extends Component<{}, AdminState> {
   }
   private handleBoardChange = (e: Event) => {
     const id = (e.target as HTMLInputElement).value;
+    this.fixateBoardInURL(id);
     const boardState = this.getBoardState(id);
     this.setState({id, boardState});
   }

@@ -62,6 +62,8 @@ func createRouter(debugRoutes bool) http.Handler {
 		boardHTML(w, r, "all", true)
 	})
 	r.GET("/admin/", assertBoardOwner(serveAdmin))
+	// Exactly same route, will handle board ID on JS side.
+	r.GET("/admin/:board", assertBoardOwner(serveAdmin))
 
 	// Assets.
 	r.GET("/static/*path", serveStatic)

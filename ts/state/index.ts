@@ -26,9 +26,9 @@ export interface BoardConfig {
 
 // The current state of a board or thread page
 export interface PageState {
-  admin: boolean;
-  stickers: boolean;
   landing: boolean;
+  stickers: boolean;
+  admin: string;
   catalog: boolean;
   thread: number;
   lastN: number;
@@ -45,7 +45,6 @@ export function getModel(el: Element): Post {
 }
 
 // Read page state by parsing a URL
-// TODO(Kagami): Pass this from server-side.
 function getState(href: string): PageState {
   const u = document.createElement("a");
   u.href = href;
@@ -57,6 +56,7 @@ function getState(href: string): PageState {
     pathname = "/" + pathname;
   }
 
+  const admin = pathname.match(/^\/admin\/(\w+)?/);
   const thread = pathname.match(/^\/\w+\/(\d+)/);
   const pageN = u.search.match(/[&\?]page=(\d+)/);
 
@@ -66,7 +66,7 @@ function getState(href: string): PageState {
     href,
     landing: pathname === "/",
     stickers: pathname.startsWith("/stickers/"),
-    admin: pathname.startsWith("/admin/"),
+    admin: admin ? (admin[1] || "all") : "",
     lastN: /[&\?]last=100/.test(u.search) ? 100 : 0,
     page: pageN ? parseInt(pageN[1], 10) : 0,
     thread: parseInt(thread && thread[1], 10) || 0,
