@@ -141,29 +141,6 @@ func isAdmin(w http.ResponseWriter, r *http.Request) bool {
 	return true
 }
 
-// Determine, if the client has access rights to the configurations, and return
-// them, if so
-func boardConfData(w http.ResponseWriter, r *http.Request) (
-	config.BoardConfig, bool,
-) {
-	var (
-		conf  config.BoardConfig
-		board = getParam(r, "board")
-	)
-	if _, ok := assertCanPerform(w, r, board, auth.BoardOwner); !ok {
-		return conf, false
-	}
-
-	conf = config.GetBoardConfig(board)
-	conf.ID = board
-	if conf.ID == "" {
-		serve404(w)
-		return conf, false
-	}
-
-	return conf, true
-}
-
 // Handle requests to create a board
 func createBoard(w http.ResponseWriter, r *http.Request) {
 	var msg boardCreationRequest
@@ -580,7 +557,7 @@ func serveAdmin(w http.ResponseWriter, r *http.Request, ss *auth.Session) {
 		text500(w, r, err)
 		return
 	}
-	ownedConfigs := config.GetBoardConfigsByID(owned)
+	ownedConfigs := config.GetModBoardConfigsByID(owned)
 
 	bans, err := db.GetBans(owned)
 	if err != nil {

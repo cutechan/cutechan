@@ -23,13 +23,6 @@ var (
 	// Map of board IDs to their configuration structs
 	boardConfigs = map[string]BoardConfig{}
 
-	// Configurations for the /all/ metaboard
-	AllBoardConfig = BoardConfig{
-		BoardPublic: BoardPublic{
-			ID: "all",
-		},
-	}
-
 	// Defaults contains the default server configuration values
 	DefaultServerConfig = ServerConfig{
 		ServerPublic: ServerPublic{
@@ -68,6 +61,9 @@ func GetBoardsJSON() (data []byte) {
 	data = append(data, '[')
 	i := 0
 	for _, conf := range boardConfigs {
+		if conf.ID == "all" {
+			continue
+		}
 		if conf.ModOnly {
 			continue
 		}
@@ -81,20 +77,7 @@ func GetBoardsJSON() (data []byte) {
 	return
 }
 
-func GetBoardIDs() (ids []string) {
-	boardMu.RLock()
-	defer boardMu.RUnlock()
-	for id := range boardConfigs {
-		ids = append(ids, id)
-	}
-	sort.Strings(ids)
-	return
-}
-
 func GetBoardConfig(b string) BoardConfig {
-	if b == "all" {
-		return AllBoardConfig
-	}
 	boardMu.RLock()
 	defer boardMu.RUnlock()
 	return boardConfigs[b]
@@ -104,12 +87,27 @@ func GetBoardConfigs() (cs BoardConfigs) {
 	boardMu.RLock()
 	defer boardMu.RUnlock()
 	for _, conf := range boardConfigs {
+		if conf.ID == "all" {
+			continue
+		}
 		cs = append(cs, conf)
 	}
 	return
 }
 
-func GetBoardConfigsByID(ids []string) (cs BoardConfigs) {
+// All boards including /all/.
+func GetAdminBoardIDs() (ids []string) {
+	boardMu.RLock()
+	defer boardMu.RUnlock()
+	for id := range boardConfigs {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	return
+}
+
+// All boards including /all/.
+func GetModBoardConfigsByID(ids []string) (cs BoardConfigs) {
 	boardMu.RLock()
 	defer boardMu.RUnlock()
 	for _, id := range ids {
@@ -144,9 +142,6 @@ func RemoveBoard(b string) {
 }
 
 func IsBoard(b string) bool {
-	if b == "all" {
-		return true
-	}
 	boardMu.RLock()
 	defer boardMu.RUnlock()
 	_, ok := boardConfigs[b]

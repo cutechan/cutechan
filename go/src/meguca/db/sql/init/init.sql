@@ -68,6 +68,7 @@ CREATE TABLE boards (
   modOnly boolean NOT NULL,
   settings jsonb NOT NULL
 );
+INSERT INTO boards VALUES ('all', FALSE, '{"title": "Aggregator metaboard"}');
 
 create table staff (
   board text not null references boards on delete cascade,

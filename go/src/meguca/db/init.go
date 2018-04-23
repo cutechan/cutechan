@@ -516,6 +516,12 @@ var upgrades = []func(*sql.Tx) error{
 				ALTER COLUMN settings DROP DEFAULT`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`INSERT INTO boards
+				VALUES ('all', FALSE, '{"title": "Aggregator metaboard"}')`,
+		)
+	},
 }
 
 func StartDb() (err error) {
