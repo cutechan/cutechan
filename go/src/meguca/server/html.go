@@ -98,11 +98,6 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 	serveHTML(w, r, html)
 }
 
-// Render a board selection and navigation panel and write HTML to client
-func boardNavigation(w http.ResponseWriter, r *http.Request) {
-	staticTemplate(w, r, templates.BoardNavigation)
-}
-
 // Execute a simple template, that accepts no arguments
 func staticTemplate(
 	w http.ResponseWriter,
@@ -110,46 +105,6 @@ func staticTemplate(
 	fn func() string,
 ) {
 	serveHTML(w, r, []byte(fn()))
-}
-
-// Serve a form for selecting one of several boards owned by the user
-func ownedBoardSelection(w http.ResponseWriter, r *http.Request) {
-	ss := assertSession(w, r, "")
-	if ss == nil {
-		return
-	}
-
-	owned, err := db.GetOwnedBoards(ss.UserID)
-	if err != nil {
-		text500(w, r, err)
-		return
-	}
-
-	ownedConfigs := config.GetBoardConfigsByID(owned)
-	serveHTML(w, r, []byte(templates.OwnedBoard(ownedConfigs)))
-}
-
-// Renders a form for configuring a board owned by the user
-func boardConfigurationForm(w http.ResponseWriter, r *http.Request) {
-	conf, isValid := boardConfData(w, r)
-	if !isValid {
-		return
-	}
-
-	serveHTML(w, r, []byte(templates.ConfigureBoard(conf)))
-}
-
-// Render a form for assigning staff to a board
-func staffAssignmentForm(w http.ResponseWriter, r *http.Request) {
-	s, err := db.GetStaff(getParam(r, "board"))
-	if err != nil {
-		text500(w, r, err)
-		return
-	}
-	html := []byte(templates.StaffAssignment(
-		[...][]string{s["owners"], s["moderators"], s["janitors"]},
-	))
-	serveHTML(w, r, html)
 }
 
 // Renders a form for creating new boards

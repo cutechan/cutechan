@@ -100,14 +100,9 @@ func createRouter(debugRoutes bool) http.Handler {
 	// Partials.
 	// TODO(Kagami): Rewrite client to JSON API.
 	html := r.NewGroup("/html")
-	// html.GET("/board-navigation", boardNavigation)
-	html.GET("/owned-boards", ownedBoardSelection)
-	html.GET("/create-board", boardCreationForm)
 	html.GET("/change-password", changePasswordForm)
-	html.GET("/captcha", renderCaptcha)
-	html.POST("/configure-board/:board", boardConfigurationForm)
+	html.GET("/create-board", boardCreationForm)
 	html.POST("/configure-server", serverConfigurationForm)
-	html.GET("/assign-staff/:board", staffAssignmentForm)
 
 	h := http.Handler(r)
 	return h

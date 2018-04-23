@@ -1,58 +1,5 @@
-{% import "meguca/config" %}
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
-
-OwnedBoard renders a form for selecting one of several boards owned by the user
-{% func OwnedBoard(boards config.BoardConfigs) %}{% stripspace %}
-	{% if len(boards) != 0 %}
-		<select name="boards" required>
-			{% for _, b := range boards %}
-				<option value="{%s b.ID %}">
-					{%= formatTitle(b.ID, b.Title) %}
-				</option>
-			{% endfor %}
-		</select>
-		<br>
-		{%= submit(true) %}
-	{% else %}
-		{%s lang.Get().UI["ownNoBoards"] %}
-		<br>
-		<br>
-		{%= cancel() %}
-		<div class="form-response admin"></div>
-	{% endif %}
-{% endstripspace %}{% endfunc %}
-
-{% func formatTitle(id, title string) %}{% stripspace %}
-	/{%s id %}/{% space %}-{% space %}{%s title %}
-{% endstripspace %}{% endfunc %}
-
-BoardNavigation renders a board selection and search form
-{% func BoardNavigation() %}{% stripspace %}
-	{% code ln := lang.Get().UI %}
-	<input type="text" class="full-width" name="search" placeholder="{%s ln["search"] %}">
-	<br>
-	<form>
-		<span class="flex">
-			{%= submit(true) %}
-			<label>
-				<input type="checkbox" name="pointToCatalog">
-				{%s ln["pointToCatalog"] %}
-			</label>
-		</span>
-		<div>
-			{% for _, b := range config.GetBoardConfigs() %}
-				<label class="board">
-					<input type="checkbox" name="{%s b.ID %}">
-					<a href="/{%s b.ID %}/">
-						{%= formatTitle(b.ID, b.Title) %}
-					</a>
-					<br>
-				</label>
-			{% endfor %}
-		</div>
-	</form>
-{% endstripspace %}{% endfunc %}
 
 CreateBoard renders a the form for creating new boards
 {% func CreateBoard() %}{% stripspace %}
@@ -219,7 +166,7 @@ Renders the tab selection butts in tabbed windows
 						{%s lang.GT("changePassword") %}
 					</a>
 					{% if ss.Positions.AnyBoard >= auth.BoardOwner %}
-						<a class="form-selection-link" id="configureBoard">
+						<a class="form-selection-link" href="/admin/" target="_blank">
 							{%s lang.GT("configureBoard") %}
 						</a>
 					{% endif %}

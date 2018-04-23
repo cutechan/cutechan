@@ -21,9 +21,7 @@ import {
   TRIGGER_DELETE_POST_SEL, TRIGGER_IGNORE_USER_SEL,
 } from "../vars";
 import { MemberList } from "../widgets";
-import {
-  BoardConfigForm, BoardCreationForm, BoardDeletionForm, StaffAssignmentForm,
-} from "./board-form";
+import { BoardCreationForm } from "./board-form";
 import { LoginForm, validatePasswordMatch } from "./login-form";
 import { PasswordChangeForm } from "./password-form";
 import { ServerConfigForm } from "./server-form";
@@ -417,9 +415,6 @@ class AccountPanel extends TabbedModal {
       "#logoutAll": () => logout("/api/logout/all"),
       "#changePassword": this.loadConditional(PasswordChangeForm),
       "#createBoard": this.loadConditional(BoardCreationForm),
-      "#configureBoard": this.loadConditional(BoardConfigForm),
-      "#assignStaff": this.loadConditional(StaffAssignmentForm),
-      "#deleteBoard": this.loadConditional(BoardDeletionForm),
       "#configureServer": this.loadConditional(ServerConfigForm),
     });
   }
