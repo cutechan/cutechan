@@ -16,12 +16,22 @@ type ServerPublic struct {
 	ImageRootOverride string `json:"imageRootOverride,omitempty"`
 }
 
+type AccessMode int
+
+const (
+	AccessBypass AccessMode = iota - 1
+	AccessViaBlacklist
+	AccessViaWhitelist
+)
+
 // Some fields will be duplicated in DB because we need to pass them to
 // JS client but that doesn't matter.
 //easyjson:json
 type BoardConfig struct {
 	BoardPublic
-	ModOnly bool `json:"modOnly,omitempty"`
+	ModOnly     bool       `json:"modOnly,omitempty"`
+	AccessMode  AccessMode `json:"accessMode,omitempty"`
+	IncludeAnon bool       `json:"includeAnon,omitempty"`
 	// Pregenerated public JSON.
 	json []byte
 }

@@ -12,10 +12,16 @@ import { readableTime, relativeTime } from "../templates";
 import { MAIN_CONTAINER_SEL } from "../vars";
 import { MemberList } from "../widgets";
 
+export const enum AccessMode {
+  bypass = -1,
+  viaBlacklist,
+  viaWhitelist,
+}
+
 interface AdminBoardConfig extends BoardConfig {
   modOnly?: boolean;
-  whitelist?: string[];
-  blacklist?: string[];
+  accessMode?: AccessMode;
+  includeAnon?: boolean;
 }
 
 type ModBoards = AdminBoardConfig[];
@@ -73,7 +79,7 @@ class Settings extends Component<SettingsProps, {}> {
     return this.props.settings !== nextProps.settings;
   }
   public render({ settings }: SettingsProps) {
-    const { title, readOnly, modOnly } = settings;
+    const { title, readOnly, modOnly, accessMode, includeAnon } = settings;
     return (
       <div class="settings">
         <a class="admin-content-anchor" name="settings" />
@@ -86,6 +92,33 @@ class Settings extends Component<SettingsProps, {}> {
             class="settings-input"
             value={title}
             onInput={this.handleTitleChange}
+          />
+        </label>
+        <label class="settings-label">
+          <span class="settings-text">{_("Access mode")}</span>
+          <select
+            class="settings-select"
+            value={accessMode.toString()}
+            onChange={this.handleAccessModeChange}
+          >
+            <option value={AccessMode.bypass.toString()}>
+              {_("Bypass")}
+            </option>
+            <option value={AccessMode.viaBlacklist.toString()}>
+              {_("Deny blacklisted")}
+            </option>
+            <option value={AccessMode.viaWhitelist.toString()}>
+              {_("Allow whitelisted")}
+            </option>
+          </select>
+        </label>
+        <label class="settings-label">
+          <span class="settings-text">{_("Including anonymous")}</span>
+          <input
+            class="settings-checkbox"
+            type="checkbox"
+            checked={includeAnon}
+            onChange={this.handleIncludeAnonToggle}
           />
         </label>
         <label class="settings-label">
@@ -126,19 +159,27 @@ class Settings extends Component<SettingsProps, {}> {
     const settings = {...this.props.settings, modOnly};
     this.props.onChange({settings});
   }
+  private handleAccessModeChange = (e: Event) => {
+    const accessMode = +(e.target as HTMLInputElement).value;
+    const settings = {...this.props.settings, accessMode};
+    this.props.onChange({settings});
+  }
+  private handleIncludeAnonToggle = (e: Event) => {
+    e.preventDefault();
+    const includeAnon = !this.props.settings.includeAnon;
+    const settings = {...this.props.settings, includeAnon};
+    this.props.onChange({settings});
+  }
 }
 
 interface MembersProps {
-  settings: AdminBoardConfig;
   onChange: ChangeFn;
 }
 
 class Members extends Component<MembersProps, {}> {
-  public shouldComponentUpdate(nextProps: MembersProps) {
-    return this.props.settings !== nextProps.settings;
-  }
-  public render({ settings }: SettingsProps) {
-    const { whitelist, blacklist } = settings;
+  // public shouldComponentUpdate(nextProps: MembersProps) {
+  // }
+  public render() {
     return (
       <div class="admin-members">
         <a class="admin-content-anchor" name="members" />
@@ -170,14 +211,14 @@ class Members extends Component<MembersProps, {}> {
           <div class="admin-whitelist">
             <h3 class="admin-members-shead">{_("Whitelist")}</h3>
             <MemberList
-              members={whitelist}
+              members={[]}
               onChange={this.handleWhitelistChange}
             />
           </div>
           <div class="admin-blacklist">
             <h3 class="admin-members-shead">{_("Blacklist")}</h3>
             <MemberList
-              members={blacklist}
+              members={[]}
               onChange={this.handleBlacklistChange}
             />
           </div>
@@ -186,12 +227,10 @@ class Members extends Component<MembersProps, {}> {
     );
   }
   private handleWhitelistChange = (whitelist: string[]) => {
-    const settings = {...this.props.settings, whitelist};
-    this.props.onChange({settings});
+    /* skip */
   }
   private handleBlacklistChange = (blacklist: string[]) => {
-    const settings = {...this.props.settings, blacklist};
-    this.props.onChange({settings});
+    /* skip */
   }
   private handleOwnersChange = (owners: string[]) => {
     /* skip */
@@ -401,7 +440,7 @@ class Admin extends Component<{}, AdminState> {
           <section class="admin-content">
             <Settings settings={settings} onChange={this.handleChange} />
             <hr class="admin-separator" />
-            <Members settings={settings} onChange={this.handleChange} />
+            <Members onChange={this.handleChange} />
             <hr class="admin-separator" />
             <Bans bans={bans} onChange={this.handleChange} />
             <hr class="admin-separator" />
@@ -432,10 +471,9 @@ class Admin extends Component<{}, AdminState> {
   }
   private getBoardState(id: string) {
     const board = modBoards.find((b) => b.id === id);
-    const whitelist = (board.whitelist || []).slice();
-    const blacklist = (board.blacklist || []).slice();
+    const accessMode = board.accessMode || 0;
     return {
-      settings: { ...board, whitelist, blacklist },
+      settings: {...board, accessMode},
       bans: modBans.filter((b) => b.board === id),
       log: modLog.filter((l) => l.board === id),
     };

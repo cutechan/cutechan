@@ -29,6 +29,8 @@ import { ServerConfigForm } from "./server-form";
 export const enum ModerationLevel {
   notLoggedIn = - 1,
   notStaff,
+  blacklisted,
+  whitelisted,
   janitor,
   moderator,
   boardOwner,

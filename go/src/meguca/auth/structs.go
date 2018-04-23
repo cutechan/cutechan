@@ -9,6 +9,8 @@ type ModerationLevel int8
 const (
 	NotLoggedIn ModerationLevel = iota - 1
 	NotStaff
+	Blacklisted
+	Whitelisted
 	Janitor
 	Moderator
 	BoardOwner
@@ -26,6 +28,10 @@ func (l *ModerationLevel) FromString(s string) {
 		*l = Moderator
 	case "janitors":
 		*l = Janitor
+	case "whitelisted":
+		*l = Whitelisted
+	case "blacklisted":
+		*l = Blacklisted
 	default:
 		*l = NotStaff
 	}
@@ -42,6 +48,10 @@ func (l ModerationLevel) String() string {
 		return "moderators"
 	case Janitor:
 		return "janitors"
+	case Whitelisted:
+		return "whitelisted"
+	case Blacklisted:
+		return "blacklisted"
 	default:
 		return ""
 	}

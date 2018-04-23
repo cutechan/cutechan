@@ -2166,8 +2166,9 @@ html.user_power {
 
 .settings-label {
   display: flex;
-  width: 400px;
+  width: 500px;
   margin: 0 auto;
+  margin-bottom: 2px;
   font-size: 20px;
   cursor: pointer;
   user-select: none;
@@ -2188,6 +2189,15 @@ html.user_power {
   height: 28px;
   cursor: pointer;
   outline: none;
+}
+
+.settings-select {
+  flex: 1;
+  cursor: pointer;
+  outline: none;
+  &:disabled {
+    cursor: default;
+  }
 }
 
 .admin-members-grid {
