@@ -139,7 +139,9 @@ func assertBoardOwner(h AdminBoardHandler) http.HandlerFunc {
 	}
 }
 
-func assertBoardOwnerAPI(h AdminBoardHandler) http.HandlerFunc {
+type AdminBoardAPIHandler func(r *http.Request, ss *auth.Session, board string) error
+
+func assertBoardOwnerAPI(h AdminBoardAPIHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		board := getParam(r, "board")
 		if !assertBoardAPI(w, board) {
@@ -150,6 +152,11 @@ func assertBoardOwnerAPI(h AdminBoardHandler) http.HandlerFunc {
 			text403(w, aerrBoardOwnersOnly)
 			return
 		}
-		h(w, r, ss, board)
+		err := h(r, ss, board)
+		if err != nil {
+			serveErrorJSON(w, r, err)
+			return
+		}
+		serveEmptyJSON(w, r)
 	}
 }

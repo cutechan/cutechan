@@ -27,19 +27,14 @@ var (
 	}
 )
 
-type boardActionRequest struct {
-	Board string
-	auth.Captcha
-}
-
-type boardConfigSettingRequest struct {
-	auth.Captcha
-	config.BoardConfig
-}
-
 type boardCreationRequest struct {
 	auth.Captcha
 	ID, Title string
+}
+
+type boardActionRequest struct {
+	Board string
+	auth.Captcha
 }
 
 // Detect, if a client can perform moderation on a board.
@@ -155,7 +150,7 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 		isReserved():
 		err = errInvalidBoardName
 	case len(msg.Title) > 100:
-		err = errTitleTooLong
+		err = aerrTitleTooLong
 	case !auth.AuthenticateCaptcha(msg.Captcha):
 		err = errInvalidCaptcha
 	}
@@ -303,7 +298,7 @@ func ban(w http.ResponseWriter, r *http.Request) {
 		text403(w, errAccessDenied)
 		return
 	case len(msg.Reason) > common.MaxBanReasonLength:
-		text400(w, errBanReasonTooLong)
+		text400(w, aerrReasonTooLong)
 		return
 	case msg.Reason == "":
 		text400(w, errNoReason)
@@ -499,39 +494,76 @@ func serveAdmin(
 	serveHTML(w, r, html)
 }
 
-// Validate length limit compliance of various fields
-func validateBoardConfig(w http.ResponseWriter, conf config.BoardConfig) bool {
-	var err error
-	switch {
-	case len(conf.Title) > common.MaxLenBoardTitle:
-		err = errTitleTooLong
-	}
-	if err != nil {
-		http.Error(w, fmt.Sprintf("400 %s", err), 400)
-		return false
-	}
-
-	return true
+type BoardState struct {
+	Settings config.BoardConfig `json:"settings"`
+	Staff    auth.Staff         `json:"staff"`
+	Bans     auth.BanRecords    `json:"bans"`
 }
 
-// Set board-specific configurations to the user's owned board
-func configureBoard(
-	w http.ResponseWriter,
-	r *http.Request,
-	ss *auth.Session,
-	board string,
-) {
-	var msg boardConfigSettingRequest
-	if !decodeJSON(w, r, &msg) {
+type configureBoardRequest struct {
+	OldState BoardState `json:"oldState"`
+	NewState BoardState `json:"newState"`
+}
+
+func checkBoardState(board string, state BoardState) (err error) {
+	if state.Settings.ID != board {
+		err = aerrInvalidState
 		return
 	}
-	msg.ID = board
-	_, ok := assertCanPerform(w, r, msg.ID, auth.BoardOwner)
-	if !ok || !validateBoardConfig(w, msg.BoardConfig) {
+	if len(state.Settings.Title) > common.MaxLenBoardTitle {
+		err = aerrTitleTooLong
 		return
 	}
-	if err := db.UpdateBoard(msg.BoardConfig); err != nil {
-		text500(w, r, err)
+	if len(state.Staff) > common.MaxLenStaffList {
+		err = aerrTooManyStaff
 		return
 	}
+	for _, rec := range state.Staff {
+		if rec.Board != board {
+			err = aerrInvalidState
+			return
+		}
+		if !checkUserID(rec.UserID) {
+			err = aerrInvalidUserID
+			return
+		}
+	}
+	if len(state.Bans) > common.MaxLenBansList {
+		err = aerrTooManyBans
+		return
+	}
+	// FIXME(Kagami): IP.
+	for _, rec := range state.Bans {
+		if rec.Board != board {
+			err = aerrInvalidState
+			return
+		}
+		if !checkUserID(rec.By) {
+			err = aerrInvalidUserID
+			return
+		}
+		if rec.Reason == "" || len(rec.Reason) > common.MaxBanReasonLength {
+			err = aerrReasonTooLong
+			return
+		}
+	}
+	return
+}
+
+func configureBoard(r *http.Request, ss *auth.Session, board string) (err error) {
+	var req configureBoardRequest
+	if err = readJSON(r, &req); err != nil {
+		return
+	}
+	if err = checkBoardState(board, req.OldState); err != nil {
+		return
+	}
+	if err = checkBoardState(board, req.NewState); err != nil {
+		return
+	}
+	if err = db.UpdateBoard(req.NewState.Settings); err != nil {
+		err = aerrInternal.Hide(err)
+		return
+	}
+	return
 }
