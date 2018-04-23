@@ -105,9 +105,7 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
     return (
       <div class="account-identity-tab-inner">
         <article class="account-form-section">
-          <h3 class="account-form-shead">
-            {_("Show name")}
-          </h3>
+          <h3 class="account-form-shead">{_("Show name")}</h3>
           <div class="account-form-sbody">
             <input
               class="account-form-checkbox option-checkbox"
@@ -127,9 +125,7 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
           </div>
         </article>
         <article class="account-form-section">
-          <h3 class="account-form-shead">
-            {_("Ignore mode")}
-          </h3>
+          <h3 class="account-form-shead">{_("Ignore mode")}</h3>
           <div class="account-form-sbody">
             <select
               class="account-form-ignoremode option-select"
@@ -159,9 +155,7 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
             />
           </article>
           <article class="account-form-section">
-            <h3 class="account-form-shead">
-              {_("Blacklist")}
-            </h3>
+            <h3 class="account-form-shead">{_("Blacklist")}</h3>
             <MemberList
               members={blacklist}
               disabled={saving}

@@ -20,14 +20,17 @@ class MemberList extends Component<MemberListProps, {}> {
     return (
       <ul class="member-list">
         {members.map((name) =>
-          <li class="member-list-item" onClick={() => this.handleRemove(name)}>
-            {name}
+          <li key={name} class="member-list-item">
+            <span class="member-list-name" onClick={() => this.handleRemove(name)}>
+              {name}
+            </span>
           </li>,
         )}
         <li class="member-list-newitem">
           <input
-            class="member-list-name"
+            class="member-list-input"
             placeholder={_("Add name")}
+            maxLength={20}
             title={_("Enter to add")}
             disabled={disabled}
             onKeyDown={this.handleNameKey}
@@ -40,7 +43,6 @@ class MemberList extends Component<MemberListProps, {}> {
     // TODO(Kagami): Validate name chars and highlight invalid inputs?
     return (
       name.length >= 1
-      && name.length <= 20
       && name !== session.userID
       && !this.props.members.includes(name)
     );
@@ -54,7 +56,7 @@ class MemberList extends Component<MemberListProps, {}> {
   private handleNameKey = (e: KeyboardEvent) => {
     if (e.keyCode === 13) {
       const nameEl = e.target as HTMLInputElement;
-      const name = nameEl.value;
+      const name = nameEl.value.trim();
       if (!this.isValid(name)) return;
       const members = this.props.members.concat(name);
       this.props.onChange(members);

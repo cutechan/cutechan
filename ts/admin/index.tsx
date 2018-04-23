@@ -10,6 +10,7 @@ import { _ } from "../lang";
 import { BoardConfig } from "../state";
 import { readableTime, relativeTime } from "../templates";
 import { MAIN_CONTAINER_SEL } from "../vars";
+import { MemberList } from "../widgets";
 
 interface AdminBoardConfig extends BoardConfig {
   modOnly?: boolean;
@@ -137,15 +138,69 @@ class Members extends Component<MembersProps, {}> {
     return this.props.settings !== nextProps.settings;
   }
   public render({ settings }: SettingsProps) {
-    // const { whitelist, blacklist } = settings;
+    const { whitelist, blacklist } = settings;
     return (
-      <div class="members">
+      <div class="admin-members">
         <a class="admin-content-anchor" name="members" />
         <h3 class="admin-content-header">
           <a class="admin-header-link" href="#members">{_("Members")}</a>
         </h3>
+        <div class="admin-members-grid">
+          <div class="admin-owners">
+            <h3 class="admin-members-shead">{_("Owners")}</h3>
+            <MemberList
+              members={[]}
+              onChange={this.handleOwnersChange}
+            />
+          </div>
+          <div class="admin-moderators">
+            <h3 class="admin-members-shead">{_("Moderators")}</h3>
+            <MemberList
+              members={[]}
+              onChange={this.handleModeratorsChange}
+            />
+          </div>
+          <div class="admin-janitors">
+            <h3 class="admin-members-shead">{_("Janitors")}</h3>
+            <MemberList
+              members={[]}
+              onChange={this.handleJanitorsChange}
+            />
+          </div>
+          <div class="admin-whitelist">
+            <h3 class="admin-members-shead">{_("Whitelist")}</h3>
+            <MemberList
+              members={whitelist}
+              onChange={this.handleWhitelistChange}
+            />
+          </div>
+          <div class="admin-blacklist">
+            <h3 class="admin-members-shead">{_("Blacklist")}</h3>
+            <MemberList
+              members={blacklist}
+              onChange={this.handleBlacklistChange}
+            />
+          </div>
+        </div>
       </div>
     );
+  }
+  private handleWhitelistChange = (whitelist: string[]) => {
+    const settings = {...this.props.settings, whitelist};
+    this.props.onChange({settings});
+  }
+  private handleBlacklistChange = (blacklist: string[]) => {
+    const settings = {...this.props.settings, blacklist};
+    this.props.onChange({settings});
+  }
+  private handleOwnersChange = (owners: string[]) => {
+    /* skip */
+  }
+  private handleModeratorsChange = (moderators: string[]) => {
+    /* skip */
+  }
+  private handleJanitorsChange = (janitors: string[]) => {
+    /* skip */
   }
 }
 
@@ -377,8 +432,10 @@ class Admin extends Component<{}, AdminState> {
   }
   private getBoardState(id: string) {
     const board = modBoards.find((b) => b.id === id);
+    const whitelist = (board.whitelist || []).slice();
+    const blacklist = (board.blacklist || []).slice();
     return {
-      settings: { ...board },
+      settings: { ...board, whitelist, blacklist },
       bans: modBans.filter((b) => b.board === id),
       log: modLog.filter((l) => l.board === id),
     };

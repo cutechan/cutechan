@@ -914,7 +914,7 @@ input[type=number], input[type=text], input[type=password], textarea {
 }
 
 .account-form-section {
-  .member-list-name {
+  .member-list-input {
     width: 8em;
     height: 19px;
     margin-right: 5px;
@@ -2190,6 +2190,50 @@ html.user_power {
   outline: none;
 }
 
+.admin-members-grid {
+  display: grid;
+  grid-row-gap: 10px;
+  grid-template-areas:
+    "owners     whitelist blacklist"
+    "moderators whitelist blacklist"
+    "janitors   whitelist blacklist";
+  text-align: center;
+  font-size: 18px;
+
+  .member-list-input {
+    text-align: center;
+    &::placeholder {
+      text-align: center;
+    }
+  }
+}
+
+.admin-members-shead {
+  font-size: 20px;
+  color: @body;
+  cursor: default;
+}
+
+.admin-owners {
+  grid-area: owners;
+}
+
+.admin-moderators {
+  grid-area: moderators;
+}
+
+.admin-janitors {
+  grid-area: janitors;
+}
+
+.admin-whitelist {
+  grid-area: whitelist;
+}
+
+.admin-blacklist {
+  grid-area: blacklist;
+}
+
 .admin-table {
   width: 500px;
   margin: 0 auto;
@@ -2317,15 +2361,14 @@ html.user_power {
   overflow-y: auto;
 }
 
-.member-list-item {
-  width: 0;
+.member-list-name {
   cursor: pointer;
   &:hover {
     text-decoration: line-through;
   }
 }
 
-.member-list-name {
+.member-list-input {
   border: none;
   background: none;
   color: @body;
