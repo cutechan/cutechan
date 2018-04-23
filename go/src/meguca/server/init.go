@@ -74,30 +74,35 @@ func createRouter(debugRoutes bool) http.Handler {
 	// JSON API.
 	// TODO(Kagami): RESTify.
 	api := r.NewGroup("/api")
+	// Common.
 	api.GET("/socket", websockets.Handler)
 	api.GET("/embed", serveEmbed)
+	// Idols.
 	api.GET("/idols/profiles", serveIdolProfiles)
 	api.POST("/idols/recognize", serveIdolRecognize)
 	api.POST("/idols/:id/preview", serveSetIdolPreview)
+	// Posts.
 	api.GET("/post/:post", servePost)
 	api.POST("/post/token", createPostToken)
-	api.POST("/thread", createThread)
 	api.POST("/post", createPost)
+	api.POST("/thread", createThread)
+	// Account.
 	api.POST("/register", register)
 	api.POST("/login", login)
-	api.POST("/logout", logout)
-	api.POST("/logout/all", logoutAll)
 	api.POST("/change-password", changePassword)
 	api.POST("/account/settings", serverSetAccountSettings)
-	api.POST("/configure-board/:board", configureBoard)
-	api.POST("/configure-server", configureServer)
-	api.POST("/create-board", createBoard)
-	api.POST("/delete-post", deletePost)
+	api.POST("/logout", logout)
+	api.POST("/logout/all", logoutAll)
+	// Mod.
 	api.POST("/ban", ban)
 	api.POST("/unban/:board", unban)
-	api.POST("/assign-staff", assignStaff)
-	// NOTE(Kagami): Currently commented because it's too dangerous.
+	api.POST("/delete-post", deletePost)
+	api.PUT("/boards/:board", assertBoardOwnerAPI(configureBoard))
+	// Admin.
+	api.POST("/create-board", createBoard)
+	// Too dangerous.
 	// api.POST("/delete-board", deleteBoard)
+	api.POST("/configure-server", configureServer)
 
 	// Partials.
 	// TODO(Kagami): Rewrite client to JSON API.

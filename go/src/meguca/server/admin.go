@@ -111,24 +111,6 @@ func canModeratePost(
 	return
 }
 
-// Validate length limit compliance of various fields
-func validateBoardConfig(
-	w http.ResponseWriter,
-	conf config.BoardConfig,
-) bool {
-	var err error
-	switch {
-	case len(conf.Title) > common.MaxLenBoardTitle:
-		err = errTitleTooLong
-	}
-	if err != nil {
-		http.Error(w, fmt.Sprintf("400 %s", err), 400)
-		return false
-	}
-
-	return true
-}
-
 func isAdmin(w http.ResponseWriter, r *http.Request) bool {
 	ss := assertSession(w, r, "")
 	if ss == nil {
@@ -214,23 +196,6 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 	}
 	if err := tx.Commit(); err != nil {
 		text500(w, r, err)
-	}
-}
-
-// Set board-specific configurations to the user's owned board
-func configureBoard(w http.ResponseWriter, r *http.Request) {
-	var msg boardConfigSettingRequest
-	if !decodeJSON(w, r, &msg) {
-		return
-	}
-	msg.ID = getParam(r, "board")
-	_, ok := assertCanPerform(w, r, msg.ID, auth.BoardOwner)
-	if !ok || !validateBoardConfig(w, msg.BoardConfig) {
-		return
-	}
-	if err := db.UpdateBoard(msg.BoardConfig); err != nil {
-		text500(w, r, err)
-		return
 	}
 }
 
@@ -457,58 +422,6 @@ func sendNotification(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-// Assign moderation staff to a board
-func assignStaff(w http.ResponseWriter, r *http.Request) {
-	var msg struct {
-		boardActionRequest
-		Owners, Moderators, Janitors []string
-	}
-	if !decodeJSON(w, r, &msg) {
-		return
-	}
-	_, ok := assertCanPerform(w, r, msg.Board, auth.BoardOwner)
-	if !ok {
-		return
-	}
-	switch {
-	// Ensure there always is at least one board owner
-	case len(msg.Owners) == 0:
-		text400(w, errNoBoardOwner)
-		return
-	default:
-		// Maximum of 100 staff per position
-		for _, s := range [...][]string{msg.Owners, msg.Moderators, msg.Janitors} {
-			if len(s) > 100 {
-				text400(w, errTooManyStaff)
-				return
-			}
-		}
-	}
-
-	// Write to database
-	tx, err := db.StartTransaction()
-	if err != nil {
-		text500(w, r, err)
-		return
-	}
-	defer db.RollbackOnError(tx, &err)
-
-	err = db.WriteStaff(tx, msg.Board, map[string][]string{
-		"owners":     msg.Owners,
-		"moderators": msg.Moderators,
-		"janitors":   msg.Janitors,
-	})
-	if err != nil {
-		text500(w, r, err)
-		return
-	}
-
-	err = tx.Commit()
-	if err != nil {
-		text500(w, r, err)
-	}
-}
-
 // Retrieve posts with the same IP on the target board
 func getSameIPPosts(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseUint(getParam(r, "id"), 10, 64)
@@ -551,7 +464,12 @@ func setThreadSticky(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-func serveAdmin(w http.ResponseWriter, r *http.Request, ss *auth.Session) {
+func serveAdmin(
+	w http.ResponseWriter,
+	r *http.Request,
+	ss *auth.Session,
+	_ string,
+) {
 	boards, err := db.GetOwnedBoards(ss.UserID)
 	if err != nil {
 		text500(w, r, err)
@@ -579,4 +497,41 @@ func serveAdmin(w http.ResponseWriter, r *http.Request, ss *auth.Session) {
 	cs := config.GetModBoardConfigsByID(boards)
 	html := templates.Admin(ss, cs, staff, bans, log)
 	serveHTML(w, r, html)
+}
+
+// Validate length limit compliance of various fields
+func validateBoardConfig(w http.ResponseWriter, conf config.BoardConfig) bool {
+	var err error
+	switch {
+	case len(conf.Title) > common.MaxLenBoardTitle:
+		err = errTitleTooLong
+	}
+	if err != nil {
+		http.Error(w, fmt.Sprintf("400 %s", err), 400)
+		return false
+	}
+
+	return true
+}
+
+// Set board-specific configurations to the user's owned board
+func configureBoard(
+	w http.ResponseWriter,
+	r *http.Request,
+	ss *auth.Session,
+	board string,
+) {
+	var msg boardConfigSettingRequest
+	if !decodeJSON(w, r, &msg) {
+		return
+	}
+	msg.ID = board
+	_, ok := assertCanPerform(w, r, msg.ID, auth.BoardOwner)
+	if !ok || !validateBoardConfig(w, msg.BoardConfig) {
+		return
+	}
+	if err := db.UpdateBoard(msg.BoardConfig); err != nil {
+		text500(w, r, err)
+		return
+	}
 }

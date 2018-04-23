@@ -121,15 +121,35 @@ func assertCached(
 	return false
 }
 
-type WithSessionHandler func(w http.ResponseWriter, r *http.Request, ss *auth.Session)
+type AdminBoardHandler func(
+	w http.ResponseWriter,
+	r *http.Request,
+	ss *auth.Session,
+	board string,
+)
 
-func assertBoardOwner(h WithSessionHandler) http.HandlerFunc {
+func assertBoardOwner(h AdminBoardHandler) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		ss, _ := getSession(r, "")
 		if ss == nil || ss.Positions.AnyBoard < auth.BoardOwner {
 			text403(w, aerrBoardOwnersOnly)
 			return
 		}
-		h(w, r, ss)
+		h(w, r, ss, "")
+	}
+}
+
+func assertBoardOwnerAPI(h AdminBoardHandler) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		board := getParam(r, "board")
+		if !assertBoardAPI(w, board) {
+			return
+		}
+		ss, _ := getSession(r, board)
+		if ss == nil || ss.Positions.CurBoard < auth.BoardOwner {
+			text403(w, aerrBoardOwnersOnly)
+			return
+		}
+		h(w, r, ss, board)
 	}
 }
