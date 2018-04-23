@@ -267,7 +267,7 @@ func getSession(r *http.Request, board string) (ss *auth.Session, err error) {
 		return
 	}
 	// Just in case, to avoid search for invalid board in DB.
-	if board != "" && !config.IsServeBoard(board) {
+	if board != "" && !config.IsBoard(board) {
 		err = errInvalidBoard
 		return
 	}

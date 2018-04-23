@@ -34,7 +34,7 @@ func (c *Client) synchronise(data []byte) error {
 	switch {
 	case err != nil:
 		return err
-	case !config.IsServeBoard(msg.Board):
+	case !config.IsBoard(msg.Board):
 		return errInvalidBoard
 	case msg.Thread != 0:
 		valid, err := db.ValidateOP(msg.Thread, msg.Board)

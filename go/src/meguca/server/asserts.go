@@ -40,22 +40,6 @@ func assertBoardAPI(w http.ResponseWriter, board string) bool {
 	return true
 }
 
-func assertServeBoard(w http.ResponseWriter, board string) bool {
-	if !config.IsServeBoard(board) {
-		serve404(w)
-		return false
-	}
-	return true
-}
-
-func assertServeBoardAPI(w http.ResponseWriter, board string) bool {
-	if !config.IsServeBoard(board) {
-		text400(w, errInvalidBoard)
-		return false
-	}
-	return true
-}
-
 func checkReadOnly(board string, ss *auth.Session) bool {
 	if !config.IsReadOnlyBoard(board) {
 		return true

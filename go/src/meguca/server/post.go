@@ -137,6 +137,10 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	if !assertBoardAPI(w, board) {
 		return
 	}
+	if board == "all" {
+		text400(w, errInvalidBoard)
+		return
+	}
 	ss, _ := getSession(r, board)
 	if !assertNotModOnlyAPI(w, board, ss) {
 		return

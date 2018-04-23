@@ -47,7 +47,7 @@ func serve404wr(w http.ResponseWriter, r *http.Request) {
 
 // Serves board HTML to regular or noscript clients
 func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
-	if !assertServeBoard(w, b) {
+	if !assertBoard(w, b) {
 		return
 	}
 	ss, _ := getSession(r, b)

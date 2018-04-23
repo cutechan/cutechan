@@ -144,14 +144,13 @@ func RemoveBoard(b string) {
 }
 
 func IsBoard(b string) bool {
+	if b == "all" {
+		return true
+	}
 	boardMu.RLock()
 	defer boardMu.RUnlock()
 	_, ok := boardConfigs[b]
 	return ok
-}
-
-func IsServeBoard(b string) bool {
-	return b == "all" || IsBoard(b)
 }
 
 func IsReadOnlyBoard(b string) bool {

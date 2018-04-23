@@ -65,7 +65,7 @@ func assertCanPerform(
 	board string,
 	level auth.ModerationLevel,
 ) (ss *auth.Session, can bool) {
-	if !assertServeBoardAPI(w, board) {
+	if !assertBoardAPI(w, board) {
 		return
 	}
 	ss = assertSession(w, r, board)
