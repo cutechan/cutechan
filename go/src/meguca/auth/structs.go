@@ -57,6 +57,23 @@ func (l ModerationLevel) String() string {
 	}
 }
 
+type StaffRecord struct {
+	Board    string          `json:"board"`
+	UserID   string          `json:"userID"`
+	Position ModerationLevel `json:"position"`
+}
+
+//easyjson:json
+type Staff []StaffRecord
+
+func (staff *Staff) TryMarshal() []byte {
+	data, err := staff.MarshalJSON()
+	if err != nil {
+		return []byte("null")
+	}
+	return data
+}
+
 // Ban holdsan entry of an IP being banned from a board
 type Ban struct {
 	// Don't show IP in admin UI for privacy.

@@ -1,2 +1,3 @@
-select account, position from staff
-  where board = $1
+SELECT board, account, position FROM staff
+WHERE board = ANY($1)
+ORDER BY account

@@ -522,6 +522,12 @@ var upgrades = []func(*sql.Tx) error{
 				VALUES ('all', FALSE, '{"title": "Aggregator metaboard"}')`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`ALTER TABLE staff
+				ADD UNIQUE (board, account, position)`,
+		)
+	},
 }
 
 func StartDb() (err error) {

@@ -73,10 +73,11 @@ func Stickers(ss *auth.Session, stickHTML []byte) []byte {
 func Admin(
 	ss *auth.Session,
 	cs config.BoardConfigs,
+	staff auth.Staff,
 	bans auth.BanRecords,
 	log auth.ModLogRecords,
 ) []byte {
-	html := renderAdmin(cs, bans, log)
+	html := renderAdmin(cs, staff, bans, log)
 	title := lang.GT("Admin")
 	return Page(ss, title, html)
 }

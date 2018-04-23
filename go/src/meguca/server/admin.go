@@ -552,25 +552,31 @@ func setThreadSticky(w http.ResponseWriter, r *http.Request) {
 }
 
 func serveAdmin(w http.ResponseWriter, r *http.Request, ss *auth.Session) {
-	owned, err := db.GetOwnedBoards(ss.UserID)
-	if err != nil {
-		text500(w, r, err)
-		return
-	}
-	ownedConfigs := config.GetModBoardConfigsByID(owned)
-
-	bans, err := db.GetBans(owned)
+	boards, err := db.GetOwnedBoards(ss.UserID)
 	if err != nil {
 		text500(w, r, err)
 		return
 	}
 
-	log, err := db.GetModLog(owned)
+	staff, err := db.GetStaff(boards)
 	if err != nil {
 		text500(w, r, err)
 		return
 	}
 
-	html := templates.Admin(ss, ownedConfigs, bans, log)
+	bans, err := db.GetBans(boards)
+	if err != nil {
+		text500(w, r, err)
+		return
+	}
+
+	log, err := db.GetModLog(boards)
+	if err != nil {
+		text500(w, r, err)
+		return
+	}
+
+	cs := config.GetModBoardConfigsByID(boards)
+	html := templates.Admin(ss, cs, staff, bans, log)
 	serveHTML(w, r, html)
 }

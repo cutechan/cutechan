@@ -73,7 +73,8 @@ INSERT INTO boards VALUES ('all', FALSE, '{"title": "Aggregator metaboard"}');
 create table staff (
   board text not null references boards on delete cascade,
   account varchar(20) not null references accounts on delete cascade,
-  position varchar(50) not null
+  position varchar(50) not null,
+  UNIQUE (board, account, position)
 );
 create index staff_board on staff (board);
 create index staff_account on staff (account);

@@ -6,6 +6,7 @@
 
 import * as cx from "classnames";
 import { Component, h, render } from "preact";
+import { ModerationLevel } from "../auth";
 import { _ } from "../lang";
 import { BoardConfig } from "../state";
 import { readableTime, relativeTime } from "../templates";
@@ -25,6 +26,14 @@ interface AdminBoardConfig extends BoardConfig {
 }
 
 type ModBoards = AdminBoardConfig[];
+
+interface StaffRecord {
+  board: string;
+  userID: string;
+  position: ModerationLevel;
+}
+
+type Staff = StaffRecord[];
 
 interface BanRecord {
   board: string;
@@ -58,12 +67,14 @@ type ModLogRecords = ModLogRecord[];
 declare global {
   interface Window {
     modBoards?: ModBoards;
+    modStaff?: Staff;
     modBans?: BanRecords;
     modLog?: ModLogRecords;
   }
 }
 
 export const modBoards = window.modBoards;
+export const modStaff = window.modStaff;
 export const modBans = window.modBans;
 export const modLog = window.modLog;
 
@@ -98,7 +109,7 @@ class Settings extends Component<SettingsProps, {}> {
           <span class="settings-text">{_("Access mode")}</span>
           <select
             class="settings-select"
-            value={accessMode.toString()}
+            value={(accessMode || 0).toString()}
             onChange={this.handleAccessModeChange}
           >
             <option value={AccessMode.bypass.toString()}>
@@ -173,12 +184,15 @@ class Settings extends Component<SettingsProps, {}> {
 }
 
 interface MembersProps {
+  board: string;
+  staff: Staff;
   onChange: ChangeFn;
 }
 
 class Members extends Component<MembersProps, {}> {
-  // public shouldComponentUpdate(nextProps: MembersProps) {
-  // }
+  public shouldComponentUpdate(nextProps: MembersProps) {
+    return this.props.staff !== nextProps.staff;
+  }
   public render() {
     return (
       <div class="admin-members">
@@ -190,35 +204,35 @@ class Members extends Component<MembersProps, {}> {
           <div class="admin-owners">
             <h3 class="admin-members-shead">{_("Owners")}</h3>
             <MemberList
-              members={[]}
+              members={this.getStaff(ModerationLevel.boardOwner)}
               onChange={this.handleOwnersChange}
             />
           </div>
           <div class="admin-moderators">
             <h3 class="admin-members-shead">{_("Moderators")}</h3>
             <MemberList
-              members={[]}
+              members={this.getStaff(ModerationLevel.moderator)}
               onChange={this.handleModeratorsChange}
             />
           </div>
           <div class="admin-janitors">
             <h3 class="admin-members-shead">{_("Janitors")}</h3>
             <MemberList
-              members={[]}
+              members={this.getStaff(ModerationLevel.janitor)}
               onChange={this.handleJanitorsChange}
             />
           </div>
           <div class="admin-whitelist">
             <h3 class="admin-members-shead">{_("Whitelist")}</h3>
             <MemberList
-              members={[]}
+              members={this.getStaff(ModerationLevel.whitelisted)}
               onChange={this.handleWhitelistChange}
             />
           </div>
           <div class="admin-blacklist">
             <h3 class="admin-members-shead">{_("Blacklist")}</h3>
             <MemberList
-              members={[]}
+              members={this.getStaff(ModerationLevel.blacklisted)}
               onChange={this.handleBlacklistChange}
             />
           </div>
@@ -226,20 +240,36 @@ class Members extends Component<MembersProps, {}> {
       </div>
     );
   }
-  private handleWhitelistChange = (whitelist: string[]) => {
-    /* skip */
+  private getStaff(position: ModerationLevel) {
+    return this.props.staff
+      .filter((s) => s.position === position)
+      .map((s) => s.userID);
   }
-  private handleBlacklistChange = (blacklist: string[]) => {
-    /* skip */
+  private setStaff(position: ModerationLevel, names: string[]) {
+    const board = this.props.board;
+    const staff = this.props.staff.filter((s) => s.position !== position);
+    const newStaff = names.map((userID) => ({board, userID, position}));
+    return staff.concat(newStaff);
   }
   private handleOwnersChange = (owners: string[]) => {
-    /* skip */
+    const staff = this.setStaff(ModerationLevel.boardOwner, owners);
+    this.props.onChange({staff});
   }
   private handleModeratorsChange = (moderators: string[]) => {
-    /* skip */
+    const staff = this.setStaff(ModerationLevel.moderator, moderators);
+    this.props.onChange({staff});
   }
   private handleJanitorsChange = (janitors: string[]) => {
-    /* skip */
+    const staff = this.setStaff(ModerationLevel.janitor, janitors);
+    this.props.onChange({staff});
+  }
+  private handleWhitelistChange = (whitelist: string[]) => {
+    const staff = this.setStaff(ModerationLevel.whitelisted, whitelist);
+    this.props.onChange({staff});
+  }
+  private handleBlacklistChange = (blacklist: string[]) => {
+    const staff = this.setStaff(ModerationLevel.blacklisted, blacklist);
+    this.props.onChange({staff});
   }
 }
 
@@ -375,12 +405,14 @@ class Log extends Component<LogProps, {}> {
 
 interface BoardState {
   settings: AdminBoardConfig;
+  staff: Staff;
   bans: BanRecords;
   log: ModLogRecords;
 }
 
 interface BoardStateChanges {
   settings?: AdminBoardConfig;
+  staff?: Staff;
   bans?: BanRecords;
 }
 
@@ -403,8 +435,8 @@ class Admin extends Component<{}, AdminState> {
       saving: false,
     };
   }
-  public render({}, { boardState, needSaving, saving }: AdminState) {
-    const { settings, bans, log } = boardState;
+  public render({}, { id, boardState, needSaving, saving }: AdminState) {
+    const { settings, staff, bans, log } = boardState;
     return (
       <section class="admin">
         <header class="admin-header">
@@ -440,7 +472,7 @@ class Admin extends Component<{}, AdminState> {
           <section class="admin-content">
             <Settings settings={settings} onChange={this.handleChange} />
             <hr class="admin-separator" />
-            <Members onChange={this.handleChange} />
+            <Members board={id} staff={staff} onChange={this.handleChange} />
             <hr class="admin-separator" />
             <Bans bans={bans} onChange={this.handleChange} />
             <hr class="admin-separator" />
@@ -471,9 +503,9 @@ class Admin extends Component<{}, AdminState> {
   }
   private getBoardState(id: string) {
     const board = modBoards.find((b) => b.id === id);
-    const accessMode = board.accessMode || 0;
     return {
-      settings: {...board, accessMode},
+      settings: {...board},
+      staff: modStaff.filter((b) => b.board === id),
       bans: modBans.filter((b) => b.board === id),
       log: modLog.filter((l) => l.board === id),
     };

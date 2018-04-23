@@ -1,9 +1,15 @@
 {% import "meguca/auth" %}
 {% import "meguca/config" %}
 
-{% func renderAdmin(cs config.BoardConfigs, bans auth.BanRecords, log auth.ModLogRecords) %}{% stripspace %}
+{% func renderAdmin(
+	cs config.BoardConfigs,
+	staff auth.Staff,
+	bans auth.BanRecords,
+	log auth.ModLogRecords,
+) %}{% stripspace %}
 	<script>
 		var modBoards={%z= cs.TryMarshal() %};
+		var modStaff={%z= staff.TryMarshal() %};
 		var modBans={%z= bans.TryMarshal() %};
 		var modLog={%z= log.TryMarshal() %};
 	</script>

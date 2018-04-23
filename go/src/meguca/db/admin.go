@@ -175,25 +175,6 @@ func WriteStaff(tx *sql.Tx, board string, staff map[string][]string) error {
 	return nil
 }
 
-// GetStaff retrieves all staff positions of a specific board
-func GetStaff(board string) (staff map[string][]string, err error) {
-	staff = make(map[string][]string, 3)
-	r, err := prepared["get_staff"].Query(board)
-	if err != nil {
-		return
-	}
-	for r.Next() {
-		var acc, pos string
-		err = r.Scan(&acc, &pos)
-		if err != nil {
-			return
-		}
-		staff[pos] = append(staff[pos], acc)
-	}
-	err = r.Err()
-	return
-}
-
 // GetSameIPPosts returns posts with the same IP and on the same board as the
 // target post
 func GetSameIPPosts(id uint64, board string) (
@@ -264,30 +245,31 @@ func GetOwnedBoards(account string) (boards []string, err error) {
 	return
 }
 
-// Retrieve moderation log for the specified boards.
+// Retrieve staff positions for the specificied boards.
+// TODO(Kagami): Get from cache?
 // TODO(Kagami): Pagination.
-func GetModLog(boards []string) (log auth.ModLogRecords, err error) {
-	log = make(auth.ModLogRecords, 0)
-	rs, err := prepared["get_mod_log"].Query(pq.Array(boards))
+func GetStaff(boards []string) (staff auth.Staff, err error) {
+	staff = make(auth.Staff, 0)
+	rs, err := prepared["get_staff"].Query(pq.Array(boards))
 	if err != nil {
 		return
 	}
-	defer rs.Close()
 	for rs.Next() {
-		var entry auth.ModLogRecord
-		var created time.Time
-		err = rs.Scan(&entry.Board, &entry.ID, &entry.Type, &entry.By, &created)
+		var rec auth.StaffRecord
+		var pos string
+		err = rs.Scan(&rec.Board, &rec.UserID, &pos)
 		if err != nil {
 			return
 		}
-		entry.Created = created.Unix()
-		log = append(log, entry)
+		rec.Position.FromString(pos)
+		staff = append(staff, rec)
 	}
 	err = rs.Err()
 	return
 }
 
 // Get bans for the specified boards.
+// TODO(Kagami): Get from cache?
 // TODO(Kagami): Pagination.
 func GetBans(boards []string) (bans auth.BanRecords, err error) {
 	bans = make(auth.BanRecords, 0)
@@ -317,6 +299,29 @@ func GetBanInfo(ip, board string) (b auth.BanRecord, err error) {
 		QueryRow(ip, board).
 		Scan(&b.IP, &b.Board, &b.ID, &b.Reason, &b.By, &expires)
 	b.Expires = expires.Unix()
+	return
+}
+
+// Retrieve moderation log for the specified boards.
+// TODO(Kagami): Pagination.
+func GetModLog(boards []string) (log auth.ModLogRecords, err error) {
+	log = make(auth.ModLogRecords, 0)
+	rs, err := prepared["get_mod_log"].Query(pq.Array(boards))
+	if err != nil {
+		return
+	}
+	defer rs.Close()
+	for rs.Next() {
+		var rec auth.ModLogRecord
+		var created time.Time
+		err = rs.Scan(&rec.Board, &rec.ID, &rec.Type, &rec.By, &created)
+		if err != nil {
+			return
+		}
+		rec.Created = created.Unix()
+		log = append(log, rec)
+	}
+	err = rs.Err()
 	return
 }
 
