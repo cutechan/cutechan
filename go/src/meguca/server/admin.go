@@ -524,6 +524,10 @@ func checkBoardState(board string, state db.BoardState) (err error) {
 			err = aerrInvalidUserID
 			return
 		}
+		if rec.Position < auth.Blacklisted || rec.Position > auth.BoardOwner {
+			err = aerrInvalidPosition
+			return
+		}
 	}
 	if len(state.Bans) > common.MaxLenBansList {
 		err = aerrTooManyBans

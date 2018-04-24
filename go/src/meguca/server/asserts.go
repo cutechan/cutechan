@@ -149,7 +149,7 @@ func assertBoardOwnerAPI(h AdminBoardAPIHandler) http.HandlerFunc {
 		}
 		ss, _ := getSession(r, board)
 		if ss == nil || ss.Positions.CurBoard < auth.BoardOwner {
-			text403(w, aerrBoardOwnersOnly)
+			serveErrorJSON(w, r, aerrBoardOwnersOnly)
 			return
 		}
 		err := h(r, ss, board)

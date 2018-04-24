@@ -86,6 +86,7 @@ var (
 	aerrUnsyncState     = aerrorNew(400, "unsync board state")
 	aerrTitleTooLong    = aerrorNew(400, "board title too long")
 	aerrReasonTooLong   = aerrorNew(400, "ban reason too long")
+	aerrInvalidPosition = aerrorNew(400, "invalid position")
 	aerrTooManyStaff    = aerrorNew(400, "too many staff")
 	aerrTooManyBans     = aerrorNew(400, "too many bans")
 	aerrUnsupported     = aerrorFrom(400, ipc.ErrThumbUnsupported)
