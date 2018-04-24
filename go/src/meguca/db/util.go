@@ -136,9 +136,14 @@ func getStatement(tx *sql.Tx, id string) *sql.Stmt {
 	return stmt
 }
 
-func setReadOnly(tx *sql.Tx) error {
+func SetReadOnly(tx *sql.Tx) error {
 	_, err := tx.Exec("SET TRANSACTION READ ONLY")
 	return err
+}
+
+func SetRepeatableRead(tx *sql.Tx) (err error) {
+	_, err = tx.Exec("SET TRANSACTION ISOLATION LEVEL REPEATABLE READ")
+	return
 }
 
 // Deprecated: Use IsUniqueViolation instead.

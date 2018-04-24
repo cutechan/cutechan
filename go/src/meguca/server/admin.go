@@ -6,6 +6,7 @@ import (
 	"database/sql"
 	"fmt"
 	"net/http"
+	"reflect"
 	"regexp"
 	"strconv"
 	"time"
@@ -459,6 +460,8 @@ func setThreadSticky(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// TODO(Kagami): Use transaction?
+// We will check board state consistency on board update anyway though.
 func serveAdmin(
 	w http.ResponseWriter,
 	r *http.Request,
@@ -494,18 +497,12 @@ func serveAdmin(
 	serveHTML(w, r, html)
 }
 
-type BoardState struct {
-	Settings config.BoardConfig `json:"settings"`
-	Staff    auth.Staff         `json:"staff"`
-	Bans     auth.BanRecords    `json:"bans"`
-}
-
 type configureBoardRequest struct {
-	OldState BoardState `json:"oldState"`
-	NewState BoardState `json:"newState"`
+	OldState db.BoardState `json:"oldState"`
+	NewState db.BoardState `json:"newState"`
 }
 
-func checkBoardState(board string, state BoardState) (err error) {
+func checkBoardState(board string, state db.BoardState) (err error) {
 	if state.Settings.ID != board {
 		err = aerrInvalidState
 		return
@@ -550,20 +547,44 @@ func checkBoardState(board string, state BoardState) (err error) {
 	return
 }
 
+func equalStates(oldState, newState db.BoardState) bool {
+	return reflect.DeepEqual(oldState, newState)
+}
+
 func configureBoard(r *http.Request, ss *auth.Session, board string) (err error) {
 	var req configureBoardRequest
 	if err = readJSON(r, &req); err != nil {
 		return
 	}
-	if err = checkBoardState(board, req.OldState); err != nil {
-		return
-	}
 	if err = checkBoardState(board, req.NewState); err != nil {
 		return
 	}
-	if err = db.UpdateBoard(req.NewState.Settings); err != nil {
+
+	tx, err := db.BeginTx()
+	if err != nil {
 		err = aerrInternal.Hide(err)
 		return
 	}
+	defer db.EndTx(tx, &err)
+	if err = db.SetRepeatableRead(tx); err != nil {
+		err = aerrInternal.Hide(err)
+		return
+	}
+
+	dbState, err := db.GetBoardState(tx, board)
+	if err != nil {
+		err = aerrInternal.Hide(err)
+		return
+	}
+	if !equalStates(req.OldState, dbState) {
+		err = aerrUnsyncState
+		return
+	}
+
+	if err = db.SetBoardState(tx, req.NewState); err != nil {
+		err = aerrInternal.Hide(err)
+		return
+	}
+
 	return
 }

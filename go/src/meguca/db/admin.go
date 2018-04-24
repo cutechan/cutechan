@@ -331,3 +331,20 @@ func DeleteBoard(board string) error {
 	_, err := prepared["delete_board"].Exec(board)
 	return err
 }
+
+// Operate on multiple tables simultaneously.
+// Useful for board admin.
+
+type BoardState struct {
+	Settings config.BoardConfig `json:"settings"`
+	Staff    auth.Staff         `json:"staff"`
+	Bans     auth.BanRecords    `json:"bans"`
+}
+
+func GetBoardState(tx *sql.Tx, board string) (state BoardState, err error) {
+	return
+}
+
+func SetBoardState(tx *sql.Tx, state BoardState) (err error) {
+	return
+}

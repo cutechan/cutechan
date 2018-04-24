@@ -83,6 +83,7 @@ var (
 	aerrDupIgnores      = aerrorNew(400, "duplicated ignores")
 	aerrInvalidUserID   = aerrorNew(400, "invalid user ID")
 	aerrInvalidState    = aerrorNew(400, "wrong board state")
+	aerrUnsyncState     = aerrorNew(400, "unsync board state")
 	aerrTitleTooLong    = aerrorNew(400, "board title too long")
 	aerrReasonTooLong   = aerrorNew(400, "ban reason too long")
 	aerrTooManyStaff    = aerrorNew(400, "too many staff")

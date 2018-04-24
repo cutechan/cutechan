@@ -207,7 +207,7 @@ func GetThread(id uint64, lastN int) (t common.Thread, err error) {
 		return
 	}
 	defer tx.Rollback()
-	err = setReadOnly(tx)
+	err = SetReadOnly(tx)
 	if err != nil {
 		return
 	}
@@ -296,7 +296,7 @@ func GetPost(id uint64) (p common.StandalonePost, err error) {
 		return
 	}
 	defer tx.Rollback()
-	err = setReadOnly(tx)
+	err = SetReadOnly(tx)
 	if err != nil {
 		return
 	}
