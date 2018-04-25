@@ -232,7 +232,7 @@ class Popup extends Component<PopupProps, PopupState> {
     return (
       this.props.video
       && !this.props.transparent
-      && (this.props.audio || this.props.duration > 10)
+      && (this.props.audio || this.props.duration > 2)
     );
   }
   private handleGlobalKey = (e: KeyboardEvent) => {
