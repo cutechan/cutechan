@@ -44,6 +44,10 @@ func Ban(board, reason, by string, expires time.Time, ids ...uint64) (
 		posts = append(posts, post{id: id})
 	}
 
+	if len(ips) == 0 {
+		return
+	}
+
 	// Retrieve their OPs
 	for i, post := range posts {
 		post.op, err = GetPostOP(post.id)
@@ -69,15 +73,13 @@ func Ban(board, reason, by string, expires time.Time, ids ...uint64) (
 
 	// Write bans to the ban table
 	for ip, id := range ips {
-		err = execPrepared("write_ban", ip, board, id, reason, by, expires)
+		err = execPrepared("write_ban", board, ip, id, by, expires, reason)
 		if err != nil {
 			return
 		}
 	}
 
-	if len(ips) != 0 {
-		_, err = db.Exec(`notify bans_updated`)
-	}
+	_, err = db.Exec(`notify bans_updated`)
 	return
 }
 
@@ -147,32 +149,8 @@ func moderatePost(
 	return
 }
 
-// DeletePost marks the target post as deleted
 func DeletePost(id uint64, by string) error {
 	return moderatePost(id, by, "delete_post", common.DeletePost)
-}
-
-// WriteStaff writes staff positions of a specific board. Old rows are
-// overwritten. tx must not be nil.
-func WriteStaff(tx *sql.Tx, board string, staff map[string][]string) error {
-	// Remove previous staff entries
-	_, err := tx.Stmt(prepared["clear_staff"]).Exec(board)
-	if err != nil {
-		return err
-	}
-
-	// Write new ones
-	q := tx.Stmt(prepared["write_staff"])
-	for pos, accounts := range staff {
-		for _, a := range accounts {
-			_, err = q.Exec(board, a, pos)
-			if err != nil {
-				return err
-			}
-		}
-	}
-
-	return nil
 }
 
 // GetSameIPPosts returns posts with the same IP and on the same board as the
@@ -268,6 +246,20 @@ func GetStaff(tx *sql.Tx, boards []string) (staff auth.Staff, err error) {
 	return
 }
 
+// Set staff of specified board, overwriting the old values.
+func WriteStaff(tx *sql.Tx, board string, staff auth.Staff) (err error) {
+	if _, err = getStatement(tx, "clear_staff").Exec(board); err != nil {
+		return
+	}
+	st := getStatement(tx, "write_staff")
+	for _, rec := range staff {
+		if _, err = st.Exec(board, rec.UserID, rec.Position.String()); err != nil {
+			return
+		}
+	}
+	return
+}
+
 // Get bans for the specified boards.
 // TODO(Kagami): Get from cache?
 // TODO(Kagami): Pagination.
@@ -297,8 +289,24 @@ func GetBanInfo(ip, board string) (b auth.BanRecord, err error) {
 	var expires time.Time
 	err = prepared["get_ban_info"].
 		QueryRow(ip, board).
-		Scan(&b.IP, &b.Board, &b.ID, &b.Reason, &b.By, &expires)
+		Scan(&b.Board, &b.IP, &b.ID, &b.Reason, &b.By, &expires)
 	b.Expires = expires.Unix()
+	return
+}
+
+// Set bans of specified board, overwriting the old values.
+func WriteBans(tx *sql.Tx, board string, bans auth.BanRecords) (err error) {
+	if _, err = getStatement(tx, "clear_bans").Exec(board); err != nil {
+		return
+	}
+	st := getStatement(tx, "write_ban")
+	for _, rec := range bans {
+		_, err = st.Exec(board, rec.IP, rec.ID, rec.By, rec.Expires, rec.Reason)
+		if err != nil {
+			return
+		}
+	}
+	_, err = tx.Exec(`notify bans_updated`)
 	return
 }
 
@@ -359,5 +367,14 @@ func GetBoardState(tx *sql.Tx, board string) (state BoardState, err error) {
 }
 
 func SetBoardState(tx *sql.Tx, state BoardState) (err error) {
+	if err = UpdateBoard(tx, state.Settings); err != nil {
+		return
+	}
+	if err = WriteStaff(tx, state.Settings.ID, state.Staff); err != nil {
+		return
+	}
+	if err = WriteBans(tx, state.Settings.ID, state.Bans); err != nil {
+		return
+	}
 	return
 }

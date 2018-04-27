@@ -183,9 +183,8 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err = db.WriteStaff(tx, msg.ID, map[string][]string{
-		"owners": []string{ss.UserID},
-	})
+	rec := auth.StaffRecord{msg.ID, ss.UserID, auth.BoardOwner}
+	err = db.WriteStaff(tx, msg.ID, auth.Staff{rec})
 	if err != nil {
 		text500(w, r, err)
 		return
@@ -298,11 +297,8 @@ func ban(w http.ResponseWriter, r *http.Request) {
 	case msg.Global && ss.UserID != "admin":
 		text403(w, errAccessDenied)
 		return
-	case len(msg.Reason) > common.MaxBanReasonLength:
-		text400(w, aerrReasonTooLong)
-		return
-	case msg.Reason == "":
-		text400(w, errNoReason)
+	case msg.Reason == "", len(msg.Reason) > common.MaxBanReasonLength:
+		text400(w, aerrInvalidReason)
 		return
 	case msg.Duration == 0:
 		text400(w, errNoDuration)
@@ -533,7 +529,7 @@ func checkBoardState(board string, state db.BoardState) (err error) {
 		err = aerrTooManyBans
 		return
 	}
-	// FIXME(Kagami): IP.
+	// TODO(Kagami): Validate IP.
 	for _, rec := range state.Bans {
 		if rec.Board != board {
 			err = aerrInvalidState
@@ -544,7 +540,7 @@ func checkBoardState(board string, state db.BoardState) (err error) {
 			return
 		}
 		if rec.Reason == "" || len(rec.Reason) > common.MaxBanReasonLength {
-			err = aerrReasonTooLong
+			err = aerrInvalidReason
 			return
 		}
 	}

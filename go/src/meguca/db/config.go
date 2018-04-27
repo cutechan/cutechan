@@ -117,10 +117,10 @@ func WriteBoard(tx *sql.Tx, c config.BoardConfig) (err error) {
 	return
 }
 
-func UpdateBoard(c config.BoardConfig) (err error) {
+func UpdateBoard(tx *sql.Tx, c config.BoardConfig) (err error) {
 	stData, err := c.MarshalJSON()
 	if err != nil {
 		return
 	}
-	return execPrepared("update_board", c.ID, c.ModOnly, stData)
+	return execPreparedTx(tx, "update_board", c.ID, c.ModOnly, stData)
 }

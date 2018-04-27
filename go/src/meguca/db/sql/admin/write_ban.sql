@@ -1,9 +1,4 @@
-insert into bans (ip, board, forPost, reason, by, expires)
-  values ($1, $2, $3, $4, $5, $6)
-  on conflict do nothing
-  returning log_moderation(
-    0::smallint,
-    $2::text,
-    $3::bigint,
-    $5::varchar(20)
-  )
+INSERT INTO bans (board, ip, forPost, by, expires, reason)
+VALUES           ($1,    $2, $3,      $4, $5,      $6)
+ON CONFLICT DO NOTHING
+RETURNING log_moderation(0::smallint, $1, $3, $4)
