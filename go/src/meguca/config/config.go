@@ -90,6 +90,9 @@ func GetBoardConfigs() (cs BoardConfigs) {
 		if conf.ID == "all" {
 			continue
 		}
+		if conf.ModOnly {
+			continue
+		}
 		cs = append(cs, conf)
 	}
 	return
