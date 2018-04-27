@@ -4,6 +4,7 @@ const fs = require("fs");
 const os = require("os");
 const path = require("path");
 const assert = require("assert");
+const crypto = require("crypto");
 const { spawn, spawnSync } = require("child_process");
 const del = require("del");
 const merge = require("merge-stream");
@@ -292,8 +293,21 @@ if (watch) {
   preTasks.push("tsc");
 }
 
+function getSpriteHash(fpath) {
+  const data = fs.readFileSync(fpath);
+  return crypto.createHash("md5").update(data).digest("hex").slice(0, 10);
+}
+
+function replaceFile(fpath, what, to) {
+  let data = fs.readFileSync(fpath, "utf8");
+  data = data.replace(what, to);
+  fs.writeFileSync(fpath, data);
+}
+
 // Special task, run separately.
 gulp.task("smiles", () => {
+  del.sync("smiles-pp/*.png");
+  let hash = "";
   const smileNames = fs.readdirSync("smiles");
   const smileIds = smileNames
     .filter(n => /^[a-z0-9_]+\.png$/.test(n))
@@ -309,18 +323,19 @@ gulp.task("smiles", () => {
     .pipe(spritesmith({
       imgName: "__smiles.png",
       cssName: "smiles.css",
-      imgPath: "/static/img/smiles.png",
       retinaSrcFilter: "smiles/*@2x.png",
       retinaImgName: "__smiles@2x.png",
-      retinaImgPath: "/static/img/smiles@2x.png",
       // https://github.com/twolfson/gulp.spritesmith/issues/97
       padding: 1,
       cssOpts: {
         cssSelector: s => ".smile-" + s.name,
       },
     }))
-    .pipe(gulp.dest(SMILES_TMP_DIR))
-    .pipe(gulpif("*.png", tap(function({ basename }) {
+    // This is slightly ineffecient because we read/write files twice but
+    // they are quite small so it's not that bad.
+    // XXX(Kagami): Needs explicit CSS dest.
+    .pipe(gulpif("*.css", gulp.dest(SMILES_TMP_DIR), gulp.dest(SMILES_TMP_DIR)))
+    .pipe(gulpif("*.png", tap(function({ basename, path: fpath }) {
       // gulp-imagemin requires 240+ deps, fuck that shit.
       const p = spawnSync("optipng", [
         "-quiet",
@@ -329,10 +344,17 @@ gulp.task("smiles", () => {
         basename,
       ], {cwd: SMILES_TMP_DIR, stdio: "inherit"});
       if (p.error) return handleError(p.error);
+      if (p.status) return handleError(new Error(`optipng exited with ${p.status}`));
+      // Fix paths.
+      // Sprite images are always synced so use hash of one of them.
+      if (!hash) {
+        hash = getSpriteHash(fpath);
+        replaceFile("smiles-pp/smiles.css", /__smiles/g, `/static/img/smiles-${hash}`);
+      }
       // Avoid corrupted sprite copy in dist/ via atomic rename.
       fs.renameSync(
         path.join(SMILES_TMP_DIR, basename.slice(1)),
-        path.join(SMILES_TMP_DIR, basename.slice(2))
+        path.join(SMILES_TMP_DIR, `smiles-${hash}${basename.slice(8)}`)
       );
     })))
     .on("end", () => {
