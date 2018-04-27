@@ -367,8 +367,8 @@ func GetBoardState(tx *sql.Tx, board string) (state BoardState, err error) {
 	return
 }
 
-func SetBoardState(tx *sql.Tx, state BoardState) (err error) {
-	if err = UpdateBoard(tx, state.Settings); err != nil {
+func SetBoardState(tx *sql.Tx, state BoardState, by string) (err error) {
+	if err = UpdateBoard(tx, state.Settings, by); err != nil {
 		return
 	}
 	if err = WriteStaff(tx, state.Settings.ID, state.Staff); err != nil {

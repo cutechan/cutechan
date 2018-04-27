@@ -113,6 +113,7 @@ const (
 	DeleteImage
 	SpoilerImage
 	DeleteThread
+	UpdateBoard
 )
 
 // Single entry in the moderation log

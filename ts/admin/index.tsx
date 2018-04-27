@@ -56,6 +56,7 @@ const enum ModerationAction {
   deleteImage,
   spoilerImage,
   deleteThread,
+  updateBoard,
 }
 
 interface ModLogRecord {
@@ -384,14 +385,8 @@ class Log extends Component<LogProps, {}> {
         <tbody>
         {log.map(({ id, type, by, created }) =>
           <tr class="admin-table-item log-item">
-            <td class="log-id">
-              <a class="post-link" href={`/all/${id}#${id}`}>
-                &gt;&gt;{id}
-              </a>
-            </td>
-            <td class="log-type">
-              {this.renderType(type)}
-            </td>
+            <td class="log-id">{this.renderLink(id, type)}</td>
+            <td class="log-type">{this.renderType(type)}</td>
             <td class="log-by">{by}</td>
             <td class="log-time" title={readableTime(created)}>
               {relativeTime(created)}
@@ -407,6 +402,22 @@ class Log extends Component<LogProps, {}> {
         </table>
       </div>
     );
+  }
+  private renderLink(id: number, a: ModerationAction) {
+    switch (a) {
+    case ModerationAction.updateBoard:
+      return (
+        <a class="post-link" href={`/${this.props.board}/`}>
+          /{this.props.board}/
+        </a>
+      );
+    default:
+      return (
+        <a class="post-link" href={`/all/${id}#${id}`}>
+          &gt;&gt;{id}
+        </a>
+      );
+    }
   }
   private renderType(a: ModerationAction) {
     switch (a) {
@@ -427,6 +438,8 @@ class Log extends Component<LogProps, {}> {
       return null;
     case ModerationAction.deleteThread:
       return <i class="fa fa-2x fa-trash-o" title={_("deleteThread")} />;
+    case ModerationAction.updateBoard:
+      return <i class="fa fa-refresh" title={_("updateBoard")} />;
     }
   }
 }

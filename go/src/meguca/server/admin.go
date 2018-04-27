@@ -581,7 +581,7 @@ func configureBoard(r *http.Request, ss *auth.Session, board string) (err error)
 		return
 	}
 
-	if err = db.SetBoardState(tx, req.NewState); err != nil {
+	if err = db.SetBoardState(tx, req.NewState, ss.UserID); err != nil {
 		err = aerrInternal.Hide(err)
 		return
 	}
