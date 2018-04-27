@@ -357,14 +357,15 @@ class Bans extends Component<BansProps, {}> {
 }
 
 interface LogProps {
-  log: ModLogRecords;
+  board: string;
 }
 
 class Log extends Component<LogProps, {}> {
   public shouldComponentUpdate(nextProps: LogProps) {
-    return this.props.log !== nextProps.log;
+    return this.props.board !== nextProps.board;
   }
-  public render({ log }: LogProps) {
+  public render({ board }: LogProps) {
+    const log = modLog.filter((l) => l.board === board);
     return (
       <div class="log">
         <a class="admin-content-anchor" name="log" />
@@ -445,7 +446,6 @@ interface BoardStateChanges {
 interface AdminState {
   id: string;
   boardState: BoardState;
-  log: ModLogRecords;
   needSaving: boolean;
   saving: boolean;
 }
@@ -463,12 +463,11 @@ class Admin extends Component<{}, AdminState> {
     this.state = {
       id,
       boardState: this.getBoardState(id),
-      log: modLog.filter((l) => l.board === id),
       needSaving: false,
       saving: false,
     };
   }
-  public render({}, { id, boardState, log, needSaving, saving }: AdminState) {
+  public render({}, { id, boardState, needSaving, saving }: AdminState) {
     const { settings, staff, bans } = boardState;
     return (
       <section class="admin">
@@ -509,7 +508,7 @@ class Admin extends Component<{}, AdminState> {
             <hr class="admin-separator" />
             <Bans bans={bans} disabled={saving} onChange={this.handleChange} />
             <hr class="admin-separator" />
-            <Log log={log} />
+            <Log board={id} />
           </section>
         </section>
         <footer class={cx("admin-footer", needSaving && "admin-footer_visible")}>
