@@ -346,10 +346,10 @@ class Reply extends Component<any, any> {
     }
     return o;
   }
-  private get valid() {
+  private get valid(): boolean {
     const { subject, body, fwraps } = this.state;
     const hasSubject = !!subject || !!page.thread;
-    return hasSubject && (body || fwraps.length);
+    return hasSubject && !!(body || fwraps.length);
   }
   private get disabled() {
     const { sending } = this.state;
