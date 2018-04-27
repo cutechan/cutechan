@@ -44,7 +44,7 @@ export function uncachedGET(url: string): Promise<Response> {
   });
 }
 
-// Fetch JSON request.
+// Fetch JSON data.
 export function fetchJSON<T>(url: string): Promise<T> {
   return fetch(url).then((res) => {
     if (!res.ok) {
@@ -56,36 +56,35 @@ export function fetchJSON<T>(url: string): Promise<T> {
   });
 }
 
-// Send a POST request with a JSON body to the server.
-export function postJSON(url: string, data: Dict): Promise<Response> {
+// Send a JSON request to the server.
+export function sendJSON(url: string, data: Dict, method = "POST"): Promise<Response> {
   return fetch(url, {
     body: JSON.stringify(data),
     credentials: "same-origin",
-    method: "POST",
+    method,
   });
 }
 
-// Send a POST multipart/form-data request to the server.
-export function postForm(url: string, data: Dict): Promise<Response> {
+// Send a multipart/form-data request to the server.
+export function sendForm(url: string, data: Dict, method = "POST"): Promise<Response> {
   return fetch(url, {
     body: toFormData(data),
     credentials: "same-origin",
-    method: "POST",
+    method,
   });
 }
 
-// Send a POST multipart/form-data request to the server, accepting
-// optional progress callback and storage for XHR API methods like
-// `abort`.
+// Send a multipart/form-data request to the server, accepting optional
+// progress callback and storage for XHR API methods like `abort`.
 // Implemented using XHR underneath because Fetch API currently lacks
 // this functionality, but provides roughly same API as fetch version.
-export function postFormProgress(
-  url: string, data: Dict,
+export function sendFormProgress(
+  url: string, data: Dict, method = "POST",
   onProgress?: ProgressFn, api?: FutureAPI,
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
-    xhr.open("POST", url);
+    xhr.open(method, url);
     xhr.onload = () => {
       const { status, statusText } = xhr;
       const headers = xhrToFetchHeaders(xhr);

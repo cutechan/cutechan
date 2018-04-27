@@ -474,13 +474,13 @@ func serveAdmin(
 		return
 	}
 
-	staff, err := db.GetStaff(boards)
+	staff, err := db.GetStaff(nil, boards)
 	if err != nil {
 		text500(w, r, err)
 		return
 	}
 
-	bans, err := db.GetBans(boards)
+	bans, err := db.GetBans(nil, boards)
 	if err != nil {
 		text500(w, r, err)
 		return
@@ -580,7 +580,7 @@ func configureBoard(r *http.Request, ss *auth.Session, board string) (err error)
 		err = aerrInternal.Hide(err)
 		return
 	}
-	if !equalStates(req.OldState, dbState) {
+	if !equalStates(dbState, req.OldState) {
 		err = aerrUnsyncState
 		return
 	}

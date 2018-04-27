@@ -1,6 +1,6 @@
 import { ln } from "../lang";
 import { FormView } from "../ui";
-import { inputElement, postJSON } from "../util";
+import { inputElement, sendJSON } from "../util";
 
 // Set a password match validator function for 2 input elements, that
 // are children of the passed element.
@@ -27,7 +27,7 @@ export class LoginForm extends FormView {
     const id = this.inputElement("id").value.trim();
     const password = this.inputElement("password").value;
     const req = {id, password};
-    const res = await postJSON(this.url, req);
+    const res = await sendJSON(this.url, req);
     switch (res.status) {
       case 200:
         location.reload(true);

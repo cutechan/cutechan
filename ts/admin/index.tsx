@@ -6,10 +6,13 @@
 
 import * as cx from "classnames";
 import { Component, h, render } from "preact";
+import { showSendAlert } from "../alerts";
+import API from "../api";
 import { ModerationLevel } from "../auth";
 import { _ } from "../lang";
 import { BoardConfig, page } from "../state";
 import { readableTime, relativeTime } from "../templates";
+import { replace } from "../util";
 import { MAIN_CONTAINER_SEL } from "../vars";
 import { MemberList } from "../widgets";
 
@@ -36,6 +39,7 @@ interface StaffRecord {
 type Staff = StaffRecord[];
 
 interface BanRecord {
+  ip: string;
   board: string;
   id: number;
   by: string;
@@ -82,17 +86,21 @@ type ChangeFn = (changes: BoardStateChanges) => void;
 
 interface SettingsProps {
   settings: AdminBoardConfig;
+  disabled: boolean;
   onChange: ChangeFn;
 }
 
 class Settings extends Component<SettingsProps, {}> {
   public shouldComponentUpdate(nextProps: SettingsProps) {
-    return this.props.settings !== nextProps.settings;
+    return (
+      this.props.settings !== nextProps.settings
+      || this.props.disabled !== nextProps.disabled
+    );
   }
-  public render({ settings }: SettingsProps) {
+  public render({ settings, disabled }: SettingsProps) {
     const { title, readOnly, modOnly, accessMode, includeAnon } = settings;
     return (
-      <div class="settings">
+      <div class={cx("settings", disabled && "settings_disabled")}>
         <a class="admin-content-anchor" name="settings" />
         <h3 class="admin-content-header">
           <a class="admin-header-link" href="#settings">{_("Settings")}</a>
@@ -102,6 +110,7 @@ class Settings extends Component<SettingsProps, {}> {
           <input
             class="settings-input"
             value={title}
+            disabled={disabled}
             onInput={this.handleTitleChange}
           />
         </label>
@@ -110,6 +119,7 @@ class Settings extends Component<SettingsProps, {}> {
           <select
             class="settings-select"
             value={(accessMode || 0).toString()}
+            disabled={disabled}
             onChange={this.handleAccessModeChange}
           >
             <option value={AccessMode.bypass.toString()}>
@@ -129,6 +139,7 @@ class Settings extends Component<SettingsProps, {}> {
             class="settings-checkbox"
             type="checkbox"
             checked={includeAnon}
+            disabled={disabled}
             onChange={this.handleIncludeAnonToggle}
           />
         </label>
@@ -138,6 +149,7 @@ class Settings extends Component<SettingsProps, {}> {
             class="settings-checkbox"
             type="checkbox"
             checked={readOnly}
+            disabled={disabled}
             onChange={this.handleReadOnlyToggle}
           />
         </label>
@@ -147,6 +159,7 @@ class Settings extends Component<SettingsProps, {}> {
             class="settings-checkbox"
             type="checkbox"
             checked={modOnly}
+            disabled={disabled}
             onChange={this.handleModOnlyToggle}
           />
         </label>
@@ -186,14 +199,18 @@ class Settings extends Component<SettingsProps, {}> {
 interface MembersProps {
   board: string;
   staff: Staff;
+  disabled: boolean;
   onChange: ChangeFn;
 }
 
 class Members extends Component<MembersProps, {}> {
   public shouldComponentUpdate(nextProps: MembersProps) {
-    return this.props.staff !== nextProps.staff;
+    return (
+      this.props.staff !== nextProps.staff
+      || this.props.disabled !== nextProps.disabled
+    );
   }
-  public render() {
+  public render({ disabled }: MembersProps) {
     return (
       <div class="admin-members">
         <a class="admin-content-anchor" name="members" />
@@ -205,6 +222,7 @@ class Members extends Component<MembersProps, {}> {
             <h3 class="admin-members-shead">{_("Owners")}</h3>
             <MemberList
               members={this.getStaff(ModerationLevel.boardOwner)}
+              disabled={disabled}
               onChange={this.handleOwnersChange}
             />
           </div>
@@ -212,6 +230,7 @@ class Members extends Component<MembersProps, {}> {
             <h3 class="admin-members-shead">{_("Moderators")}</h3>
             <MemberList
               members={this.getStaff(ModerationLevel.moderator)}
+              disabled={disabled}
               onChange={this.handleModeratorsChange}
             />
           </div>
@@ -219,6 +238,7 @@ class Members extends Component<MembersProps, {}> {
             <h3 class="admin-members-shead">{_("Janitors")}</h3>
             <MemberList
               members={this.getStaff(ModerationLevel.janitor)}
+              disabled={disabled}
               onChange={this.handleJanitorsChange}
             />
           </div>
@@ -226,6 +246,7 @@ class Members extends Component<MembersProps, {}> {
             <h3 class="admin-members-shead">{_("Whitelist")}</h3>
             <MemberList
               members={this.getStaff(ModerationLevel.whitelisted)}
+              disabled={disabled}
               onChange={this.handleWhitelistChange}
             />
           </div>
@@ -233,6 +254,7 @@ class Members extends Component<MembersProps, {}> {
             <h3 class="admin-members-shead">{_("Blacklist")}</h3>
             <MemberList
               members={this.getStaff(ModerationLevel.blacklisted)}
+              disabled={disabled}
               onChange={this.handleBlacklistChange}
             />
           </div>
@@ -275,16 +297,20 @@ class Members extends Component<MembersProps, {}> {
 
 interface BansProps {
   bans: BanRecords;
+  disabled: boolean;
   onChange: ChangeFn;
 }
 
 class Bans extends Component<BansProps, {}> {
   public shouldComponentUpdate(nextProps: BansProps) {
-    return this.props.bans !== nextProps.bans;
-  }
-  public render({ bans }: BansProps) {
     return (
-      <div class="bans">
+      this.props.bans !== nextProps.bans
+      || this.props.disabled !== nextProps.disabled
+    );
+  }
+  public render({ bans, disabled }: BansProps) {
+    return (
+      <div class={cx("bans", disabled && "bans_disabled")}>
         <a class="admin-content-anchor" name="bans" />
         <h3 class="admin-content-header">
           <a class="admin-header-link" href="#bans">{_("Bans")}</a>
@@ -324,6 +350,7 @@ class Bans extends Component<BansProps, {}> {
     );
   }
   private handleRemove(id: number) {
+    if (this.props.disabled) return;
     const bans = this.props.bans.filter((b) => b.id !== id);
     this.props.onChange({bans});
   }
@@ -407,7 +434,6 @@ interface BoardState {
   settings: AdminBoardConfig;
   staff: Staff;
   bans: BanRecords;
-  log: ModLogRecords;
 }
 
 interface BoardStateChanges {
@@ -419,6 +445,7 @@ interface BoardStateChanges {
 interface AdminState {
   id: string;
   boardState: BoardState;
+  log: ModLogRecords;
   needSaving: boolean;
   saving: boolean;
 }
@@ -436,12 +463,13 @@ class Admin extends Component<{}, AdminState> {
     this.state = {
       id,
       boardState: this.getBoardState(id),
+      log: modLog.filter((l) => l.board === id),
       needSaving: false,
       saving: false,
     };
   }
-  public render({}, { id, boardState, needSaving, saving }: AdminState) {
-    const { settings, staff, bans, log } = boardState;
+  public render({}, { id, boardState, log, needSaving, saving }: AdminState) {
+    const { settings, staff, bans } = boardState;
     return (
       <section class="admin">
         <header class="admin-header">
@@ -475,11 +503,11 @@ class Admin extends Component<{}, AdminState> {
           </ul>
           <hr class="admin-separator" />
           <section class="admin-content">
-            <Settings settings={settings} onChange={this.handleChange} />
+            <Settings settings={settings} disabled={saving} onChange={this.handleChange} />
             <hr class="admin-separator" />
-            <Members board={id} staff={staff} onChange={this.handleChange} />
+            <Members board={id} staff={staff} disabled={saving} onChange={this.handleChange} />
             <hr class="admin-separator" />
-            <Bans bans={bans} onChange={this.handleChange} />
+            <Bans bans={bans} disabled={saving} onChange={this.handleChange} />
             <hr class="admin-separator" />
             <Log log={log} />
           </section>
@@ -487,6 +515,7 @@ class Admin extends Component<{}, AdminState> {
         <footer class={cx("admin-footer", needSaving && "admin-footer_visible")}>
           <button
             class="button admin-button admin-save-button"
+            disabled={saving}
             onClick={this.handleSave}
           >
             <i class={cx("admin-icon admin-save-icon fa", {
@@ -497,6 +526,7 @@ class Admin extends Component<{}, AdminState> {
           </button>
           <button
             class="button admin-button admin-cancel-button"
+            disabled={saving}
             onClick={this.handleReset}
           >
             <i class="admin-icon admin-reset-icon fa fa-times-circle" />
@@ -515,8 +545,22 @@ class Admin extends Component<{}, AdminState> {
       settings: {...board},
       staff: modStaff.filter((b) => b.board === id),
       bans: modBans.filter((b) => b.board === id),
-      log: modLog.filter((l) => l.board === id),
     };
+  }
+  private fixateBoardState() {
+    const id = this.state.id;
+    const s = this.state.boardState;
+
+    const board = modBoards.find((b) => b.id === id);
+    Object.assign(board, s.settings);
+
+    const staff = modStaff.filter((b) => b.board !== id);
+    staff.push(...s.staff);
+    replace(modStaff, staff);
+
+    const bans = modBans.filter((b) => b.board !== id);
+    bans.push(...s.bans);
+    replace(modBans, bans);
   }
   private handleBoardChange = (e: Event) => {
     const id = (e.target as HTMLInputElement).value;
@@ -529,7 +573,18 @@ class Admin extends Component<{}, AdminState> {
     this.setState({boardState, needSaving: true});
   }
   private handleSave = () => {
-    this.setState({needSaving: false});
+    const id = this.state.id;
+    const oldState = this.getBoardState(id);
+    const newState = this.state.boardState;
+    this.setState({saving: true});
+    API.board.save(id, { oldState, newState })
+      .then(() => {
+        this.fixateBoardState();
+        this.setState({needSaving: false});
+      }, showSendAlert)
+      .then(() => {
+        this.setState({saving: false});
+      });
   }
   private handleReset = () => {
     const boardState = this.getBoardState(this.state.id);

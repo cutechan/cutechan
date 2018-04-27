@@ -5,12 +5,12 @@
 
 import { _ } from "../lang";
 import {
-  Dict, FutureAPI, postFormProgress,
-  postJSON, ProgressFn, uncachedGET,
+  Dict, FutureAPI, ProgressFn,
+  sendFormProgress, sendJSON, uncachedGET,
 } from "../util";
 
 type ReqFn = (
-  url: string, data?: Dict,
+  url: string, data?: Dict, method?: string,
   onProgress?: ProgressFn, api?: FutureAPI,
 ) => Promise<Response>;
 
@@ -49,10 +49,10 @@ function handleError(err: Error) {
   throw new Error(err.message || _("unknownErr"));
 }
 
-function makeReq(reqFn: ReqFn) {
+function makeReq(reqFn: ReqFn, method?: string) {
   return (url: string) =>
     (data?: Dict, onProgress?: ProgressFn, api?: FutureAPI) =>
-      reqFn(`/api/${url}`, data, onProgress, api)
+      reqFn(`/api/${url}`, data, method, onProgress, api)
         .then(handleResponse, handleError);
 }
 
@@ -62,8 +62,11 @@ const emit = {
     JSON: makeReq(uncachedGET),
   },
   POST: {
-    Form: makeReq(postFormProgress),
-    JSON: makeReq(postJSON),
+    Form: makeReq(sendFormProgress),
+    JSON: makeReq(sendJSON),
+  },
+  PUT: {
+    JSON: makeReq(sendJSON, "PUT"),
   },
 };
 
@@ -82,6 +85,9 @@ export const API = {
   },
   account: {
     setSettings: emit.POST.JSON("account/settings"),
+  },
+  board: {
+    save: (b: string, data: Dict) => emit.PUT.JSON(`boards/${b}`)(data),
   },
 };
 

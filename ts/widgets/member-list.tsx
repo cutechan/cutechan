@@ -2,6 +2,7 @@
  * Member list widget.
  */
 
+import * as cx from "classnames";
 import { Component, h } from "preact";
 import { session } from "../auth";
 import { _ } from "../lang";
@@ -18,7 +19,7 @@ class MemberList extends Component<MemberListProps, {}> {
   }
   public render({ members, disabled }: MemberListProps) {
     return (
-      <ul class="member-list">
+      <ul class={cx("member-list", disabled && "member-list_disabled")}>
         {members.map((name) =>
           <li key={name} class="member-list-item">
             <span class="member-list-name" onClick={() => this.handleRemove(name)}>

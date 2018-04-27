@@ -2,7 +2,7 @@ import { accountPanel } from ".";
 import { showAlert } from "../alerts";
 import lang from "../lang";
 import { FormView } from "../ui";
-import { Dict, makeFrag, postJSON, uncachedGET } from "../util";
+import { Dict, makeFrag, sendJSON, uncachedGET } from "../util";
 
 // Generic input form that is embedded into AccountPanel
 export abstract class AccountForm extends FormView {
@@ -50,7 +50,7 @@ export abstract class AccountForm extends FormView {
   protected async postResponse(url: string, fn: (data: Dict) => void) {
     const data = {};
     fn(data);
-    await this.handlePostResponse(await postJSON(url, data));
+    await this.handlePostResponse(await sendJSON(url, data));
   }
 
   // Handle the response of a POST request

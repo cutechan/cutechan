@@ -2199,6 +2199,12 @@ html.user_power {
   }
 }
 
+.settings_disabled {
+  .settings-label, .settings-checkbox {
+    cursor: default;
+  }
+}
+
 .admin-members-grid {
   display: grid;
   grid-row-gap: 10px;
@@ -2267,6 +2273,15 @@ html.user_power {
   cursor: pointer;
   &:hover {
     text-decoration: line-through;
+  }
+}
+
+.bans_disabled {
+  .ban-item {
+    cursor: default;
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 
@@ -2374,6 +2389,15 @@ html.user_power {
   cursor: pointer;
   &:hover {
     text-decoration: line-through;
+  }
+}
+
+.member-list_disabled {
+  .member-list-name {
+    cursor: default;
+    &:hover {
+      text-decoration: none;
+    }
   }
 }
 

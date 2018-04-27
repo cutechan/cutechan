@@ -76,8 +76,7 @@ func (staff *Staff) TryMarshal() []byte {
 
 // Ban holdsan entry of an IP being banned from a board
 type Ban struct {
-	// Don't show IP in admin UI for privacy.
-	IP    string `json:"-"`
+	IP    string `json:"ip"`
 	Board string `json:"board"`
 }
 

@@ -5,7 +5,7 @@
 export { default as FSM } from "./fsm";
 export {
   Dict, ProgressFn, FutureAPI, AbortError,
-  uncachedGET, fetchJSON, postJSON, postForm, postFormProgress,
+  uncachedGET, fetchJSON, sendJSON, sendForm, sendFormProgress,
 } from "./fetch";
 export { HOOKS, hook, unhook, trigger } from "./hooks";
 export { ChangeEmitter, emitChanges } from "./changes";
@@ -163,6 +163,12 @@ export function remove<T>(arr: T[], item: T) {
   if (idx >= 0) {
     arr.splice(idx, 1);
   }
+}
+
+/** Replace array's content in place. */
+export function replace<T>(arr: T[], contents: T[]) {
+  arr.length = 0;
+  arr.push(...contents);
 }
 
 /** Very cool function! */

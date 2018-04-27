@@ -71,8 +71,8 @@ func loadBoardConfigs() error {
 	return listenFunc("board_updated", updateBoardConfig)
 }
 
-func GetBoardConfig(board string) (config.BoardConfig, error) {
-	return readBoardConfig(prepared["get_board_config"].QueryRow(board))
+func GetBoardConfig(tx *sql.Tx, board string) (config.BoardConfig, error) {
+	return readBoardConfig(getStatement(tx, "get_board_config").QueryRow(board))
 }
 
 func readBoardConfig(r rowScanner) (c config.BoardConfig, err error) {
@@ -92,7 +92,7 @@ func readBoardConfig(r rowScanner) (c config.BoardConfig, err error) {
 }
 
 func updateBoardConfig(board string) error {
-	conf, err := GetBoardConfig(board)
+	conf, err := GetBoardConfig(nil, board)
 	switch err {
 	case nil:
 		// Do nothing.

@@ -248,9 +248,9 @@ func GetOwnedBoards(account string) (boards []string, err error) {
 // Retrieve staff positions for the specificied boards.
 // TODO(Kagami): Get from cache?
 // TODO(Kagami): Pagination.
-func GetStaff(boards []string) (staff auth.Staff, err error) {
+func GetStaff(tx *sql.Tx, boards []string) (staff auth.Staff, err error) {
 	staff = make(auth.Staff, 0)
-	rs, err := prepared["get_staff"].Query(pq.Array(boards))
+	rs, err := getStatement(tx, "get_staff").Query(pq.Array(boards))
 	if err != nil {
 		return
 	}
@@ -271,9 +271,9 @@ func GetStaff(boards []string) (staff auth.Staff, err error) {
 // Get bans for the specified boards.
 // TODO(Kagami): Get from cache?
 // TODO(Kagami): Pagination.
-func GetBans(boards []string) (bans auth.BanRecords, err error) {
+func GetBans(tx *sql.Tx, boards []string) (bans auth.BanRecords, err error) {
 	bans = make(auth.BanRecords, 0)
-	rs, err := prepared["get_bans"].Query(pq.Array(boards))
+	rs, err := getStatement(tx, "get_bans").Query(pq.Array(boards))
 	if err != nil {
 		return
 	}
@@ -342,6 +342,19 @@ type BoardState struct {
 }
 
 func GetBoardState(tx *sql.Tx, board string) (state BoardState, err error) {
+	conf, err := GetBoardConfig(tx, board)
+	if err != nil {
+		return
+	}
+	staff, err := GetStaff(tx, []string{board})
+	if err != nil {
+		return
+	}
+	bans, err := GetBans(tx, []string{board})
+	if err != nil {
+		return
+	}
+	state = BoardState{conf, staff, bans}
 	return
 }
 
