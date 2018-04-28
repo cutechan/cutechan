@@ -19,7 +19,6 @@ var (
 // Localization strings for a single language.
 // TODO(Kagami): Use plain map.
 type Pack struct {
-	Tabs   []string
 	Forms  map[string][]string
 	UI     map[string]string
 	Common struct {

@@ -200,6 +200,8 @@
     ]
   },
   "ui": {
+    "Options": "Options",
+    "Shortcuts": "Shortcuts",
     "sortBump": "Bump time",
     "sortCreation": "Creation time",
     "sortReplyCount": "Reply count",
@@ -275,10 +277,6 @@
     "type": "Type",
     "unban": "Unban"
   },
-  "tabs": [
-    "Options",
-    "Shortcuts"
-  ],
   "common": {
     "posts": {
       "clickToCopy": "Click to copy",
