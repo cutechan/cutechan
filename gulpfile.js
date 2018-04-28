@@ -20,7 +20,6 @@ const ts = require("gulp-typescript");
 const rjsOptimize = require("gulp-requirejs-optimize");
 const spritesmith = require("gulp.spritesmith");
 const less = require("gulp-less");
-const rename = require("gulp-rename");
 const uglify = require("gulp-uglify/composer")(uglifyes, console);
 const notify = require("gulp-notify");
 const livereload = require("gulp-livereload");
