@@ -339,14 +339,12 @@
     "moderators": "Модератор",
     "janitors": "Помощник",
     "viewBySameIP": "Тот же IP",
-    "toggleSticky": "Прикрепить"
+    "toggleSticky": "Прикрепить",
+    "b": "б",
+    "kb": "Кб",
+    "mb": "Мб"
   },
   "common": {
-    "sizes": {
-      "b": "б",
-      "kb": "Кб",
-      "mb": "Мб"
-    },
     "plurals": {
       "omitted": [
         "пропущен",

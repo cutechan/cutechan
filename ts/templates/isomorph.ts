@@ -147,13 +147,12 @@ export function duration(l: number): string {
 
 // Formats a human-readable representation of file size.
 export function fileSize(size: number): string {
-  const sizes = ln.Common.Sizes;
   if (size < 1024) {
-    return size + sizes.b;
+    return size + ln.UI.b;
   } else if (size < 1024 * 1024) {
-    return (size / 1024).toFixed(2) + sizes.kb;
+    return (size / 1024).toFixed(2) + ln.UI.kb;
   } else {
-    return (size / 1024 / 1024).toFixed(2) + sizes.mb;
+    return (size / 1024 / 1024).toFixed(2) + ln.UI.mb;
   }
 }
 

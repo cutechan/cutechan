@@ -166,14 +166,13 @@ func duration(l uint32) string {
 
 // Formats a human-readable representation of file size.
 func fileSize(l string, size int) string {
-	sizes := lang.Get(l).Common.Sizes
 	switch {
 	case size < 1024:
-		return fmt.Sprintf("%d%s", size, sizes["b"])
+		return fmt.Sprintf("%d%s", size, lang.GT(l, "b"))
 	case size < 1024*1024:
-		return fmt.Sprintf("%.2f%s", float32(size)/1024, sizes["kb"])
+		return fmt.Sprintf("%.2f%s", float32(size)/1024, lang.GT(l, "kb"))
 	default:
-		return fmt.Sprintf("%.2f%s", float32(size)/1024/1024, sizes["mb"])
+		return fmt.Sprintf("%.2f%s", float32(size)/1024/1024, lang.GT(l, "mb"))
 	}
 }
 

@@ -310,14 +310,12 @@
     "moderators": "Moderator",
     "janitors": "Meido",
     "viewBySameIP": "Same IP",
-    "toggleSticky": "Toggle sticky"
+    "toggleSticky": "Toggle sticky",
+    "b": "b",
+    "kb": "Kb",
+    "mb": "Mb"
   },
   "common": {
-    "sizes": {
-      "b": "b",
-      "kb": "Kb",
-      "mb": "Mb"
-    },
     "plurals": {
       "omitted": [
         "omitted",

@@ -16,8 +16,6 @@ interface LanguagePack {
 // TODO(Kagami): Remove lowercase aliases.
 interface CommonLanguagePack {
   Plurals: { [key: string]: string[] };
-  Sizes: { [key: string]: string };
-  plurals: { [key: string]: string[] };
   time: { calendar: string[], week: string[] };
 }
 
@@ -26,8 +24,6 @@ const siteLang: string = (window as any).config.defaultLang;
 const pack: any = langs[siteLang];
 const lang: CommonLanguagePack = {
   Plurals: pack.common.plurals,
-  Sizes: pack.common.sizes,
-  plurals: pack.common.plurals,
   time: pack.common.time,
 };
 
