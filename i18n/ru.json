@@ -304,7 +304,21 @@
     "text": "Текст",
     "time": "Время",
     "type": "Тип",
-    "unban": "Разбан"
+    "unban": "Разбан",
+    "send": "Отправить",
+    "attach": "Прикрепить",
+    "replies": "Ответы",
+    "mustMatch": "Пароли должны совпадать",
+    "invalidCaptcha": "Неверная капча",
+    "quoted": "Вас процитировали",
+    "refresh": "Обновить",
+    "sessionExpired": "Сессия истекла",
+    "thumbnailing": "Генерация превью…",
+    "unfinishedPost": "У вас есть незавершённый пост",
+    "uploadProgress": "загрузка…",
+    "last": "Последние",
+    "finished": "Завершено",
+    "confirmDelete": "Удалить все посты с этого IP?"
   },
   "common": {
     "posts": {
@@ -400,22 +414,6 @@
         "Птн",
         "Сбт"
       ]
-    },
-    "ui": {
-      "send": "Отправить",
-      "attach": "Прикрепить",
-      "replies": "Ответы",
-      "mustMatch": "Пароли должны совпадать",
-      "invalidCaptcha": "Неверная капча",
-      "quoted": "Вас процитировали",
-      "refresh": "Обновить",
-      "sessionExpired": "Сессия истекла",
-      "thumbnailing": "Генерация превью…",
-      "unfinishedPost": "У вас есть незавершённый пост",
-      "uploadProgress": "загрузка…",
-      "last": "Последние",
-      "finished": "Завершено",
-      "confirmDelete": "Удалить все посты с этого IP?"
     }
   }
 }

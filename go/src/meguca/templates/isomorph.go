@@ -251,9 +251,8 @@ func (ctx *PostContext) Backlinks() string {
 		rendered[i] = renderPostLink(id, op != ctx.TID, ctx.Index)
 	}
 
-	ln := lang.Get(ctx.Lang)
 	linkCtx := BacklinksContext{
-		LReplies:  ln.Common.UI["replies"],
+		LReplies:  lang.GT(ctx.Lang, "replies"),
 		Backlinks: rendered,
 	}
 	return renderMustache("post-backlinks", &linkCtx)

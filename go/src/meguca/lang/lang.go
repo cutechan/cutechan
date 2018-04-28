@@ -26,7 +26,6 @@ type Pack struct {
 		Sizes   map[string]string
 		Plurals map[string][]string
 		Time    map[string][]string
-		UI      map[string]string
 	}
 }
 

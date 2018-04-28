@@ -275,7 +275,21 @@
     "text": "Text",
     "time": "Time",
     "type": "Type",
-    "unban": "Unban"
+    "unban": "Unban",
+    "send": "Send",
+    "attach": "Attach",
+    "replies": "Replies",
+    "mustMatch": "Passwords must match",
+    "invalidCaptcha": "Invalid captcha",
+    "quoted": "You have been quoted",
+    "refresh": "Refresh",
+    "sessionExpired": "Login session expired",
+    "thumbnailing": "Thumbnailing…",
+    "unfinishedPost": "You have an unfinished post",
+    "uploadProgress": "uploaded…",
+    "last": "Last",
+    "finished": "Finished",
+    "confirmDelete": "Delete all posts by this IP?"
   },
   "common": {
     "posts": {
@@ -364,22 +378,6 @@
         "Fri",
         "Sat"
       ]
-    },
-    "ui": {
-      "send": "Send",
-      "attach": "Attach",
-      "replies": "Replies",
-      "mustMatch": "Passwords must match",
-      "invalidCaptcha": "Invalid captcha",
-      "quoted": "You have been quoted",
-      "refresh": "Refresh",
-      "sessionExpired": "Login session expired",
-      "thumbnailing": "Thumbnailing…",
-      "unfinishedPost": "You have an unfinished post",
-      "uploadProgress": "uploaded…",
-      "last": "Last",
-      "finished": "Finished",
-      "confirmDelete": "Delete all posts by this IP?"
     }
   }
 }
