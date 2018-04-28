@@ -143,7 +143,7 @@ func createBoard(w http.ResponseWriter, r *http.Request) {
 	// Validate request data
 	var err error
 	switch {
-	case ss.UserID != "admin" && config.Get().DisableUserBoards:
+	case ss.UserID != "admin":
 		err = errAccessDenied
 	case !boardNameValidation.MatchString(msg.ID),
 		msg.ID == "",
@@ -217,6 +217,7 @@ func configureServer(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) || !isAdmin(w, r) {
 		return
 	}
+	msg.DisableUserBoards = true
 	if err := db.SetServerConfig(msg); err != nil {
 		text500(w, r, err)
 	}

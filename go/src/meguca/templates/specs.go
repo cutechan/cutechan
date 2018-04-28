@@ -92,7 +92,6 @@ var specs = map[string][]inputSpec{
 		},
 	},
 	"configureServer": {
-		{ID: "disableUserBoards"},
 		{
 			ID:      "defaultCSS",
 			Type:    _select,

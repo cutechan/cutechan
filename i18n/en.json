@@ -24,10 +24,6 @@
       "Default language",
       "Language pack to load by default"
     ],
-    "disableUserBoards": [
-      "Disable non-admin board creation",
-      "Prevents any account apart from the 'admin' account from creating new boards"
-    ],
     "hideThumbs": [
       "Hide thumbnails",
       "Display a [Show] button in place of thumbnails"
