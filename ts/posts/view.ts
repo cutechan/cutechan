@@ -58,7 +58,7 @@ export default class PostView extends View<Post> {
 
     const html = new TemplateContext("post-backlinks", {
       Backlinks: rendered,
-      LReplies: ln.Common.UI.replies,
+      LReplies: ln.UI.replies,
     }).render();
 
     const container = this.el.querySelector(POST_BACKLINKS_SEL);

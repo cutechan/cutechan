@@ -18,41 +18,36 @@ interface CommonLanguagePack {
   Plurals: { [key: string]: string[] };
   Posts: { [key: string]: string };
   Sizes: { [key: string]: string };
-  UI: { [key: string]: string };
   plurals: { [key: string]: string[] };
   posts: { [key: string]: string };
   time: {
     calendar: string[],
     week: string[],
   };
-  ui: { [key: string]: string };
 }
 
 // TODO(Kagami): Add support for per-user site language.
 const siteLang: string = (window as any).config.defaultLang;
 const pack: any = langs[siteLang];
-
-// TODO(Kagami): Use `ln` everywhere.
-export const lang: CommonLanguagePack = {
+const lang: CommonLanguagePack = {
   Plurals: pack.common.plurals,
   Posts: pack.common.posts,
   Sizes: pack.common.sizes,
-  UI: pack.common.ui,
   plurals: pack.common.plurals,
   posts: pack.common.posts,
   time: pack.common.time,
-  ui: pack.common.ui,
 };
-export const ln: LanguagePack = { Forms: pack.forms, UI: pack.ui, Common: lang };
-export default lang;
 
-// Very simple implementation.
-export function printf(s: string, ...args: any[]): string {
-  return s.replace(/%s/, () => args.shift());
-}
+/** Container of localization strings for current site language. Deprecated. */
+export const ln: LanguagePack = { Forms: pack.forms, UI: pack.ui, Common: lang };
 
 /** Gettext-alike helper. */
 // TODO(Kagami): Rewrite ln.UI boilerplate to this.
 export function _(s: string): string {
   return pack.ui[s] || s;
+}
+
+/** Printf-alike helper. */
+export function printf(s: string, ...args: any[]): string {
+  return s.replace(/%s/, () => args.shift());
 }

@@ -1,6 +1,6 @@
 import { accountPanel } from ".";
 import { showAlert } from "../alerts";
-import lang from "../lang";
+import { ln } from "../lang";
 import { FormView } from "../ui";
 import { Dict, makeFrag, sendJSON, uncachedGET } from "../util";
 
@@ -17,7 +17,7 @@ export abstract class AccountForm extends FormView {
   // stored in the database (likely because of session expiry).
   public handle403() {
     this.remove();
-    showAlert(lang.ui.sessionExpired);
+    showAlert(ln.UI.sessionExpired);
   }
 
   // Render a form field and embed the input fields inside it. Then append it

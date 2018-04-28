@@ -1,5 +1,5 @@
 import { View } from "../base";
-import lang from "../lang";
+import { ln } from "../lang";
 import options from "../options";
 import { Post } from "../posts";
 import { mine } from "../state";
@@ -32,7 +32,7 @@ export default function notifyAboutReply(post: Post) {
       icon = DEFAULT_NOTIFICATION_IMAGE_URL;
     }
   }
-  const n = new Notification(lang.ui.quoted, {
+  const n = new Notification(ln.UI.quoted, {
     body: post.body,
     icon,
     vibrate: true,
