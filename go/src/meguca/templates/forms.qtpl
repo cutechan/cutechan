@@ -18,7 +18,7 @@ Render submit and cancel buttons
 	{% if cancel %}
 		{%= cancel() %}
 	{% endif %}
-	<div class="form-response admin"></div>
+	<div class="form-response"></div>
 {% endstripspace %}{% endfunc %}
 
 Renders a cancel button
