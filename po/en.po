@@ -1,0 +1,708 @@
+msgid "boardExpiry"
+msgstr "Board expiry time"
+
+msgid "boardExpiryTitle"
+msgstr "Number of days without new posts before a board is deleted"
+
+msgid "boardName"
+msgstr "Name"
+
+msgid "boardNameTitle"
+msgstr "Name of the new board. Can contain up to 10 lowercase Latin letters or numbers."
+
+msgid "boardTitle"
+msgstr "Title"
+
+msgid "boardTitleTitle"
+msgstr "Title of the new board, such as 'K-pop music'. Up to 100 characters long."
+
+msgid "captcha"
+msgstr "Captcha"
+
+msgid "captchaTitle"
+msgstr "Ask users to complete a captcha for certain tasks like registration and thread creation"
+
+msgid "defaultCSS"
+msgstr "Default theme"
+
+msgid "defaultCSSTitle"
+msgstr "Theme to load by default, when none is set by the client"
+
+msgid "defaultLang"
+msgstr "Default language"
+
+msgid "defaultLangTitle"
+msgstr "Language pack to load by default"
+
+msgid "hideThumbs"
+msgstr "Hide thumbnails"
+
+msgid "hideThumbsTitle"
+msgstr "Display a [Show] button in place of thumbnails"
+
+msgid "id"
+msgstr "Login"
+
+msgid "idTitle"
+msgstr ""
+
+msgid "ops"
+msgstr "Operations"
+
+msgid "opsTitle"
+msgstr ""
+
+msgid "identity"
+msgstr "Identity"
+
+msgid "identityTitle"
+msgstr ""
+
+msgid "popupBackdrop"
+msgstr "Popup backdrop"
+
+msgid "popupBackdropTitle"
+msgstr "Close popups by clicking on background"
+
+msgid "imageHover"
+msgstr "Media hover expansion"
+
+msgid "imageHoverTitle"
+msgstr "Display media previews on hover"
+
+msgid "imageRootOverride"
+msgstr "Image root override"
+
+msgid "imageRootOverrideTitle"
+msgstr "If you wish to host images from a separate location like a CDN, enter the full root address here. Leave empty to use the default address. Example: 'https://images.meguca.org'"
+
+msgid "janitors"
+msgstr "Meido"
+
+msgid "janitorsTitle"
+msgstr "Janitor account IDs. Janitors can only delete posts."
+
+msgid "lang"
+msgstr "Language"
+
+msgid "langTitle"
+msgstr "Change interface language"
+
+msgid "maxSize"
+msgstr "Image size limit"
+
+msgid "maxSizeTitle"
+msgstr "Maximum size of uploaded images in MB"
+
+msgid "maxFiles"
+msgstr "Files per post"
+
+msgid "maxFilesTitle"
+msgstr "Maximum number of files per post"
+
+msgid "moderators"
+msgstr "Moderator"
+
+msgid "moderatorsTitle"
+msgstr "Moderator account IDs. Moderators can delete posts, ban posters and distinguish posters by their mnemonic IDs."
+
+msgid "newPassword"
+msgstr "New password"
+
+msgid "newPasswordTitle"
+msgstr ""
+
+msgid "newPost"
+msgstr "New post"
+
+msgid "newPostTitle"
+msgstr "Open reply form"
+
+msgid "cancelPost"
+msgstr "Cancel post"
+
+msgid "cancelPostTitle"
+msgstr "Close reply form"
+
+msgid "selectFile"
+msgstr "Select file"
+
+msgid "selectFileTitle"
+msgstr "Open file select dialog"
+
+msgid "bold"
+msgstr "Bold"
+
+msgid "boldTitle"
+msgstr "Paste bold markup"
+
+msgid "italic"
+msgstr "Italic"
+
+msgid "italicTitle"
+msgstr "Paste italic markup"
+
+msgid "spoiler"
+msgstr "Spoiler"
+
+msgid "spoilerTitle"
+msgstr "Paste spoiler markup"
+
+msgid "search"
+msgstr "Search"
+
+msgid "searchTitle"
+msgstr "Jump to idol search"
+
+msgid "smile"
+msgstr "Paste smile"
+
+msgid "smileTitle"
+msgstr ""
+
+msgid "previewPost"
+msgstr "Preview post"
+
+msgid "previewPostTitle"
+msgstr "Toggle post preview mode"
+
+msgid "staffBadge"
+msgstr "Show staff badge"
+
+msgid "staffBadgeTitle"
+msgstr ""
+
+msgid "notification"
+msgstr "Notification"
+
+msgid "notificationTitle"
+msgstr "Get desktop notifications when quoted"
+
+msgid "oldPassword"
+msgstr "Old password"
+
+msgid "oldPasswordTitle"
+msgstr ""
+
+msgid "password"
+msgstr "Password"
+
+msgid "passwordTitle"
+msgstr ""
+
+msgid "pruneBoards"
+msgstr "Prune boards"
+
+msgid "pruneBoardsTitle"
+msgstr "Delete boards that have not had any new posts for N days"
+
+msgid "pruneThreads"
+msgstr "Prune threads"
+
+msgid "pruneThreadsTitle"
+msgstr "Delete threads that have not had any posts in N days"
+
+msgid "readOnly"
+msgstr "Read only"
+
+msgid "readOnlyTitle"
+msgstr "Disable post creation"
+
+msgid "modOnly"
+msgstr "Mod only"
+
+msgid "modOnlyTitle"
+msgstr "Only for moderators"
+
+msgid "register"
+msgstr "Register"
+
+msgid "registerTitle"
+msgstr ""
+
+msgid "relativeTime"
+msgstr "Relative Timestamps"
+
+msgid "relativeTimeTitle"
+msgstr "Relative post timestamps. Ex.: '1 hour ago'"
+
+msgid "scrollToBottom"
+msgstr "Scroll to bottom"
+
+msgid "scrollToBottomTitle"
+msgstr "Scroll page to bottom on new post"
+
+msgid "repeat"
+msgstr "Repeat"
+
+msgid "repeatTitle"
+msgstr ""
+
+msgid "staffTitle"
+msgstr "Staff Title"
+
+msgid "staffTitleTitle"
+msgstr "Display your staff title in the post header"
+
+msgid "theme"
+msgstr "Theme"
+
+msgid "themeTitle"
+msgstr "Select CSS theme"
+
+msgid "threadExpiryMax"
+msgstr "Maximal thread expiry time"
+
+msgid "threadExpiryMaxTitle"
+msgstr "Number of days without new posts before a thread is deleted"
+
+msgid "threadExpiryMin"
+msgstr "Minimal thread expiry time"
+
+msgid "threadExpiryMinTitle"
+msgstr "Number of days without new posts before a thread is deleted"
+
+msgid "title"
+msgstr "Title"
+
+msgid "titleTitle"
+msgstr "Short descriptive title of the board"
+
+msgid "workMode"
+msgstr "Work mode"
+
+msgid "workModeTitle"
+msgstr "Hides images"
+
+msgid "workModeToggle"
+msgstr "Work mode"
+
+msgid "workModeToggleTitle"
+msgstr "Hides images"
+
+msgid "light"
+msgstr "light"
+
+msgid "dark"
+msgstr "dark"
+
+msgid "Options"
+msgstr "Options"
+
+msgid "Shortcuts"
+msgstr "Shortcuts"
+
+msgid "sortBump"
+msgstr "Bump time"
+
+msgid "sortCreation"
+msgstr "Creation time"
+
+msgid "sortReplyCount"
+msgstr "Reply count"
+
+msgid "sortFileCount"
+msgstr "File count"
+
+msgid "cm"
+msgstr "%s cm"
+
+msgid "kg"
+msgstr "%s kg"
+
+msgid "main"
+msgstr "Main page"
+
+msgid "notFound"
+msgstr "Page not found"
+
+msgid "landingHeader"
+msgstr "The only one k-pop imageboard"
+
+msgid "landingInfo"
+msgstr ""
+
+msgid "threads"
+msgstr "All threads"
+
+msgid "rules"
+msgstr "Rules"
+
+msgid "news"
+msgstr "News"
+
+msgid "stickers"
+msgstr "Stickers"
+
+msgid "clickToCancel"
+msgstr "Click to cancel upload"
+
+msgid "attach"
+msgstr "Attach"
+
+msgid "record"
+msgstr "Record voice message"
+
+msgid "tooBig"
+msgstr "Too big file"
+
+msgid "delConfirm"
+msgstr "Delete post?"
+
+msgid "banConfirm"
+msgstr "Delete post and ban author?"
+
+msgid "unsupFile"
+msgstr "Unsupported file type"
+
+msgid "unknownErr"
+msgstr "Unknown error"
+
+msgid "networkErr"
+msgstr "Network error"
+
+msgid "initErr"
+msgstr "Site load error"
+
+msgid "sendErr"
+msgstr "Send error"
+
+msgid "searchIdol"
+msgstr "Search idol…"
+
+msgid "aggregator"
+msgstr "Aggregator metaboard"
+
+msgid "FAQ"
+msgstr "Information"
+
+msgid "account"
+msgstr "Account"
+
+msgid "add"
+msgstr "Add"
+
+msgid "apply"
+msgstr "Apply"
+
+msgid "ban"
+msgstr "Ban"
+
+msgid "by"
+msgstr "By"
+
+msgid "cancel"
+msgstr "Cancel"
+
+msgid "captchaID"
+msgstr "Captcha ID"
+
+msgid "catalog"
+msgstr "Catalog"
+
+msgid "changePassword"
+msgstr "Change password"
+
+msgid "clear"
+msgstr "Clear"
+
+msgid "configureBoard"
+msgstr "Configure board"
+
+msgid "configureServer"
+msgstr "Configure server"
+
+msgid "createBoard"
+msgstr "Create board"
+
+msgid "deleteImage"
+msgstr "Delete image"
+
+msgid "deletePost"
+msgstr "Delete post"
+
+msgid "deleteThread"
+msgstr "Delete thread"
+
+msgid "updateBoard"
+msgstr "Update board"
+
+msgid "done"
+msgstr "Done"
+
+msgid "expires"
+msgstr "Expires"
+
+msgid "global"
+msgstr "Global"
+
+msgid "loadCaptcha"
+msgstr "Click to load captcha"
+
+msgid "logout"
+msgstr "Logout"
+
+msgid "logoutAll"
+msgstr "Log out all devices"
+
+msgid "newThread"
+msgstr "New thread"
+
+msgid "options"
+msgstr "Options"
+
+msgid "ownNoBoards"
+msgstr "You don't own any boards"
+
+msgid "pointToCatalog"
+msgstr "Point to Catalog"
+
+msgid "post"
+msgstr "Post"
+
+msgid "posterID"
+msgstr "Poster ID"
+
+msgid "reply"
+msgstr "Reply"
+
+msgid "report"
+msgstr "Report"
+
+msgid "reason"
+msgstr "Reason"
+
+msgid "return"
+msgstr "Return"
+
+msgid "searchTooltip"
+msgstr "Filter threads by subject, body or board name encased in backslashes. Accepts Regular expressions."
+
+msgid "sortMode"
+msgstr "Sort threads by"
+
+msgid "subject"
+msgstr "Subject"
+
+msgid "submit"
+msgstr "Submit"
+
+msgid "sync"
+msgstr "Connection status"
+
+msgid "syncCount"
+msgstr "Unique connected IP count"
+
+msgid "text"
+msgstr "Text"
+
+msgid "time"
+msgstr "Time"
+
+msgid "type"
+msgstr "Type"
+
+msgid "unban"
+msgstr "Unban"
+
+msgid "send"
+msgstr "Send"
+
+msgid "replies"
+msgstr "Replies"
+
+msgid "mustMatch"
+msgstr "Passwords must match"
+
+msgid "invalidCaptcha"
+msgstr "Invalid captcha"
+
+msgid "quoted"
+msgstr "You have been quoted"
+
+msgid "refresh"
+msgstr "Refresh"
+
+msgid "sessionExpired"
+msgstr "Login session expired"
+
+msgid "thumbnailing"
+msgstr "Thumbnailing…"
+
+msgid "unfinishedPost"
+msgstr "You have an unfinished post"
+
+msgid "uploadProgress"
+msgstr "uploaded…"
+
+msgid "last"
+msgstr "Last"
+
+msgid "finished"
+msgstr "Finished"
+
+msgid "confirmDelete"
+msgstr "Delete all posts by this IP?"
+
+msgid "clickToCopy"
+msgstr "Click to copy"
+
+msgid "ago"
+msgstr "ago"
+
+msgid "and"
+msgstr "and"
+
+msgid "banned"
+msgstr "USER WAS BANNED FOR THIS POST"
+
+msgid "contractImages"
+msgstr "Contract Images"
+
+msgid "deleteBySameIP"
+msgstr "Delete all by IP"
+
+msgid "expandImages"
+msgstr "Expand Images"
+
+msgid "expand"
+msgstr "Expand"
+
+msgid "hide"
+msgstr "Hide"
+
+msgid "in"
+msgstr "in"
+
+msgid "justNow"
+msgstr "just now"
+
+msgid "goToThread"
+msgstr "Go to thread"
+
+msgid "seeAll"
+msgstr "See all"
+
+msgid "show"
+msgstr "Show"
+
+msgid "you"
+msgstr "(You)"
+
+msgid "admin"
+msgstr "Admin"
+
+msgid "owners"
+msgstr "Board Owner"
+
+msgid "viewBySameIP"
+msgstr "Same IP"
+
+msgid "toggleSticky"
+msgstr "Toggle sticky"
+
+msgid "b"
+msgstr "b"
+
+msgid "kb"
+msgstr "Kb"
+
+msgid "mb"
+msgstr "Mb"
+
+msgid "Jan"
+msgstr "Jan"
+
+msgid "Feb"
+msgstr "Feb"
+
+msgid "Mar"
+msgstr "Mar"
+
+msgid "Apr"
+msgstr "Apr"
+
+msgid "May"
+msgstr "May"
+
+msgid "Jun"
+msgstr "Jun"
+
+msgid "Jul"
+msgstr "Jul"
+
+msgid "Aug"
+msgstr "Aug"
+
+msgid "Sep"
+msgstr "Sep"
+
+msgid "Oct"
+msgstr "Oct"
+
+msgid "Nov"
+msgstr "Nov"
+
+msgid "Dec"
+msgstr "Dec"
+
+msgid "Sun"
+msgstr "Sun"
+
+msgid "Mon"
+msgstr "Mon"
+
+msgid "Tue"
+msgstr "Tue"
+
+msgid "Wed"
+msgstr "Wed"
+
+msgid "Thu"
+msgstr "Thu"
+
+msgid "Fri"
+msgstr "Fri"
+
+msgid "Sat"
+msgstr "Sat"
+
+msgid "omit"
+msgid_plural "omitted"
+msgstr[0] "omitted"
+msgstr[1] "omitted"
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] "day"
+msgstr[1] "days"
+
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "hour"
+msgstr[1] "hours"
+
+msgid "image"
+msgid_plural "images"
+msgstr[0] "file"
+msgstr[1] "files"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "minute"
+msgstr[1] "minutes"
+
+msgid "month"
+msgid_plural "months"
+msgstr[0] "month"
+msgstr[1] "months"
+
+msgid "post"
+msgid_plural "posts"
+msgstr[0] "post"
+msgstr[1] "posts"
+
+msgid "year"
+msgid_plural "years"
+msgstr[0] "year"
+msgstr[1] "years"

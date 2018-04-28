@@ -1,0 +1,832 @@
+msgid "boardExpiry"
+msgstr "Время жизни доски"
+
+msgid "boardExpiryTitle"
+msgstr "Число дней без постов до автоудаления доски"
+
+msgid "boardName"
+msgstr "Название"
+
+msgid "boardNameTitle"
+msgstr "Имя новой доски, может содержать до 10 латинских букв и цифр в нижнем регистре"
+
+msgid "boardTitle"
+msgstr "Заголовок"
+
+msgid "boardTitleTitle"
+msgstr "Заголовок новый доски, например «Корейская поп-музыка», максимум 100 символов"
+
+msgid "captcha"
+msgstr "Капча"
+
+msgid "captchaTitle"
+msgstr "Заставлять пользователей вводить капчу для некоторых действий, например при регистрации и создании треда"
+
+msgid "defaultCSS"
+msgstr "Тема по умолчанию"
+
+msgid "defaultCSSTitle"
+msgstr "Используемая по умолчанию тема"
+
+msgid "defaultLang"
+msgstr "Язык по умолчанию"
+
+msgid "defaultLangTitle"
+msgstr "Используемый по умолчанию язык"
+
+msgid "hideThumbs"
+msgstr "Скрыть превью"
+
+msgid "hideThumbsTitle"
+msgstr "Отображать кнопку [Показать] на месте превью"
+
+msgid "id"
+msgstr "Логин"
+
+msgid "idTitle"
+msgstr ""
+
+msgid "ops"
+msgstr "Действия"
+
+msgid "opsTitle"
+msgstr ""
+
+msgid "identity"
+msgstr "Персонализация"
+
+msgid "identityTitle"
+msgstr ""
+
+msgid "popupBackdrop"
+msgstr "Закрывать по нажатию на фон"
+
+msgid "popupBackdropTitle"
+msgstr "Закрывать медиа-элементы по нажатию на фон"
+
+msgid "imageHover"
+msgstr "Раскрывать при наведении"
+
+msgid "imageHoverTitle"
+msgstr "Отображать полные версии изображений при наведении мышью"
+
+msgid "imageRootOverride"
+msgstr "Адрес сайта изображений"
+
+msgid "imageRootOverrideTitle"
+msgstr "Для размещения изображений на отдельном сайте введите его полный адрес, например «https://images.example.com»"
+
+msgid "lang"
+msgstr "Язык сайта"
+
+msgid "langTitle"
+msgstr "Изменить язык интерфейса"
+
+msgid "maxSize"
+msgstr "Максимальный размер файла"
+
+msgid "maxSizeTitle"
+msgstr "Максимальный размер загружаемых файлов в мегабайтах"
+
+msgid "maxFiles"
+msgstr "Число файлов на пост"
+
+msgid "maxFilesTitle"
+msgstr "Максимальное число файлов в посте"
+
+msgid "newPassword"
+msgstr "Новый пароль"
+
+msgid "newPasswordTitle"
+msgstr ""
+
+msgid "newPost"
+msgstr "Новый пост"
+
+msgid "newPostTitle"
+msgstr "Отобразить форму отправки"
+
+msgid "cancelPost"
+msgstr "Отменить пост"
+
+msgid "cancelPostTitle"
+msgstr "Закрыть форму отправки"
+
+msgid "selectFile"
+msgstr "Выбрать файл"
+
+msgid "selectFileTitle"
+msgstr "Открыть диалог выбора файла"
+
+msgid "bold"
+msgstr "Полужирный"
+
+msgid "boldTitle"
+msgstr "Вставить полужирную разметку"
+
+msgid "italic"
+msgstr "Курсив"
+
+msgid "italicTitle"
+msgstr "Вставить разметку курсива"
+
+msgid "spoiler"
+msgstr "Спойлер"
+
+msgid "spoilerTitle"
+msgstr "Вставить разметку спойлера"
+
+msgid "search"
+msgstr "Поиск"
+
+msgid "searchTitle"
+msgstr "Перейти к поиску айдолов"
+
+msgid "smile"
+msgstr "Вставить смайл"
+
+msgid "smileTitle"
+msgstr ""
+
+msgid "previewPost"
+msgstr "Предпросмотр поста"
+
+msgid "previewPostTitle"
+msgstr "Переключить режим предпросмотра"
+
+msgid "staffBadge"
+msgstr "Отобразить лычку модератора"
+
+msgid "staffBadgeTitle"
+msgstr ""
+
+msgid "notification"
+msgstr "Уведомление"
+
+msgid "notificationTitle"
+msgstr "Получать уведомления на рабочий стол при цитировании ваших постов"
+
+msgid "oldPassword"
+msgstr "Старый пароль"
+
+msgid "oldPasswordTitle"
+msgstr ""
+
+msgid "password"
+msgstr "Пароль"
+
+msgid "passwordTitle"
+msgstr ""
+
+msgid "pruneBoards"
+msgstr "Автоочистка досок"
+
+msgid "pruneBoardsTitle"
+msgstr "Удалять доски на которых давно не было постов"
+
+msgid "pruneThreads"
+msgstr "Автоочистка тредов"
+
+msgid "pruneThreadsTitle"
+msgstr "Удалять треды в которых давно не было постов"
+
+msgid "register"
+msgstr "Регистрация"
+
+msgid "registerTitle"
+msgstr ""
+
+msgid "relativeTime"
+msgstr "Относительное время"
+
+msgid "relativeTimeTitle"
+msgstr "Отображать относительное время постов, например «1 час назад»"
+
+msgid "scrollToBottom"
+msgstr "Проматывать вниз"
+
+msgid "scrollToBottomTitle"
+msgstr "Проматывать страницу в низ при добавлении нового поста"
+
+msgid "repeat"
+msgstr "Ещё раз"
+
+msgid "repeatTitle"
+msgstr ""
+
+msgid "staffTitle"
+msgstr "Метка модератора"
+
+msgid "staffTitleTitle"
+msgstr "Отображать модераторский статус в посте"
+
+msgid "theme"
+msgstr "Тема сайта"
+
+msgid "themeTitle"
+msgstr "Выбрать тему сайта"
+
+msgid "threadExpiryMax"
+msgstr "Максимальное время жизни треда"
+
+msgid "threadExpiryMaxTitle"
+msgstr "Число дней без новых постов перед удалением треда"
+
+msgid "threadExpiryMin"
+msgstr "Минимальное время жизни треда"
+
+msgid "threadExpiryMinTitle"
+msgstr "Число дней без новых постов перед удалением треда"
+
+msgid "title"
+msgstr "Заголовок"
+
+msgid "titleTitle"
+msgstr "Короткий заголовок доски"
+
+msgid "workMode"
+msgstr "Режим босса"
+
+msgid "workModeTitle"
+msgstr "Скрыть все изображения"
+
+msgid "workModeToggle"
+msgstr "Режим босса"
+
+msgid "workModeToggleTitle"
+msgstr "Скрыть все изображения"
+
+msgid "light"
+msgstr "светлая"
+
+msgid "dark"
+msgstr "тёмная"
+
+msgid "Options"
+msgstr "Опции"
+
+msgid "Hotkeys"
+msgstr "Горячие клавиши"
+
+msgid "sortBump"
+msgstr "Время бампа"
+
+msgid "sortCreation"
+msgstr "Время создания"
+
+msgid "sortReplyCount"
+msgstr "Число ответов"
+
+msgid "sortFileCount"
+msgstr "Число файлов"
+
+msgid "Owners"
+msgstr "Владельцы"
+
+msgid "Moderators"
+msgstr "Модераторы"
+
+msgid "Janitors"
+msgstr "Помощники"
+
+msgid "No bans"
+msgstr "Нет банов"
+
+msgid "Empty log"
+msgstr "Нет записей"
+
+msgid "Type"
+msgstr "Тип"
+
+msgid "Reason"
+msgstr "Причина"
+
+msgid "By"
+msgstr "Автор"
+
+msgid "Date"
+msgstr "Дата"
+
+msgid "Expires"
+msgstr "Истекает"
+
+msgid "Title"
+msgstr "Заголовок"
+
+msgid "Read only"
+msgstr "Только чтение"
+
+msgid "Mod only"
+msgstr "Для модераторов"
+
+msgid "Access mode"
+msgstr "Режим доступа"
+
+msgid "Bypass"
+msgstr "Без ограничений"
+
+msgid "Deny blacklisted"
+msgstr "Запретить чёрному списку"
+
+msgid "Allow whitelisted"
+msgstr "Разрешить белому списку"
+
+msgid "Settings"
+msgstr "Настройки"
+
+msgid "Bans"
+msgstr "Баны"
+
+msgid "Members"
+msgstr "Члены"
+
+msgid "Mod log"
+msgstr "Лог"
+
+msgid "Admin"
+msgstr "Администрирование"
+
+msgid "To whitelist"
+msgstr "В белый список"
+
+msgid "From whitelist"
+msgstr "Из белого списка"
+
+msgid "To blacklist"
+msgstr "В чёрный список"
+
+msgid "From blacklist"
+msgstr "Из чёрного списка"
+
+msgid "Show name"
+msgstr "Отображение имени"
+
+msgid "Add name"
+msgstr "Добавить имя"
+
+msgid "Ignore mode"
+msgstr "Режим отображения постов"
+
+msgid "No ignore"
+msgstr "Не скрывать"
+
+msgid "Hide blacklisted"
+msgstr "Скрывать по чёрному списку"
+
+msgid "Show whitelisted"
+msgstr "Отображать по белому списку"
+
+msgid "Whitelist"
+msgstr "Белый список"
+
+msgid "Blacklist"
+msgstr "Чёрный список"
+
+msgid "Including anonymous"
+msgstr "Включая анонимов"
+
+msgid "Enter to add"
+msgstr "Enter для добавления"
+
+msgid "Save"
+msgstr "Сохранить"
+
+msgid "Reset"
+msgstr "Сбросить"
+
+msgid "Name"
+msgstr "Псевдоним"
+
+msgid "Real name"
+msgstr "Реальное имя"
+
+msgid "Bands"
+msgstr "Группы"
+
+msgid "Birthday"
+msgstr "День рождения"
+
+msgid "Height"
+msgstr "Рост"
+
+msgid "Weight"
+msgstr "Вес"
+
+msgid "Positions"
+msgstr "Роли"
+
+msgid "cm"
+msgstr "%s см"
+
+msgid "kg"
+msgstr "%s кг"
+
+msgid "main"
+msgstr "Главная"
+
+msgid "notFound"
+msgstr "Страница не найдена"
+
+msgid "landingHeader"
+msgstr "Единственная в своём роде k-pop имиджборда"
+
+msgid "landingInfo"
+msgstr "kpop.re — это анонимный русскоязычный форум, посвященный корейской поп-музыке, где вы можете свободно обмениваться своим мнением с другими. Чтобы принять участие в обсуждениях, вам не нужно регистрироваться, необходимо просто открыть список тредов и выбрать понравившуюся вам тему."
+
+msgid "threads"
+msgstr "Перейти к списку тредов"
+
+msgid "rules"
+msgstr "Правила"
+
+msgid "news"
+msgstr "Новости"
+
+msgid "stickers"
+msgstr "Стикеры"
+
+msgid "clickToCancel"
+msgstr "Нажмите, чтобы отменить загрузку"
+
+msgid "attach"
+msgstr "Прикрепить"
+
+msgid "record"
+msgstr "Записать голосовое сообщение"
+
+msgid "tooBig"
+msgstr "Файл слишком большой"
+
+msgid "delConfirm"
+msgstr "Удалить пост?"
+
+msgid "banConfirm"
+msgstr "Удалить пост и забанить автора?"
+
+msgid "unsupFile"
+msgstr "Неподдерживаемый тип файла"
+
+msgid "unknownErr"
+msgstr "Неизвестная ошибка"
+
+msgid "networkErr"
+msgstr "Ошибка сети"
+
+msgid "initErr"
+msgstr "Ошибка загрузки сайта"
+
+msgid "sendErr"
+msgstr "Ошибка отправки"
+
+msgid "searchIdol"
+msgstr "Поиск айдола…"
+
+msgid "aggregator"
+msgstr "Все доски"
+
+msgid "FAQ"
+msgstr "Информация о сайте"
+
+msgid "account"
+msgstr "Настройки аккаунта"
+
+msgid "add"
+msgstr "Добавить"
+
+msgid "apply"
+msgstr "Применить"
+
+msgid "ban"
+msgstr "Бан"
+
+msgid "by"
+msgstr "Автор"
+
+msgid "cancel"
+msgstr "Отменить"
+
+msgid "captchaID"
+msgstr "ID капчи"
+
+msgid "catalog"
+msgstr "Каталог"
+
+msgid "changePassword"
+msgstr "Изменить пароль"
+
+msgid "clear"
+msgstr "Очистить"
+
+msgid "configureBoard"
+msgstr "Настроить доску"
+
+msgid "configureServer"
+msgstr "Настроить борду"
+
+msgid "createBoard"
+msgstr "Создать доску"
+
+msgid "deleteImage"
+msgstr "Удалить изображение"
+
+msgid "deletePost"
+msgstr "Пост удалён"
+
+msgid "deleteThread"
+msgstr "Тред удалён"
+
+msgid "updateBoard"
+msgstr "Доска обновлена"
+
+msgid "done"
+msgstr "Готово"
+
+msgid "expires"
+msgstr "Истекает"
+
+msgid "global"
+msgstr "Глобальный"
+
+msgid "loadCaptcha"
+msgstr "Кликните для загрузки капчи"
+
+msgid "logout"
+msgstr "Выйти"
+
+msgid "logoutAll"
+msgstr "Очистить сессии"
+
+msgid "newThread"
+msgstr "Новый тред"
+
+msgid "options"
+msgstr "Настройки сайта"
+
+msgid "ownNoBoards"
+msgstr "Вы не владеете ни одной доской"
+
+msgid "pointToCatalog"
+msgstr "Перейти к каталогу"
+
+msgid "post"
+msgstr "Пост"
+
+msgid "posterID"
+msgstr "ID постера"
+
+msgid "reply"
+msgstr "Ответить"
+
+msgid "report"
+msgstr "Пожаловаться"
+
+msgid "reason"
+msgstr "Причина"
+
+msgid "return"
+msgstr "Назад"
+
+msgid "searchTooltip"
+msgstr "Фильтровать треды по теме, содержанию и имени доски (обрамлённую бэкслэшами), допустимы регулярные выражения"
+
+msgid "sortMode"
+msgstr "Сортировать треды по"
+
+msgid "subject"
+msgstr "Тема"
+
+msgid "submit"
+msgstr "Отправить"
+
+msgid "sync"
+msgstr "Статус соединения"
+
+msgid "syncCount"
+msgstr "Количество уникальных подключённых IP"
+
+msgid "text"
+msgstr "Текст"
+
+msgid "time"
+msgstr "Время"
+
+msgid "type"
+msgstr "Тип"
+
+msgid "unban"
+msgstr "Разбан"
+
+msgid "send"
+msgstr "Отправить"
+
+msgid "replies"
+msgstr "Ответы"
+
+msgid "mustMatch"
+msgstr "Пароли должны совпадать"
+
+msgid "invalidCaptcha"
+msgstr "Неверная капча"
+
+msgid "quoted"
+msgstr "Вас процитировали"
+
+msgid "refresh"
+msgstr "Обновить"
+
+msgid "sessionExpired"
+msgstr "Сессия истекла"
+
+msgid "thumbnailing"
+msgstr "Генерация превью…"
+
+msgid "unfinishedPost"
+msgstr "У вас есть незавершённый пост"
+
+msgid "uploadProgress"
+msgstr "загрузка…"
+
+msgid "last"
+msgstr "Последние"
+
+msgid "finished"
+msgstr "Завершено"
+
+msgid "confirmDelete"
+msgstr "Удалить все посты с этого IP?"
+
+msgid "clickToCopy"
+msgstr "Нажмите, чтобы скопировать"
+
+msgid "ago"
+msgstr "назад"
+
+msgid "and"
+msgstr "и"
+
+msgid "banned"
+msgstr "USER WAS BANNED FOR THIS POST"
+
+msgid "contractImages"
+msgstr "Свернуть изображения"
+
+msgid "deleteBySameIP"
+msgstr "Удалить всё с этого IP"
+
+msgid "expandImages"
+msgstr "Развернуть изображения"
+
+msgid "expand"
+msgstr "Развернуть"
+
+msgid "hide"
+msgstr "Скрыть"
+
+msgid "in"
+msgstr "через"
+
+msgid "justNow"
+msgstr "только что"
+
+msgid "goToThread"
+msgstr "Перейти к треду"
+
+msgid "seeAll"
+msgstr "Показать все"
+
+msgid "show"
+msgstr "Показать"
+
+msgid "you"
+msgstr "(Вы)"
+
+msgid "admin"
+msgstr "Админ"
+
+msgid "owners"
+msgstr "Владелец доски"
+
+msgid "moderators"
+msgstr "Модератор"
+
+msgid "janitors"
+msgstr "Помощник"
+
+msgid "viewBySameIP"
+msgstr "Тот же IP"
+
+msgid "toggleSticky"
+msgstr "Прикрепить"
+
+msgid "b"
+msgstr "б"
+
+msgid "kb"
+msgstr "Кб"
+
+msgid "mb"
+msgstr "Мб"
+
+msgid "Jan"
+msgstr "Янв"
+
+msgid "Feb"
+msgstr "Фев"
+
+msgid "Mar"
+msgstr "Мар"
+
+msgid "Apr"
+msgstr "Апр"
+
+msgid "May"
+msgstr "Май"
+
+msgid "Jun"
+msgstr "Июн"
+
+msgid "Jul"
+msgstr "Июл"
+
+msgid "Aug"
+msgstr "Авг"
+
+msgid "Sep"
+msgstr "Сен"
+
+msgid "Oct"
+msgstr "Окт"
+
+msgid "Nov"
+msgstr "Ноя"
+
+msgid "Dec"
+msgstr "Дек"
+
+msgid "Sun"
+msgstr "Вск"
+
+msgid "Mon"
+msgstr "Пнд"
+
+msgid "Tue"
+msgstr "Втр"
+
+msgid "Wed"
+msgstr "Срд"
+
+msgid "Thu"
+msgstr "Чтв"
+
+msgid "Fri"
+msgstr "Птн"
+
+msgid "Sat"
+msgstr "Сбт"
+
+msgid "omit"
+msgid_plural "omitted"
+msgstr[0] "пропущен"
+msgstr[1] "пропущено"
+
+msgid "day"
+msgid_plural "days"
+msgstr[0] "день"
+msgstr[1] "дня"
+msgstr[2] "дней"
+
+msgid "hour"
+msgid_plural "hours"
+msgstr[0] "час"
+msgstr[1] "часа"
+msgstr[2] "часов"
+
+msgid "image"
+msgid_plural "images"
+msgstr[0] "файл"
+msgstr[1] "файла"
+msgstr[2] "файлов"
+
+msgid "minute"
+msgid_plural "minutes"
+msgstr[0] "минуту"
+msgstr[1] "минуты"
+msgstr[2] "минут"
+
+msgid "month"
+msgid_plural "months"
+msgstr[0] "месяц"
+msgstr[1] "месяца"
+msgstr[2] "месяцев"
+
+msgid "post"
+msgid_plural "posts"
+msgstr[0] "пост"
+msgstr[1] "поста"
+msgstr[2] "постов"
+
+msgid "year"
+msgid_plural "years"
+msgstr[0] "год"
+msgstr[1] "года"
+msgstr[2] "лет"
