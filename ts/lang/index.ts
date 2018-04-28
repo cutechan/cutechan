@@ -8,25 +8,17 @@
 import langs from "cc-langs";
 
 interface LanguagePack {
+  Plurals: { [key: string]: string[] };
   Forms: { [key: string]: string[2] };
   UI: { [key: string]: string };
-  Common: CommonLanguagePack;
-}
-
-// TODO(Kagami): Remove lowercase aliases.
-interface CommonLanguagePack {
-  Plurals: { [key: string]: string[] };
 }
 
 // TODO(Kagami): Add support for per-user site language.
 const siteLang: string = (window as any).config.defaultLang;
 const pack: any = langs[siteLang];
-const lang: CommonLanguagePack = {
-  Plurals: pack.common.plurals,
-};
 
 /** Container of localization strings for current site language. Deprecated. */
-export const ln: LanguagePack = { Forms: pack.forms, UI: pack.ui, Common: lang };
+export const ln: LanguagePack = { Plurals: pack.plurals, Forms: pack.forms, UI: pack.ui };
 
 /** Gettext-alike helper. */
 // TODO(Kagami): Rewrite ln.UI boilerplate to this.

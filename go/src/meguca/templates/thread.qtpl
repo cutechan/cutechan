@@ -78,12 +78,12 @@ Omitted posts and images info
 	<div class="omit">
 		{% if omit > 0 %}
 			<div class="omit-info">
-				{%d omit %}{% space %}{%s pluralize(omit, ln.Common.Plurals["post"]) %}
+				{%d omit %}{% space %}{%s pluralize(omit, ln.Plurals["post"]) %}
 				{% if imageOmit > 0 %}
 					{% space %}{%s ln.UI["and"] %}{% space %}
-					{%d imageOmit %}{% space %}{%s pluralize(imageOmit, ln.Common.Plurals["image"]) %}
+					{%d imageOmit %}{% space %}{%s pluralize(imageOmit, ln.Plurals["image"]) %}
 				{% endif %}
-				{% space %}{%s pluralize2(omit, imageOmit, ln.Common.Plurals["omitted"]) %}
+				{% space %}{%s pluralize2(omit, imageOmit, ln.Plurals["omitted"]) %}
 			</div>
 		{% endif %}
 		<a class="omit-link" href="/{%s t.Board %}/{%s idStr %}">

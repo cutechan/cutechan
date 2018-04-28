@@ -28,11 +28,9 @@ var (
 // Localization strings for a single language.
 // TODO(Kagami): Use plain map.
 type Pack struct {
-	Forms  map[string][]string
-	UI     map[string]string
-	Common struct {
-		Plurals map[string][]string
-	}
+	Plurals map[string][]string
+	Forms   map[string][]string
+	UI      map[string]string
 }
 
 // Preload all available language packs.

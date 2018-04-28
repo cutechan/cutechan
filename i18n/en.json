@@ -330,40 +330,38 @@
     "Fri": "Fri",
     "Sat": "Sat"
   },
-  "common": {
-    "plurals": {
-      "omitted": [
-        "omitted",
-        "omitted"
-      ],
-      "day": [
-        "day",
-        "days"
-      ],
-      "hour": [
-        "hour",
-        "hours"
-      ],
-      "image": [
-        "file",
-        "files"
-      ],
-      "minute": [
-        "minute",
-        "minutes"
-      ],
-      "month": [
-        "month",
-        "months"
-      ],
-      "post": [
-        "post",
-        "posts"
-      ],
-      "year": [
-        "year",
-        "years"
-      ]
-    }
+  "plurals": {
+    "omitted": [
+      "omitted",
+      "omitted"
+    ],
+    "day": [
+      "day",
+      "days"
+    ],
+    "hour": [
+      "hour",
+      "hours"
+    ],
+    "image": [
+      "file",
+      "files"
+    ],
+    "minute": [
+      "minute",
+      "minutes"
+    ],
+    "month": [
+      "month",
+      "months"
+    ],
+    "post": [
+      "post",
+      "posts"
+    ],
+    "year": [
+      "year",
+      "years"
+    ]
   }
 }

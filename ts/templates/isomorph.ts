@@ -186,12 +186,12 @@ export function relativeTime(then: number): string {
   const unit = ["minute", "hour", "day", "month"];
   for (let i = 0; i < divide.length; i++) {
     if (time < divide[i]) {
-      return ago(time, ln.Common.Plurals[unit[i]], isFuture);
+      return ago(time, ln.Plurals[unit[i]], isFuture);
     }
     time = Math.floor(time / divide[i]);
   }
 
-  return ago(time, ln.Common.Plurals.year, isFuture);
+  return ago(time, ln.Plurals.year, isFuture);
 }
 
 // Renders "56 minutes ago" or "in 56 minutes" like relative time text.
