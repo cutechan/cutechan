@@ -488,7 +488,7 @@ func serveAdmin(
 		return
 	}
 
-	cs := config.GetModBoardConfigsByID(boards)
+	cs := config.GetBoardConfigsByID(boards)
 	html := templates.Admin(ss, cs, staff, bans, log)
 	serveHTML(w, r, html)
 }

@@ -55,18 +55,52 @@ func Set(c ServerConfig) (err error) {
 	return
 }
 
-func GetBoardsJSON() (data []byte) {
+func GetBoardIDs() (ids []string) {
 	boardMu.RLock()
 	defer boardMu.RUnlock()
-	data = append(data, '[')
-	i := 0
-	for _, conf := range boardConfigs {
+	for id, conf := range boardConfigs {
 		if conf.ID == "all" {
 			continue
 		}
 		if conf.ModOnly {
 			continue
 		}
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	return
+}
+
+// All boards including /all/.
+func GetAllBoardIDs() (ids []string) {
+	boardMu.RLock()
+	defer boardMu.RUnlock()
+	for id := range boardConfigs {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	return
+}
+
+func GetBoardConfigsByID(ids []string) (cs BoardConfigs) {
+	boardMu.RLock()
+	defer boardMu.RUnlock()
+	for _, id := range ids {
+		if conf, ok := boardConfigs[id]; ok {
+			cs = append(cs, conf)
+		}
+	}
+	sort.Sort(cs)
+	return
+}
+
+func GetBoardsJSON() (data []byte) {
+	cs := GetBoardConfigsByID(GetBoardIDs())
+	boardMu.RLock()
+	defer boardMu.RUnlock()
+	data = append(data, '[')
+	i := 0
+	for _, conf := range cs {
 		if i > 0 {
 			data = append(data, ',')
 		}
@@ -83,43 +117,8 @@ func GetBoardConfig(b string) BoardConfig {
 	return boardConfigs[b]
 }
 
-func GetBoardConfigs() (cs BoardConfigs) {
-	boardMu.RLock()
-	defer boardMu.RUnlock()
-	for _, conf := range boardConfigs {
-		if conf.ID == "all" {
-			continue
-		}
-		if conf.ModOnly {
-			continue
-		}
-		cs = append(cs, conf)
-	}
-	return
-}
-
-// All boards including /all/.
-func GetAdminBoardIDs() (ids []string) {
-	boardMu.RLock()
-	defer boardMu.RUnlock()
-	for id := range boardConfigs {
-		ids = append(ids, id)
-	}
-	sort.Strings(ids)
-	return
-}
-
-// All boards including /all/.
-func GetModBoardConfigsByID(ids []string) (cs BoardConfigs) {
-	boardMu.RLock()
-	defer boardMu.RUnlock()
-	for _, id := range ids {
-		if conf, ok := boardConfigs[id]; ok {
-			cs = append(cs, conf)
-		}
-	}
-	sort.Sort(cs)
-	return
+func GetBoardConfigs() BoardConfigs {
+	return GetBoardConfigsByID(GetBoardIDs())
 }
 
 // Set configurations for a specific board as well as pregenerate its

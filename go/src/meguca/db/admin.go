@@ -205,7 +205,7 @@ func SetThreadSticky(id uint64, sticky bool) error {
 func GetOwnedBoards(account string) (boards []string, err error) {
 	// admin account can perform actions on any board
 	if account == "admin" {
-		return config.GetAdminBoardIDs(), nil
+		return config.GetAllBoardIDs(), nil
 	}
 	r, err := prepared["get_owned_boards"].Query(account)
 	if err != nil {
