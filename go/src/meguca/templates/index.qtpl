@@ -2,34 +2,33 @@
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
 
-{% func renderHeader(boards config.BoardConfigs) %}{% stripspace %}
-	{% code ln := lang.Get() %}
+{% func renderHeader(l string, boards config.BoardConfigs) %}{% stripspace %}
 	<header class="header">
-		<a class="header-item header-logo" href="/" title="{%s ln.UI["main"] %}">
+		<a class="header-item header-logo" href="/" title="{%s lang.GT(l, "main") %}">
 			<i class="logo"></i>
 		</a>
-		<a class="header-item header-board" href="/all/">{%s ln.UI["aggregator"] %}</a>
+		<a class="header-item header-board" href="/all/">{%s lang.GT(l, "aggregator") %}</a>
 		{% for _, b := range boards %}
 			<a class="header-item header-board" href="/{%s b.ID %}/">{%s b.Title %}</a>
 		{% endfor %}
 		<div class="header-spacer"></div>
 		<span class="header-item header-profiles">
-			<input class="header-profiles-search" placeholder="{%s ln.UI["searchIdol"] %}">
+			<input class="header-profiles-search" placeholder="{%s lang.GT(l, "searchIdol") %}">
 		</span>
-		<span class="header-item header-status" id="sync-status" title="{%s ln.UI["sync"] %}"></span>
-		<a class="header-item header-icon header-faq-icon" id="header-FAQ" title="{%s ln.UI["FAQ"] %}">
+		<span class="header-item header-status" id="sync-status" title="{%s lang.GT(l, "sync") %}"></span>
+		<a class="header-item header-icon header-faq-icon" id="header-FAQ" title="{%s lang.GT(l, "FAQ") %}">
 			<i class="fa fa-info-circle"></i>
 		</a>
-		<a class="header-item header-icon header-account-icon" id="header-account" title="{%s ln.UI["account"] %}">
+		<a class="header-item header-icon header-account-icon" id="header-account" title="{%s lang.GT(l, "account") %}">
 			<i class="fa fa-user-circle-o"></i>
 		</a>
-		<a class="header-item header-icon header-options-icon" id="header-options" title="{%s ln.UI["options"] %}">
+		<a class="header-item header-icon header-options-icon" id="header-options" title="{%s lang.GT(l, "options") %}">
 			<i class="fa fa-gear"></i>
 		</a>
 	</header>
 {% endstripspace %}{% endfunc %}
 
-{% func renderPage(ss *auth.Session, title string, page string) %}{% stripspace %}
+{% func renderPage(ss *auth.Session, l, title, page string) %}{% stripspace %}
 	{% code conf := config.Get() %}
 	{% code confJSON := config.GetJSON() %}
 	{% code boards := config.GetBoardConfigs() %}
@@ -61,15 +60,15 @@
 		</script>
 	</head>
 	<body>
-		{%= renderHeader(boards) %}
+		{%= renderHeader(l, boards) %}
 		<main class="main">{%s= page %}</main>
 		<aside class="alerts-container"></aside>
 		<aside class="hover-container"></aside>
 		<aside class="popup-container"></aside>
 		<aside class="modal-container">
 			{%= faqModal() %}
-			{%= accountModal(ss) %}
-			{%= optionsModal() %}
+			{%= accountModal(ss, l) %}
+			{%= optionsModal(l) %}
 		</aside>
 		<script src="/static/js/loader.js"></script>
 	</body>
@@ -77,14 +76,15 @@
 {% endstripspace %}{% endfunc %}
 
 Custom not found page.
+Serve with default lang for now for simplicity.
 {% func NotFound() %}{% stripspace %}
-	{% code ln := lang.Get() %}
+	{% code l := config.Get().DefaultLang %}
 	<!DOCTYPE html>
 	<html>
 	<head>
 		<meta charset="utf-8">
 		<link rel="icon" href="/static/favicons/default.ico">
-		<title>{%s ln.UI["notFound"] %}</title>
+		<title>{%s lang.GT(l, "notFound") %}</title>
 		<style>
 			html, body {
 				margin: 0;
@@ -120,7 +120,7 @@ Custom not found page.
 	<body>
 		<main>
 			<h1>404</h1>
-			<h2>{%s ln.UI["notFound"] %}</h2>
+			<h2>{%s lang.GT(l, "notFound") %}</h2>
 		</main>
 	</body>
 	</html>

@@ -2,28 +2,28 @@
 {% import "meguca/auth" %}
 
 CreateBoard renders a the form for creating new boards
-{% func CreateBoard() %}{% stripspace %}
-	{%= tableForm(specs["createBoard"]) %}
+{% func CreateBoard(l string) %}{% stripspace %}
+	{%= tableForm(l, specs["createBoard"]) %}
 {% endstripspace %}{% endfunc %}
 
 Form formatted as a table, with cancel and submit buttons
-{% func tableForm(specs []inputSpec) %}{% stripspace %}
-	{%= table(specs) %}
-	{%= submit(true) %}
+{% func tableForm(l string, specs []inputSpec) %}{% stripspace %}
+	{%= table(l, specs) %}
+	{%= submit(l, true) %}
 {% endstripspace %}{% endfunc %}
 
 Render submit and cancel buttons
-{% func submit(cancel bool) %}{% stripspace %}
-	<input type="submit" value="{%s lang.Get().UI["submit"] %}">
+{% func submit(l string, cancel bool) %}{% stripspace %}
+	<input type="submit" value="{%s lang.GT(l, "submit") %}">
 	{% if cancel %}
-		{%= cancel() %}
+		{%= cancel(l) %}
 	{% endif %}
 	<div class="form-response"></div>
 {% endstripspace %}{% endfunc %}
 
 Renders a cancel button
-{% func cancel() %}{% stripspace %}
-	<input type="button" name="cancel" value="{%s lang.Get().UI["cancel"] %}">
+{% func cancel(l string) %}{% stripspace %}
+	<input type="button" name="cancel" value="{%s lang.GT(l, "cancel") %}">
 {% endstripspace %}{% endfunc %}
 
 Renders the tab selection butts in tabbed windows
@@ -61,22 +61,22 @@ Renders the tab selection butts in tabbed windows
 	</div>
 {% endstripspace %}{% endfunc %}
 
-{% func accountModal(ss *auth.Session) %}{% stripspace %}
-	{% code f := lang.Get().Forms %}
+{% func accountModal(ss *auth.Session, l string) %}{% stripspace %}
+	{% code f := lang.Get(l).Forms %}
 	<div class="modal tab-modal" id="account-panel">
 		{% if ss == nil %}
 			{%= tabButts([]string{f["id"][0], f["register"][0]}) %}
 			<div class="tab-cont">
 				<div class="tab-sel" data-id="0">
 					<form id="login-form">
-						{%= table(specs["login"]) %}
-						{%= submit(false) %}
+						{%= table(l, specs["login"]) %}
+						{%= submit(l, false) %}
 					</form>
 				</div>
 				<div data-id="1">
 					<form id="registration-form">
-						{%= table(specs["register"]) %}
-						{%= submit(false) %}
+						{%= table(l, specs["register"]) %}
+						{%= submit(l, false) %}
 					</form>
 				</div>
 			</div>
@@ -85,25 +85,25 @@ Renders the tab selection butts in tabbed windows
 			<div class="tab-cont">
 				<div class="tab-sel" data-id="0">
 					<a class="form-selection-link" id="logout">
-						{%s lang.GT("logout") %},{% space %}{%s ss.UserID %}
+						{%s lang.GT(l, "logout") %},{% space %}{%s ss.UserID %}
 					</a>
 					<a class="form-selection-link" id="logoutAll">
-						{%s lang.GT("logoutAll") %}
+						{%s lang.GT(l, "logoutAll") %}
 					</a>
 					<a class="form-selection-link" id="changePassword">
-						{%s lang.GT("changePassword") %}
+						{%s lang.GT(l, "changePassword") %}
 					</a>
 					{% if ss.Positions.AnyBoard >= auth.BoardOwner %}
 						<a class="form-selection-link" href="/admin/" target="_blank">
-							{%s lang.GT("configureBoard") %}
+							{%s lang.GT(l, "configureBoard") %}
 						</a>
 					{% endif %}
 					{% if ss.Positions.CurBoard == auth.Admin %}
 						<a class="form-selection-link" id="createBoard">
-							{%s lang.GT("createBoard") %}
+							{%s lang.GT(l, "createBoard") %}
 						</a>
 						<a class="form-selection-link" id="configureServer">
-							{%s lang.GT("configureServer") %}
+							{%s lang.GT(l, "configureServer") %}
 						</a>
 					{% endif %}
 				</div>
@@ -114,8 +114,8 @@ Renders the tab selection butts in tabbed windows
 	</div>
 {% endstripspace %}{% endfunc %}
 
-{% func optionsModal() %}{% stripspace %}
-	{% code ln := lang.Get() %}
+{% func optionsModal(l string) %}{% stripspace %}
+	{% code ln := lang.Get(l) %}
 	<div id="options" class="modal">
 		{%= tabButts(ln.Tabs) %}
 		<div class="tab-cont">

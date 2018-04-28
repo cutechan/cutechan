@@ -3,8 +3,7 @@
 {% import "meguca/common" %}
 {% import "encoding/json" %}
 
-{% func renderThreadNavigation(b string, top bool) %}{% stripspace %}
-	{% code ln := lang.Get() %}
+{% func renderThreadNavigation(l, b string, top bool) %}{% stripspace %}
 	{% code cls := "thread-nav_top" %}
 	{% code if !top { cls = "thread-nav_bottom" } %}
 	<nav class="thread-nav{% space %}{%s cls %}">
@@ -12,38 +11,38 @@
 			<a name="bottom"></a>
 		{% endif %}
 		<a class="button thread-nav-item thread-nav-back" href="/{%s b %}/">
-			{%s ln.UI["return"] %}
+			{%s lang.GT(l, "return") %}
 		</a>
 		<a class="button thread-nav-item thread-nav-catalog" href="/{%s b %}/catalog">
-			{%s ln.UI["catalog"] %}
+			{%s lang.GT(l, "catalog") %}
 		</a>
 		<a class="button thread-nav-item thread-nav-reply trigger-open-reply">
-			{%s ln.UI["reply"] %}
+			{%s lang.GT(l, "reply") %}
 		</a>
 	</nav>
 {% endstripspace %}{% endfunc %}
 
-{% func renderThread(postHTML []byte, id uint64, board, title string) %}{% stripspace %}
+{% func renderThread(postHTML []byte, id uint64, l, board, title string) %}{% stripspace %}
 	<section class="board" id="threads">
 		<h1 class="page-title">{%s title %}</h1>
 		{%= renderPageNavigation(false) %}
-		{%= renderThreadNavigation(board, true) %}
+		{%= renderThreadNavigation(l, board, true) %}
 		<hr class="separator">
 		{%z= postHTML %}
 		<aside class="reply-container reply-container_thread"></aside>
 		<hr class="separator">
-		{%= renderThreadNavigation(board, false) %}
+		{%= renderThreadNavigation(l, board, false) %}
 	</section>
 {% endstripspace %}{% endfunc %}
 
 ThreadPosts renders the post content of a thread. Separate function to allow
 caching of generated posts.
-{% func ThreadPosts(t common.Thread, json []byte, last100 bool) %}{% stripspace %}
+{% func ThreadPosts(l string, t common.Thread, json []byte, last100 bool) %}{% stripspace %}
 	{% code idStr := strconv.FormatUint(t.ID, 10) %}
 	{% code bls := extractBacklinks(1<<10, t) %}
 	<section class="threads-container" id="thread-container">
 		<article class="thread thread_single" id="thread{%s idStr %}" data-id="{%s idStr %}"{%= counterStyle(t, last100) %}>
-			{%= renderThreadPosts(t, bls, false, false, last100) %}
+			{%= renderThreadPosts(l, t, bls, false, false, last100) %}
 		</article>
 		<script id="post-data" type="application/json">
 			{%z= json %}
@@ -61,19 +60,19 @@ Shift post numbers for incomplete thread (+1 for OP post).
 {% endstripspace %}{% endfunc %}
 
 Common functionality between index board pages and threads pages
-{% func renderThreadPosts(t common.Thread, bls common.Backlinks, index, all, last100 bool) %}{% stripspace %}
-	{%s= MakePostContext(t, t.Post, bls, index, all).Render() %}
+{% func renderThreadPosts(l string, t common.Thread, bls common.Backlinks, index, all, last100 bool) %}{% stripspace %}
+	{%s= MakePostContext(l, t, t.Post, bls, index, all).Render() %}
 	{% if index || last100 %}
-		{%= renderOmit(t, last100) %}
+		{%= renderOmit(l, t, last100) %}
 	{% endif %}
 	{% for _, post := range t.Posts %}
-		{%s= MakePostContext(t, post, bls, index, all).Render() %}
+		{%s= MakePostContext(l, t, post, bls, index, all).Render() %}
 	{% endfor %}
 {% endstripspace %}{% endfunc %}
 
 Omitted posts and images info
-{% func renderOmit(t common.Thread, last100 bool) %}{% stripspace %}
-	{% code ln := lang.Get() %}
+{% func renderOmit(l string, t common.Thread, last100 bool) %}{% stripspace %}
+	{% code ln := lang.Get(l) %}
 	{% code omit, imageOmit := CalculateOmit(t) %}
 	{% code idStr := strconv.FormatUint(t.ID, 10) %}
 	<div class="omit">
@@ -95,7 +94,7 @@ Omitted posts and images info
 			{% endif %}
 		</a>
 		{% if omit > 97 && !last100 %}
-			{% space %}{%= last100Link(t.Board, idStr) %}
+			{% space %}{%= last100Link(l, t.Board, idStr) %}
 		{% endif %}
 	</div>
 {% endstripspace %}{% endfunc %}
@@ -107,8 +106,8 @@ Omitted posts and images info
 	</script>
 {% endstripspace %}{% endfunc %}
 
-{% func last100Link(board, id string) %}{% stripspace %}
-	{% code ln := lang.Get() %}
+{% func last100Link(l, board, id string) %}{% stripspace %}
+	{% code ln := lang.Get(l) %}
 	<a class="thread-link lastN-link" href="/{%s board %}/{%s id %}?last=100#bottom">
 		{%s ln.Common.UI["last"] %}{% space %}100
 	</a>

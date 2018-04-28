@@ -122,30 +122,25 @@ func GetHTML(k Key, f FrontEnd) ([]byte, interface{}, uint64, error) {
 }
 
 // ThreadKey encodes a Key from a thread's ID and last N posts to show setting
-func ThreadKey(id uint64, lastN int) Key {
+func ThreadKey(l string, id uint64, lastN int) Key {
 	return Key{
+		Lang:  l,
 		LastN: uint8(lastN),
 		ID:    id,
 	}
 }
 
 // BoardKey encodes a key for a board page resource
-func BoardKey(b string, page int64, index bool) Key {
+func BoardKey(l string, b string, page int64, index bool) Key {
 	// Index theads will have a lastN == 1
 	lastN := uint8(0)
 	if index {
 		lastN = 1
 	}
 	return Key{
+		Lang:  l,
 		Board: b,
 		Page:  page,
 		LastN: lastN,
-	}
-}
-
-// Just a single list of news.
-func NewsKey() Key {
-	return Key{
-		NewsID: 1,
 	}
 }

@@ -33,11 +33,8 @@ const (
 	DefaultAdminPassword = "password"
 )
 
-// Available language packs and themes. Change this, when adding any new ones.
+// Available themes. Change this, when adding any new ones.
 var (
-	Langs = []string{
-		"en", "ru",
-	}
 	Themes = []string{
 		"light", "dark",
 	}

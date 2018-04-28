@@ -4,14 +4,16 @@ import (
 	"database/sql"
 	"fmt"
 	"io"
+	"net/http"
+	"strconv"
+
 	"meguca/auth"
 	"meguca/cache"
 	"meguca/common"
 	"meguca/config"
 	"meguca/db"
+	"meguca/lang"
 	"meguca/templates"
-	"net/http"
-	"strconv"
 )
 
 // Apply headers and write HTML to client
@@ -29,7 +31,7 @@ func serveHTML(w http.ResponseWriter, r *http.Request, buf []byte) {
 
 func serveLanding(w http.ResponseWriter, r *http.Request) {
 	ss, _ := getSession(r, "")
-	html := templates.Landing(ss)
+	html := templates.Landing(ss, getReqLang(r))
 	serveHTML(w, r, html)
 }
 
@@ -73,7 +75,13 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		n = p.pageNumber
 		total = p.pageTotal
 	}
-	html = templates.Board(b, n, total, ss, catalog, html)
+	l := getReqLang(r)
+	boardConf := config.GetBoardConfig(b)
+	title := boardConf.Title
+	if b == "all" {
+		title = lang.GT(l, "aggregator")
+	}
+	html = templates.Board(l, title, n, total, ss, catalog, html)
 	serveHTML(w, r, html)
 }
 
@@ -84,8 +92,9 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	l := getReqLang(r)
 	lastN := detectLastN(r)
-	k := cache.ThreadKey(id, lastN)
+	k := cache.ThreadKey(l, id, lastN)
 	html, data, _, err := cache.GetHTML(k, threadCache)
 	if err != nil {
 		respondToJSONError(w, r, err)
@@ -94,7 +103,7 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 
 	b := getParam(r, "board")
 	title := data.(common.Thread).Subject
-	html = templates.Thread(id, b, title, lastN != 0, ss, html)
+	html = templates.Thread(id, l, b, title, lastN != 0, ss, html)
 	serveHTML(w, r, html)
 }
 
@@ -102,9 +111,10 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 func staticTemplate(
 	w http.ResponseWriter,
 	r *http.Request,
-	fn func() string,
+	fn func(string) string,
 ) {
-	serveHTML(w, r, []byte(fn()))
+	l := getReqLang(r)
+	serveHTML(w, r, []byte(fn(l)))
 }
 
 // Renders a form for creating new boards
@@ -117,7 +127,7 @@ func serverConfigurationForm(w http.ResponseWriter, r *http.Request) {
 	if !isAdmin(w, r) {
 		return
 	}
-	data := []byte(templates.ConfigureServer((*config.Get())))
+	data := []byte(templates.ConfigureServer(getReqLang(r), *config.Get()))
 	serveHTML(w, r, data)
 }
 
@@ -156,7 +166,7 @@ func crossRedirect(w http.ResponseWriter, r *http.Request) {
 func serveStickers(w http.ResponseWriter, r *http.Request) {
 	ss, _ := getSession(r, "")
 	stickHTML := []byte{}
-	html := templates.Stickers(ss, stickHTML)
+	html := templates.Stickers(ss, getReqLang(r), stickHTML)
 	serveHTML(w, r, html)
 }
 

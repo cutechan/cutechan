@@ -9,7 +9,7 @@ import (
 	"meguca/config"
 )
 
-func configurationTable(v reflect.Value, key string) string {
+func configurationTable(l string, v reflect.Value, key string) string {
 	// Copy over all spec structs, so the mutations don't affect them
 	noValues := specs[key]
 	withValues := make([]inputSpec, len(noValues))
@@ -28,16 +28,16 @@ func configurationTable(v reflect.Value, key string) string {
 		withValues[i].Val = v.Interface()
 	}
 
-	return tableForm(withValues)
+	return tableForm(l, withValues)
 }
 
 // Renders the form for changing server configuration.
-func ConfigureServer(conf config.ServerConfig) string {
+func ConfigureServer(l string, conf config.ServerConfig) string {
 	v := reflect.ValueOf(conf)
-	return configurationTable(v, "configureServer")
+	return configurationTable(l, v, "configureServer")
 }
 
 // ChangePassword renders a form for changing an account's password
-func ChangePassword() string {
-	return tableForm(specs["changePassword"])
+func ChangePassword(l string) string {
+	return tableForm(l, specs["changePassword"])
 }

@@ -17,8 +17,8 @@
 	{% endif %}
 {% endstripspace %}{% endfunc %}
 
-{% func renderBoardSearch(catalog bool) %}{% stripspace %}
-	{% code ln := lang.Get() %}
+{% func renderBoardSearch(l string, catalog bool) %}{% stripspace %}
+	{% code ln := lang.Get(l) %}
 	{% code inputClass := "board-search-input" %}
 	{% code if catalog { inputClass += " board-search-input_catalog" } %}
 	<div class="board-search">
@@ -35,36 +35,35 @@
 	</div>
 {% endstripspace %}{% endfunc %}
 
-{% func renderBoardNavigation(page, total int, catalog, top bool) %}{% stripspace %}
-	{% code ln := lang.Get() %}
+{% func renderBoardNavigation(l string, page, total int, catalog, top bool) %}{% stripspace %}
 	{% code cls := "board-nav_top" %}
 	{% code if !top { cls = "board-nav_bottom" } %}
 	<nav class="board-nav{% space %}{%s cls %}">
 		{% if top && !catalog %}
 			<a class="button board-nav-item board-nav-new-thread trigger-open-reply">
-				{%s ln.UI["newThread"] %}
+				{%s lang.GT(l, "newThread") %}
 			</a>
 		{% endif %}
-		{%= catalogLink(catalog) %}
+		{%= catalogLink(l, catalog) %}
 		{% if !catalog %}
 			{%= pagination(page, total) %}
 		{% endif %}
 		{% if top && catalog %}
-			{%= renderBoardSearch(catalog) %}
+			{%= renderBoardSearch(l, catalog) %}
 		{% endif %}
 	</nav>
 {% endstripspace %}{% endfunc %}
 
-{% func renderBoard(threadHTML []byte, id, title string, page, total int, catalog bool) %}{% stripspace %}
+{% func renderBoard(threadHTML []byte, l, title string, page, total int, catalog bool) %}{% stripspace %}
 	<section class="board" id="threads">
 		<h1 class="page-title">{%s title %}</h1>
 		<aside class="reply-container reply-container_board"></aside>
 		{%= renderPageNavigation(catalog) %}
-		{%= renderBoardNavigation(page, total, catalog, true) %}
+		{%= renderBoardNavigation(l, page, total, catalog, true) %}
 		<hr class="separator">
 		{%z= threadHTML %}
 		<hr class="separator">
-		{%= renderBoardNavigation(page, total, catalog, false) %}
+		{%= renderBoardNavigation(l, page, total, catalog, false) %}
 	</section>
 {% endstripspace %}{% endfunc %}
 
@@ -115,13 +114,13 @@ function to allow caching of generated posts.
 {% endstripspace %}{% endfunc %}
 
 IndexThreads renders abbreviated threads for display on board index pages
-{% func IndexThreads(threads []common.Thread, json []byte, all bool) %}{% stripspace %}
+{% func IndexThreads(l string, threads []common.Thread, json []byte, all bool) %}{% stripspace %}
 	{% code bls := extractBacklinks(15*6, threads...) %}
 	<section class="threads-container" id="index-thread-container">
 		{% for _, t := range threads %}
 			{% code idStr := strconv.FormatUint(t.ID, 10) %}
 			<article class="thread thread_index" id="thread{%s idStr %}" data-id="{%s idStr %}">
-				{%= renderThreadPosts(t, bls, true, all, false) %}
+				{%= renderThreadPosts(l, t, bls, true, all, false) %}
 				<hr class="separator">
 			</article>
 		{% endfor %}
@@ -133,15 +132,14 @@ IndexThreads renders abbreviated threads for display on board index pages
 {% endstripspace %}{% endfunc %}
 
 Link to catalog or board page
-{% func catalogLink(catalog bool) %}{% stripspace %}
-	{% code ln := lang.Get().UI %}
+{% func catalogLink(l string, catalog bool) %}{% stripspace %}
 	{% if catalog %}
 		<a class="button board-nav-item board-nav-back" href=".">
-			{%s ln["return"] %}
+			{%s lang.GT(l, "return") %}
 		</a>
 	{% else %}
 		<a class="button board-nav-item board-nav-catalog" href="catalog">
-			{%s ln["catalog"] %}
+			{%s lang.GT(l, "catalog") %}
 		</a>
 	{% endif %}
 {% endstripspace %}{% endfunc %}

@@ -4,6 +4,7 @@ package templates
 
 import (
 	"meguca/common"
+	"meguca/lang"
 )
 
 // Reused in multiple places
@@ -100,7 +101,7 @@ var specs = map[string][]inputSpec{
 		{
 			ID:      "defaultLang",
 			Type:    _select,
-			Options: common.Langs,
+			Options: lang.Langs,
 		},
 		{
 			ID:       "maxSize",
@@ -124,6 +125,11 @@ var specs = map[string][]inputSpec{
 // Specs of option inputs grouped by tab
 var optionSpecs = [...][]inputSpec{
 	{
+		{
+			ID:      "lang",
+			Type:    _select,
+			Options: lang.Langs,
+		},
 		{
 			ID:      "theme",
 			Type:    _select,

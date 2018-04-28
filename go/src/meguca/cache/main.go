@@ -23,11 +23,11 @@ var (
 
 // Key stores the ID of some cached page.
 type Key struct {
-	LastN  uint8
-	Board  string
-	ID     uint64
-	Page   int64
-	NewsID uint64
+	Lang  string
+	LastN uint8
+	Board string
+	ID    uint64
+	Page  int64
 }
 
 // Single cache entry

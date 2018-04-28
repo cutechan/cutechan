@@ -190,10 +190,10 @@ func (w *formWriter) label(spec inputSpec, inside *func()) {
 }
 
 // Render a table containing {label input_element} pairs
-func streamtable(qw *quicktemplate.Writer, specs []inputSpec) {
+func streamtable(qw *quicktemplate.Writer, l string, specs []inputSpec) {
 	w := formWriter{
 		Writer: *qw,
-		lang:   lang.Get(),
+		lang:   lang.Get(l),
 	}
 	w.N().S("<table>")
 

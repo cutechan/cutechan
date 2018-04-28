@@ -3,13 +3,13 @@
 package server
 
 import (
+	"net/http"
+	"strconv"
+
 	"meguca/cache"
 	"meguca/common"
 	"meguca/db"
 	"meguca/templates"
-	"net/http"
-	"strconv"
-	"time"
 )
 
 // Contains data of a board page
@@ -19,26 +19,26 @@ type pageStore struct {
 	data                  common.Board
 }
 
-var newsCache = cache.FrontEnd{
-	GetCounter: func(k cache.Key) (uint64, error) {
-		// Update once per 5 minutes.
-		ctr := time.Now().Unix() / 60 / 5
-		return uint64(ctr), nil
-	},
+// var newsCache = cache.FrontEnd{
+// 	GetCounter: func(k cache.Key) (uint64, error) {
+// 		// Update once per 5 minutes.
+// 		ctr := time.Now().Unix() / 60 / 5
+// 		return uint64(ctr), nil
+// 	},
 
-	GetFresh: func(k cache.Key) (interface{}, error) {
-		return db.GetNews()
-	},
+// 	GetFresh: func(k cache.Key) (interface{}, error) {
+// 		return db.GetNews()
+// 	},
 
-	EncodeJSON: func(data interface{}) ([]byte, error) {
-		// Not needed.
-		return nil, nil
-	},
+// 	EncodeJSON: func(data interface{}) ([]byte, error) {
+// 		// Not needed.
+// 		return nil, nil
+// 	},
 
-	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
-		return []byte(templates.News(data.([]common.NewsEntry)))
-	},
-}
+// 	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
+// 		return []byte(templates.News(data.([]common.NewsEntry)))
+// 	},
+// }
 
 var threadCache = cache.FrontEnd{
 	GetCounter: func(k cache.Key) (uint64, error) {
@@ -51,7 +51,7 @@ var threadCache = cache.FrontEnd{
 
 	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
 		last100 := k.LastN == numPostsOnRequest
-		return []byte(templates.ThreadPosts(data.(common.Thread), json, last100))
+		return []byte(templates.ThreadPosts(k.Lang, data.(common.Thread), json, last100))
 	},
 }
 
@@ -123,7 +123,7 @@ var boardCache = cache.FrontEnd{
 				}
 			}
 
-			k := cache.ThreadKey(id, numPostsAtIndex)
+			k := cache.ThreadKey(k.Lang, id, numPostsAtIndex)
 			json, data, _, err := cache.GetJSONAndData(k, threadCache)
 			if err != nil {
 				return nil, err
@@ -191,7 +191,7 @@ var boardPageCache = cache.FrontEnd{
 
 	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
 		all := k.Board == "all"
-		return []byte(templates.IndexThreads(data.(pageStore).data, json, all))
+		return []byte(templates.IndexThreads(k.Lang, data.(pageStore).data, json, all))
 	},
 
 	Size: func(_ interface{}, _, html []byte) int {
@@ -213,7 +213,7 @@ func boardCacheArgs(r *http.Request, board string, catalog bool) (
 		}
 	}
 
-	k = cache.BoardKey(board, page, !catalog)
+	k = cache.BoardKey(getReqLang(r), board, page, !catalog)
 	if catalog {
 		f = catalogCache
 	} else {

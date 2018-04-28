@@ -20,6 +20,7 @@ import (
 )
 
 type PostContext struct {
+	Lang      string
 	ID        uint64
 	TID       uint64
 	Index     bool
@@ -66,10 +67,11 @@ type BacklinksContext struct {
 	Backlinks []string
 }
 
-func MakePostContext(t common.Thread, p *common.Post, bls common.Backlinks, index bool, all bool) PostContext {
-	ln := lang.Get()
+func MakePostContext(l string, t common.Thread, p *common.Post, bls common.Backlinks, index bool, all bool) PostContext {
+	ln := lang.Get(l)
 	postTime := time.Unix(p.Time, 0)
 	return PostContext{
+		Lang:      l,
 		ID:        p.ID,
 		TID:       t.ID,
 		Index:     index,
@@ -80,7 +82,7 @@ func MakePostContext(t common.Thread, p *common.Post, bls common.Backlinks, inde
 		Badge:     p.Auth != "",
 		Auth:      ln.Common.Posts[p.Auth],
 		Name:      p.UserName,
-		Time:      readableTime(postTime),
+		Time:      readableTime(l, postTime),
 		HasFiles:  len(p.Files) > 0,
 		post:      p,
 		backlinks: bls,
@@ -134,8 +136,8 @@ func pad(buf []byte, i int) []byte {
 	return append(buf, strconv.Itoa(i)...)
 }
 
-func readableTime(t time.Time) string {
-	ln := lang.Get().Common.Time
+func readableTime(l string, t time.Time) string {
+	ln := lang.Get(l).Common.Time
 	year, m, day := t.Date()
 	weekday := ln["week"][int(t.Weekday())]
 	// Months are 1-indexed for some fucking reason.
@@ -163,8 +165,8 @@ func duration(l uint32) string {
 }
 
 // Formats a human-readable representation of file size.
-func fileSize(size int) string {
-	sizes := lang.Get().Common.Sizes
+func fileSize(l string, size int) string {
+	sizes := lang.Get(l).Common.Sizes
 	switch {
 	case size < 1024:
 		return fmt.Sprintf("%d%s", size, sizes["b"])
@@ -180,13 +182,13 @@ func (ctx *PostContext) Files() (files []string) {
 		return
 	}
 	for _, img := range ctx.post.Files {
-		files = append(files, renderFile(img))
+		files = append(files, renderFile(ctx.Lang, img))
 	}
 	return
 }
 
-func renderFile(img *common.Image) string {
-	ln := lang.Get()
+func renderFile(l string, img *common.Image) string {
+	ln := lang.Get(l)
 	fileCtx := FileContext{
 		SHA1:       img.SHA1,
 		HasTitle:   img.Title != "",
@@ -197,7 +199,7 @@ func renderFile(img *common.Image) string {
 		HasLength:  img.Video || img.Audio,
 		Length:     duration(img.Length),
 		Record:     img.Audio && !img.Video,
-		Size:       fileSize(img.Size),
+		Size:       fileSize(l, img.Size),
 		Width:      img.Dims[0],
 		Height:     img.Dims[1],
 		TWidth:     img.Dims[2],
@@ -249,7 +251,7 @@ func (ctx *PostContext) Backlinks() string {
 		rendered[i] = renderPostLink(id, op != ctx.TID, ctx.Index)
 	}
 
-	ln := lang.Get()
+	ln := lang.Get(ctx.Lang)
 	linkCtx := BacklinksContext{
 		LReplies:  ln.Common.UI["replies"],
 		Backlinks: rendered,
