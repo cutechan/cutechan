@@ -2,27 +2,27 @@
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
 
-{% func renderHeader(l string, boards config.BoardConfigs) %}{% stripspace %}
+{% func renderHeader(l string, cs config.BoardConfigs) %}{% stripspace %}
 	<header class="header">
 		<a class="header-item header-logo" href="/" title="{%s lang.GT(l, "main") %}">
 			<i class="logo"></i>
 		</a>
 		<a class="header-item header-board" href="/all/">{%s lang.GT(l, "aggregator") %}</a>
-		{% for _, b := range boards %}
-			<a class="header-item header-board" href="/{%s b.ID %}/">{%s b.Title %}</a>
+		{% for _, conf := range cs %}
+			<a class="header-item header-board" href="/{%s conf.ID %}/">{%s conf.Title %}</a>
 		{% endfor %}
 		<div class="header-spacer"></div>
 		<span class="header-item header-profiles">
 			<input class="header-profiles-search" placeholder="{%s lang.GT(l, "searchIdol") %}">
 		</span>
-		<span class="header-item header-status" id="sync-status" title="{%s lang.GT(l, "sync") %}"></span>
-		<a class="header-item header-icon header-faq-icon" id="header-FAQ" title="{%s lang.GT(l, "FAQ") %}">
+		<span class="header-item header-status" title="{%s lang.GT(l, "sync") %}"></span>
+		<a class="header-item header-icon header-faq-icon" title="{%s lang.GT(l, "FAQ") %}">
 			<i class="fa fa-info-circle"></i>
 		</a>
-		<a class="header-item header-icon header-account-icon" id="header-account" title="{%s lang.GT(l, "account") %}">
+		<a class="header-item header-icon header-account-icon" title="{%s lang.GT(l, "account") %}">
 			<i class="fa fa-user-circle-o"></i>
 		</a>
-		<a class="header-item header-icon header-options-icon" id="header-options" title="{%s lang.GT(l, "options") %}">
+		<a class="header-item header-icon header-options-icon" title="{%s lang.GT(l, "options") %}">
 			<i class="fa fa-gear"></i>
 		</a>
 	</header>

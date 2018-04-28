@@ -1,21 +1,13 @@
 import View from "./view";
 
-// Stores the views of all HeaderModal instances
-const headerModals: { [key: string]: HeaderModal } = {};
-
 // View of the modal currently displayed, if any
 let visible: HeaderModal;
 
 // A modal element, that is positioned fixed right beneath the header
 export class HeaderModal extends View<null> {
-  constructor(el: HTMLElement) {
-    super({ el });
-    headerModals[this.id] = this;
-
-    // Add click listener to the toggle button of the modal in the header
-    document
-      .getElementById("header-" + (this.id as string).split("-")[0])
-      .addEventListener("click", () => this.toggle(), { capture: true });
+  constructor(el: HTMLElement, toggleEl: HTMLElement) {
+    super({el});
+    toggleEl.addEventListener("click", this.toggle);
   }
 
   // Show the element, if hidden, hide - if shown. Hide already visible
@@ -54,8 +46,8 @@ export class HeaderModal extends View<null> {
 
 // A view that supports switching between multiple tabs.
 export class TabbedModal extends HeaderModal {
-  constructor(el: HTMLElement) {
-    super(el);
+  constructor(el: HTMLElement, toggleEl: HTMLElement) {
+    super(el, toggleEl);
     this.onClick({
       ".tab-link": (e) =>
         this.switchTab(e),

@@ -405,7 +405,10 @@ async function logout(url: string) {
 // Account login and registration.
 class AccountPanel extends TabbedModal {
   constructor() {
-    super(document.getElementById("account-panel"));
+    super(
+      document.getElementById("account-panel"),
+      document.querySelector(".header-account-icon"),
+    );
     this.onClick({
       "#logout": () => logout("/api/logout"),
       "#logoutAll": () => logout("/api/logout/all"),

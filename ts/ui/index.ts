@@ -15,5 +15,8 @@ export function init() {
   // tslint:disable-next-line:no-unused-expression
   new OptionPanel();
   // tslint:disable-next-line:no-unused-expression
-  new HeaderModal(document.getElementById("FAQ"));
+  new HeaderModal(
+    document.getElementById("FAQ"),
+    document.querySelector(".header-faq-icon"),
+  );
 }

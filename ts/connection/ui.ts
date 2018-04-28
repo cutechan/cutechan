@@ -1,7 +1,7 @@
 import { handlers, message } from "./messages";
 import { syncStatus } from "./state";
 
-const syncEl = document.getElementById("sync-status");
+const syncEl = document.querySelector(".header-status");
 // const syncedCount = document.getElementById("sync-counter")
 
 function statusToClass(status: syncStatus) {
