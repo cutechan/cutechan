@@ -137,11 +137,9 @@ func pad(buf []byte, i int) []byte {
 }
 
 func readableTime(l string, t time.Time) string {
-	ln := lang.Get(l).Common.Time
 	year, m, day := t.Date()
-	weekday := ln["week"][int(t.Weekday())]
-	// Months are 1-indexed for some fucking reason.
-	month := ln["calendar"][int(m)-1]
+	month := lang.GT(l, lang.Months[int(m)-1])
+	weekday := lang.GT(l, lang.Days[int(t.Weekday())])
 
 	// Premature optimization.
 	buf := make([]byte, 0, 17+len(weekday)+len(month))

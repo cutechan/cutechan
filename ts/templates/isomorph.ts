@@ -5,7 +5,7 @@ import templates from "cc-templates";
 import * as Mustache from "mustache";
 import { bodyEmbeds, renderBody } from ".";
 import { ImageData } from "../common";
-import { ln } from "../lang";
+import { _, days, ln, months } from "../lang";
 import { Backlinks, Post, sourcePath, Thread, thumbPath } from "../posts";
 import { config, mine } from "../state";
 import { Dict, makeNode, pad } from "../util";
@@ -136,8 +136,8 @@ export function pluralize(num: number, plurals: string[]): string {
 // Renders classic absolute timestamp.
 export function readableTime(time: number): string {
   const d = new Date(time * 1000);
-  return `${pad(d.getDate())} ${ln.Common.time.calendar[d.getMonth()]} `
-    + `${d.getFullYear()} (${ln.Common.time.week[d.getDay()]}) `
+  return `${pad(d.getDate())} ${_(months[d.getMonth()])} `
+    + `${d.getFullYear()} (${_(days[d.getDay()])}) `
     + `${pad(d.getHours())}:${pad(d.getMinutes())}`;
 }
 

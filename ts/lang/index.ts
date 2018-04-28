@@ -16,7 +16,6 @@ interface LanguagePack {
 // TODO(Kagami): Remove lowercase aliases.
 interface CommonLanguagePack {
   Plurals: { [key: string]: string[] };
-  time: { calendar: string[], week: string[] };
 }
 
 // TODO(Kagami): Add support for per-user site language.
@@ -24,7 +23,6 @@ const siteLang: string = (window as any).config.defaultLang;
 const pack: any = langs[siteLang];
 const lang: CommonLanguagePack = {
   Plurals: pack.common.plurals,
-  time: pack.common.time,
 };
 
 /** Container of localization strings for current site language. Deprecated. */
@@ -40,3 +38,10 @@ export function _(s: string): string {
 export function printf(s: string, ...args: any[]): string {
   return s.replace(/%s/, () => args.shift());
 }
+
+export const months = [
+  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+];
+
+export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];

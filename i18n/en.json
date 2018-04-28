@@ -309,7 +309,26 @@
     "toggleSticky": "Toggle sticky",
     "b": "b",
     "kb": "Kb",
-    "mb": "Mb"
+    "mb": "Mb",
+    "Jan": "Jan",
+    "Feb": "Feb",
+    "Mar": "Mar",
+    "Apr": "Apr",
+    "May": "May",
+    "Jun": "Jun",
+    "Jul": "Jul",
+    "Aug": "Aug",
+    "Sep": "Sep",
+    "Oct": "Oct",
+    "Nov": "Nov",
+    "Dec": "Dec",
+    "Sun": "Sun",
+    "Mon": "Mon",
+    "Tue": "Tue",
+    "Wed": "Wed",
+    "Thu": "Thu",
+    "Fri": "Fri",
+    "Sat": "Sat"
   },
   "common": {
     "plurals": {
@@ -344,31 +363,6 @@
       "year": [
         "year",
         "years"
-      ]
-    },
-    "time": {
-      "calendar": [
-        "Jan",
-        "Feb",
-        "Mar",
-        "Apr",
-        "May",
-        "Jun",
-        "Jul",
-        "Aug",
-        "Sep",
-        "Oct",
-        "Nov",
-        "Dec"
-      ],
-      "week": [
-        "Sun",
-        "Mon",
-        "Tue",
-        "Wed",
-        "Thu",
-        "Fri",
-        "Sat"
       ]
     }
   }

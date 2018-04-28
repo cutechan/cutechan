@@ -12,6 +12,15 @@ var (
 		"en", "ru",
 	}
 
+	// Some UI constants.
+	Months = []string{
+		"Jan", "Feb", "Mar", "Apr", "May", "Jun",
+		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
+	}
+	Days = []string{
+		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
+	}
+
 	// Preloaded packs.
 	packs = map[string]Pack{}
 )
@@ -23,7 +32,6 @@ type Pack struct {
 	UI     map[string]string
 	Common struct {
 		Plurals map[string][]string
-		Time    map[string][]string
 	}
 }
 
