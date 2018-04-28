@@ -80,7 +80,7 @@ func MakePostContext(l string, t common.Thread, p *common.Post, bls common.Backl
 		Board:     t.Board,
 		Subject:   t.Subject,
 		Badge:     p.Auth != "",
-		Auth:      ln.Common.Posts[p.Auth],
+		Auth:      ln.UI[p.Auth],
 		Name:      p.UserName,
 		Time:      readableTime(l, postTime),
 		HasFiles:  len(p.Files) > 0,
@@ -192,7 +192,7 @@ func renderFile(l string, img *common.Image) string {
 	fileCtx := FileContext{
 		SHA1:       img.SHA1,
 		HasTitle:   img.Title != "",
-		LCopy:      ln.Common.Posts["clickToCopy"],
+		LCopy:      ln.UI["clickToCopy"],
 		Title:      img.Title,
 		HasVideo:   img.Video,
 		HasAudio:   img.Audio,

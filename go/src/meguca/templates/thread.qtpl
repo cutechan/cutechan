@@ -80,7 +80,7 @@ Omitted posts and images info
 			<div class="omit-info">
 				{%d omit %}{% space %}{%s pluralize(omit, ln.Common.Plurals["post"]) %}
 				{% if imageOmit > 0 %}
-					{% space %}{%s ln.Common.Posts["and"] %}{% space %}
+					{% space %}{%s ln.UI["and"] %}{% space %}
 					{%d imageOmit %}{% space %}{%s pluralize(imageOmit, ln.Common.Plurals["image"]) %}
 				{% endif %}
 				{% space %}{%s pluralize2(omit, imageOmit, ln.Common.Plurals["omitted"]) %}
@@ -88,9 +88,9 @@ Omitted posts and images info
 		{% endif %}
 		<a class="omit-link" href="/{%s t.Board %}/{%s idStr %}">
 			{% if last100 %}
-				{%s ln.Common.Posts["seeAll"] %}
+				{%s ln.UI["seeAll"] %}
 			{% else %}
-				{%s ln.Common.Posts["goToThread"] %}
+				{%s ln.UI["goToThread"] %}
 			{% endif %}
 		</a>
 		{% if omit > 97 && !last100 %}

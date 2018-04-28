@@ -49,7 +49,7 @@ export function extractPost(data: PostData, op: number, board: string, backlinks
 
 function addYous(id: number, el: HTMLElement) {
   for (const a of el.querySelectorAll(`a[data-id="${id}"]`)) {
-    a.textContent += ` ${ln.Common.Posts.you}`;
+    a.textContent += ` ${ln.UI.you}`;
   }
 }
 

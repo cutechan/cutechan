@@ -41,7 +41,7 @@ export function makePostContext(
     Board: p.board,
     Subject: p.subject,
     Badge: !!p.auth,
-    Auth: ln.Common.Posts[p.auth],
+    Auth: ln.UI[p.auth],
     Name: p.userName,
     HasFiles: !!p.files,
     post: p,
@@ -104,7 +104,7 @@ function renderFile(img: ImageData): string {
   return new TemplateContext("post-file", {
     SHA1: img.SHA1,
     HasTitle: !!img.title,
-    LCopy: ln.Common.Posts.clickToCopy,
+    LCopy: ln.UI.clickToCopy,
     Title: img.title,
     HasVideo: img.video,
     HasAudio: img.audio,
@@ -163,7 +163,7 @@ export function renderPostLink(id: number, cross: boolean, index: boolean): stri
   return new TemplateContext("post-link", {
     Cross: cross,
     ID: id,
-    LYou: ln.Common.Posts.you,
+    LYou: ln.UI.you,
     Mine: mine.has(id),
     URL: url,
   }).render();
@@ -176,7 +176,7 @@ export function relativeTime(then: number): string {
   let isFuture = false;
   if (time < 1) {
     if (time > -5) { // Assume to be client clock imprecision
-      return ln.Common.Posts.justNow;
+      return ln.UI.justNow;
     } else {
       isFuture = true;
       time = -time;
@@ -199,6 +199,6 @@ export function relativeTime(then: number): string {
 function ago(time: number, units: string[], isFuture: boolean): string {
   const count = `${time} ${pluralize(time, units)}`;
   return isFuture
-    ? `${ln.Common.Posts.in} ${count}`
-    : `${count} ${ln.Common.Posts.ago}`;
+    ? `${ln.UI.in} ${count}`
+    : `${count} ${ln.UI.ago}`;
 }
