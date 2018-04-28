@@ -869,7 +869,7 @@ class Reply extends Component<any, any> {
 
         <button
           class="control reply-footer-control reply-bold-control"
-          title={ln.Forms.bold[0]}
+          title={ln.UI.bold}
           disabled={!editing || sending}
           onClick={this.pasteBold}
         >
@@ -877,7 +877,7 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-italic-control"
-          title={ln.Forms.italic[0]}
+          title={ln.UI.italic}
           disabled={!editing || sending}
           onClick={this.pasteItalic}
         >
@@ -885,7 +885,7 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-spoiler-control"
-          title={ln.Forms.spoiler[0]}
+          title={ln.UI.spoiler}
           disabled={!editing || sending}
           onClick={this.pasteSpoiler}
         >
@@ -893,7 +893,7 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-smile-control"
-          title={ln.Forms.smile[0]}
+          title={ln.UI.smile}
           disabled={!editing || sending}
           onClick={this.handleToggleSmileBox}
         >
@@ -901,7 +901,7 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-edit-control"
-          title={ln.Forms.previewPost[0]}
+          title={ln.UI.previewPost}
           disabled={sending}
           onClick={this.handleToggleEditing}
         >
@@ -911,7 +911,7 @@ class Reply extends Component<any, any> {
           <button
             class={cx("control", "reply-footer-control", "reply-badge-control",
                       {control_active: showBadge})}
-            title={ln.Forms.staffBadge[0]}
+            title={ln.UI.staffBadge}
             disabled={sending}
             onClick={this.handleToggleShowBadge}
           >

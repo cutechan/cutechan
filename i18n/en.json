@@ -1,201 +1,101 @@
 {
-  "forms": {
-    "boardExpiry": [
-      "Board expiry time",
-      "Number of days without new posts before a board is deleted"
-    ],
-    "boardName": [
-      "Name",
-      "Name of the new board. Can contain up to 10 lowercase Latin letters or numbers."
-    ],
-    "boardTitle": [
-      "Title",
-      "Title of the new board, such as 'K-pop music'. Up to 100 characters long."
-    ],
-    "captcha": [
-      "Captcha",
-      "Ask users to complete a captcha for certain tasks like registration and thread creation"
-    ],
-    "defaultCSS": [
-      "Default theme",
-      "Theme to load by default, when none is set by the client"
-    ],
-    "defaultLang": [
-      "Default language",
-      "Language pack to load by default"
-    ],
-    "hideThumbs": [
-      "Hide thumbnails",
-      "Display a [Show] button in place of thumbnails"
-    ],
-    "id": [
-      "Login",
-      ""
-    ],
-    "ops": [
-      "Operations",
-      ""
-    ],
-    "identity": [
-      "Identity",
-      ""
-    ],
-    "popupBackdrop": [
-      "Popup backdrop",
-      "Close popups by clicking on background"
-    ],
-    "imageHover": [
-      "Media hover expansion",
-      "Display media previews on hover"
-    ],
-    "imageRootOverride": [
-      "Image root override",
-      "If you wish to host images from a separate location like a CDN, enter the full root address here. Leave empty to use the default address. Example: 'https://images.meguca.org'"
-    ],
-    "janitors": [
-      "Janitors",
-      "Janitor account IDs. Janitors can only delete posts."
-    ],
-    "lang": [
-      "Language",
-      "Change interface language"
-    ],
-    "maxSize": [
-      "Image size limit",
-      "Maximum size of uploaded images in MB"
-    ],
-    "maxFiles": [
-      "Files per post",
-      "Maximum number of files per post"
-    ],
-    "moderators": [
-      "Moderators",
-      "Moderator account IDs. Moderators can delete posts, ban posters and distinguish posters by their mnemonic IDs."
-    ],
-    "newPassword": [
-      "New password",
-      ""
-    ],
-    "newPost": [
-      "New post",
-      "Open reply form"
-    ],
-    "cancelPost": [
-      "Cancel post",
-      "Close reply form"
-    ],
-    "selectFile": [
-      "Select file",
-      "Open file select dialog"
-    ],
-    "bold": [
-      "Bold",
-      "Paste bold markup"
-    ],
-    "italic": [
-      "Italic",
-      "Paste italic markup"
-    ],
-    "spoiler": [
-      "Spoiler",
-      "Paste spoiler markup"
-    ],
-    "search": [
-      "Search",
-      "Jump to idol search"
-    ],
-    "smile": [
-      "Paste smile",
-      ""
-    ],
-    "previewPost": [
-      "Preview post",
-      "Toggle post preview mode"
-    ],
-    "staffBadge": [
-      "Show staff badge",
-      ""
-    ],
-    "notification": [
-      "Desktop Notifications",
-      "Get desktop notifications when quoted"
-    ],
-    "oldPassword": [
-      "Old password",
-      ""
-    ],
-    "password": [
-      "Password",
-      ""
-    ],
-    "pruneBoards": [
-      "Prune boards",
-      "Delete boards that have not had any new posts for N days"
-    ],
-    "pruneThreads": [
-      "Prune threads",
-      "Delete threads that have not had any posts in N days"
-    ],
-    "readOnly": [
-      "Read only",
-      "Disable post creation"
-    ],
-    "modOnly": [
-      "Mod only",
-      "Only for moderators"
-    ],
-    "register": [
-      "Register",
-      ""
-    ],
-    "relativeTime": [
-      "Relative Timestamps",
-      "Relative post timestamps. Ex.: '1 hour ago'"
-    ],
-    "scrollToBottom": [
-      "Scroll to bottom",
-      "Scroll page to bottom on new post"
-    ],
-    "repeat": [
-      "Repeat",
-      ""
-    ],
-    "rootURL": [
-      "Root URL",
-      "Root URL of the imageboard."
-    ],
-    "staffTitle": [
-      "Staff Title",
-      "Display your staff title in the post header"
-    ],
-    "theme": [
-      "Theme",
-      "Select CSS theme",
-      "light",
-      "dark"
-    ],
-    "threadExpiryMax": [
-      "Maximal thread expiry time",
-      "Number of days without new posts before a thread is deleted"
-    ],
-    "threadExpiryMin": [
-      "Minimal thread expiry time",
-      "Number of days without new posts before a thread is deleted"
-    ],
-    "title": [
-      "Title",
-      "Short descriptive title of the board"
-    ],
-    "workMode": [
-      "Work mode",
-      "Hides images"
-    ],
-    "workModeToggle": [
-      "Work mode",
-      "Hides images"
-    ]
-  },
   "ui": {
+    "boardExpiry": "Board expiry time",
+    "boardExpiryTitle": "Number of days without new posts before a board is deleted",
+    "boardName": "Name",
+    "boardNameTitle": "Name of the new board. Can contain up to 10 lowercase Latin letters or numbers.",
+    "boardTitle": "Title",
+    "boardTitleTitle": "Title of the new board, such as 'K-pop music'. Up to 100 characters long.",
+    "captcha": "Captcha",
+    "captchaTitle": "Ask users to complete a captcha for certain tasks like registration and thread creation",
+    "defaultCSS": "Default theme",
+    "defaultCSSTitle": "Theme to load by default, when none is set by the client",
+    "defaultLang": "Default language",
+    "defaultLangTitle": "Language pack to load by default",
+    "hideThumbs": "Hide thumbnails",
+    "hideThumbsTitle": "Display a [Show] button in place of thumbnails",
+    "id": "Login",
+    "idTitle": "",
+    "ops": "Operations",
+    "opsTitle": "",
+    "identity": "Identity",
+    "identityTitle": "",
+    "popupBackdrop": "Popup backdrop",
+    "popupBackdropTitle": "Close popups by clicking on background",
+    "imageHover": "Media hover expansion",
+    "imageHoverTitle": "Display media previews on hover",
+    "imageRootOverride": "Image root override",
+    "imageRootOverrideTitle": "If you wish to host images from a separate location like a CDN, enter the full root address here. Leave empty to use the default address. Example: 'https://images.meguca.org'",
+    "janitors": "Janitors",
+    "janitorsTitle": "Janitor account IDs. Janitors can only delete posts.",
+    "lang": "Language",
+    "langTitle": "Change interface language",
+    "maxSize": "Image size limit",
+    "maxSizeTitle": "Maximum size of uploaded images in MB",
+    "maxFiles": "Files per post",
+    "maxFilesTitle": "Maximum number of files per post",
+    "moderators": "Moderators",
+    "moderatorsTitle": "Moderator account IDs. Moderators can delete posts, ban posters and distinguish posters by their mnemonic IDs.",
+    "newPassword": "New password",
+    "newPasswordTitle": "",
+    "newPost": "New post",
+    "newPostTitle": "Open reply form",
+    "cancelPost": "Cancel post",
+    "cancelPostTitle": "Close reply form",
+    "selectFile": "Select file",
+    "selectFileTitle": "Open file select dialog",
+    "bold": "Bold",
+    "boldTitle": "Paste bold markup",
+    "italic": "Italic",
+    "italicTitle": "Paste italic markup",
+    "spoiler": "Spoiler",
+    "spoilerTitle": "Paste spoiler markup",
+    "search": "Search",
+    "searchTitle": "Jump to idol search",
+    "smile": "Paste smile",
+    "smileTitle": "",
+    "previewPost": "Preview post",
+    "previewPostTitle": "Toggle post preview mode",
+    "staffBadge": "Show staff badge",
+    "staffBadgeTitle": "",
+    "notification": "Desktop Notifications",
+    "notificationTitle": "Get desktop notifications when quoted",
+    "oldPassword": "Old password",
+    "oldPasswordTitle": "",
+    "password": "Password",
+    "passwordTitle": "",
+    "pruneBoards": "Prune boards",
+    "pruneBoardsTitle": "Delete boards that have not had any new posts for N days",
+    "pruneThreads": "Prune threads",
+    "pruneThreadsTitle": "Delete threads that have not had any posts in N days",
+    "readOnly": "Read only",
+    "readOnlyTitle": "Disable post creation",
+    "modOnly": "Mod only",
+    "modOnlyTitle": "Only for moderators",
+    "register": "Register",
+    "registerTitle": "",
+    "relativeTime": "Relative Timestamps",
+    "relativeTimeTitle": "Relative post timestamps. Ex.: '1 hour ago'",
+    "scrollToBottom": "Scroll to bottom",
+    "scrollToBottomTitle": "Scroll page to bottom on new post",
+    "repeat": "Repeat",
+    "repeatTitle": "",
+    "staffTitle": "Staff Title",
+    "staffTitleTitle": "Display your staff title in the post header",
+    "theme": "Theme",
+    "themeTitle": "Select CSS theme",
+    "threadExpiryMax": "Maximal thread expiry time",
+    "threadExpiryMaxTitle": "Number of days without new posts before a thread is deleted",
+    "threadExpiryMin": "Minimal thread expiry time",
+    "threadExpiryMinTitle": "Number of days without new posts before a thread is deleted",
+    "title": "Title",
+    "titleTitle": "Short descriptive title of the board",
+    "workMode": "Work mode",
+    "workModeTitle": "Hides images",
+    "workModeToggle": "Work mode",
+    "workModeToggleTitle": "Hides images",
+    "light": "light",
+    "dark": "dark",
     "Options": "Options",
     "Shortcuts": "Shortcuts",
     "sortBump": "Bump time",

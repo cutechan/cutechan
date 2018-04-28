@@ -132,9 +132,9 @@ func (w *formWriter) tag(tag string, spec inputSpec) {
 	if !spec.NoID { // To not conflict with non-unique labels
 		w.attr("id", spec.ID)
 	}
-	w.attr("title", w.lang.Forms[spec.ID][1])
+	w.attr("title", w.lang.UI[spec.ID+"Title"])
 	if spec.Placeholder {
-		w.attr("placeholder", w.lang.Forms[spec.ID][0])
+		w.attr("placeholder", w.lang.UI[spec.ID])
 	}
 	if spec.Required {
 		w.attr("required", "")
@@ -152,7 +152,7 @@ func (w *formWriter) sel(spec inputSpec) {
 		val = spec.Val.(string)
 	}
 
-	for i, o := range spec.Options {
+	for _, o := range spec.Options {
 		w.N().S("<option")
 		w.attr("value", o)
 		if o == val {
@@ -160,9 +160,8 @@ func (w *formWriter) sel(spec inputSpec) {
 		}
 		w.N().S(`>`)
 		text := o
-		idx := i + 2
-		if len(w.lang.Forms[spec.ID]) >= idx+1 {
-			text = w.lang.Forms[spec.ID][idx]
+		if translated, ok := w.lang.UI[o]; ok {
+			text = translated
 		}
 		w.N().S(text)
 		w.N().S("</option>")
@@ -173,19 +172,17 @@ func (w *formWriter) sel(spec inputSpec) {
 
 // Write an input element label from the spec to the buffer
 func (w *formWriter) label(spec inputSpec, inside *func()) {
-	ln := w.lang.Forms[spec.ID]
-
 	w.N().S("<label")
 	w.attr("class", "option-label")
 	if !spec.NoID {
 		w.attr("for", spec.ID)
 	}
-	w.attr("title", ln[1])
+	w.attr("title", w.lang.UI[spec.ID+"Title"])
 	w.N().S(`>`)
 	if inside != nil {
 		(*inside)()
 	}
-	w.N().S(ln[0])
+	w.N().S(w.lang.UI[spec.ID])
 	w.N().S("</label>")
 }
 
