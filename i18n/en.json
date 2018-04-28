@@ -200,6 +200,10 @@
     ]
   },
   "ui": {
+    "sortBump": "Bump time",
+    "sortCreation": "Creation time",
+    "sortReplyCount": "Reply count",
+    "sortFileCount": "File count",
     "cm": "%s cm",
     "kg": "%s kg",
     "main": "Main page",
@@ -271,12 +275,6 @@
     "type": "Type",
     "unban": "Unban"
   },
-  "sortModes": [
-    "Bump time",
-    "Creation time",
-    "Reply count",
-    "File count"
-  ],
   "tabs": [
     "Options",
     "Shortcuts"

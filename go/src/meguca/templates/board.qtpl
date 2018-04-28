@@ -1,5 +1,6 @@
 {% import "fmt" %}
 {% import "strconv" %}
+{% import "strings" %}
 {% import "meguca/common" %}
 {% import "meguca/lang" %}
 {% import "meguca/assets" %}
@@ -18,16 +19,15 @@
 {% endstripspace %}{% endfunc %}
 
 {% func renderBoardSearch(l string, catalog bool) %}{% stripspace %}
-	{% code ln := lang.Get(l) %}
 	{% code inputClass := "board-search-input" %}
 	{% code if catalog { inputClass += " board-search-input_catalog" } %}
 	<div class="board-search">
-		<input class="{%s inputClass %}" type="text" placeholder="{%s ln.UI["search"] %}">
+		<input class="{%s inputClass %}" type="text" placeholder="{%s lang.GT(l, "search") %}">
 		{% if catalog %}
 			<select class="board-search-sort" name="sortMode">
-				{% for i, s := range [...]string{"bump", "creation", "replyCount", "fileCount"} %}
+				{% for _, s := range [...]string{"bump", "creation", "replyCount", "fileCount"} %}
 					<option class="board-search-sort-mode" value="{%s s %}">
-						{%s ln.SortModes[i] %}
+						{%s lang.GT(l, "sort"+strings.Title(s)) %}
 					</option>
 				{% endfor %}
 			</select>
