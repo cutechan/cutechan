@@ -17,7 +17,7 @@ func serveFiles(w http.ResponseWriter, r *http.Request) {
 	path := getParam(r, "path")
 	file, err := os.Open(cleanJoin(common.ImageWebRoot, path))
 	if err != nil {
-		serve404(w)
+		serve404(w, r)
 		return
 	}
 	defer file.Close()
@@ -37,7 +37,7 @@ func cleanJoin(parts ...string) string {
 func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 	file, err := os.Open(path)
 	if err != nil {
-		serve404(w)
+		serve404(w, r)
 		return
 	}
 	defer file.Close()
@@ -48,7 +48,7 @@ func serveFile(w http.ResponseWriter, r *http.Request, path string) {
 		return
 	}
 	if stats.IsDir() {
-		serve404(w)
+		serve404(w, r)
 		return
 	}
 	modTime := stats.ModTime()

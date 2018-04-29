@@ -27,12 +27,12 @@ func servePost(w http.ResponseWriter, r *http.Request) {
 	switch post, err := db.GetPost(id); err {
 	case nil:
 		ss, _ := getSession(r, post.Board)
-		if !assertNotModOnly(w, post.Board, ss) {
+		if !assertNotModOnly(w, r, post.Board, ss) {
 			return
 		}
 		serveJSON(w, r, post)
 	case sql.ErrNoRows:
-		serve404(w)
+		serve404(w, r)
 	default:
 		respondToJSONError(w, r, err)
 	}

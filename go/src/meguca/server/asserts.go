@@ -24,9 +24,9 @@ func assertNotBannedAPI(w http.ResponseWriter, r *http.Request, board string) (i
 	return
 }
 
-func assertBoard(w http.ResponseWriter, board string) bool {
+func assertBoard(w http.ResponseWriter, r *http.Request, board string) bool {
 	if !config.IsBoard(board) {
-		serve404(w)
+		serve404(w, r)
 		return false
 	}
 	return true
@@ -70,9 +70,9 @@ func checkModOnly(board string, ss *auth.Session) bool {
 }
 
 // Eunsure only mods and above can view mod-only boards.
-func assertNotModOnly(w http.ResponseWriter, board string, ss *auth.Session) bool {
+func assertNotModOnly(w http.ResponseWriter, r *http.Request, board string, ss *auth.Session) bool {
 	if !checkModOnly(board, ss) {
-		serve404(w)
+		serve404(w, r)
 		return false
 	}
 	return true

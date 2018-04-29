@@ -76,9 +76,7 @@
 {% endstripspace %}{% endfunc %}
 
 Custom not found page.
-Serve with default lang for now for simplicity.
-{% func NotFound() %}{% stripspace %}
-	{% code l := config.Get().DefaultLang %}
+{% func NotFound(l string) %}{% stripspace %}
 	<!DOCTYPE html>
 	<html>
 	<head>

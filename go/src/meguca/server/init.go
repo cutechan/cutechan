@@ -38,7 +38,7 @@ func runForceFreeTask() {
 
 func createRouter(debugRoutes bool) http.Handler {
 	r := httptreemux.NewContextMux()
-	r.NotFoundHandler = serve404wr
+	r.NotFoundHandler = serve404
 	r.PanicHandler = text500
 
 	// Make sure to control access in production.
@@ -48,7 +48,7 @@ func createRouter(debugRoutes bool) http.Handler {
 
 	// Pages.
 	r.GET("/", serveLanding)
-	r.GET("/404.html", serve404wr)
+	r.GET("/404.html", serve404)
 	r.GET("/stickers/", serveStickers)
 	r.GET("/:board/", func(w http.ResponseWriter, r *http.Request) {
 		boardHTML(w, r, getParam(r, "board"), false)

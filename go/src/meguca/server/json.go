@@ -69,7 +69,7 @@ func detectLastN(r *http.Request) int {
 
 func respondToJSONError(w http.ResponseWriter, r *http.Request, err error) {
 	if err == sql.ErrNoRows {
-		serve404(w)
+		serve404(w, r)
 	} else {
 		text500(w, r, err)
 	}
