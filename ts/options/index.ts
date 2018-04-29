@@ -92,8 +92,7 @@ const specs: { [id: string]: OptionSpec } = {
   // Change language
   lang: {
     get default() {
-      const m = document.cookie.match(/[^;]lang=(\w+)/);
-      return m ? m[1] : "en";
+      return (window as any).lang;
     },
     exec(l: string) {
       const d = new Date();

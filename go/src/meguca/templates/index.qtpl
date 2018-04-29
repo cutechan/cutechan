@@ -53,7 +53,7 @@
 			{%= generateIgnoreCSS(ss) %}
 		</style>
 		<script>
-			var config={%z= confJSON %},boards={%z= boardsJSON %},session={%z= sessionJSON %};
+			var lang="{%s l %}",config={%z= confJSON %},boards={%z= boardsJSON %},session={%z= sessionJSON %};
 			if (localStorage.theme !== config.DefaultCSS) {
 				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
 			}
