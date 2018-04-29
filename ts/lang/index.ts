@@ -1,15 +1,14 @@
 /**
- * Gettext-alike interface for internationalization.
+ * Internationalization support.
  */
 
 // tslint:disable-next-line:no-reference
 /// <reference path="index.d.ts" />
 
 import langs from "cc-langs";
+import options from "../options";
 
-// TODO(Kagami): Add support for per-user site language.
-const siteLang: string = (window as any).config.defaultLang;
-const lang = langs[siteLang];
+let lang: Lang = null;
 
 export function gettext(msgid: string): string {
   return (lang.messages[msgid] as string) || msgid;
@@ -18,7 +17,7 @@ export function gettext(msgid: string): string {
 export function ngettext(msgid1: string, msgid2: string, n: number): string {
   const forms = lang.messages[msgid1];
   if (forms) {
-    const idx = lang.getPluralN(n);
+    const idx = +lang.getPluralN(n);
     return forms[idx];
   } else {
     return n === 1 ? msgid1 : msgid2;
@@ -35,3 +34,7 @@ export const months = [
 ];
 
 export const days = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
+export function init() {
+  lang = langs[options.lang];
+}

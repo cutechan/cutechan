@@ -6,6 +6,7 @@ import { config } from "../state";
 import { ChangeEmitter, emitChanges, trigger } from "../util";
 
 interface Options extends ChangeEmitter {
+  lang: string;
   theme: string;
   popupBackdrop: boolean;
   imageHover: boolean;
@@ -87,6 +88,21 @@ const specs: { [id: string]: OptionSpec } = {
   // Scroll to bottom
   scrollToBottom: {
     default: true,
+  },
+  // Change language
+  lang: {
+    get default() {
+      const m = document.cookie.match(/[^;]lang=(\w+)/);
+      return m ? m[1] : config.defaultLang;
+    },
+    exec(l: string) {
+      const d = new Date();
+      d.setFullYear(d.getFullYear() + 10);
+      document.cookie = `lang=${l}; expires=${d.toUTCString()}; path=/`;
+      location.reload(true);
+    },
+    noExecOnStart: true,
+    type: optionType.menu,
   },
   // Change theme
   theme: {

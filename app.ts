@@ -19,7 +19,7 @@ import { init as initHandlers } from "./ts/client";
 import { init as initConnection } from "./ts/connection";
 import { init as initDB } from "./ts/db";
 import { initProfiles } from "./ts/idols";
-import _ from "./ts/lang";
+import { _, init as initLang } from "./ts/lang";
 import { renderBoard, renderThread } from "./ts/page";
 import { init as initPosts } from "./ts/posts";
 import { loadPostStores, page } from "./ts/state";
@@ -29,6 +29,7 @@ import { init as initUI } from "./ts/ui";
 async function init() {
   initAlerts();
   initOptions();
+  initLang();
 
   await initDB();
   loadPostStores();

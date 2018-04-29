@@ -81,7 +81,7 @@ msgid "imageRootOverrideTitle"
 msgstr "Для размещения изображений на отдельном сайте введите его полный адрес, например «https://images.example.com»"
 
 msgid "lang"
-msgstr "Язык сайта"
+msgstr "Language"
 
 msgid "langTitle"
 msgstr "Изменить язык интерфейса"
@@ -265,6 +265,12 @@ msgstr "светлая"
 
 msgid "dark"
 msgstr "тёмная"
+
+msgid "en"
+msgstr "english"
+
+msgid "ru"
+msgstr "русский"
 
 msgid "Options"
 msgstr "Опции"

@@ -57,7 +57,7 @@ go/bin/qtc:
 GENSRC = $(shell find go/src/meguca -type f -name '*.go' | xargs grep -l '^//go:generate')
 GENSRC += $(shell find go/src/meguca/db/sql -type f -name '*.sql')
 GENSRC += $(wildcard go/src/meguca/templates/*.qtpl)
-GENSRC += $(wildcard i18n/*.json)
+GENSRC += $(wildcard po/*.po)
 GENSRC += $(TEMPLATESPP)
 go/src/meguca/db/bin_data.go: export TMPDIR = $(PWD)/go
 go/src/meguca/db/bin_data.go: go/bin/go-bindata go/bin/easyjson go/bin/qtc $(GENSRC)

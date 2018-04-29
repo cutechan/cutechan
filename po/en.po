@@ -290,6 +290,12 @@ msgstr "light"
 msgid "dark"
 msgstr "dark"
 
+msgid "en"
+msgstr "english"
+
+msgid "ru"
+msgstr "русский"
+
 msgid "Options"
 msgstr "Options"
 
