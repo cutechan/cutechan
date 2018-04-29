@@ -80,9 +80,6 @@ msgstr "Image root override"
 msgid "imageRootOverrideTitle"
 msgstr "If you wish to host images from a separate location like a CDN, enter the full root address here. Leave empty to use the default address. Example: 'https://images.meguca.org'"
 
-msgid "janitorsTitle"
-msgstr "Janitor account IDs. Janitors can only delete posts."
-
 msgid "lang"
 msgstr "Language"
 
@@ -100,12 +97,6 @@ msgstr "Files per post"
 
 msgid "maxFilesTitle"
 msgstr "Maximum number of files per post"
-
-msgid "moderators"
-msgstr "Moderator"
-
-msgid "moderatorsTitle"
-msgstr "Moderator account IDs. Moderators can delete posts, ban posters and distinguish posters by their mnemonic IDs."
 
 msgid "newPassword"
 msgstr "New password"
@@ -203,18 +194,6 @@ msgstr "Prune threads"
 msgid "pruneThreadsTitle"
 msgstr "Delete threads that have not had any posts in N days"
 
-msgid "readOnly"
-msgstr "Read only"
-
-msgid "readOnlyTitle"
-msgstr "Disable post creation"
-
-msgid "modOnly"
-msgstr "Mod only"
-
-msgid "modOnlyTitle"
-msgstr "Only for moderators"
-
 msgid "register"
 msgstr "Register"
 
@@ -296,8 +275,8 @@ msgstr "русский"
 msgid "Options"
 msgstr "Options"
 
-msgid "Shortcuts"
-msgstr "Shortcuts"
+msgid "Hotkeys"
+msgstr "Hotkeys"
 
 msgid "sortBump"
 msgstr "Bump time"
@@ -317,8 +296,146 @@ msgstr "Admin"
 msgid "owners"
 msgstr "Board Owner"
 
+msgid "moderators"
+msgstr "Moderator"
+
 msgid "janitors"
 msgstr "Assistant"
+
+msgid "Owners"
+msgstr "Owners"
+
+msgid "Moderators"
+msgstr "Moderators"
+
+msgid "Janitors"
+msgstr "Janitors"
+
+msgid "No bans"
+msgstr "No bans"
+
+msgid "Empty log"
+msgstr "Empty log"
+
+msgid "Type"
+msgstr "Type"
+
+msgid "Reason"
+msgstr "Reason"
+
+msgid "By"
+msgstr "By"
+
+msgid "Date"
+msgstr "Date"
+
+msgid "Expires"
+msgstr "Expires"
+
+msgid "Title"
+msgstr "Title"
+
+msgid "Read only"
+msgstr "Read only"
+
+msgid "Mod only"
+msgstr "Mod only"
+
+msgid "Access mode"
+msgstr "Access mode"
+
+msgid "Bypass"
+msgstr "Bypass"
+
+msgid "Deny blacklisted"
+msgstr "Deny blacklisted"
+
+msgid "Allow whitelisted"
+msgstr "Allow whitelisted"
+
+msgid "Settings"
+msgstr "Settings"
+
+msgid "Bans"
+msgstr "Bans"
+
+msgid "Members"
+msgstr "Members"
+
+msgid "Mod log"
+msgstr "Mod log"
+
+msgid "Admin"
+msgstr "Admin"
+
+msgid "To whitelist"
+msgstr "To whitelist"
+
+msgid "From whitelist"
+msgstr "From whitelist"
+
+msgid "To blacklist"
+msgstr "To blacklist"
+
+msgid "From blacklist"
+msgstr "From blacklist"
+
+msgid "Show name"
+msgstr "Show name"
+
+msgid "Add name"
+msgstr "Add name"
+
+msgid "Ignore mode"
+msgstr "Ignore mode"
+
+msgid "No ignore"
+msgstr "No ignore"
+
+msgid "Hide blacklisted"
+msgstr "Hide blacklisted"
+
+msgid "Show whitelisted"
+msgstr "Show whitelisted"
+
+msgid "Whitelist"
+msgstr "Whitelist"
+
+msgid "Blacklist"
+msgstr "Blacklist"
+
+msgid "Including anonymous"
+msgstr "Including anonymous"
+
+msgid "Enter to add"
+msgstr "Enter to add"
+
+msgid "Save"
+msgstr "Save"
+
+msgid "Reset"
+msgstr "Reset"
+
+msgid "Name"
+msgstr "Name"
+
+msgid "Real name"
+msgstr "Real name"
+
+msgid "Bands"
+msgstr "Bands"
+
+msgid "Birthday"
+msgstr "Birthday"
+
+msgid "Height"
+msgstr "Height"
+
+msgid "Weight"
+msgstr "Weight"
+
+msgid "Positions"
+msgstr "Positions"
 
 msgid "cm"
 msgstr "%s cm"
