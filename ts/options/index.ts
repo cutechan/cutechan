@@ -99,7 +99,7 @@ const specs: { [id: string]: OptionSpec } = {
       const d = new Date();
       d.setFullYear(d.getFullYear() + 10);
       document.cookie = `lang=${l}; expires=${d.toUTCString()}; path=/`;
-      location.reload(true);
+      location.reload();
     },
     noExecOnStart: true,
     type: optionType.menu,
