@@ -3,7 +3,7 @@
  */
 // TODO(Kagami): Port everything to the use of this module.
 
-import { _ } from "../lang";
+import _ from "../lang";
 import {
   Dict, FutureAPI, ProgressFn,
   sendFormProgress, sendJSON, uncachedGET,

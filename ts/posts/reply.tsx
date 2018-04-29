@@ -5,12 +5,12 @@ import { showAlert } from "../alerts";
 import API from "../api";
 import { isModerator } from "../auth";
 import { PostData } from "../common";
-import { ln, printf } from "../lang";
+import _ from "../lang";
 import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {
   AbortError, collect, Dict, FutureAPI, getID, hook, HOOKS, on,
-  scrollToTop, setter as s, unhook,
+  printf, scrollToTop, setter as s, unhook,
 } from "../util";
 import {
   HEADER_HEIGHT_PX,
@@ -669,13 +669,13 @@ class Reply extends Component<any, any> {
   }
   private handleFile = (file: File) => {
     if (file.size > config.maxSize * 1024 * 1024) {
-      showAlert(ln.UI.tooBig);
-      return Promise.reject(new Error(ln.UI.tooBig));
+      showAlert(_("tooBig"));
+      return Promise.reject(new Error(_("tooBig")));
     }
     return getFileInfo(file).then((info: Dict) => {
       return {file, info};
     }, (err) => {
-      showAlert(ln.UI.unsupFile);
+      showAlert(_("unsupFile"));
       throw err;
     });
   }
@@ -702,7 +702,7 @@ class Reply extends Component<any, any> {
       }
     }, (err: Error) => {
       if (err instanceof AbortError) return;
-      showAlert({title: ln.UI.sendErr, message: err.message});
+      showAlert({title: _("sendErr"), message: err.message});
     }).then(() => {
       this.setState({sending: false, progress: 0});
       this.sendAPI = {};
@@ -791,7 +791,7 @@ class Reply extends Component<any, any> {
         {this.renderBoards()}
         <input
           class="reply-subject"
-          placeholder={ln.UI.subject + "∗"}
+          placeholder={_("subject") + "∗"}
           value={subject}
           disabled={sending}
           onInput={this.handleSubjectChange}
@@ -847,12 +847,12 @@ class Reply extends Component<any, any> {
   }
   private renderFooterControls() {
     const { editing, sending, progress, showBadge } = this.state;
-    const sendTitle = sending ? `${progress}% (${ln.UI.clickToCancel})` : "";
+    const sendTitle = sending ? `${progress}% (${_("clickToCancel")})` : "";
     return (
       <div class="reply-controls reply-footer-controls">
         <button
           class="control reply-footer-control reply-attach-control"
-          title={printf(ln.UI.attach, fileSize(config.maxSize * 1024 * 1024))}
+          title={printf(_("attach"), fileSize(config.maxSize * 1024 * 1024))}
           disabled={sending}
           onClick={this.handleAttach}
         >
@@ -860,7 +860,7 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-record-control"
-          title={ln.UI.record}
+          title={_("record")}
           disabled={sending}
           onClick={this.handleRecord}
         >
@@ -869,7 +869,7 @@ class Reply extends Component<any, any> {
 
         <button
           class="control reply-footer-control reply-bold-control"
-          title={ln.UI.bold}
+          title={_("bold")}
           disabled={!editing || sending}
           onClick={this.pasteBold}
         >
@@ -877,7 +877,7 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-italic-control"
-          title={ln.UI.italic}
+          title={_("italic")}
           disabled={!editing || sending}
           onClick={this.pasteItalic}
         >
@@ -885,7 +885,7 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-spoiler-control"
-          title={ln.UI.spoiler}
+          title={_("spoiler")}
           disabled={!editing || sending}
           onClick={this.pasteSpoiler}
         >
@@ -893,7 +893,7 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-smile-control"
-          title={ln.UI.smile}
+          title={_("smile")}
           disabled={!editing || sending}
           onClick={this.handleToggleSmileBox}
         >
@@ -901,7 +901,7 @@ class Reply extends Component<any, any> {
         </button>
         <button
           class="control reply-footer-control reply-edit-control"
-          title={ln.UI.previewPost}
+          title={_("previewPost")}
           disabled={sending}
           onClick={this.handleToggleEditing}
         >
@@ -911,7 +911,7 @@ class Reply extends Component<any, any> {
           <button
             class={cx("control", "reply-footer-control", "reply-badge-control",
                       {control_active: showBadge})}
-            title={ln.UI.staffBadge}
+            title={_("staffBadge")}
             disabled={sending}
             onClick={this.handleToggleShowBadge}
           >
@@ -931,7 +931,7 @@ class Reply extends Component<any, any> {
             title={sendTitle}
             onClick={sending ? this.handleSendAbort : this.handleSend}
           >
-            {sending ? "" : ln.UI.submit}
+            {sending ? "" : _("submit")}
           </Progress>
         }
       </div>

@@ -5,9 +5,9 @@ import templates from "cc-templates";
 import * as Mustache from "mustache";
 import { bodyEmbeds, renderBody } from ".";
 import { ImageData } from "../common";
-import { _, days, ln, months } from "../lang";
+import { _, days, months, ngettext } from "../lang";
 import { Backlinks, Post, sourcePath, Thread, thumbPath } from "../posts";
-import { config, mine } from "../state";
+import { mine } from "../state";
 import { Dict, makeNode, pad } from "../util";
 
 export class TemplateContext {
@@ -41,7 +41,7 @@ export function makePostContext(
     Board: p.board,
     Subject: p.subject,
     Badge: !!p.auth,
-    Auth: ln.UI[p.auth],
+    Auth: _(p.auth),
     Name: p.userName,
     HasFiles: !!p.files,
     post: p,
@@ -104,7 +104,7 @@ function renderFile(img: ImageData): string {
   return new TemplateContext("post-file", {
     SHA1: img.SHA1,
     HasTitle: !!img.title,
-    LCopy: ln.UI.clickToCopy,
+    LCopy: _("clickToCopy"),
     Title: img.title,
     HasVideo: img.video,
     HasAudio: img.audio,
@@ -119,18 +119,6 @@ function renderFile(img: ImageData): string {
     SourcePath: sourcePath(img.fileType, img.SHA1),
     ThumbPath: thumbPath(img.thumbType, img.SHA1),
   }).render();
-}
-
-const PLURAL_FORMS: { [key: string]: (n: number) => number } = {
-  default: (n) => n === 1 ? 0 : 1,
-  // tslint:disable-next-line:whitespace
-  ru: (n) => n%10===1 && n%100!==11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2,
-};
-
-// Return pluralize form for various languages.
-export function pluralize(num: number, plurals: string[]): string {
-  const getForm = PLURAL_FORMS[config.defaultLang] || PLURAL_FORMS.default;
-  return plurals[getForm(num)];
 }
 
 // Renders classic absolute timestamp.
@@ -148,11 +136,11 @@ export function duration(l: number): string {
 // Formats a human-readable representation of file size.
 export function fileSize(size: number): string {
   if (size < 1024) {
-    return size + ln.UI.b;
+    return size + _("b");
   } else if (size < 1024 * 1024) {
-    return (size / 1024).toFixed(2) + ln.UI.kb;
+    return (size / 1024).toFixed(2) + _("kb");
   } else {
-    return (size / 1024 / 1024).toFixed(2) + ln.UI.mb;
+    return (size / 1024 / 1024).toFixed(2) + _("mb");
   }
 }
 
@@ -162,7 +150,7 @@ export function renderPostLink(id: number, cross: boolean, index: boolean): stri
   return new TemplateContext("post-link", {
     Cross: cross,
     ID: id,
-    LYou: ln.UI.you,
+    LYou: _("you"),
     Mine: mine.has(id),
     URL: url,
   }).render();
@@ -175,7 +163,7 @@ export function relativeTime(then: number): string {
   let isFuture = false;
   if (time < 1) {
     if (time > -5) { // Assume to be client clock imprecision
-      return ln.UI.justNow;
+      return _("justNow");
     } else {
       isFuture = true;
       time = -time;
@@ -186,18 +174,18 @@ export function relativeTime(then: number): string {
   const unit = ["minute", "hour", "day", "month"];
   for (let i = 0; i < divide.length; i++) {
     if (time < divide[i]) {
-      return ago(time, ln.Plurals[unit[i]], isFuture);
+      return ago(unit[i], time, isFuture);
     }
     time = Math.floor(time / divide[i]);
   }
 
-  return ago(time, ln.Plurals.year, isFuture);
+  return ago("year", time, isFuture);
 }
 
 // Renders "56 minutes ago" or "in 56 minutes" like relative time text.
-function ago(time: number, units: string[], isFuture: boolean): string {
-  const count = `${time} ${pluralize(time, units)}`;
+function ago(unit: string, time: number, isFuture: boolean): string {
+  const count = `${time} ${ngettext(unit, "", time)}`;
   return isFuture
-    ? `${ln.UI.in} ${count}`
-    : `${count} ${ln.UI.ago}`;
+    ? `${_("in")} ${count}`
+    : `${count} ${_("ago")}`;
 }

@@ -9,7 +9,7 @@ import { Component, h, render } from "preact";
 import { showAlert, showSendAlert } from "../alerts";
 import API from "../api";
 import { TabbedModal } from "../base";
-import { _ } from "../lang";
+import _ from "../lang";
 import { Post } from "../posts";
 import { getModel, page } from "../state";
 import {

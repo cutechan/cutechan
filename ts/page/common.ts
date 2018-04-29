@@ -1,5 +1,5 @@
 import { PostData } from "../common";
-import { ln } from "../lang";
+import _ from "../lang";
 import { Backlinks, Post, PostView } from "../posts";
 import { mine, page, posts } from "../state";
 import { notifyAboutReply, postAdded } from "../ui";
@@ -49,7 +49,7 @@ export function extractPost(data: PostData, op: number, board: string, backlinks
 
 function addYous(id: number, el: HTMLElement) {
   for (const a of el.querySelectorAll(`a[data-id="${id}"]`)) {
-    a.textContent += ` ${ln.UI.you}`;
+    a.textContent += " " + _("you");
   }
 }
 

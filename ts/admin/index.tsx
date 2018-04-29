@@ -9,7 +9,7 @@ import { Component, h, render } from "preact";
 import { showSendAlert } from "../alerts";
 import API from "../api";
 import { ModerationLevel } from "../auth";
-import { _ } from "../lang";
+import _ from "../lang";
 import { BoardConfig, page } from "../state";
 import { readableTime, relativeTime } from "../templates";
 import { replace } from "../util";

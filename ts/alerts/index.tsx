@@ -7,7 +7,7 @@
 
 import * as cx from "classnames";
 import { Component, h, render } from "preact";
-import { _ } from "../lang";
+import _ from "../lang";
 import { hook, HOOKS, trigger, unhook } from "../util";
 import { ALERT_HIDE_TIMEOUT_SECS, ALERTS_CONTAINER_SEL } from "../vars";
 

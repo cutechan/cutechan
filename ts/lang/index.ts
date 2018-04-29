@@ -1,5 +1,5 @@
 /**
- * Follows lang.go structures.
+ * Gettext-alike interface for internationalization.
  */
 
 // tslint:disable-next-line:no-reference
@@ -7,28 +7,27 @@
 
 import langs from "cc-langs";
 
-interface LanguagePack {
-  UI: { [key: string]: string };
-  Plurals: { [key: string]: string[] };
-}
-
 // TODO(Kagami): Add support for per-user site language.
 const siteLang: string = (window as any).config.defaultLang;
-const pack: any = langs[siteLang];
+const lang = langs[siteLang];
 
-/** Container of localization strings for current site language. Deprecated. */
-export const ln: LanguagePack = { UI: pack.ui, Plurals: pack.plurals };
-
-/** Gettext-alike helper. */
-// TODO(Kagami): Rewrite ln.UI boilerplate to this.
-export function _(s: string): string {
-  return pack.ui[s] || s;
+export function gettext(msgid: string): string {
+  return (lang.messages[msgid] as string) || msgid;
 }
 
-/** Printf-alike helper. */
-export function printf(s: string, ...args: any[]): string {
-  return s.replace(/%s/, () => args.shift());
+export function ngettext(msgid1: string, msgid2: string, n: number): string {
+  const forms = lang.messages[msgid1];
+  if (forms) {
+    const idx = lang.getPluralN(n);
+    return forms[idx];
+  } else {
+    return n === 1 ? msgid1 : msgid2;
+  }
 }
+
+const _ = gettext;
+export { _ };
+export default _;
 
 export const months = [
   "Jan", "Feb", "Mar", "Apr", "May", "Jun",

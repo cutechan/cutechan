@@ -20,6 +20,7 @@ const ts = require("gulp-typescript");
 const rjsOptimize = require("gulp-requirejs-optimize");
 const spritesmith = require("gulp.spritesmith");
 const less = require("gulp-less");
+const po2json = require("gulp-po2json");
 const uglify = require("gulp-uglify/composer")(uglifyes, console);
 const notify = require("gulp-notify");
 const livereload = require("gulp-livereload");
@@ -34,7 +35,7 @@ const all = process.argv.includes("-a");
 // Host where livereload server will be available.
 const LR_HOST = process.env.CC_LR_HOST || "127.0.0.1:35729";
 
-const LANGS_GLOB = "i18n/*.json";
+const LANGS_GLOB = "po/*.po";
 const TEMPLATES_GLOB = "mustache-pp/*.mustache";
 const SMILESJS_GLOB = "smiles-pp/smiles.js";
 
@@ -123,16 +124,41 @@ function createTask(name, path, task, watchPath) {
   }
 }
 
+// Convert raw po2json format to cutechan's own format.
+function raw2custom(src) {
+  src = JSON.parse(src);
+  let getPluralN = "";
+  const messages = {};
+  Object.keys(src).forEach((k) => {
+    const v = src[k];
+    if (k === "") {
+      // Parsing plural function.
+      // It's ok to fail on any error here.
+      const rawFn = v["plural-forms"];
+      const body = rawFn.match(/plural=([^;]+)/)[1];
+      getPluralN = `function(n) { return ${body}; }`;
+    } else if (v[0] !== null) {
+      // Plural translation.
+      messages[k] = v.slice(1);
+    } else {
+      // Singular translation.
+      messages[k] = v[1];
+    }
+  });
+  return `{getPluralN: ${getPluralN}, messages: ${JSON.stringify(messages)}}`;
+}
+
 function langs() {
   return gulp.src(LANGS_GLOB)
+    .pipe(po2json())
+    .on("error", handleError)
     .pipe(tap(function(file) {
       const name = JSON.stringify(path.basename(file.path, ".json"));
-      let lang = file.contents.toString();
+      let lang = "";
       try {
-        JSON.parse(lang);
-      } catch(e) {
-        handleError(e);
-        return;
+        lang = raw2custom(file.contents.toString());
+      } catch (err) {
+        return handleError(err);
       }
       file.contents = new Buffer(`langs[${name}] = ${lang};`);
     }))

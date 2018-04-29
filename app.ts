@@ -19,7 +19,7 @@ import { init as initHandlers } from "./ts/client";
 import { init as initConnection } from "./ts/connection";
 import { init as initDB } from "./ts/db";
 import { initProfiles } from "./ts/idols";
-import { ln } from "./ts/lang";
+import _ from "./ts/lang";
 import { renderBoard, renderThread } from "./ts/page";
 import { init as initPosts } from "./ts/posts";
 import { loadPostStores, page } from "./ts/state";
@@ -62,6 +62,6 @@ init().catch((err) => {
   showAlert({
     message: err.message,
     sticky: true,
-    title: ln.UI.initErr,
+    title: _("initErr"),
   });
 });

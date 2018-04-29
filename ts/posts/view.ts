@@ -1,5 +1,5 @@
 import { View, ViewAttrs } from "../base";
-import { ln } from "../lang";
+import _ from "../lang";
 import options from "../options";
 import { page } from "../state";
 import {
@@ -58,7 +58,7 @@ export default class PostView extends View<Post> {
 
     const html = new TemplateContext("post-backlinks", {
       Backlinks: rendered,
-      LReplies: ln.UI.replies,
+      LReplies: _("replies"),
     }).render();
 
     const container = this.el.querySelector(POST_BACKLINKS_SEL);

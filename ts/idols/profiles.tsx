@@ -14,9 +14,9 @@ import {
 } from "../../go/src/github.com/Kagami/kpopnet/ts/api";
 import { showAlert } from "../alerts";
 import { isPowerUser } from "../auth";
-import { _, printf } from "../lang";
+import _ from "../lang";
 import { getFilePrefix } from "../posts";
-import { hook, HOOKS } from "../util";
+import { hook, HOOKS, printf } from "../util";
 import { PROFILES_CONTAINER_SEL } from "../vars";
 
 interface PreviewProps {

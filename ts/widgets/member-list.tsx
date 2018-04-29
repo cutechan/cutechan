@@ -5,7 +5,7 @@
 import * as cx from "classnames";
 import { Component, h } from "preact";
 import { session } from "../auth";
-import { _ } from "../lang";
+import _ from "../lang";
 
 interface MemberListProps {
   members: string[];
