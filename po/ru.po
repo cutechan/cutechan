@@ -290,6 +290,18 @@ msgstr "Число ответов"
 msgid "sortFileCount"
 msgstr "Число файлов"
 
+msgid "admin"
+msgstr "Админ"
+
+msgid "owners"
+msgstr "Владелец доски"
+
+msgid "moderators"
+msgstr "Модератор"
+
+msgid "janitors"
+msgstr "Помощник"
+
 msgid "Owners"
 msgstr "Владельцы"
 
@@ -459,7 +471,7 @@ msgid "clickToCancel"
 msgstr "Нажмите, чтобы отменить загрузку"
 
 msgid "attach"
-msgstr "Прикрепить"
+msgstr "Прикрепить файл"
 
 msgid "record"
 msgstr "Записать голосовое сообщение"
@@ -709,24 +721,6 @@ msgstr "Показать"
 
 msgid "you"
 msgstr "(Вы)"
-
-msgid "admin"
-msgstr "Админ"
-
-msgid "owners"
-msgstr "Владелец доски"
-
-msgid "moderators"
-msgstr "Модератор"
-
-msgid "janitors"
-msgstr "Помощник"
-
-msgid "viewBySameIP"
-msgstr "Тот же IP"
-
-msgid "toggleSticky"
-msgstr "Прикрепить"
 
 msgid "b"
 msgstr "б"

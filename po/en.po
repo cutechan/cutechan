@@ -80,9 +80,6 @@ msgstr "Image root override"
 msgid "imageRootOverrideTitle"
 msgstr "If you wish to host images from a separate location like a CDN, enter the full root address here. Leave empty to use the default address. Example: 'https://images.meguca.org'"
 
-msgid "janitors"
-msgstr "Meido"
-
 msgid "janitorsTitle"
 msgstr "Janitor account IDs. Janitors can only delete posts."
 
@@ -314,6 +311,15 @@ msgstr "Reply count"
 msgid "sortFileCount"
 msgstr "File count"
 
+msgid "admin"
+msgstr "Admin"
+
+msgid "owners"
+msgstr "Board Owner"
+
+msgid "janitors"
+msgstr "Assistant"
+
 msgid "cm"
 msgstr "%s cm"
 
@@ -348,7 +354,7 @@ msgid "clickToCancel"
 msgstr "Click to cancel upload"
 
 msgid "attach"
-msgstr "Attach"
+msgstr "Attach file"
 
 msgid "record"
 msgstr "Record voice message"
@@ -598,18 +604,6 @@ msgstr "Show"
 
 msgid "you"
 msgstr "(You)"
-
-msgid "admin"
-msgstr "Admin"
-
-msgid "owners"
-msgstr "Board Owner"
-
-msgid "viewBySameIP"
-msgstr "Same IP"
-
-msgid "toggleSticky"
-msgstr "Toggle sticky"
 
 msgid "b"
 msgstr "b"
