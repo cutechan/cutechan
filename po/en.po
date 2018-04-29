@@ -330,10 +330,10 @@ msgid "landingHeader"
 msgstr "The only one k-pop imageboard"
 
 msgid "landingInfo"
-msgstr "kpop.re is an anonymous kpop-oriented imageboard where you can freely share your opinion with others. You don't need to register to take participation in discussions, just go to thread list and start posting in the one you're interested in."
+msgstr "kpop.re is an anonymous kpop-oriented imageboard where you can freely share your opinion with others. You don't need to register to take participation in discussions, just go to threads and start posting in the one you're interested in."
 
 msgid "threads"
-msgstr "All threads"
+msgstr "Go to threads"
 
 msgid "rules"
 msgstr "Rules"
