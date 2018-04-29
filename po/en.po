@@ -576,7 +576,7 @@ msgid "logout"
 msgstr "Logout"
 
 msgid "logoutAll"
-msgstr "Log out all devices"
+msgstr "Clear sessions"
 
 msgid "newThread"
 msgstr "New thread"
