@@ -22,12 +22,12 @@
 	{% code inputClass := "board-search-input" %}
 	{% code if catalog { inputClass += " board-search-input_catalog" } %}
 	<div class="board-search">
-		<input class="{%s inputClass %}" type="text" placeholder="{%s lang.GT(l, "search") %}">
+		<input class="{%s inputClass %}" type="text" placeholder="{%s lang.Get(l, "search") %}">
 		{% if catalog %}
 			<select class="board-search-sort" name="sortMode">
 				{% for _, s := range [...]string{"bump", "creation", "replyCount", "fileCount"} %}
 					<option class="board-search-sort-mode" value="{%s s %}">
-						{%s lang.GT(l, "sort"+strings.Title(s)) %}
+						{%s lang.Get(l, "sort"+strings.Title(s)) %}
 					</option>
 				{% endfor %}
 			</select>
@@ -41,7 +41,7 @@
 	<nav class="board-nav{% space %}{%s cls %}">
 		{% if top && !catalog %}
 			<a class="button board-nav-item board-nav-new-thread trigger-open-reply">
-				{%s lang.GT(l, "newThread") %}
+				{%s lang.Get(l, "newThread") %}
 			</a>
 		{% endif %}
 		{%= catalogLink(l, catalog) %}
@@ -135,11 +135,11 @@ Link to catalog or board page
 {% func catalogLink(l string, catalog bool) %}{% stripspace %}
 	{% if catalog %}
 		<a class="button board-nav-item board-nav-back" href=".">
-			{%s lang.GT(l, "return") %}
+			{%s lang.Get(l, "return") %}
 		</a>
 	{% else %}
 		<a class="button board-nav-item board-nav-catalog" href="catalog">
-			{%s lang.GT(l, "catalog") %}
+			{%s lang.Get(l, "catalog") %}
 		</a>
 	{% endif %}
 {% endstripspace %}{% endfunc %}

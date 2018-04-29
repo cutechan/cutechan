@@ -2,7 +2,7 @@
 
 {% func renderStickers(l string, stickHTML []byte) %}{% stripspace %}
 	<section class="board">
-		<h1 class="page-title">{%s lang.GT(l, "stickers") %}</h1>
+		<h1 class="page-title">{%s lang.Get(l, "stickers") %}</h1>
 		<hr class="separator">
 			<section class="stickers">
 				{%z= stickHTML %}

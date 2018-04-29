@@ -4,25 +4,25 @@
 
 {% func renderHeader(l string, cs config.BoardConfigs) %}{% stripspace %}
 	<header class="header">
-		<a class="header-item header-logo" href="/" title="{%s lang.GT(l, "main") %}">
+		<a class="header-item header-logo" href="/" title="{%s lang.Get(l, "main") %}">
 			<i class="logo"></i>
 		</a>
-		<a class="header-item header-board" href="/all/">{%s lang.GT(l, "aggregator") %}</a>
+		<a class="header-item header-board" href="/all/">{%s lang.Get(l, "aggregator") %}</a>
 		{% for _, conf := range cs %}
 			<a class="header-item header-board" href="/{%s conf.ID %}/">{%s conf.Title %}</a>
 		{% endfor %}
 		<div class="header-spacer"></div>
 		<span class="header-item header-profiles">
-			<input class="header-profiles-search" placeholder="{%s lang.GT(l, "searchIdol") %}">
+			<input class="header-profiles-search" placeholder="{%s lang.Get(l, "searchIdol") %}">
 		</span>
-		<span class="header-item header-status" title="{%s lang.GT(l, "sync") %}"></span>
-		<a class="header-item header-icon header-faq-icon" title="{%s lang.GT(l, "FAQ") %}">
+		<span class="header-item header-status" title="{%s lang.Get(l, "sync") %}"></span>
+		<a class="header-item header-icon header-faq-icon" title="{%s lang.Get(l, "FAQ") %}">
 			<i class="fa fa-info-circle"></i>
 		</a>
-		<a class="header-item header-icon header-account-icon" title="{%s lang.GT(l, "account") %}">
+		<a class="header-item header-icon header-account-icon" title="{%s lang.Get(l, "account") %}">
 			<i class="fa fa-user-circle-o"></i>
 		</a>
-		<a class="header-item header-icon header-options-icon" title="{%s lang.GT(l, "options") %}">
+		<a class="header-item header-icon header-options-icon" title="{%s lang.Get(l, "options") %}">
 			<i class="fa fa-gear"></i>
 		</a>
 	</header>
@@ -84,7 +84,7 @@ Serve with default lang for now for simplicity.
 	<head>
 		<meta charset="utf-8">
 		<link rel="icon" href="/static/favicons/default.ico">
-		<title>{%s lang.GT(l, "notFound") %}</title>
+		<title>{%s lang.Get(l, "notFound") %}</title>
 		<style>
 			html, body {
 				margin: 0;
@@ -120,7 +120,7 @@ Serve with default lang for now for simplicity.
 	<body>
 		<main>
 			<h1>404</h1>
-			<h2>{%s lang.GT(l, "notFound") %}</h2>
+			<h2>{%s lang.Get(l, "notFound") %}</h2>
 		</main>
 	</body>
 	</html>

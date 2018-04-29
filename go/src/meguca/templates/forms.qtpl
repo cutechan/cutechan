@@ -14,7 +14,7 @@ Form formatted as a table, with cancel and submit buttons
 
 Render submit and cancel buttons
 {% func submit(l string, cancel bool) %}{% stripspace %}
-	<input type="submit" value="{%s lang.GT(l, "submit") %}">
+	<input type="submit" value="{%s lang.Get(l, "submit") %}">
 	{% if cancel %}
 		{%= cancel(l) %}
 	{% endif %}
@@ -23,7 +23,7 @@ Render submit and cancel buttons
 
 Renders a cancel button
 {% func cancel(l string) %}{% stripspace %}
-	<input type="button" name="cancel" value="{%s lang.GT(l, "cancel") %}">
+	<input type="button" name="cancel" value="{%s lang.Get(l, "cancel") %}">
 {% endstripspace %}{% endfunc %}
 
 Renders the tab selection butts in tabbed windows
@@ -31,7 +31,7 @@ Renders the tab selection butts in tabbed windows
 	<div class="tab-butts">
 		{% for i, name := range names %}
 			<a class="tab-link{% if i == 0 %}{% space %}tab-sel{% endif %}" data-id="{%d i %}">
-				{%s lang.GT(l, name) %}
+				{%s lang.Get(l, name) %}
 			</a>
 		{% endfor %}
 	</div>
@@ -84,25 +84,25 @@ Renders the tab selection butts in tabbed windows
 			<div class="tab-cont">
 				<div class="tab-sel" data-id="0">
 					<a class="form-selection-link" id="logout">
-						{%s lang.GT(l, "logout") %},{% space %}{%s ss.UserID %}
+						{%s lang.Get(l, "logout") %},{% space %}{%s ss.UserID %}
 					</a>
 					<a class="form-selection-link" id="logoutAll">
-						{%s lang.GT(l, "logoutAll") %}
+						{%s lang.Get(l, "logoutAll") %}
 					</a>
 					<a class="form-selection-link" id="changePassword">
-						{%s lang.GT(l, "changePassword") %}
+						{%s lang.Get(l, "changePassword") %}
 					</a>
 					{% if ss.Positions.AnyBoard >= auth.BoardOwner %}
 						<a class="form-selection-link" href="/admin/" target="_blank">
-							{%s lang.GT(l, "configureBoard") %}
+							{%s lang.Get(l, "configureBoard") %}
 						</a>
 					{% endif %}
 					{% if ss.Positions.CurBoard == auth.Admin %}
 						<a class="form-selection-link" id="createBoard">
-							{%s lang.GT(l, "createBoard") %}
+							{%s lang.Get(l, "createBoard") %}
 						</a>
 						<a class="form-selection-link" id="configureServer">
-							{%s lang.GT(l, "configureServer") %}
+							{%s lang.Get(l, "configureServer") %}
 						</a>
 					{% endif %}
 				</div>
@@ -114,13 +114,12 @@ Renders the tab selection butts in tabbed windows
 {% endstripspace %}{% endfunc %}
 
 {% func optionsModal(l string) %}{% stripspace %}
-	{% code ln := lang.Get(l) %}
 	<div id="options" class="modal">
 		{%= tabButts(l, []string{"Options", "Hotkeys"}) %}
 		<div class="tab-cont">
 			{% for i, sp := range optionSpecs %}
 				<div data-id="{%d i %}"{% if i == 0 %}{% space %}class="tab-sel"{% endif %}>
-					{%= options(sp, ln) %}
+					{%= options(l, sp) %}
 				</div>
 			{% endfor %}
 		</div>

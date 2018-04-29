@@ -54,14 +54,14 @@ func Thread(
 }
 
 func Landing(ss *auth.Session, l string) []byte {
-	title := lang.GT(l, "main")
+	title := lang.Get(l, "main")
 	html := renderLanding(l)
 	return Page(ss, l, title, html)
 }
 
 func Stickers(ss *auth.Session, l string, stickHTML []byte) []byte {
 	html := renderStickers(l, stickHTML)
-	title := lang.GT(l, "stickers")
+	title := lang.Get(l, "stickers")
 	return Page(ss, l, title, html)
 }
 
@@ -74,7 +74,7 @@ func Admin(
 	log auth.ModLogRecords,
 ) []byte {
 	html := renderAdmin(cs, staff, bans, log)
-	title := lang.GT(l, "Admin")
+	title := lang.Get(l, "Admin")
 	return Page(ss, l, title, html)
 }
 

@@ -13,7 +13,6 @@ import (
 	"meguca/assets"
 	"meguca/auth"
 	"meguca/common"
-	"meguca/config"
 	"meguca/lang"
 
 	"github.com/valyala/quicktemplate"
@@ -68,7 +67,6 @@ type BacklinksContext struct {
 }
 
 func MakePostContext(l string, t common.Thread, p *common.Post, bls common.Backlinks, index bool, all bool) PostContext {
-	ln := lang.Get(l)
 	postTime := time.Unix(p.Time, 0)
 	return PostContext{
 		Lang:      l,
@@ -80,7 +78,7 @@ func MakePostContext(l string, t common.Thread, p *common.Post, bls common.Backl
 		Board:     t.Board,
 		Subject:   t.Subject,
 		Badge:     p.Auth != "",
-		Auth:      ln.UI[p.Auth],
+		Auth:      lang.Get(l, p.Auth),
 		Name:      p.UserName,
 		Time:      readableTime(l, postTime),
 		HasFiles:  len(p.Files) > 0,
@@ -138,8 +136,8 @@ func pad(buf []byte, i int) []byte {
 
 func readableTime(l string, t time.Time) string {
 	year, m, day := t.Date()
-	month := lang.GT(l, lang.Months[int(m)-1])
-	weekday := lang.GT(l, lang.Days[int(t.Weekday())])
+	month := lang.Get(l, lang.Months[int(m)-1])
+	weekday := lang.Get(l, lang.Days[int(t.Weekday())])
 
 	// Premature optimization.
 	buf := make([]byte, 0, 17+len(weekday)+len(month))
@@ -166,11 +164,11 @@ func duration(l uint32) string {
 func fileSize(l string, size int) string {
 	switch {
 	case size < 1024:
-		return fmt.Sprintf("%d%s", size, lang.GT(l, "b"))
+		return fmt.Sprintf("%d%s", size, lang.Get(l, "b"))
 	case size < 1024*1024:
-		return fmt.Sprintf("%.2f%s", float32(size)/1024, lang.GT(l, "kb"))
+		return fmt.Sprintf("%.2f%s", float32(size)/1024, lang.Get(l, "kb"))
 	default:
-		return fmt.Sprintf("%.2f%s", float32(size)/1024/1024, lang.GT(l, "mb"))
+		return fmt.Sprintf("%.2f%s", float32(size)/1024/1024, lang.Get(l, "mb"))
 	}
 }
 
@@ -185,11 +183,10 @@ func (ctx *PostContext) Files() (files []string) {
 }
 
 func renderFile(l string, img *common.Image) string {
-	ln := lang.Get(l)
 	fileCtx := FileContext{
 		SHA1:       img.SHA1,
 		HasTitle:   img.Title != "",
-		LCopy:      ln.UI["clickToCopy"],
+		LCopy:      lang.Get(l, "clickToCopy"),
 		Title:      img.Title,
 		HasVideo:   img.Video,
 		HasAudio:   img.Audio,
@@ -249,45 +246,10 @@ func (ctx *PostContext) Backlinks() string {
 	}
 
 	linkCtx := BacklinksContext{
-		LReplies:  lang.GT(ctx.Lang, "replies"),
+		LReplies:  lang.Get(ctx.Lang, "replies"),
 		Backlinks: rendered,
 	}
 	return renderMustache("post-backlinks", &linkCtx)
-}
-
-func getPluralFormIndex(langCode string, n int) int {
-	switch langCode {
-	case "ru":
-		if n%10 == 1 && n%100 != 11 {
-			return 0
-		} else if n%10 >= 2 && n%10 <= 4 && (n%100 < 10 || n%100 >= 20) {
-			return 1
-		} else {
-			return 2
-		}
-	default:
-		if n == 1 {
-			return 0
-		} else {
-			return 1
-		}
-	}
-}
-
-// Return either the singular or plural form of a translation, depending on
-// number
-func pluralize(num int, plurals []string) string {
-	langCode := config.Get().DefaultLang
-	return plurals[getPluralFormIndex(langCode, num)]
-}
-
-// Return pluar form for two numbers.
-func pluralize2(n1, n2 int, plurals []string) string {
-	if n1+n2 == 1 {
-		return plurals[0]
-	} else {
-		return plurals[1]
-	}
 }
 
 func getByAnonCls() string {

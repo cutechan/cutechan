@@ -788,10 +788,11 @@ msgstr "Птн"
 msgid "Sat"
 msgstr "Сбт"
 
-msgid "omit"
+msgid "omitted"
 msgid_plural "omitted"
 msgstr[0] "пропущен"
 msgstr[1] "пропущено"
+msgstr[2] "пропущено"
 
 msgid "day"
 msgid_plural "days"

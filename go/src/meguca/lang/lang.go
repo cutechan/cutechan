@@ -1,9 +1,10 @@
-//go:generate go-bindata -o bin_data.go --pkg lang --nometadata --prefix ../../../../i18n ../../../../i18n/...
+//go:generate go-bindata -o bin_data.go --pkg lang --nometadata --prefix ../../../../po ../../../../po/...
 
+// Internationalization support.
 package lang
 
 import (
-	"encoding/json"
+	"github.com/leonelquinteros/gotext"
 )
 
 var (
@@ -21,42 +22,33 @@ var (
 		"Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat",
 	}
 
-	// Preloaded packs.
-	packs = map[string]Pack{}
+	// Preloaded translations.
+	packs = map[string]*gotext.Po{}
 )
 
-// Localization strings for a single language.
-// TODO(Kagami): Use plain map.
-type Pack struct {
-	UI      map[string]string
-	Plurals map[string][]string
-}
-
-// Preload all available language packs.
+// Preload all available translations.
 func Load() (err error) {
+	// Will fail on mismatch of Langs/PO files which is fine.
 	for _, langID := range Langs {
-		var pack Pack
-		// Will fail on mismatch of Langs/jsons which is fine.
-		err = json.Unmarshal(MustAsset(langID+".json"), &pack)
-		if err != nil {
-			return
-		}
+		pack := new(gotext.Po)
+		pack.Parse(MustAsset(langID + ".po"))
 		packs[langID] = pack
 	}
 	return
 }
 
-// Get pack by lang.
-// API user can potentially ask for invalid langID but this should be
-// used only in conjuction with "getReqLang".
-func Get(langID string) Pack {
+func get(langID string) *gotext.Po {
 	return packs[langID]
 }
 
-// Gettext-alike helper.
-func GT(langID, msgID string) string {
-	if text, ok := Get(langID).UI[msgID]; ok {
-		return text
-	}
-	return msgID
+// Translate given string.
+// Will panic on invalid langID, must be checked by caller.
+func Get(langID, str string) string {
+	return get(langID).Get(str)
+}
+
+// Translate plural form.
+// Will panic on invalid langID, must be checked by caller.
+func GetN(langID, str, plural string, n int) string {
+	return get(langID).GetN(str, plural, n)
 }

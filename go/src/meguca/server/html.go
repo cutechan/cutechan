@@ -79,7 +79,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 	boardConf := config.GetBoardConfig(b)
 	title := boardConf.Title
 	if b == "all" {
-		title = lang.GT(l, "aggregator")
+		title = lang.Get(l, "aggregator")
 	}
 	html = templates.Board(l, title, n, total, ss, catalog, html)
 	serveHTML(w, r, html)

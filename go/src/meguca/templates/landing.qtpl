@@ -3,7 +3,7 @@
 {% comment %}
 {% func News(l string, news []common.NewsEntry) %}{% stripspace %}
 	<section class="news">
-		<header class="news-header">{%s lang.GT(l, "news") %}</header>
+		<header class="news-header">{%s lang.Get(l, "news") %}</header>
 		<section class="news-content">
 			{% for _, item := range news %}
 				<article class="news-item">
@@ -25,13 +25,13 @@
 {% func renderLanding(l string) %}{% stripspace %}
 	<section class="landing">
 		<h1 class="landing-header">
-			{%s lang.GT(l, "landingHeader") %}
+			{%s lang.Get(l, "landingHeader") %}
 		</h1>
 		<h3 class="landing-info">
-			{%s lang.GT(l, "landingInfo") %}
+			{%s lang.Get(l, "landingInfo") %}
 		</h3>
 		<a class="button landing-button landing-threads-button" href="/all/">
-			{%s lang.GT(l, "threads") %}
+			{%s lang.Get(l, "threads") %}
 		</a>
 		<i class="landing-logo"></i>
 	</section>

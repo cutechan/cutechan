@@ -671,7 +671,7 @@ msgstr "Fri"
 msgid "Sat"
 msgstr "Sat"
 
-msgid "omit"
+msgid "omitted"
 msgid_plural "omitted"
 msgstr[0] "omitted"
 msgstr[1] "omitted"

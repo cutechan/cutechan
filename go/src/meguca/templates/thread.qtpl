@@ -11,13 +11,13 @@
 			<a name="bottom"></a>
 		{% endif %}
 		<a class="button thread-nav-item thread-nav-back" href="/{%s b %}/">
-			{%s lang.GT(l, "return") %}
+			{%s lang.Get(l, "return") %}
 		</a>
 		<a class="button thread-nav-item thread-nav-catalog" href="/{%s b %}/catalog">
-			{%s lang.GT(l, "catalog") %}
+			{%s lang.Get(l, "catalog") %}
 		</a>
 		<a class="button thread-nav-item thread-nav-reply trigger-open-reply">
-			{%s lang.GT(l, "reply") %}
+			{%s lang.Get(l, "reply") %}
 		</a>
 	</nav>
 {% endstripspace %}{% endfunc %}
@@ -72,25 +72,24 @@ Common functionality between index board pages and threads pages
 
 Omitted posts and images info
 {% func renderOmit(l string, t common.Thread, last100 bool) %}{% stripspace %}
-	{% code ln := lang.Get(l) %}
 	{% code omit, imageOmit := CalculateOmit(t) %}
 	{% code idStr := strconv.FormatUint(t.ID, 10) %}
 	<div class="omit">
 		{% if omit > 0 %}
 			<div class="omit-info">
-				{%d omit %}{% space %}{%s pluralize(omit, ln.Plurals["post"]) %}
+				{%d omit %}{% space %}{%s lang.GetN(l, "post", "", omit) %}
 				{% if imageOmit > 0 %}
-					{% space %}{%s ln.UI["and"] %}{% space %}
-					{%d imageOmit %}{% space %}{%s pluralize(imageOmit, ln.Plurals["image"]) %}
+					{% space %}{%s lang.Get(l, "and") %}{% space %}
+					{%d imageOmit %}{% space %}{%s lang.GetN(l, "image", "", imageOmit) %}
 				{% endif %}
-				{% space %}{%s pluralize2(omit, imageOmit, ln.Plurals["omitted"]) %}
+				{% space %}{%s lang.GetN(l, "omitted", "", omit + imageOmit) %}
 			</div>
 		{% endif %}
 		<a class="omit-link" href="/{%s t.Board %}/{%s idStr %}">
 			{% if last100 %}
-				{%s ln.UI["seeAll"] %}
+				{%s lang.Get(l, "seeAll") %}
 			{% else %}
-				{%s ln.UI["goToThread"] %}
+				{%s lang.Get(l, "goToThread") %}
 			{% endif %}
 		</a>
 		{% if omit > 97 && !last100 %}
@@ -108,6 +107,6 @@ Omitted posts and images info
 
 {% func last100Link(l, board, id string) %}{% stripspace %}
 	<a class="thread-link lastN-link" href="/{%s board %}/{%s id %}?last=100#bottom">
-		{%s lang.GT(l, "last") %}{% space %}100
+		{%s lang.Get(l, "last") %}{% space %}100
 	</a>
 {% endstripspace %}{% endfunc %}

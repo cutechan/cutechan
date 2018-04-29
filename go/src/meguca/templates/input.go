@@ -44,7 +44,7 @@ func (s inputSpec) wrap() inputSpec {
 // For constructing various HTML input forms
 type formWriter struct {
 	quicktemplate.Writer
-	lang lang.Pack
+	Lang string
 }
 
 // Write an element attribute to the buffer
@@ -132,9 +132,9 @@ func (w *formWriter) tag(tag string, spec inputSpec) {
 	if !spec.NoID { // To not conflict with non-unique labels
 		w.attr("id", spec.ID)
 	}
-	w.attr("title", w.lang.UI[spec.ID+"Title"])
+	w.attr("title", lang.Get(w.Lang, spec.ID+"Title"))
 	if spec.Placeholder {
-		w.attr("placeholder", w.lang.UI[spec.ID])
+		w.attr("placeholder", lang.Get(w.Lang, spec.ID))
 	}
 	if spec.Required {
 		w.attr("required", "")
@@ -159,11 +159,7 @@ func (w *formWriter) sel(spec inputSpec) {
 			w.attr("selected", "selected")
 		}
 		w.N().S(`>`)
-		text := o
-		if translated, ok := w.lang.UI[o]; ok {
-			text = translated
-		}
-		w.N().S(text)
+		w.N().S(lang.Get(w.Lang, o))
 		w.N().S("</option>")
 	}
 
@@ -177,12 +173,12 @@ func (w *formWriter) label(spec inputSpec, inside *func()) {
 	if !spec.NoID {
 		w.attr("for", spec.ID)
 	}
-	w.attr("title", w.lang.UI[spec.ID+"Title"])
+	w.attr("title", lang.Get(w.Lang, spec.ID+"Title"))
 	w.N().S(`>`)
 	if inside != nil {
 		(*inside)()
 	}
-	w.N().S(w.lang.UI[spec.ID])
+	w.N().S(lang.Get(w.Lang, spec.ID))
 	w.N().S("</label>")
 }
 
@@ -190,7 +186,7 @@ func (w *formWriter) label(spec inputSpec, inside *func()) {
 func streamtable(qw *quicktemplate.Writer, l string, specs []inputSpec) {
 	w := formWriter{
 		Writer: *qw,
-		lang:   lang.Get(l),
+		Lang:   l,
 	}
 	w.N().S("<table>")
 
@@ -206,10 +202,10 @@ func streamtable(qw *quicktemplate.Writer, l string, specs []inputSpec) {
 }
 
 // Render a single input element
-func streaminput(qw *quicktemplate.Writer, spec inputSpec, lang lang.Pack) {
+func streaminput(qw *quicktemplate.Writer, l string, spec inputSpec) {
 	w := formWriter{
 		Writer: *qw,
-		lang:   lang,
+		Lang:   l,
 	}
 	if spec.WrapLabel {
 		f := func() {
@@ -228,10 +224,10 @@ func streaminput(qw *quicktemplate.Writer, spec inputSpec, lang lang.Pack) {
 }
 
 // Render the options inputs of an options panel
-func streamoptions(qw *quicktemplate.Writer, specs []inputSpec, ln lang.Pack) {
+func streamoptions(qw *quicktemplate.Writer, l string, specs []inputSpec) {
 	w := formWriter{
 		Writer: *qw,
-		lang:   ln,
+		Lang:   l,
 	}
 	for _, s := range specs {
 		w.input(s)
