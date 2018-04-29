@@ -330,7 +330,7 @@ msgid "landingHeader"
 msgstr "The only one k-pop imageboard"
 
 msgid "landingInfo"
-msgstr ""
+msgstr "kpop.re is an anonymous kpop-oriented imageboard where you can freely share your opinion with others. You don't need to register to take participation in discussions, just go to thread list and start posting in the one you're interested in."
 
 msgid "threads"
 msgstr "All threads"
@@ -381,7 +381,7 @@ msgid "searchIdol"
 msgstr "Search idol…"
 
 msgid "aggregator"
-msgstr "Aggregator metaboard"
+msgstr "All boards"
 
 msgid "FAQ"
 msgstr "Information"
