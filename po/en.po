@@ -153,10 +153,10 @@ msgid "spoilerTitle"
 msgstr "Paste spoiler markup"
 
 msgid "search"
-msgstr "Search"
+msgstr "Search idols"
 
 msgid "searchTitle"
-msgstr "Jump to idol search"
+msgstr "Jump to idols search"
 
 msgid "smile"
 msgstr "Paste smile"

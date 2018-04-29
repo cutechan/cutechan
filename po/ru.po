@@ -141,7 +141,7 @@ msgid "spoilerTitle"
 msgstr "Вставить разметку спойлера"
 
 msgid "search"
-msgstr "Поиск"
+msgstr "Поиск айдолов"
 
 msgid "searchTitle"
 msgstr "Перейти к поиску айдолов"
