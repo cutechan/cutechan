@@ -6,13 +6,8 @@ import { getClosestID } from "../util";
 
 // Server-wide global configurations
 interface Config {
-  disableUserBoards: boolean;
   maxSize: number;
   maxFiles: number;
-  pruneThreads: boolean;
-  threadExpiryMin: number;
-  threadExpiryMax: number;
-  defaultLang: string;
   defaultCSS: string;
   imageRootOverride: string;
 }

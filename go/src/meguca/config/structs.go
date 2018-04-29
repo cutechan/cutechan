@@ -8,10 +8,8 @@ type ServerConfig struct {
 
 //easyjson:json
 type ServerPublic struct {
-	DisableUserBoards bool   `json:"disableUserBoards,omitempty"`
 	MaxSize           int64  `json:"maxSize"`
 	MaxFiles          int    `json:"maxFiles"`
-	DefaultLang       string `json:"defaultLang"`
 	DefaultCSS        string `json:"defaultCSS"`
 	ImageRootOverride string `json:"imageRootOverride,omitempty"`
 }

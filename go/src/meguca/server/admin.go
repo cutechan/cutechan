@@ -218,7 +218,6 @@ func configureServer(w http.ResponseWriter, r *http.Request) {
 	if !decodeJSON(w, r, &msg) || !isAdmin(w, r) {
 		return
 	}
-	msg.DisableUserBoards = true
 	if err := db.SetServerConfig(msg); err != nil {
 		text500(w, r, err)
 	}

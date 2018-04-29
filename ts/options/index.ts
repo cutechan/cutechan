@@ -93,7 +93,7 @@ const specs: { [id: string]: OptionSpec } = {
   lang: {
     get default() {
       const m = document.cookie.match(/[^;]lang=(\w+)/);
-      return m ? m[1] : config.defaultLang;
+      return m ? m[1] : "en";
     },
     exec(l: string) {
       const d = new Date();

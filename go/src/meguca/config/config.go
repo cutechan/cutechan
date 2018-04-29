@@ -26,11 +26,9 @@ var (
 	// Defaults contains the default server configuration values
 	DefaultServerConfig = ServerConfig{
 		ServerPublic: ServerPublic{
-			DisableUserBoards: true,
-			MaxSize:           common.DefaultMaxSize,
-			MaxFiles:          common.DefaultMaxFiles,
-			DefaultLang:       common.DefaultLang,
-			DefaultCSS:        common.DefaultCSS,
+			MaxSize:    common.DefaultMaxSize,
+			MaxFiles:   common.DefaultMaxFiles,
+			DefaultCSS: common.DefaultCSS,
 		},
 	}
 )
