@@ -148,8 +148,8 @@ func parsePostCreationForm(w http.ResponseWriter, r *http.Request) (
 	if !assertNotReadOnlyAPI(w, board, ss) {
 		return
 	}
-	var ip string
-	if ip, ok = assertNotBannedAPI(w, r, board); !ok {
+	ip, allowed := assertNotBannedAPI(w, r, board)
+	if !allowed {
 		return
 	}
 
