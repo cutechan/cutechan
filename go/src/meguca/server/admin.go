@@ -16,6 +16,7 @@ import (
 	"meguca/config"
 	"meguca/db"
 	"meguca/feeds"
+	"meguca/lang"
 	"meguca/templates"
 )
 
@@ -489,8 +490,8 @@ func serveAdmin(
 		return
 	}
 
+	l := lang.FromReq(r)
 	cs := config.GetBoardConfigsByID(boards)
-	l := getReqLang(r)
 	html := templates.Admin(ss, l, cs, staff, bans, log)
 	serveHTML(w, r, html)
 }

@@ -9,6 +9,7 @@ import (
 	"meguca/cache"
 	"meguca/common"
 	"meguca/db"
+	"meguca/lang"
 	"meguca/templates"
 )
 
@@ -213,7 +214,7 @@ func boardCacheArgs(r *http.Request, board string, catalog bool) (
 		}
 	}
 
-	k = cache.BoardKey(getReqLang(r), board, page, !catalog)
+	k = cache.BoardKey(lang.FromReq(r), board, page, !catalog)
 	if catalog {
 		f = catalogCache
 	} else {

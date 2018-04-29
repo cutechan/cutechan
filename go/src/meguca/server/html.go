@@ -31,7 +31,7 @@ func serveHTML(w http.ResponseWriter, r *http.Request, buf []byte) {
 
 func serveLanding(w http.ResponseWriter, r *http.Request) {
 	ss, _ := getSession(r, "")
-	html := templates.Landing(ss, getReqLang(r))
+	html := templates.Landing(ss, lang.FromReq(r))
 	serveHTML(w, r, html)
 }
 
@@ -75,7 +75,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 		n = p.pageNumber
 		total = p.pageTotal
 	}
-	l := getReqLang(r)
+	l := lang.FromReq(r)
 	boardConf := config.GetBoardConfig(b)
 	title := boardConf.Title
 	if b == "all" {
@@ -92,7 +92,7 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	l := getReqLang(r)
+	l := lang.FromReq(r)
 	lastN := detectLastN(r)
 	k := cache.ThreadKey(l, id, lastN)
 	html, data, _, err := cache.GetHTML(k, threadCache)
@@ -113,7 +113,7 @@ func staticTemplate(
 	r *http.Request,
 	fn func(string) string,
 ) {
-	l := getReqLang(r)
+	l := lang.FromReq(r)
 	serveHTML(w, r, []byte(fn(l)))
 }
 
@@ -127,7 +127,7 @@ func serverConfigurationForm(w http.ResponseWriter, r *http.Request) {
 	if !isAdmin(w, r) {
 		return
 	}
-	data := []byte(templates.ConfigureServer(getReqLang(r), *config.Get()))
+	data := []byte(templates.ConfigureServer(lang.FromReq(r), *config.Get()))
 	serveHTML(w, r, data)
 }
 
@@ -166,7 +166,7 @@ func crossRedirect(w http.ResponseWriter, r *http.Request) {
 func serveStickers(w http.ResponseWriter, r *http.Request) {
 	ss, _ := getSession(r, "")
 	stickHTML := []byte{}
-	html := templates.Stickers(ss, getReqLang(r), stickHTML)
+	html := templates.Stickers(ss, lang.FromReq(r), stickHTML)
 	serveHTML(w, r, html)
 }
 

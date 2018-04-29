@@ -4,6 +4,10 @@
 package lang
 
 import (
+	"net/http"
+
+	"meguca/config"
+
 	"github.com/leonelquinteros/gotext"
 )
 
@@ -51,4 +55,17 @@ func Get(langID, str string) string {
 // Will panic on invalid langID, must be checked by caller.
 func GetN(langID, str, plural string, n int) string {
 	return get(langID).GetN(str, plural, n)
+}
+
+// Get request's language.
+func FromReq(r *http.Request) string {
+	c, err := r.Cookie("lang")
+	if err != nil {
+		return config.Get().DefaultLang
+	}
+	langID := c.Value
+	if _, ok := packs[langID]; ok {
+		return langID
+	}
+	return config.Get().DefaultLang
 }
