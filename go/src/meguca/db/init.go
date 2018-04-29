@@ -161,7 +161,7 @@ var upgrades = []func(*sql.Tx) error{
 	},
 }
 
-func StartDb() (err error) {
+func StartDB() (err error) {
 	if db, err = sql.Open("postgres", ConnArgs); err != nil {
 		return
 	}
@@ -174,11 +174,11 @@ func StartDb() (err error) {
 
 	tasks := []func() error{}
 	if exists {
-		tasks = append(tasks, upgradeDb)
+		tasks = append(tasks, upgradeDB)
 	} else {
-		tasks = append(tasks, initDb)
+		tasks = append(tasks, initDB)
 	}
-	tasks = append(tasks, startKpopnetDb)
+	tasks = append(tasks, startKpopnetDB)
 	tasks = append(tasks, genPrepared)
 	if !exists {
 		tasks = append(tasks, createAdminAccount)
@@ -192,7 +192,7 @@ func StartDb() (err error) {
 	return
 }
 
-func initDb() error {
+func initDB() error {
 	log.Println("initializing database")
 
 	conf, err := config.DefaultServerConfig.MarshalJSON()
@@ -206,7 +206,7 @@ func initDb() error {
 }
 
 // Check database version perform any upgrades.
-func upgradeDb() (err error) {
+func upgradeDB() (err error) {
 	var v int
 	err = db.QueryRow(`select val from main where id = 'version'`).Scan(&v)
 	if err != nil {
@@ -251,7 +251,7 @@ func rollBack(tx *sql.Tx, err error) error {
 	return err
 }
 
-func startKpopnetDb() (err error) {
+func startKpopnetDB() (err error) {
 	return kpopnet.StartDb(db, ConnArgs)
 }
 

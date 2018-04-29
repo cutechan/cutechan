@@ -9,6 +9,7 @@ import (
 	"meguca/cache"
 	"meguca/common"
 	"meguca/db"
+	"meguca/geoip"
 	"meguca/lang"
 	"meguca/server"
 	"meguca/templates"
@@ -42,6 +43,7 @@ Options:
   -s <sitedir>  Site directory location [default: ./dist].
   -f <filedir>  Uploads directory location [default: ./uploads].
   -d <datadir>  Kpopnet data directory location [default: ./go/src/github.com/Kagami/kpopnet/data].
+  -g <geodir>   GeoIP databases directory location [default: ./geoip].
   -o <origin>   Allowed origin for Idol API [default: http://localhost:8000].
 `
 
@@ -58,6 +60,7 @@ type config struct {
 	SiteDir string `docopt:"-s"`
 	FileDir string `docopt:"-f"`
 	DataDir string `docopt:"-d"`
+	GeoDir  string `docopt:"-g"`
 	Origin  string `docopt:"-o"`
 }
 
@@ -80,17 +83,17 @@ func serve(conf config) {
 	common.ImageWebRoot = conf.FileDir
 	server.IdolOrigin = conf.Origin
 	address := fmt.Sprintf("%v:%v", conf.Host, conf.Port)
+	loadGeoIP := func() error {
+		return geoip.Load(conf.GeoDir)
+	}
 	startKpopnetFaceRec := func() error {
 		return kpopnet.StartFaceRec(conf.DataDir)
 	}
 
-	// Prepare runtime subsystems.
-	// TODO(Kagami): Check dependency order. Can we run all in parallel?
+	// Prepare subsystems.
 	err := util.RunTasks([][]util.Task{
-		[]util.Task{db.StartDb, assets.CreateDirs},
+		[]util.Task{db.StartDB, assets.CreateDirs, loadGeoIP, lang.Load, templates.CompileMustache},
 		[]util.Task{startKpopnetFaceRec},
-		[]util.Task{lang.Load},
-		[]util.Task{templates.CompileMustache},
 	})
 	if err != nil {
 		log.Fatalf("Error preparing server: %v", err)

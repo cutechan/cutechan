@@ -30,13 +30,23 @@ var (
 	NullPositions = Positions{CurBoard: NotLoggedIn, AnyBoard: NotLoggedIn}
 )
 
-// GetIP extracts the IP of a request, honouring reverse proxies, if set
+// Extract IP of the request, honouring reverse proxies, if any.
 func GetIP(r *http.Request) (string, error) {
 	ip := getIP(r)
 	if net.ParseIP(ip) == nil {
 		return "", fmt.Errorf("invalid IP: %s", ip)
 	}
 	return ip, nil
+}
+
+// Get request IP as net.IP.
+func GetByteIP(r *http.Request) (net.IP, error) {
+	ipStr := getIP(r)
+	ipData := net.ParseIP(ipStr)
+	if ipData == nil {
+		return nil, fmt.Errorf("invalid IP: %s", ipStr)
+	}
+	return ipData, nil
 }
 
 // Get IP for logging, replace with placeholder on error.

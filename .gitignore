@@ -17,6 +17,7 @@ uploads
 thumb_*.jpg
 thumb_*.png
 tags
+/geoip/
 
 /deb_dist/
 /cutechan.deb

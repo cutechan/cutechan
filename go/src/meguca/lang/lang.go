@@ -6,7 +6,7 @@ package lang
 import (
 	"net/http"
 
-	"meguca/config"
+	"meguca/geoip"
 
 	"github.com/leonelquinteros/gotext"
 )
@@ -61,11 +61,22 @@ func GetN(langID, str, plural string, n int) string {
 func FromReq(r *http.Request) string {
 	c, err := r.Cookie("lang")
 	if err != nil {
-		return config.Get().DefaultLang
+		return DefaultFromReq(r)
 	}
 	langID := c.Value
 	if _, ok := packs[langID]; ok {
 		return langID
 	}
-	return config.Get().DefaultLang
+	return DefaultFromReq(r)
+}
+
+// Try to guess appropriate default language based on request's IP.
+func DefaultFromReq(r *http.Request) string {
+	code := geoip.CountyFromReq(r)
+	switch code {
+	case "RU", "BY", "UA", "KZ":
+		return "ru"
+	default:
+		return "en"
+	}
 }
