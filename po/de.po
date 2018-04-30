@@ -81,7 +81,7 @@ msgid "imageRootOverrideTitle"
 msgstr "Wenn du Bilder von einer anderen Quelle hosten willst, schreibe hier die volle Quellenadresse. Lasse das Feld leer um die Standardadresse zu benutzen. Beispiel: 'https://images.meguca.org'"
 
 msgid "lang"
-msgstr "Sprache"
+msgstr "Language"
 
 msgid "langTitle"
 msgstr "Benutzeroberflächensprache ändern"
@@ -261,16 +261,19 @@ msgid "workModeToggleTitle"
 msgstr "Versteckt Bilder"
 
 msgid "light"
-msgstr "Hell"
+msgstr "hell"
 
 msgid "dark"
-msgstr "Dunkel"
+msgstr "dunkel"
 
 msgid "en"
-msgstr "English"
+msgstr "english"
 
 msgid "ru"
 msgstr "русский"
+
+msgid "de"
+msgstr "deutsch"
 
 msgid "Options"
 msgstr "Optionen"
@@ -324,22 +327,22 @@ msgid "Reason"
 msgstr "Grund"
 
 msgid "By"
-msgstr "von"
+msgstr "Von"
 
 msgid "Date"
 msgstr "Datum"
 
 msgid "Expires"
-msgstr "läuft ab"
+msgstr "Läuft ab"
 
 msgid "Title"
 msgstr "Titel"
 
 msgid "Read only"
-msgstr "nur Leserecht"
+msgstr "Nur Leserecht"
 
 msgid "Mod only"
-msgstr "nur Moderatoren"
+msgstr "Nur Moderatoren"
 
 msgid "Access mode"
 msgstr "Zugriffsmodus"
@@ -522,7 +525,7 @@ msgid "ban"
 msgstr "Bann"
 
 msgid "by"
-msgstr "von"
+msgstr "Von"
 
 msgid "cancel"
 msgstr "Abbrechen"
@@ -564,7 +567,7 @@ msgid "done"
 msgstr "Fertig"
 
 msgid "expires"
-msgstr "läuft ab"
+msgstr "Läuft ab"
 
 msgid "global"
 msgstr "Global"
@@ -732,61 +735,61 @@ msgid "mb"
 msgstr "Mb"
 
 msgid "Jan"
-msgstr "Januar"
+msgstr "Jan"
 
 msgid "Feb"
-msgstr "Februar"
+msgstr "Feb"
 
 msgid "Mar"
-msgstr "März"
+msgstr "Mär"
 
 msgid "Apr"
-msgstr "April"
+msgstr "Apr"
 
 msgid "May"
 msgstr "Mai"
 
 msgid "Jun"
-msgstr "Juni"
+msgstr "Jun"
 
 msgid "Jul"
-msgstr "Juli"
+msgstr "Jul"
 
 msgid "Aug"
-msgstr "August"
+msgstr "Aug"
 
 msgid "Sep"
-msgstr "September"
+msgstr "Sep"
 
 msgid "Oct"
-msgstr "Oktober"
+msgstr "Okt"
 
 msgid "Nov"
-msgstr "November"
+msgstr "Nov"
 
 msgid "Dec"
-msgstr "Dezember"
+msgstr "Dez"
 
 msgid "Sun"
-msgstr "Sonntag"
+msgstr "Son"
 
 msgid "Mon"
-msgstr "Montag"
+msgstr "Mon"
 
 msgid "Tue"
-msgstr "Dienstag"
+msgstr "Die"
 
 msgid "Wed"
-msgstr "Mittwoch"
+msgstr "Mit"
 
 msgid "Thu"
-msgstr "Donnerstag"
+msgstr "Don"
 
 msgid "Fri"
-msgstr "Freitag"
+msgstr "Fre"
 
 msgid "Sat"
-msgstr "Samstag"
+msgstr "Sam"
 
 msgid "omitted"
 msgid_plural "omitted"

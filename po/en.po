@@ -272,6 +272,9 @@ msgstr "english"
 msgid "ru"
 msgstr "русский"
 
+msgid "de"
+msgstr "deutsch"
+
 msgid "Options"
 msgstr "Options"
 
