@@ -172,19 +172,20 @@ export function relativeTime(then: number): string {
 
   const divide = [60, 24, 30, 12];
   const unit = ["minute", "hour", "day", "month"];
+  const unitPlural = ["minutes", "hours", "days", "months"];
   for (let i = 0; i < divide.length; i++) {
     if (time < divide[i]) {
-      return ago(unit[i], time, isFuture);
+      return ago(unit[i], unitPlural[i], time, isFuture);
     }
     time = Math.floor(time / divide[i]);
   }
 
-  return ago("year", time, isFuture);
+  return ago("year", "years", time, isFuture);
 }
 
 // Renders "56 minutes ago" or "in 56 minutes" like relative time text.
-function ago(unit: string, time: number, isFuture: boolean): string {
-  const count = `${time} ${ngettext(unit, "", time)}`;
+function ago(msgid1: string, msgid2: string, time: number, isFuture: boolean): string {
+  const count = `${time} ${ngettext(msgid1, msgid2, time)}`;
   return isFuture
     ? `${_("in")} ${count}`
     : `${count} ${_("ago")}`;

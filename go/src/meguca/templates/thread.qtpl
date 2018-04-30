@@ -77,12 +77,12 @@ Omitted posts and images info
 	<div class="omit">
 		{% if omit > 0 %}
 			<div class="omit-info">
-				{%d omit %}{% space %}{%s lang.GetN(l, "post", "", omit) %}
+				{%d omit %}{% space %}{%s lang.GetN(l, "post", "posts", omit) %}
 				{% if imageOmit > 0 %}
 					{% space %}{%s lang.Get(l, "and") %}{% space %}
-					{%d imageOmit %}{% space %}{%s lang.GetN(l, "image", "", imageOmit) %}
+					{%d imageOmit %}{% space %}{%s lang.GetN(l, "image", "images", imageOmit) %}
 				{% endif %}
-				{% space %}{%s lang.GetN(l, "omitted", "", omit + imageOmit) %}
+				{% space %}{%s lang.GetN(l, "omitted", "omitted", omit + imageOmit) %}
 			</div>
 		{% endif %}
 		<a class="omit-link" href="/{%s t.Board %}/{%s idStr %}">
