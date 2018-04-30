@@ -80,7 +80,7 @@ Omitted posts and images info
 				{%d omit %}{% space %}{%s lang.GetN(l, "post", "posts", omit) %}
 				{% if imageOmit > 0 %}
 					{% space %}{%s lang.Get(l, "and") %}{% space %}
-					{%d imageOmit %}{% space %}{%s lang.GetN(l, "image", "images", imageOmit) %}
+					{%d imageOmit %}{% space %}{%s lang.GetN(l, "file", "files", imageOmit) %}
 				{% endif %}
 				{% space %}{%s lang.GetN(l, "omitted", "omitted", omit + imageOmit) %}
 			</div>

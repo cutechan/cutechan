@@ -644,8 +644,8 @@ msgid_plural "hours"
 msgstr[0] "Stunde"
 msgstr[1] "Stunden"
 
-msgid "image"
-msgid_plural "images"
+msgid "file"
+msgid_plural "files"
 msgstr[0] "Datei"
 msgstr[1] "Dateien"
 
