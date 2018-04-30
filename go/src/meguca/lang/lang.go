@@ -14,7 +14,7 @@ import (
 var (
 	// Available languages.
 	Langs = []string{
-		"en", "ru",
+		"en", "ru", "de",
 	}
 
 	// Some UI constants.
@@ -76,6 +76,8 @@ func DefaultFromReq(r *http.Request) string {
 	switch code {
 	case "RU", "BY", "UA", "KZ":
 		return "ru"
+	case "DE", "CH":
+		return "de"
 	default:
 		return "en"
 	}
