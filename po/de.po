@@ -2,12 +2,6 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-msgid "boardExpiry"
-msgstr "Board Ablaufzeit"
-
-msgid "boardExpiryTitle"
-msgstr "Anzahl an Tagen ohne neue Posts bevor das Board gelöscht wird"
-
 msgid "boardName"
 msgstr "Name"
 
@@ -20,47 +14,20 @@ msgstr "Titel"
 msgid "boardTitleTitle"
 msgstr "Titel des neuen Boards, z.B. 'K-pop musik'. Bis zu 100 Zeichen lang."
 
-msgid "captcha"
-msgstr "Captcha"
-
-msgid "captchaTitle"
-msgstr "Fragt den Benutzer einen Captcha auszufüllen für Dinge wie Registration und Thread-Erstellung."
-
 msgid "defaultCSS"
 msgstr "Standard Theme"
 
 msgid "defaultCSSTitle"
 msgstr "Falls der Benutzer nichts angibt, wird dieses Theme standardmässig geladen."
 
-msgid "defaultLang"
-msgstr "Standardsprache"
-
-msgid "defaultLangTitle"
-msgstr "Sprachpaket das standardmässig geladen werden soll"
-
-msgid "hideThumbs"
-msgstr "Verstecke Thumbnails"
-
-msgid "hideThumbsTitle"
-msgstr "Zeige einen [Anzeigen] Knopf an anstatt Thumbnails"
-
 msgid "id"
 msgstr "Anmeldung"
-
-msgid "idTitle"
-msgstr ""
 
 msgid "ops"
 msgstr "Operationen"
 
-msgid "opsTitle"
-msgstr ""
-
 msgid "identity"
 msgstr "Identität"
-
-msgid "identityTitle"
-msgstr ""
 
 msgid "popupBackdrop"
 msgstr "Popup Hintergrund"
@@ -100,9 +67,6 @@ msgstr "Maximale Anzahl von Dateien pro Post"
 
 msgid "newPassword"
 msgstr "Neues Passwort"
-
-msgid "newPasswordTitle"
-msgstr ""
 
 msgid "newPost"
 msgstr "Neuer Post"
@@ -149,9 +113,6 @@ msgstr "Gehe zu Idols-Suche"
 msgid "smile"
 msgstr "Kopiere Emoticon"
 
-msgid "smileTitle"
-msgstr ""
-
 msgid "previewPost"
 msgstr "Postvorschau"
 
@@ -160,9 +121,6 @@ msgstr "Postvorschaumodus umschalten"
 
 msgid "staffBadge"
 msgstr "Mitarbeiterausweis anzeigen"
-
-msgid "staffBadgeTitle"
-msgstr ""
 
 msgid "notification"
 msgstr "Benachrichtigung"
@@ -173,32 +131,11 @@ msgstr "Werde auf dem Desktop benachrichtigt wenn du zitiert wirst"
 msgid "oldPassword"
 msgstr "Altes Passwort"
 
-msgid "oldPasswordTitle"
-msgstr ""
-
 msgid "password"
 msgstr "Passwort"
 
-msgid "passwordTitle"
-msgstr ""
-
-msgid "pruneBoards"
-msgstr "Lösche Boards"
-
-msgid "pruneBoardsTitle"
-msgstr "Lösche Boards die seit N Tagen keine neuen Posts hatten"
-
-msgid "pruneThreads"
-msgstr "Lösche Threads"
-
-msgid "pruneThreadsTitle"
-msgstr "Lösche Threads die seit N Tagen keine neuen Posts hatten"
-
 msgid "register"
 msgstr "Registrierung"
-
-msgid "registerTitle"
-msgstr ""
 
 msgid "relativeTime"
 msgstr "Relativer Zeitstempel"
@@ -212,41 +149,11 @@ msgstr "Scroll zum Ende"
 msgid "scrollToBottomTitle"
 msgstr "Scroll die Seite zum Ende vom neuen Post"
 
-msgid "repeat"
-msgstr "Wiederholen"
-
-msgid "repeatTitle"
-msgstr ""
-
-msgid "staffTitle"
-msgstr "Mitarbeitertitel"
-
-msgid "staffTitleTitle"
-msgstr "Zeige deinen Mitarbeitertitel in der Postkopfzeile an"
-
 msgid "theme"
 msgstr "Theme"
 
 msgid "themeTitle"
 msgstr "Wähle CSS Theme"
-
-msgid "threadExpiryMax"
-msgstr "Maximale Thread Ablaufzeit"
-
-msgid "threadExpiryMaxTitle"
-msgstr "Anzahl Tage ohne neue Posts bevor ein Thread gelöscht wird"
-
-msgid "threadExpiryMin"
-msgstr "Minimale Thread Ablaufzeit"
-
-msgid "threadExpiryMinTitle"
-msgstr "Anzahl Tage ohne neue Posts bevor ein Thread gelöscht wird"
-
-msgid "title"
-msgstr "Titel"
-
-msgid "titleTitle"
-msgstr "Kurzer beschreibender Titel des Boards"
 
 msgid "workMode"
 msgstr "Arbeitsmodus"
@@ -524,14 +431,8 @@ msgstr "Übernehmen"
 msgid "ban"
 msgstr "Bann"
 
-msgid "by"
-msgstr "Von"
-
 msgid "cancel"
 msgstr "Abbrechen"
-
-msgid "captchaID"
-msgstr "Captcha ID"
 
 msgid "catalog"
 msgstr "Katalog"
@@ -569,12 +470,6 @@ msgstr "Fertig"
 msgid "expires"
 msgstr "Läuft ab"
 
-msgid "global"
-msgstr "Global"
-
-msgid "loadCaptcha"
-msgstr "Klicke um einen Captcha zu laden"
-
 msgid "logout"
 msgstr "Abmelden"
 
@@ -587,32 +482,11 @@ msgstr "Neuer Thread"
 msgid "options"
 msgstr "Optionen"
 
-msgid "ownNoBoards"
-msgstr "Dir gehören keine Boards"
-
-msgid "pointToCatalog"
-msgstr "Zeige zum Katalog"
-
-msgid "post"
-msgstr "Post"
-
-msgid "posterID"
-msgstr "Poster ID"
-
 msgid "reply"
 msgstr "Antworten"
 
-msgid "report"
-msgstr "Melden"
-
-msgid "reason"
-msgstr "Grund"
-
 msgid "return"
 msgstr "Zurück"
-
-msgid "searchTooltip"
-msgstr "Filtriere Threads nach Thema oder Boardname zwischen Backslashes\. Akzeptiert reguläre Ausdrücke."
 
 msgid "sortMode"
 msgstr "Threads sortieren nach"
@@ -650,9 +524,6 @@ msgstr "Antworten"
 msgid "mustMatch"
 msgstr "Passwörter müssen übereinstimmen"
 
-msgid "invalidCaptcha"
-msgstr "Invalider captcha"
-
 msgid "quoted"
 msgstr "Du wurdest zitiert"
 
@@ -662,23 +533,8 @@ msgstr "Aktualisieren"
 msgid "sessionExpired"
 msgstr "Anmeldesitzung ist abgelaufen"
 
-msgid "thumbnailing"
-msgstr "Thumbnailen…"
-
-msgid "unfinishedPost"
-msgstr "Du hast einen unvollendeten Post"
-
-msgid "uploadProgress"
-msgstr "hochgeladen..."
-
 msgid "last"
 msgstr "letzter"
-
-msgid "finished"
-msgstr "Abgeschlossen"
-
-msgid "confirmDelete"
-msgstr "Alle Posts dieser IP löschen?"
 
 msgid "clickToCopy"
 msgstr "Klicke zum kopieren"
@@ -688,24 +544,6 @@ msgstr "vor"
 
 msgid "and"
 msgstr "und"
-
-msgid "banned"
-msgstr "BENUTZER WURDE FÜR DIESEN POST GEBANNT"
-
-msgid "contractImages"
-msgstr "Bilder schrumpfen"
-
-msgid "deleteBySameIP"
-msgstr "Alles nach IP löschen"
-
-msgid "expandImages"
-msgstr "Bilder vergrössern"
-
-msgid "expand"
-msgstr "vergrössern"
-
-msgid "hide"
-msgstr "Verstecken"
 
 msgid "in"
 msgstr "in"

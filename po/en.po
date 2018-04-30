@@ -2,12 +2,6 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 
-msgid "boardExpiry"
-msgstr "Board expiry time"
-
-msgid "boardExpiryTitle"
-msgstr "Number of days without new posts before a board is deleted"
-
 msgid "boardName"
 msgstr "Name"
 
@@ -20,47 +14,20 @@ msgstr "Title"
 msgid "boardTitleTitle"
 msgstr "Title of the new board, such as 'K-pop music'. Up to 100 characters long."
 
-msgid "captcha"
-msgstr "Captcha"
-
-msgid "captchaTitle"
-msgstr "Ask users to complete a captcha for certain tasks like registration and thread creation"
-
 msgid "defaultCSS"
 msgstr "Default theme"
 
 msgid "defaultCSSTitle"
 msgstr "Theme to load by default, when none is set by the client"
 
-msgid "defaultLang"
-msgstr "Default language"
-
-msgid "defaultLangTitle"
-msgstr "Language pack to load by default"
-
-msgid "hideThumbs"
-msgstr "Hide thumbnails"
-
-msgid "hideThumbsTitle"
-msgstr "Display a [Show] button in place of thumbnails"
-
 msgid "id"
 msgstr "Login"
-
-msgid "idTitle"
-msgstr ""
 
 msgid "ops"
 msgstr "Operations"
 
-msgid "opsTitle"
-msgstr ""
-
 msgid "identity"
 msgstr "Identity"
-
-msgid "identityTitle"
-msgstr ""
 
 msgid "popupBackdrop"
 msgstr "Popup backdrop"
@@ -100,9 +67,6 @@ msgstr "Maximum number of files per post"
 
 msgid "newPassword"
 msgstr "New password"
-
-msgid "newPasswordTitle"
-msgstr ""
 
 msgid "newPost"
 msgstr "New post"
@@ -149,9 +113,6 @@ msgstr "Jump to idols search"
 msgid "smile"
 msgstr "Paste smile"
 
-msgid "smileTitle"
-msgstr ""
-
 msgid "previewPost"
 msgstr "Preview post"
 
@@ -160,9 +121,6 @@ msgstr "Toggle post preview mode"
 
 msgid "staffBadge"
 msgstr "Show staff badge"
-
-msgid "staffBadgeTitle"
-msgstr ""
 
 msgid "notification"
 msgstr "Notification"
@@ -173,32 +131,11 @@ msgstr "Get desktop notifications when quoted"
 msgid "oldPassword"
 msgstr "Old password"
 
-msgid "oldPasswordTitle"
-msgstr ""
-
 msgid "password"
 msgstr "Password"
 
-msgid "passwordTitle"
-msgstr ""
-
-msgid "pruneBoards"
-msgstr "Prune boards"
-
-msgid "pruneBoardsTitle"
-msgstr "Delete boards that have not had any new posts for N days"
-
-msgid "pruneThreads"
-msgstr "Prune threads"
-
-msgid "pruneThreadsTitle"
-msgstr "Delete threads that have not had any posts in N days"
-
 msgid "register"
 msgstr "Register"
-
-msgid "registerTitle"
-msgstr ""
 
 msgid "relativeTime"
 msgstr "Relative Timestamps"
@@ -212,41 +149,11 @@ msgstr "Scroll to bottom"
 msgid "scrollToBottomTitle"
 msgstr "Scroll page to bottom on new post"
 
-msgid "repeat"
-msgstr "Repeat"
-
-msgid "repeatTitle"
-msgstr ""
-
-msgid "staffTitle"
-msgstr "Staff Title"
-
-msgid "staffTitleTitle"
-msgstr "Display your staff title in the post header"
-
 msgid "theme"
 msgstr "Theme"
 
 msgid "themeTitle"
 msgstr "Select CSS theme"
-
-msgid "threadExpiryMax"
-msgstr "Maximal thread expiry time"
-
-msgid "threadExpiryMaxTitle"
-msgstr "Number of days without new posts before a thread is deleted"
-
-msgid "threadExpiryMin"
-msgstr "Minimal thread expiry time"
-
-msgid "threadExpiryMinTitle"
-msgstr "Number of days without new posts before a thread is deleted"
-
-msgid "title"
-msgstr "Title"
-
-msgid "titleTitle"
-msgstr "Short descriptive title of the board"
 
 msgid "workMode"
 msgstr "Work mode"
@@ -524,14 +431,8 @@ msgstr "Apply"
 msgid "ban"
 msgstr "Ban"
 
-msgid "by"
-msgstr "By"
-
 msgid "cancel"
 msgstr "Cancel"
-
-msgid "captchaID"
-msgstr "Captcha ID"
 
 msgid "catalog"
 msgstr "Catalog"
@@ -569,12 +470,6 @@ msgstr "Done"
 msgid "expires"
 msgstr "Expires"
 
-msgid "global"
-msgstr "Global"
-
-msgid "loadCaptcha"
-msgstr "Click to load captcha"
-
 msgid "logout"
 msgstr "Logout"
 
@@ -587,32 +482,11 @@ msgstr "New thread"
 msgid "options"
 msgstr "Options"
 
-msgid "ownNoBoards"
-msgstr "You don't own any boards"
-
-msgid "pointToCatalog"
-msgstr "Point to Catalog"
-
-msgid "post"
-msgstr "Post"
-
-msgid "posterID"
-msgstr "Poster ID"
-
 msgid "reply"
 msgstr "Reply"
 
-msgid "report"
-msgstr "Report"
-
-msgid "reason"
-msgstr "Reason"
-
 msgid "return"
 msgstr "Return"
-
-msgid "searchTooltip"
-msgstr "Filter threads by subject, body or board name encased in backslashes. Accepts Regular expressions."
 
 msgid "sortMode"
 msgstr "Sort threads by"
@@ -650,9 +524,6 @@ msgstr "Replies"
 msgid "mustMatch"
 msgstr "Passwords must match"
 
-msgid "invalidCaptcha"
-msgstr "Invalid captcha"
-
 msgid "quoted"
 msgstr "You have been quoted"
 
@@ -662,23 +533,8 @@ msgstr "Refresh"
 msgid "sessionExpired"
 msgstr "Login session expired"
 
-msgid "thumbnailing"
-msgstr "Thumbnailing…"
-
-msgid "unfinishedPost"
-msgstr "You have an unfinished post"
-
-msgid "uploadProgress"
-msgstr "uploaded…"
-
 msgid "last"
 msgstr "Last"
-
-msgid "finished"
-msgstr "Finished"
-
-msgid "confirmDelete"
-msgstr "Delete all posts by this IP?"
 
 msgid "clickToCopy"
 msgstr "Click to copy"
@@ -688,24 +544,6 @@ msgstr "ago"
 
 msgid "and"
 msgstr "and"
-
-msgid "banned"
-msgstr "USER WAS BANNED FOR THIS POST"
-
-msgid "contractImages"
-msgstr "Contract Images"
-
-msgid "deleteBySameIP"
-msgstr "Delete all by IP"
-
-msgid "expandImages"
-msgstr "Expand Images"
-
-msgid "expand"
-msgstr "Expand"
-
-msgid "hide"
-msgstr "Hide"
 
 msgid "in"
 msgstr "in"

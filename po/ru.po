@@ -2,12 +2,6 @@ msgid ""
 msgstr ""
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 
-msgid "boardExpiry"
-msgstr "Время жизни доски"
-
-msgid "boardExpiryTitle"
-msgstr "Число дней без постов до автоудаления доски"
-
 msgid "boardName"
 msgstr "Название"
 
@@ -20,47 +14,20 @@ msgstr "Заголовок"
 msgid "boardTitleTitle"
 msgstr "Заголовок новый доски, например «Корейская поп-музыка», максимум 100 символов"
 
-msgid "captcha"
-msgstr "Капча"
-
-msgid "captchaTitle"
-msgstr "Заставлять пользователей вводить капчу для некоторых действий, например при регистрации и создании треда"
-
 msgid "defaultCSS"
 msgstr "Тема по умолчанию"
 
 msgid "defaultCSSTitle"
 msgstr "Используемая по умолчанию тема"
 
-msgid "defaultLang"
-msgstr "Язык по умолчанию"
-
-msgid "defaultLangTitle"
-msgstr "Используемый по умолчанию язык"
-
-msgid "hideThumbs"
-msgstr "Скрыть превью"
-
-msgid "hideThumbsTitle"
-msgstr "Отображать кнопку [Показать] на месте превью"
-
 msgid "id"
 msgstr "Логин"
-
-msgid "idTitle"
-msgstr ""
 
 msgid "ops"
 msgstr "Действия"
 
-msgid "opsTitle"
-msgstr ""
-
 msgid "identity"
 msgstr "Персонализация"
-
-msgid "identityTitle"
-msgstr ""
 
 msgid "popupBackdrop"
 msgstr "Закрывать по нажатию на фон"
@@ -100,9 +67,6 @@ msgstr "Максимальное число файлов в посте"
 
 msgid "newPassword"
 msgstr "Новый пароль"
-
-msgid "newPasswordTitle"
-msgstr ""
 
 msgid "newPost"
 msgstr "Новый пост"
@@ -149,9 +113,6 @@ msgstr "Перейти к поиску айдолов"
 msgid "smile"
 msgstr "Вставить смайл"
 
-msgid "smileTitle"
-msgstr ""
-
 msgid "previewPost"
 msgstr "Предпросмотр поста"
 
@@ -160,9 +121,6 @@ msgstr "Переключить режим предпросмотра"
 
 msgid "staffBadge"
 msgstr "Отобразить лычку модератора"
-
-msgid "staffBadgeTitle"
-msgstr ""
 
 msgid "notification"
 msgstr "Уведомление"
@@ -173,32 +131,11 @@ msgstr "Получать уведомления на рабочий стол п�
 msgid "oldPassword"
 msgstr "Старый пароль"
 
-msgid "oldPasswordTitle"
-msgstr ""
-
 msgid "password"
 msgstr "Пароль"
 
-msgid "passwordTitle"
-msgstr ""
-
-msgid "pruneBoards"
-msgstr "Автоочистка досок"
-
-msgid "pruneBoardsTitle"
-msgstr "Удалять доски на которых давно не было постов"
-
-msgid "pruneThreads"
-msgstr "Автоочистка тредов"
-
-msgid "pruneThreadsTitle"
-msgstr "Удалять треды в которых давно не было постов"
-
 msgid "register"
 msgstr "Регистрация"
-
-msgid "registerTitle"
-msgstr ""
 
 msgid "relativeTime"
 msgstr "Относительное время"
@@ -212,41 +149,11 @@ msgstr "Проматывать вниз"
 msgid "scrollToBottomTitle"
 msgstr "Проматывать страницу в низ при добавлении нового поста"
 
-msgid "repeat"
-msgstr "Ещё раз"
-
-msgid "repeatTitle"
-msgstr ""
-
-msgid "staffTitle"
-msgstr "Метка модератора"
-
-msgid "staffTitleTitle"
-msgstr "Отображать модераторский статус в посте"
-
 msgid "theme"
 msgstr "Тема сайта"
 
 msgid "themeTitle"
 msgstr "Выбрать тему сайта"
-
-msgid "threadExpiryMax"
-msgstr "Максимальное время жизни треда"
-
-msgid "threadExpiryMaxTitle"
-msgstr "Число дней без новых постов перед удалением треда"
-
-msgid "threadExpiryMin"
-msgstr "Минимальное время жизни треда"
-
-msgid "threadExpiryMinTitle"
-msgstr "Число дней без новых постов перед удалением треда"
-
-msgid "title"
-msgstr "Заголовок"
-
-msgid "titleTitle"
-msgstr "Короткий заголовок доски"
 
 msgid "workMode"
 msgstr "Режим босса"
@@ -524,14 +431,8 @@ msgstr "Применить"
 msgid "ban"
 msgstr "Бан"
 
-msgid "by"
-msgstr "Автор"
-
 msgid "cancel"
 msgstr "Отменить"
-
-msgid "captchaID"
-msgstr "ID капчи"
 
 msgid "catalog"
 msgstr "Каталог"
@@ -569,12 +470,6 @@ msgstr "Готово"
 msgid "expires"
 msgstr "Истекает"
 
-msgid "global"
-msgstr "Глобальный"
-
-msgid "loadCaptcha"
-msgstr "Кликните для загрузки капчи"
-
 msgid "logout"
 msgstr "Выйти"
 
@@ -587,32 +482,11 @@ msgstr "Новый тред"
 msgid "options"
 msgstr "Настройки сайта"
 
-msgid "ownNoBoards"
-msgstr "Вы не владеете ни одной доской"
-
-msgid "pointToCatalog"
-msgstr "Перейти к каталогу"
-
-msgid "post"
-msgstr "Пост"
-
-msgid "posterID"
-msgstr "ID постера"
-
 msgid "reply"
 msgstr "Ответить"
 
-msgid "report"
-msgstr "Пожаловаться"
-
-msgid "reason"
-msgstr "Причина"
-
 msgid "return"
 msgstr "Назад"
-
-msgid "searchTooltip"
-msgstr "Фильтровать треды по теме, содержанию и имени доски (обрамлённую бэкслэшами), допустимы регулярные выражения"
 
 msgid "sortMode"
 msgstr "Сортировать треды по"
@@ -650,9 +524,6 @@ msgstr "Ответы"
 msgid "mustMatch"
 msgstr "Пароли должны совпадать"
 
-msgid "invalidCaptcha"
-msgstr "Неверная капча"
-
 msgid "quoted"
 msgstr "Вас процитировали"
 
@@ -662,23 +533,8 @@ msgstr "Обновить"
 msgid "sessionExpired"
 msgstr "Сессия истекла"
 
-msgid "thumbnailing"
-msgstr "Генерация превью…"
-
-msgid "unfinishedPost"
-msgstr "У вас есть незавершённый пост"
-
-msgid "uploadProgress"
-msgstr "загрузка…"
-
 msgid "last"
 msgstr "Последние"
-
-msgid "finished"
-msgstr "Завершено"
-
-msgid "confirmDelete"
-msgstr "Удалить все посты с этого IP?"
 
 msgid "clickToCopy"
 msgstr "Нажмите, чтобы скопировать"
@@ -688,24 +544,6 @@ msgstr "назад"
 
 msgid "and"
 msgstr "и"
-
-msgid "banned"
-msgstr "USER WAS BANNED FOR THIS POST"
-
-msgid "contractImages"
-msgstr "Свернуть изображения"
-
-msgid "deleteBySameIP"
-msgstr "Удалить всё с этого IP"
-
-msgid "expandImages"
-msgstr "Развернуть изображения"
-
-msgid "expand"
-msgstr "Развернуть"
-
-msgid "hide"
-msgstr "Скрыть"
 
 msgid "in"
 msgstr "через"
