@@ -539,14 +539,14 @@ msgstr "Last"
 msgid "clickToCopy"
 msgstr "Click to copy"
 
-msgid "ago"
-msgstr "ago"
-
 msgid "and"
 msgstr "and"
 
-msgid "in"
-msgstr "in"
+msgid "%s %s ago"
+msgstr "%s %s ago"
+
+msgid "in %s %s"
+msgstr "in %s %s"
 
 msgid "justNow"
 msgstr "just now"

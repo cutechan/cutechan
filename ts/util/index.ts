@@ -209,5 +209,5 @@ export function rotateRecent<T>(list: T[], item: T, max: number): T[] {
 
 /** Printf-alike helper. */
 export function printf(s: string, ...args: any[]): string {
-  return s.replace(/%s/, () => args.shift());
+  return s.replace(/%s/g, () => args.shift());
 }

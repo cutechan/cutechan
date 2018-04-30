@@ -8,7 +8,7 @@ import { ImageData } from "../common";
 import { _, days, months, ngettext } from "../lang";
 import { Backlinks, Post, sourcePath, Thread, thumbPath } from "../posts";
 import { mine } from "../state";
-import { Dict, makeNode, pad } from "../util";
+import { Dict, makeNode, pad, printf } from "../util";
 
 export class TemplateContext {
   private template: string;
@@ -185,8 +185,7 @@ export function relativeTime(then: number): string {
 
 // Renders "56 minutes ago" or "in 56 minutes" like relative time text.
 function ago(msgid1: string, msgid2: string, time: number, isFuture: boolean): string {
-  const count = `${time} ${ngettext(msgid1, msgid2, time)}`;
-  return isFuture
-    ? `${_("in")} ${count}`
-    : `${count} ${_("ago")}`;
+  const unit = ngettext(msgid1, msgid2, time);
+  return isFuture ? printf(_("in %s %s"), time, unit)
+                  : printf(_("%s %s ago"), time, unit);
 }

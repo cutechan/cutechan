@@ -539,14 +539,14 @@ msgstr "Последние"
 msgid "clickToCopy"
 msgstr "Нажмите, чтобы скопировать"
 
-msgid "ago"
-msgstr "назад"
-
 msgid "and"
 msgstr "и"
 
-msgid "in"
-msgstr "через"
+msgid "%s %s ago"
+msgstr "%s %s назад"
+
+msgid "in %s %s"
+msgstr "через %s %s"
 
 msgid "justNow"
 msgstr "только что"
