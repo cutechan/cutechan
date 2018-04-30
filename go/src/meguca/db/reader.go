@@ -183,7 +183,7 @@ type PostStats struct {
 
 // GetAllBoardCatalog retrieves all OPs for the "/all/" meta-board.
 func GetAllBoardCatalog() (common.Board, error) {
-	r, err := prepared["get_all_board"].Query()
+	r, err := prepared["get_all_catalog"].Query()
 	if err != nil {
 		return nil, err
 	}
@@ -192,7 +192,7 @@ func GetAllBoardCatalog() (common.Board, error) {
 
 // GetBoardCatalog retrieves all OPs of a single board.
 func GetBoardCatalog(board string) (common.Board, error) {
-	r, err := prepared["get_board"].Query(board)
+	r, err := prepared["get_catalog"].Query(board)
 	if err != nil {
 		return nil, err
 	}
