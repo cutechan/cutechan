@@ -10,3 +10,4 @@ LEFT JOIN images i ON i.sha1 = pf.file_hash
 LEFT JOIN accounts a ON a.id = p.name
 WHERE NOT b.modOnly
 ORDER BY sticky DESC, bumpTime DESC
+LIMIT 100

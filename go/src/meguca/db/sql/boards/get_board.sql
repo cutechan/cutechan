@@ -9,3 +9,4 @@ LEFT JOIN images i ON i.sha1 = pf.file_hash
 LEFT JOIN accounts a ON a.id = p.name
 WHERE t.board = $1
 ORDER BY sticky DESC, bumpTime DESC
+LIMIT 100
