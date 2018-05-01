@@ -221,12 +221,6 @@ html, body {
   flex: 1 auto;
 }
 
-.ban {
-  margin-top: 2em;
-  padding: 1em;
-  text-align: center;
-}
-
 .thread {
   display: flex;
   flex-direction: column;
@@ -763,12 +757,8 @@ input[type=number], input[type=text], input[type=password], textarea {
 }
 
 .option-select {
-  cursor: pointer;
-  outline: none;
   margin-right: 3px;
-  &:disabled {
-    cursor: default;
-  }
+  .consistent-select;
 }
 
 .option-checkbox {
@@ -846,7 +836,6 @@ input[type=number], input[type=text], input[type=password], textarea {
 
 .account-form-ignoremode {
   flex: 1;
-  background-color: @modalInput;
 }
 
 .account-form-section {
@@ -1666,20 +1655,14 @@ html:not(.pos_moderators) {
 
 .reply-board {
   font-size: larger;
-  background: none;
-  outline: none;
   border: none;
   margin-right: 5px;
-  cursor: pointer;
-  color:@replyboard;
+  color: @replyboard;
   // XXX(Kagami): Try to fix inner padding of select. Might looks bad in
   // some browsers. Might try to rewrite with `appearance: none` later.
   margin-left: -4px;
-  // <https://stackoverflow.com/a/19468615>.
-  &:-moz-focusring {
-    color: transparent;
-    text-shadow: 0 0 0 #000;
-  }
+  .consistent-select;
+  background: none;
 }
 
 .reply-subject {
@@ -1886,12 +1869,18 @@ html:not(.pos_moderators) {
   }
 }
 
-.hidden {
-  display: none;
-}
-
-.invisible {
-  visibility: hidden;
+.consistent-select() {
+  background: @modalInput;
+  cursor: pointer;
+  outline: none;
+  &:disabled {
+    cursor: default;
+  }
+  // <https://stackoverflow.com/a/19468615>.
+  &:-moz-focusring {
+    color: transparent;
+    text-shadow: 0 0 0 #000;
+  }
 }
 
 //////////////////////////////
@@ -2047,6 +2036,11 @@ html.user_power {
   }
 }
 
+.admin-header-text {
+  line-height: 41px;
+  vertical-align: middle;
+}
+
 .admin-separator {
   .separator;
 }
@@ -2057,8 +2051,8 @@ html.user_power {
   margin-left: 20px;
   text-align: center;
   text-align-last: center;
-  cursor: pointer;
-  outline: none;
+  height: 41px;
+  .consistent-select;
 }
 
 .admin-section-tabs {
@@ -2102,7 +2096,7 @@ html.user_power {
   cursor: pointer;
 }
 
-.settings-label {
+.admin-settings-label {
   display: flex;
   width: 500px;
   margin: 0 auto;
@@ -2112,25 +2106,27 @@ html.user_power {
   user-select: none;
 }
 
-.settings-text {
+.admin-settings-text {
+  display: inline-block;
   width: 200px;
+  margin-right: 3px;
+}
+.admin-settings-label_select {
+  .admin-settings-text {
+    line-height: 34px;
+    vertical-align: middle;
+  }
 }
 
-.settings-input {
+.admin-settings-input {
   flex: 1;
   min-width: 0;
   outline: none;
   -moz-appearance: none;
 }
 
-.settings-checkbox {
+.admin-settings-checkbox {
   height: 28px;
-  cursor: pointer;
-  outline: none;
-}
-
-.settings-select {
-  flex: 1;
   cursor: pointer;
   outline: none;
   &:disabled {
@@ -2138,8 +2134,13 @@ html.user_power {
   }
 }
 
-.settings_disabled {
-  .settings-label, .settings-checkbox {
+.admin-settings-select {
+  flex: 1;
+  .consistent-select;
+}
+
+.admin-settings_disabled {
+  .admin-settings-label {
     cursor: default;
   }
 }
@@ -2208,15 +2209,14 @@ html.user_power {
   border-bottom: 3px solid #6b6c9a;
 }
 
-.ban-item {
+.admin-ban-item {
   cursor: pointer;
   &:hover {
     text-decoration: line-through;
   }
 }
-
-.bans_disabled {
-  .ban-item {
+.admin-bans_disabled {
+  .admin-ban-item {
     cursor: default;
     &:hover {
       text-decoration: none;
@@ -2224,10 +2224,10 @@ html.user_power {
   }
 }
 
-.ban-reason-header {
+.admin-ban-reason-header {
   width: 100px;
 }
-.ban-reason {
+.admin-ban-reason {
   width: 100px;
   white-space: nowrap;
   overflow: hidden;
@@ -2235,35 +2235,35 @@ html.user_power {
   text-align: center;
 }
 
-.ban-id-header {
+.admin-ban-id-header {
   width: 80px;
 }
-.ban-id, .log-id {
+.admin-ban-id, .admin-log-id {
   box-sizing: border-box;
   width: 80px;
   text-align: center;
   padding-right: 5px;
 }
 
-.log-type {
+.admin-log-type {
   width: 100px;
   color: #8a8a8a;
   text-align: center;
 }
 
-.log-ban-icon {
+.admin-log-ban-icon {
   color: #d9534f;
 }
 
-.ban-by, .log-by {
+.admin-ban-by, .admin-log-by {
   white-space: nowrap;
   text-align: center;
 }
 
-.ban-time-header {
+.admin-ban-time-header {
   width: 160px;
 }
-.ban-time, .log-time {
+.admin-ban-time, .admin-log-time {
   width: 160px;
   white-space: nowrap;
   text-decoration: dotted underline;
@@ -2272,7 +2272,7 @@ html.user_power {
   cursor: default;
 }
 
-.log-item {
+.admin-log-item {
   border-bottom: 1px solid transparent;
   &:hover {
     border-color: #6b6c9a;

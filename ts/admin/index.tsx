@@ -101,24 +101,24 @@ class Settings extends Component<SettingsProps, {}> {
   public render({ settings, disabled }: SettingsProps) {
     const { title, readOnly, modOnly, accessMode, includeAnon } = settings;
     return (
-      <div class={cx("settings", disabled && "settings_disabled")}>
+      <div class={cx("admin-settings", disabled && "admin-settings_disabled")}>
         <a class="admin-content-anchor" name="settings" />
         <h3 class="admin-content-header">
           <a class="admin-header-link" href="#settings">{_("Settings")}</a>
         </h3>
-        <label class="settings-label">
-          <span class="settings-text">{_("Title")}</span>
+        <label class="admin-settings-label">
+          <span class="admin-settings-text">{_("Title")}</span>
           <input
-            class="settings-input"
+            class="admin-settings-input"
             value={title}
             disabled={disabled}
             onInput={this.handleTitleChange}
           />
         </label>
-        <label class="settings-label">
-          <span class="settings-text">{_("Access mode")}</span>
+        <label class="admin-settings-label admin-settings-label_select">
+          <span class="admin-settings-text">{_("Access mode")}</span>
           <select
-            class="settings-select"
+            class="admin-settings-select"
             value={(accessMode || 0).toString()}
             disabled={disabled}
             onChange={this.handleAccessModeChange}
@@ -134,30 +134,30 @@ class Settings extends Component<SettingsProps, {}> {
             </option>
           </select>
         </label>
-        <label class="settings-label">
-          <span class="settings-text">{_("Including anonymous")}</span>
+        <label class="admin-settings-label">
+          <span class="admin-settings-text">{_("Including anonymous")}</span>
           <input
-            class="settings-checkbox"
+            class="admin-settings-checkbox"
             type="checkbox"
             checked={includeAnon}
             disabled={disabled}
             onChange={this.handleIncludeAnonToggle}
           />
         </label>
-        <label class="settings-label">
-          <span class="settings-text">{_("Read only")}</span>
+        <label class="admin-settings-label">
+          <span class="admin-settings-text">{_("Read only")}</span>
           <input
-            class="settings-checkbox"
+            class="admin-settings-checkbox"
             type="checkbox"
             checked={readOnly}
             disabled={disabled}
             onChange={this.handleReadOnlyToggle}
           />
         </label>
-        <label class="settings-label">
-          <span class="settings-text">{_("Mod only")}</span>
+        <label class="admin-settings-label">
+          <span class="admin-settings-text">{_("Mod only")}</span>
           <input
-            class="settings-checkbox"
+            class="admin-settings-checkbox"
             type="checkbox"
             checked={modOnly}
             disabled={disabled}
@@ -311,38 +311,38 @@ class Bans extends Component<BansProps, {}> {
   }
   public render({ bans, disabled }: BansProps) {
     return (
-      <div class={cx("bans", disabled && "bans_disabled")}>
+      <div class={cx("admin-bans", disabled && "admin-bans_disabled")}>
         <a class="admin-content-anchor" name="bans" />
         <h3 class="admin-content-header">
           <a class="admin-header-link" href="#bans">{_("Bans")}</a>
         </h3>
-        <table class="admin-table ban-list">
+        <table class="admin-table admin-ban-list">
         <thead>
-          <tr class="admin-table-header ban-item-header">
-            <th class="ban-id-header">#</th>
-            <th class="ban-reason-header">{_("Reason")}</th>
-            <th class="ban-by-header">{_("By")}</th>
-            <th class="ban-time-header">{_("Expires")}</th>
+          <tr class="admin-table-header admin-ban-item-header">
+            <th class="admin-ban-id-header">#</th>
+            <th class="admin-ban-reason-header">{_("Reason")}</th>
+            <th class="admin-ban-by-header">{_("By")}</th>
+            <th class="admin-ban-time-header">{_("Expires")}</th>
           </tr>
         </thead>
         <tbody>
         {bans.map(({ id, reason, by, expires }) =>
-          <tr class="admin-table-item ban-item" onClick={() => this.handleRemove(id)}>
-            <td class="ban-id">
+          <tr class="admin-table-item admin-ban-item" onClick={() => this.handleRemove(id)}>
+            <td class="admin-ban-id">
               <a class="post-link" href={`/all/${id}#${id}`}>
                 &gt;&gt;{id}
               </a>
             </td>
-            <td class="ban-reason">{reason}</td>
-            <td class="ban-by">{by}</td>
-            <td class="ban-time" title={readableTime(expires)}>
+            <td class="admin-ban-reason">{reason}</td>
+            <td class="admin-ban-by">{by}</td>
+            <td class="admin-ban-time" title={readableTime(expires)}>
               {relativeTime(expires)}
             </td>
           </tr>,
         )}
         {!bans.length &&
           <tr class="admin-table-empty">
-            <td class="bans-empty" colSpan={4}>{_("No bans")}</td>
+            <td class="admin-bans-empty" colSpan={4}>{_("No bans")}</td>
           </tr>
         }
         </tbody>
@@ -368,34 +368,34 @@ class Log extends Component<LogProps, {}> {
   public render({ board }: LogProps) {
     const log = modLog.filter((l) => l.board === board);
     return (
-      <div class="log">
+      <div class="admin-log">
         <a class="admin-content-anchor" name="log" />
         <h3 class="admin-content-header">
           <a class="admin-header-link" href="#log">{_("Mod log")}</a>
         </h3>
-        <table class="admin-table log-list">
+        <table class="admin-table admin-log-list">
         <thead>
-          <tr class="admin-table-header log-item-header">
-            <th class="log-id-header">#</th>
-            <th class="log-type-header">{_("Type")}</th>
-            <th class="log-by-header">{_("By")}</th>
-            <th class="log-time-header">{_("Date")}</th>
+          <tr class="admin-table-header admin-log-item-header">
+            <th class="admin-log-id-header">#</th>
+            <th class="admin-log-type-header">{_("Type")}</th>
+            <th class="admin-log-by-header">{_("By")}</th>
+            <th class="admin-log-time-header">{_("Date")}</th>
           </tr>
         </thead>
         <tbody>
         {log.map(({ id, type, by, created }) =>
-          <tr class="admin-table-item log-item">
-            <td class="log-id">{this.renderLink(id, type)}</td>
-            <td class="log-type">{this.renderType(type)}</td>
-            <td class="log-by">{by}</td>
-            <td class="log-time" title={readableTime(created)}>
+          <tr class="admin-table-item admin-log-item">
+            <td class="admin-log-id">{this.renderLink(id, type)}</td>
+            <td class="admin-log-type">{this.renderType(type)}</td>
+            <td class="admin-log-by">{by}</td>
+            <td class="admin-log-time" title={readableTime(created)}>
               {relativeTime(created)}
             </td>
           </tr>,
         )}
         {!log.length &&
-          <tr class="admin-table-empty log-item">
-            <td class="log-empty" colSpan={4}>{_("Empty log")}</td>
+          <tr class="admin-table-empty admin-log-item">
+            <td class="admin-log-empty" colSpan={4}>{_("Empty log")}</td>
           </tr>
         }
         </tbody>
@@ -427,7 +427,7 @@ class Log extends Component<LogProps, {}> {
       return (
         <span class="fa-stack" title={_("unban")}>
           <i class="fa fa-gavel fa-stack-1x" />
-          <i class="fa fa-ban fa-stack-2x log-ban-icon" />
+          <i class="fa fa-ban fa-stack-2x admin-log-ban-icon" />
         </span>
       );
     case ModerationAction.deletePost:
@@ -486,7 +486,7 @@ class Admin extends Component<{}, AdminState> {
       <section class="admin">
         <header class="admin-header">
           <h1 class="page-title">
-            {_("Admin")}
+            <span class="admin-header-text">{_("Admin")}</span>
             <select
               class="admin-board-select"
               value={boardState.settings.id}
