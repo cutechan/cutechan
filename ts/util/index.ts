@@ -9,7 +9,6 @@ export {
 } from "./fetch";
 export { HOOKS, hook, unhook, trigger } from "./hooks";
 export { ChangeEmitter, emitChanges } from "./changes";
-export { BackgroundClickMixin, EscapePressMixin } from "./mixins";
 
 import { POST_SEL } from "../vars";
 

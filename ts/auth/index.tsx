@@ -12,15 +12,12 @@ import { TabbedModal } from "../base";
 import _ from "../lang";
 import { Post } from "../posts";
 import { getModel, page } from "../state";
-import {
-  BackgroundClickMixin, Constructable, EscapePressMixin,
-  hook, HOOKS, on, remove, trigger, unhook,
-} from "../util";
+import { Constructable, hook, HOOKS, on, remove, trigger, unhook } from "../util";
 import {
   MODAL_CONTAINER_SEL, TRIGGER_BAN_BY_POST_SEL,
   TRIGGER_DELETE_POST_SEL, TRIGGER_IGNORE_USER_SEL,
 } from "../vars";
-import { MemberList } from "../widgets";
+import { BackgroundClickMixin, EscapePressMixin, MemberList } from "../widgets";
 import { BoardCreationForm } from "./board-form";
 import { LoginForm, validatePasswordMatch } from "./login-form";
 import { PasswordChangeForm } from "./password-form";

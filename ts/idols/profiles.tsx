@@ -16,8 +16,9 @@ import { showAlert } from "../alerts";
 import { isPowerUser } from "../auth";
 import _ from "../lang";
 import { getFilePrefix } from "../posts";
-import { BackgroundClickMixin, EscapePressMixin, hook, HOOKS, printf } from "../util";
+import { hook, HOOKS, printf } from "../util";
 import { PROFILES_CONTAINER_SEL } from "../vars";
+import { BackgroundClickMixin, EscapePressMixin } from "../widgets";
 
 interface PreviewProps {
   idol: Idol;
