@@ -19,11 +19,15 @@ export function BackgroundClickMixin<TBase extends BackgroundClickComponent>(Bas
       };
     }
     public componentDidMount() {
-      super.componentDidMount();
+      if (super.componentDidMount) {
+        super.componentDidMount();
+      }
       document.addEventListener("click", this[handleClickProp]);
     }
     public componentWillUnmount() {
-      super.componentWillUnmount();
+      if (super.componentWillUnmount) {
+        super.componentWillUnmount();
+      }
       document.removeEventListener("click", this[handleClickProp]);
     }
   };

@@ -315,7 +315,7 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
       this.hide();
     }
   }
-  public onEscapePress = (e: KeyboardEvent) => {
+  public onEscapePress = () => {
     this.hide();
   }
   private show = (target: Element) => {

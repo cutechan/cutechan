@@ -16,7 +16,7 @@ import { showAlert } from "../alerts";
 import { isPowerUser } from "../auth";
 import _ from "../lang";
 import { getFilePrefix } from "../posts";
-import { hook, HOOKS, printf } from "../util";
+import { BackgroundClickMixin, EscapePressMixin, hook, HOOKS, printf } from "../util";
 import { PROFILES_CONTAINER_SEL } from "../vars";
 
 interface PreviewProps {
@@ -192,10 +192,9 @@ interface WrapperState {
   query: string;
 }
 
-class ProfilesWrapper extends Component<WrapperProps, WrapperState> {
+class ProfilesWrapperBase extends Component<WrapperProps, WrapperState> {
   private profiles: Profiles = null;
   private bandMap: BandMap = null;
-  private inputEl: HTMLInputElement = null;
   constructor() {
     super();
     this.state = {
@@ -205,11 +204,11 @@ class ProfilesWrapper extends Component<WrapperProps, WrapperState> {
   }
   public render(props: WrapperProps, { loading, query }: WrapperState) {
     return (
-      <span class="header-profiles-wrapper">
+      <span class="header-profiles-wrapper" onClick={this.handleWrapperClick}>
         <input
-          ref={(i) => this.inputEl = i as HTMLInputElement}
           class="header-profiles-search"
           placeholder={_("searchIdol")}
+          value={query}
           onFocus={this.handleSearchFocus}
           onInput={this.handleSearch}
         />
@@ -222,6 +221,20 @@ class ProfilesWrapper extends Component<WrapperProps, WrapperState> {
       </span>
     );
   }
+  public onBackgroundClick = () => {
+    this.hide();
+  }
+  public onEscapePress = () => {
+    this.hide();
+  }
+  private hide = () => {
+    if (this.state.query) {
+      this.setState({query: ""});
+    }
+  }
+  private handleWrapperClick = (e: Event) => {
+    e.stopPropagation();
+  }
   private handleSearchFocus = () => {
     if (!this.state.loading && !this.state.query) {
       this.setState({loading: true});
@@ -232,13 +245,15 @@ class ProfilesWrapper extends Component<WrapperProps, WrapperState> {
       }).catch(showAlert);
     }
   }
-  private handleSearch = () => {
+  private handleSearch = (e: Event) => {
     if (!this.state.loading) {
-      const query = this.inputEl.value;
+      const query = (e.target as HTMLInputElement).value;
       this.setState({query});
     }
   }
 }
+
+const ProfilesWrapper = EscapePressMixin(BackgroundClickMixin(ProfilesWrapperBase));
 
 export function init() {
   const container = document.querySelector(PROFILES_CONTAINER_SEL);
