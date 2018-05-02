@@ -1,0 +1,35 @@
+# Enable debug server routes (pprof).
+#debug = false
+
+# Host to listen on.
+#host = "127.0.0.1"
+
+# Port to listen on.
+#port = 8001
+
+# PostgreSQL connection string.
+#conn = "user=meguca password=meguca dbname=meguca sslmode=disable"
+
+# Assume server is behind reverse proxy when resolving client IPs.
+#rproxy = false
+
+# Use secure cookies.
+#secure = false
+
+# Cache size in megabytes.
+#cache = 128
+
+# Site directory location.
+#site_dir = "./dist"
+
+# Uploads directory location.
+#file_dir = "./uploads"
+
+# Kpopnet data directory location.
+#data_dir = "./go/src/github.com/Kagami/kpopnet/data"
+
+# GeoIP databases directory location.
+#geo_dir = "./geoip"
+
+# Allowed origin for Idol API.
+#origin = "http://localhost:8000"
