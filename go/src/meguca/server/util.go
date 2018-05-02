@@ -14,11 +14,6 @@ import (
 	"github.com/dimfeld/httptreemux"
 )
 
-const (
-	numPostsAtIndex   = 3
-	numPostsOnRequest = 100
-)
-
 var (
 	// Base set of HTTP headers for both HTML and JSON
 	vanillaHeaders = map[string]string{

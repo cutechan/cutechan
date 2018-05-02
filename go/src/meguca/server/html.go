@@ -66,8 +66,8 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 
 	var n, total int
 	if !catalog {
-		p := data.(pageStore)
-		n = p.pageNumber
+		p := data.(boardPage)
+		n = p.pageN
 		total = p.pageTotal
 	}
 	l := lang.FromReq(r)

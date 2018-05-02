@@ -21,13 +21,13 @@ var (
 	Size int
 )
 
-// Key stores the ID of some cached page.
+// Represents some cached object.
 type Key struct {
 	Lang  string
 	LastN uint8
 	Board string
 	ID    uint64
-	Page  int64
+	Page  int
 }
 
 // Single cache entry

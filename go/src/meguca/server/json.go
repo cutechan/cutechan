@@ -7,6 +7,8 @@ import (
 	"io"
 	"net/http"
 	"strconv"
+
+	"meguca/common"
 )
 
 const (
@@ -60,7 +62,7 @@ func serveEmptyJSON(w http.ResponseWriter, r *http.Request) {
 func detectLastN(r *http.Request) int {
 	if q := r.URL.Query().Get("last"); q != "" {
 		n, err := strconv.Atoi(q)
-		if err == nil && (n == numPostsAtIndex || n == numPostsOnRequest) {
+		if err == nil && (n == common.NumPostsAtIndex || n == common.NumPostsOnRequest) {
 			return n
 		}
 	}

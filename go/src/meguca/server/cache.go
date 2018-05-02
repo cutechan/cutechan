@@ -1,5 +1,3 @@
-// FrontEnds for using the inbuilt post cache
-
 package server
 
 import (
@@ -13,34 +11,6 @@ import (
 	"meguca/templates"
 )
 
-// Contains data of a board page
-type pageStore struct {
-	pageNumber, pageTotal int
-	json                  []byte
-	data                  common.Board
-}
-
-// var newsCache = cache.FrontEnd{
-// 	GetCounter: func(k cache.Key) (uint64, error) {
-// 		// Update once per 5 minutes.
-// 		ctr := time.Now().Unix() / 60 / 5
-// 		return uint64(ctr), nil
-// 	},
-
-// 	GetFresh: func(k cache.Key) (interface{}, error) {
-// 		return db.GetNews()
-// 	},
-
-// 	EncodeJSON: func(data interface{}) ([]byte, error) {
-// 		// Not needed.
-// 		return nil, nil
-// 	},
-
-// 	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
-// 		return []byte(templates.News(data.([]common.NewsEntry)))
-// 	},
-// }
-
 var threadCache = cache.FrontEnd{
 	GetCounter: func(k cache.Key) (uint64, error) {
 		return db.ThreadCounter(k.ID)
@@ -51,7 +21,7 @@ var threadCache = cache.FrontEnd{
 	},
 
 	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
-		last100 := k.LastN == numPostsOnRequest
+		last100 := k.LastN == common.NumPostsOnRequest
 		return []byte(templates.ThreadPosts(k.Lang, data.(common.Thread), json, last100))
 	},
 }
@@ -77,7 +47,14 @@ var catalogCache = cache.FrontEnd{
 	},
 }
 
-var boardCache = cache.FrontEnd{
+type boardPage struct {
+	pageN     int
+	pageTotal int
+	json      []byte
+	data      common.Board
+}
+
+var boardPageCache = cache.FrontEnd{
 	GetCounter: func(k cache.Key) (uint64, error) {
 		if k.Board == "all" {
 			return db.AllBoardCounter()
@@ -85,120 +62,62 @@ var boardCache = cache.FrontEnd{
 		return db.BoardCounter(k.Board)
 	},
 
-	// Board pages are built as a list of individually fetched and cached
-	// threads with up to 3 replies each.
-	GetFresh: func(k cache.Key) (interface{}, error) {
-		// Get thread IDs in the right order
-		var (
-			ids []uint64
-			err error
-		)
+	GetFresh: func(k cache.Key) (data interface{}, err error) {
+		var ids []uint64
 		if k.Board == "all" {
 			ids, err = db.GetAllThreadsIDs()
 		} else {
 			ids, err = db.GetThreadIDs(k.Board)
 		}
 		if err != nil {
-			return nil, err
+			return
 		}
 
-		// Get data and JSON for these views and paginate
-		var (
-			pages = make([]pageStore, 0, (len(ids)-1)/20+1)
-			page  pageStore
-		)
-		closePage := func() {
-			if page.data != nil {
-				page.json = append(page.json, ']')
-				pages = append(pages, page)
-			}
+		totalPages := (len(ids)-1)/common.ThreadsPerPage + 1
+		atLastPage := k.Page+1 == totalPages
+		if totalPages == 0 {
+			data = boardPage{json: []byte("[]")}
+			return
 		}
-		for i, id := range ids {
-			// Start a new page
-			if i%20 == 0 {
-				closePage()
-				page = pageStore{
-					pageNumber: len(pages),
-					json:       append(make([]byte, 0, 1<<10), '['),
-					data:       make(common.Board, 0, 20),
-				}
-			}
+		if k.Page+1 > totalPages {
+			err = errPageOverflow
+			return
+		}
 
-			k := cache.ThreadKey(k.Lang, id, numPostsAtIndex)
-			json, data, _, err := cache.GetJSONAndData(k, threadCache)
-			if err != nil {
-				return nil, err
+		page := boardPage{
+			pageN:     k.Page,
+			pageTotal: totalPages,
+			json:      []byte("["),
+		}
+		lowIdx := k.Page * common.ThreadsPerPage
+		highIdx := (k.Page + 1) * common.ThreadsPerPage
+		if atLastPage {
+			highIdx = len(ids)
+		}
+		pageIDs := ids[lowIdx:highIdx]
+		for i, id := range pageIDs {
+			k := cache.ThreadKey(k.Lang, id, common.NumPostsAtIndex)
+			tjson, tdata, _, terr := cache.GetJSONAndData(k, threadCache)
+			if terr != nil {
+				return nil, terr
 			}
-			if len(page.json) != 1 {
+			if i > 0 {
 				page.json = append(page.json, ',')
 			}
-			page.json = append(page.json, json...)
-			page.data = append(page.data, data.(common.Thread))
+			page.json = append(page.json, tjson...)
+			page.data = append(page.data, tdata.(common.Thread))
 		}
-		closePage()
-
-		// Record total page count in all stores
-		l := len(pages)
-		if l == 0 { // Empty board
-			l = 1
-			pages = []pageStore{
-				{
-					json: []byte("[]"),
-				},
-			}
-		}
-		for i := range pages {
-			pages[i].pageTotal = l
-		}
-
-		return pages, nil
-	},
-
-	Size: func(data interface{}, _, _ []byte) (s int) {
-		for _, p := range data.([]pageStore) {
-			s += len(p.json) * 2
-		}
-		return
-	},
-}
-
-// For individual pages of a board index
-var boardPageCache = cache.FrontEnd{
-	GetCounter: func(k cache.Key) (uint64, error) {
-		// Get the counter of the parent board
-		k.Page = -1
-		_, _, ctr, err := cache.GetJSONAndData(k, boardCache)
-		return ctr, err
-	},
-
-	GetFresh: func(k cache.Key) (interface{}, error) {
-		i := int(k.Page)
-		k.Page = -1
-		_, data, _, err := cache.GetJSONAndData(k, boardCache)
-		if err != nil {
-			return nil, err
-		}
-
-		pages := data.([]pageStore)
-		if i > len(pages)-1 {
-			return nil, errPageOverflow
-		}
-		return pages[i], nil
+		page.json = append(page.json, ']')
+		return page, nil
 	},
 
 	EncodeJSON: func(data interface{}) ([]byte, error) {
-		return data.(pageStore).json, nil
+		return data.(boardPage).json, nil
 	},
 
 	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
 		all := k.Board == "all"
-		return []byte(templates.IndexThreads(k.Lang, data.(pageStore).data, json, all))
-	},
-
-	Size: func(_ interface{}, _, html []byte) int {
-		// Only the HTML is owned by this store. All other data is just
-		// borrowed from boardCache.
-		return len(html)
+		return []byte(templates.IndexThreads(k.Lang, data.(boardPage).data, json, all))
 	},
 }
 
@@ -206,14 +125,14 @@ var boardPageCache = cache.FrontEnd{
 func boardCacheArgs(r *http.Request, board string, catalog bool) (
 	k cache.Key, f cache.FrontEnd,
 ) {
-	var page int64
+	page := 0
+	// TODO(Kagami): Make catalogs paginated too.
 	if !catalog {
-		p, err := strconv.ParseUint(r.URL.Query().Get("page"), 10, 64)
-		if err == nil {
-			page = int64(p)
+		pStr := r.URL.Query().Get("page")
+		if p, err := strconv.ParseUint(pStr, 10, 64); err == nil {
+			page = int(p)
 		}
 	}
-
 	k = cache.BoardKey(lang.FromReq(r), board, page, !catalog)
 	if catalog {
 		f = catalogCache

@@ -131,7 +131,7 @@ func ThreadKey(l string, id uint64, lastN int) Key {
 }
 
 // BoardKey encodes a key for a board page resource
-func BoardKey(l string, b string, page int64, index bool) Key {
+func BoardKey(l, b string, page int, index bool) Key {
 	// Index theads will have a lastN == 1
 	lastN := uint8(0)
 	if index {

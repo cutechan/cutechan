@@ -30,6 +30,9 @@ const (
 	DefaultMaxFiles      = 4
 	DefaultCSS           = "light"
 	DefaultAdminPassword = "password"
+	ThreadsPerPage       = 20
+	NumPostsAtIndex      = 3
+	NumPostsOnRequest    = 100
 )
 
 // Available themes. Change this, when adding any new ones.
