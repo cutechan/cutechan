@@ -1,3 +1,2 @@
-update posts
-  set ip = null
-  where time < extract(epoch from now() - interval '7 days')
+UPDATE posts SET ip = NULL
+WHERE time < EXTRACT(EPOCH FROM now() - INTERVAL '7 days') and ip IS NOT NULL
