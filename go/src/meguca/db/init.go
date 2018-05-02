@@ -159,6 +159,11 @@ var upgrades = []func(*sql.Tx) error{
 				ADD UNIQUE (board, account, position)`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`CREATE INDEX post_files_post_id ON post_files (post_id)`,
+		)
+	},
 }
 
 func StartDB() (err error) {

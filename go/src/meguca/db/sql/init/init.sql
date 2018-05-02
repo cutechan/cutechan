@@ -146,6 +146,7 @@ CREATE TABLE post_files (
   file_hash char(40) REFERENCES images,
   id bigserial PRIMARY KEY
 );
+CREATE INDEX post_files_post_id ON post_files (post_id);
 CREATE INDEX post_files_file_hash ON post_files (file_hash);
 
 CREATE TABLE stickers (
