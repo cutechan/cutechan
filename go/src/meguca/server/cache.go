@@ -17,7 +17,7 @@ var threadCache = cache.FrontEnd{
 	},
 
 	GetFresh: func(k cache.Key) (interface{}, error) {
-		return db.GetThread(k.ID, int(k.LastN))
+		return db.GetThread(k.ID, k.LastN)
 	},
 
 	RenderHTML: func(data interface{}, json []byte, k cache.Key) []byte {
@@ -133,7 +133,7 @@ func boardCacheArgs(r *http.Request, board string, catalog bool) (
 			page = int(p)
 		}
 	}
-	k = cache.BoardKey(lang.FromReq(r), board, page, !catalog)
+	k = cache.BoardKey(lang.FromReq(r), board, page)
 	if catalog {
 		f = catalogCache
 	} else {

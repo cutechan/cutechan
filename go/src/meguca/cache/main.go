@@ -24,9 +24,9 @@ var (
 // Represents some cached object.
 type Key struct {
 	Lang  string
-	LastN uint8
 	Board string
 	ID    uint64
+	LastN int
 	Page  int
 }
 
