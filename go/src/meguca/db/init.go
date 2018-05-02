@@ -164,6 +164,11 @@ var upgrades = []func(*sql.Tx) error{
 			`CREATE INDEX post_files_post_id ON post_files (post_id)`,
 		)
 	},
+	func(tx *sql.Tx) (err error) {
+		return execAll(tx,
+			`CREATE INDEX posts_op_time ON posts (op, time)`,
+		)
+	},
 }
 
 func StartDB() (err error) {

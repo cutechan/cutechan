@@ -126,6 +126,7 @@ create index op on posts (op);
 create index image on posts (SHA1);
 create index editing on posts (editing);
 create index ip on posts (ip);
+create index posts_op_time on posts (op, time);
 
 create table news (
   id bigserial primary key,
