@@ -7,6 +7,7 @@ import (
 	"net/http"
 	"net/url"
 	"runtime/debug"
+	"syscall"
 
 	"meguca/auth"
 	"meguca/config"
@@ -27,13 +28,13 @@ var (
 
 func writeData(w http.ResponseWriter, r *http.Request, data []byte) {
 	_, err := w.Write(data)
-	if err != nil {
+	if err != nil && err != syscall.EPIPE {
 		logError(r, err)
 	}
 }
 
 // Log an error together with the client's IP and stack trace
-func logError(r *http.Request, err interface{}) {
+func logError(r *http.Request, err error) {
 	log.Printf("server: %s: %s\n%s", auth.GetLogIP(r), err, debug.Stack())
 }
 
@@ -51,8 +52,12 @@ func text403(w http.ResponseWriter, err error) {
 
 // Text-only 500 response
 // TODO(Kagami): User ApiError instead.
-func text500(w http.ResponseWriter, r *http.Request, err interface{}) {
+func text500(w http.ResponseWriter, r *http.Request, v interface{}) {
 	http.Error(w, "500 internal server error", 500)
+	err, ok := v.(error)
+	if !ok {
+		err = aerrInternal
+	}
 	logError(r, err)
 }
 
