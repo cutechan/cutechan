@@ -27,7 +27,7 @@ const (
 const (
 	SessionExpiry        = 5 * 365 // Days
 	DefaultMaxSize       = 40      // Megabytes
-	DefaultMaxFiles      = 4
+	DefaultMaxFiles      = 5
 	DefaultCSS           = "light"
 	DefaultAdminPassword = "password"
 	ThreadsPerPage       = 20
