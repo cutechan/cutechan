@@ -131,10 +131,11 @@ func ThreadKey(l string, id uint64, lastN int) Key {
 }
 
 // BoardKey encodes a key for a board page resource
-func BoardKey(l, b string, page int) Key {
+func BoardKey(l, b string, page int, catalog bool) Key {
 	return Key{
-		Lang:  l,
-		Board: b,
-		Page:  page,
+		Lang:    l,
+		Board:   b,
+		Page:    page,
+		Catalog: catalog,
 	}
 }

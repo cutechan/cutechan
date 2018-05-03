@@ -133,7 +133,7 @@ func boardCacheArgs(r *http.Request, board string, catalog bool) (
 			page = int(p)
 		}
 	}
-	k = cache.BoardKey(lang.FromReq(r), board, page)
+	k = cache.BoardKey(lang.FromReq(r), board, page, catalog)
 	if catalog {
 		f = catalogCache
 	} else {

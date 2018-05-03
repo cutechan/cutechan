@@ -23,11 +23,12 @@ var (
 
 // Represents some cached object.
 type Key struct {
-	Lang  string
-	Board string
-	ID    uint64
-	LastN int
-	Page  int
+	Lang    string
+	Board   string
+	ID      uint64
+	LastN   int
+	Page    int
+	Catalog bool
 }
 
 // Single cache entry
