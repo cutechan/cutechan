@@ -20,9 +20,9 @@ var (
 	mustacheTemplates = map[string]*mustache.Template{}
 )
 
-func Page(ss *auth.Session, l, title, html string) []byte {
+func Page(ss *auth.Session, l, title, html string, status bool) []byte {
 	var buf bytes.Buffer
-	writerenderPage(&buf, ss, l, title, html)
+	writerenderPage(&buf, ss, l, title, html, status)
 	return buf.Bytes()
 }
 
@@ -39,7 +39,7 @@ func Board(
 		page, total,
 		catalog,
 	)
-	return Page(ss, l, title, html)
+	return Page(ss, l, title, html, false)
 }
 
 func Thread(
@@ -50,19 +50,19 @@ func Thread(
 	postHTML []byte,
 ) []byte {
 	html := renderThread(postHTML, id, l, board, title)
-	return Page(ss, l, title, html)
+	return Page(ss, l, title, html, true)
 }
 
 func Landing(ss *auth.Session, l string) []byte {
 	title := lang.Get(l, "main")
 	html := renderLanding(l)
-	return Page(ss, l, title, html)
+	return Page(ss, l, title, html, false)
 }
 
 func Stickers(ss *auth.Session, l string, stickHTML []byte) []byte {
 	html := renderStickers(l, stickHTML)
 	title := lang.Get(l, "stickers")
-	return Page(ss, l, title, html)
+	return Page(ss, l, title, html, false)
 }
 
 func Admin(
@@ -75,7 +75,7 @@ func Admin(
 ) []byte {
 	html := renderAdmin(cs, staff, bans, log)
 	title := lang.Get(l, "Admin")
-	return Page(ss, l, title, html)
+	return Page(ss, l, title, html, false)
 }
 
 func CompileMustache() (err error) {

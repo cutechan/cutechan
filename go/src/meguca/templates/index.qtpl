@@ -2,7 +2,7 @@
 {% import "meguca/lang" %}
 {% import "meguca/auth" %}
 
-{% func renderHeader(l string, cs config.BoardConfigs) %}{% stripspace %}
+{% func renderHeader(l string, cs config.BoardConfigs, status bool) %}{% stripspace %}
 	<header class="header">
 		<a class="header-item header-logo" href="/" title="{%s lang.Get(l, "main") %}">
 			<i class="logo"></i>
@@ -15,7 +15,11 @@
 		<span class="header-item header-profiles">
 			<input class="header-profiles-search" placeholder="{%s lang.Get(l, "searchIdol") %}">
 		</span>
-		<span class="header-item header-status" title="{%s lang.Get(l, "sync") %}"></span>
+		{% if status %}
+		<span class="header-item header-status" title="{%s lang.Get(l, "sync") %}">
+			<i class="fa fa-spinner fa-pulse fa-fw"></i>
+		</span>
+		{% endif %}
 		<a class="header-item header-icon header-faq-icon" title="{%s lang.Get(l, "FAQ") %}">
 			<i class="fa fa-info-circle"></i>
 		</a>
@@ -28,7 +32,7 @@
 	</header>
 {% endstripspace %}{% endfunc %}
 
-{% func renderPage(ss *auth.Session, l, title, page string) %}{% stripspace %}
+{% func renderPage(ss *auth.Session, l, title, page string, status bool) %}{% stripspace %}
 	{% code conf := config.Get() %}
 	{% code confJSON := config.GetJSON() %}
 	{% code boards := config.GetBoardConfigs() %}
@@ -60,7 +64,7 @@
 		</script>
 	</head>
 	<body>
-		{%= renderHeader(l, boards) %}
+		{%= renderHeader(l, boards, status) %}
 		<main class="main">{%s= page %}</main>
 		<aside class="alerts-container"></aside>
 		<aside class="hover-container"></aside>
