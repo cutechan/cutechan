@@ -43,10 +43,7 @@ function getVideoInfo(file: File): Promise<Dict> {
     vid.muted = true;
     vid.onloadeddata = () => {
       const { videoWidth: width, videoHeight: height, duration: dur } = vid;
-      if (!width || !height) {
-        reject(new Error());
-        return;
-      }
+      if (!width || !height) return reject(new Error("bad dimensions"));
       const c = document.createElement("canvas");
       const ctx = c.getContext("2d");
       c.width = width;
@@ -105,12 +102,14 @@ function getFileInfo(file: File): Promise<Dict> {
     fn = getVideoInfo;
   } else if (file.type.startsWith("audio/") && (file as any).record) {
     fn = getAudioInfo;
-  } else {
+  } else if (file.type.startsWith("image/")) {
     fn = getImageInfo;
     // TODO(Kagami): Dump first frame of APNG and animated WebP.
     if (file.type !== "image/gif") {
       skipCopy = true;
     }
+  } else {
+    fn = () => Promise.reject(new Error("unknown mime"));
   }
   return fn(file, skipCopy);
 }
@@ -670,7 +669,7 @@ class Reply extends Component<any, any> {
   private handleFile = (file: File) => {
     if (file.size > config.maxSize * 1024 * 1024) {
       showAlert(_("tooBig"));
-      return Promise.reject(new Error(_("tooBig")));
+      return Promise.reject(new Error("file is too big"));
     }
     return getFileInfo(file).then((info: Dict) => {
       return {file, info};
