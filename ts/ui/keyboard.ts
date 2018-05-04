@@ -4,35 +4,23 @@
 
 import options from "../options";
 import { page } from "../state";
-import { getID, HOOKS, trigger } from "../util";
-import { POST_SEL } from "../vars";
+import { HOOKS, trigger } from "../util";
 
-// Bind keyboard event listener to the document.
-export function init() {
-  document.addEventListener("keydown", handleShortcut);
+// Navigate one level up the board tree, if possible.
+function navigateUp() {
+  if (page.thread) {
+    location.href = `/${page.board}/`;
+  } else if (page.board !== "all") {
+    location.href = "/all/";
+  } else {
+    location.href = "/";
+  }
 }
 
-function handleShortcut(event: KeyboardEvent) {
+function handleShortcut(e: KeyboardEvent) {
   let caught = false;
-
-  const anyModifier = event.altKey || event.metaKey || event.ctrlKey || event.shiftKey;
-  const inInput = "selectionStart" in event.target;
-
-  if (!anyModifier) {
-    if (!inInput) {
-      switch (event.key) {
-      case "ArrowLeft":
-        caught = true;
-        navigatePost(true);
-        break;
-      case "ArrowRight":
-        caught = true;
-        navigatePost(false);
-        break;
-      }
-    }
-  } else if (event.altKey) {
-    switch (event.which) {
+  if (e.altKey) {
+    switch (e.which) {
     case options.newPost:
       caught = true;
       trigger(HOOKS.openReply);
@@ -74,48 +62,21 @@ function handleShortcut(event: KeyboardEvent) {
       navigateUp();
       break;
     }
-  } else if (event.ctrlKey) {
-    switch (event.key) {
+  } else if (e.ctrlKey) {
+    switch (e.key) {
     case "Enter":
       caught = true;
       trigger(HOOKS.sendReply);
       break;
     }
   }
-
   if (caught) {
-    event.stopImmediatePropagation();
-    event.preventDefault();
+    e.stopImmediatePropagation();
+    e.preventDefault();
   }
 }
 
-// Navigate one level up the board tree, if possible.
-function navigateUp() {
-  if (page.thread) {
-    location.href = "/all/";
-  } else if (page.board !== "all") {
-    location.href = "/all/";
-  } else {
-    location.href = "/";
-  }
-}
-
-// Move focus to next or previous visible post in document order.
-// Starts with first post if none is selected via current url fragment.
-function navigatePost(reverse: boolean) {
-  const all = Array.from(document.querySelectorAll(POST_SEL));
-  if (all.length < 2) return;
-  const currentId = location.hash.slice(1);
-  let current = document.getElementById("post" + currentId)
-    || (reverse ? all[all.length - 1] : all[0]);
-  let currentIdx = all.indexOf(current);
-
-  while (current) {
-    currentIdx += reverse ? -1 : 1;
-    current = all[currentIdx];
-    if (current && getComputedStyle(current).display !== "none") {
-      location.hash = "#" + getID(current);
-      break;
-    }
-  }
+// Bind keyboard event listener to the document.
+export function init() {
+  document.addEventListener("keydown", handleShortcut);
 }
