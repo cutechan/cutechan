@@ -181,13 +181,6 @@ export function setter(self: any, name: string) {
   };
 }
 
-/** Like `Promise.all` but collect only successful results. */
-export function collect<T>(proms: Array<Promise<T>>): Promise<T[]> {
-  const results = [] as T[];
-  const proms2 = proms.map((p) => p.then((res) => results.push(res), noop));
-  return Promise.all(proms2).then(() => results);
-}
-
 /** Simple string reverse. */
 export function reverse(s: string): string {
   let s2 = "";

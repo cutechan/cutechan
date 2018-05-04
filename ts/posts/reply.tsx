@@ -9,7 +9,7 @@ import _ from "../lang";
 import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {
-  AbortError, collect, Dict, FutureAPI, getID, hook, HOOKS, on,
+  AbortError, Dict, FutureAPI, getID, hook, HOOKS, on,
   printf, scrollToTop, setter as s, unhook,
 } from "../util";
 import {
@@ -667,24 +667,27 @@ class Reply extends Component<any, any> {
   private handleFiles = (files: FileList | Blob[]) => {
     // Limit number of selected files.
     const fslice: Array<File | Blob> = Array.prototype.slice.call(files, 0, config.maxFiles);
-    collect(fslice.map(this.handleFile)).then((fwraps) => {
-      fwraps = this.state.fwraps.concat(fwraps);
-      // Skip elder attachments.
-      fwraps = fwraps.slice(Math.max(0, fwraps.length - config.maxFiles));
-      this.setState({fwraps}, this.focus);
-    });
+    const fwrapsOld = this.state.fwraps;
+    const fwrapsNew = Array(fslice.length);
+    fslice.map(this.handleFile).forEach((p, i) =>
+      p.then((fwrap) => {
+        // Append in order.
+        fwrapsNew[i] = fwrap;
+        let fwraps = fwrapsOld.concat(fwrapsNew.filter((f) => f != null));
+        // Skip elder attachments.
+        fwraps = fwraps.slice(Math.max(0, fwraps.length - config.maxFiles));
+        this.setState({fwraps}, this.focus);
+      }, (err) => {
+        showAlert(_("unsupFile") + ": " + err.message);
+      }),
+    );
   }
   private handleFile = (file: File | Blob): Promise<FWrap> => {
     if (file.size > config.maxSize * 1024 * 1024) {
       showAlert(_("tooBig"));
       return Promise.reject(new Error("file is too big"));
     }
-    return getFileInfo(file).then((info: Dict) => {
-      return {file, info};
-    }, (err) => {
-      showAlert(_("unsupFile"));
-      throw err;
-    });
+    return getFileInfo(file).then((info: Dict) => ({file, info}));
   }
   private handleSend = () => {
     if (this.disabled) return;
