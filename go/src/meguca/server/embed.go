@@ -53,7 +53,7 @@ func serveEmbed(w http.ResponseWriter, r *http.Request) {
 
 	doc, err := getVliveEmbed(url)
 	if err != nil {
-		serveErrorJSON(w, r, aerrInternal)
+		serveErrorJSON(w, r, aerrInternal.Hide(err))
 		return
 	}
 
