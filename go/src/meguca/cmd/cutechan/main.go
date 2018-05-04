@@ -41,6 +41,7 @@ Options:
                 (default: user=meguca password=meguca dbname=meguca sslmode=disable).
   -r            Assume server is behind reverse proxy when resolving client IPs.
   -y            Use secure cookies.
+  -u <user>     Spawn thumbnail process as separate user.
   -z <size>     Cache size in megabytes (default: 128).
   -s <sitedir>  Site directory location (default: ./dist).
   -f <filedir>  Uploads directory location (default: ./uploads).
@@ -75,6 +76,7 @@ type config struct {
 	Conn    string `docopt:"-c"`
 	Rproxy  bool   `docopt:"-r"`
 	Secure  bool   `docopt:"-y"`
+	User    string `docopt:"-u"`
 	Cache   int    `docopt:"-z"`
 	SiteDir string `docopt:"-s" toml:"site_dir"`
 	FileDir string `docopt:"-f" toml:"file_dir"`
@@ -145,7 +147,7 @@ func serve(conf config) {
 
 	// Start serving requests.
 	log.Printf("Listening on %v", address)
-	log.Fatal(server.Start(address, conf.Debug))
+	log.Fatal(server.Start(address, conf.User, conf.Debug))
 }
 
 func main() {

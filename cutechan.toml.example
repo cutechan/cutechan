@@ -16,6 +16,9 @@
 # Use secure cookies.
 #secure = false
 
+# Spawn thumbnail process as separate user.
+#user = ""
+
 # Cache size in megabytes.
 #cache = 128
 

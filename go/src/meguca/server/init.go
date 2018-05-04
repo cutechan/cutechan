@@ -11,9 +11,9 @@ import (
 	"github.com/dimfeld/httptreemux"
 )
 
-func Start(address string, debugRoutes bool) (err error) {
+func Start(address, user string, debugRoutes bool) (err error) {
 	go runForceFreeTask()
-	startThumbWorkers()
+	startThumbWorkers(user)
 	router := createRouter(debugRoutes)
 	return http.ListenAndServe(address, router)
 }

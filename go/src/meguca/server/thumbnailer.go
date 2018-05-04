@@ -23,10 +23,10 @@ type jobResult struct {
 	err   error
 }
 
-func worker() {
+func worker(user string) {
 	for {
 		req := <-jobs
-		thumb, err := ipc.GetThumbnail(req.data)
+		thumb, err := ipc.GetThumbnail(user, req.data)
 		req.result <- jobResult{thumb, err}
 	}
 }
@@ -44,9 +44,9 @@ func getThumbnail(srcData []byte) (*ipc.Thumb, error) {
 }
 
 // Start thumbnailer workers.
-func startThumbWorkers() (err error) {
+func startThumbWorkers(user string) (err error) {
 	for i := 0; i < thumbProcesses; i++ {
-		go worker()
+		go worker(user)
 	}
 	return
 }

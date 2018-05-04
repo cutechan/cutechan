@@ -100,10 +100,21 @@ func getExitCode(err error) int {
 	return -1
 }
 
+func getCmdLine(user string) (name string, args []string) {
+	if user == "" {
+		name = THUMB_CMD
+	} else {
+		name = "sudo"
+		args = append(args, "-u", user, THUMB_CMD)
+	}
+	return
+}
+
 // Abstract thumbnailer IPC.
-func GetThumbnail(srcData []byte) (thumb *Thumb, err error) {
+func GetThumbnail(user string, srcData []byte) (thumb *Thumb, err error) {
 	// Start process.
-	cmd := exec.Command(THUMB_CMD)
+	name, args := getCmdLine(user)
+	cmd := exec.Command(name, args...)
 	cmd.Stderr = os.Stderr
 	in, err := cmd.StdinPipe()
 	if err != nil {
