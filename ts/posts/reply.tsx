@@ -36,7 +36,7 @@ function quoteText(text: string): string {
     .join("\n");
 }
 
-function getVideoInfo(file: File): Promise<Dict> {
+function getVideoInfo(file: File | Blob): Promise<Dict> {
   return new Promise((resolve, reject) => {
     const vid = document.createElement("video");
     const src = URL.createObjectURL(file);
@@ -57,7 +57,7 @@ function getVideoInfo(file: File): Promise<Dict> {
   });
 }
 
-function getAudioInfo(file: File): Promise<Dict> {
+function getAudioInfo(file: File | Blob): Promise<Dict> {
   return new Promise((resolve, reject) => {
     const audio = new Audio();
     const src = URL.createObjectURL(file);
@@ -71,7 +71,7 @@ function getAudioInfo(file: File): Promise<Dict> {
   });
 }
 
-function getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
+function getImageInfo(file: File | Blob, skipCopy: boolean): Promise<Dict> {
   return new Promise((resolve, reject) => {
     const src = URL.createObjectURL(file);
     let thumb = src;
@@ -95,7 +95,7 @@ function getImageInfo(file: File, skipCopy: boolean): Promise<Dict> {
   });
 }
 
-function getFileInfo(file: File): Promise<Dict> {
+function getFileInfo(file: File | Blob): Promise<Dict> {
   let fn = null;
   let skipCopy = false;
   if (file.type.startsWith("video/")) {
@@ -173,6 +173,13 @@ class BodyPreview extends Component<any, any> {
   }
 }
 
+interface FWrap {
+  file: File | Blob;
+  info: Dict;
+}
+
+type FWraps = FWrap[];
+
 class Reply extends Component<any, any> {
   public state = {
     float: false,
@@ -190,7 +197,7 @@ class Reply extends Component<any, any> {
     body: "",
     smileBox: false,
     smileBoxAC: null as string[],
-    fwraps: [] as Array<{file: File, info: Dict}>,
+    fwraps: [] as FWraps,
     showBadge: false,
   };
   private mainEl: HTMLElement = null;
@@ -633,6 +640,7 @@ class Reply extends Component<any, any> {
       // Don't tolerate zero pitch shift.
       pitch = 0.2;
     }
+    // Have to accept Blob because Edge doesn't have File constructor...
     vmsg.record({pitch}).then((blob) => {
       // To distinguish from regular attachments.
       (blob as any).record = true;
@@ -658,7 +666,7 @@ class Reply extends Component<any, any> {
   }
   private handleFiles = (files: FileList | Blob[]) => {
     // Limit number of selected files.
-    const fslice = Array.prototype.slice.call(files, 0, config.maxFiles);
+    const fslice: Array<File | Blob> = Array.prototype.slice.call(files, 0, config.maxFiles);
     collect(fslice.map(this.handleFile)).then((fwraps) => {
       fwraps = this.state.fwraps.concat(fwraps);
       // Skip elder attachments.
@@ -666,7 +674,7 @@ class Reply extends Component<any, any> {
       this.setState({fwraps}, this.focus);
     });
   }
-  private handleFile = (file: File) => {
+  private handleFile = (file: File | Blob): Promise<FWrap> => {
     if (file.size > config.maxSize * 1024 * 1024) {
       showAlert(_("tooBig"));
       return Promise.reject(new Error("file is too big"));
