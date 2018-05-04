@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"mime/multipart"
+	"net"
 	"net/http"
 	"net/url"
 	"runtime/debug"
@@ -28,9 +29,15 @@ var (
 
 func writeData(w http.ResponseWriter, r *http.Request, data []byte) {
 	_, err := w.Write(data)
-	if err != nil && err != syscall.EPIPE {
-		logError(r, err)
+	if err == nil {
+		return
 	}
+	if opErr, ok := err.(*net.OpError); ok {
+		if opErr.Err == syscall.EPIPE {
+			return
+		}
+	}
+	logError(r, err)
 }
 
 // Log an error together with the client's IP and stack trace
