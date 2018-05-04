@@ -403,7 +403,7 @@ async function logout(url: string) {
 class AccountPanel extends TabbedModal {
   constructor() {
     super(
-      document.getElementById("account-panel"),
+      document.querySelector(".account-modal"),
       document.querySelector(".header-account-icon"),
     );
     this.onClick({

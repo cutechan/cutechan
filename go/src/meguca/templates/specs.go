@@ -98,11 +98,6 @@ var specs = map[string][]inputSpec{
 			Options: common.Themes,
 		},
 		{
-			ID:      "defaultLang",
-			Type:    _select,
-			Options: lang.Langs,
-		},
-		{
 			ID:       "maxSize",
 			Type:     _number,
 			Min:      1,

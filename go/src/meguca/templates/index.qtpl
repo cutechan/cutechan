@@ -70,7 +70,7 @@
 		<aside class="hover-container"></aside>
 		<aside class="popup-container"></aside>
 		<aside class="modal-container">
-			{%= faqModal() %}
+			<div class="modal faq-modal"></div>
 			{%= accountModal(ss, l) %}
 			{%= optionsModal(l) %}
 		</aside>

@@ -4,10 +4,7 @@ import { AccountForm } from "./form";
 // Panel for server administration controls such as global server settings
 export class ServerConfigForm extends AccountForm {
   constructor() {
-    super({
-      class: "wide-fields", // The panel needs much larger text inputs
-      tag: "form",
-    });
+    super({tag: "form"});
     this.render();
   }
 

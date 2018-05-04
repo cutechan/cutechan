@@ -9,7 +9,7 @@ export let panel: OptionsPanel;
 export default class OptionsPanel extends TabbedModal {
   constructor() {
     super(
-      document.getElementById("options"),
+      document.querySelector(".options-modal"),
       document.querySelector(".header-options-icon"),
     );
     panel = this;

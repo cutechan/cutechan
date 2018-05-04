@@ -715,6 +715,7 @@ html, body {
   input[type=number] {
     width: 5em;
   }
+
   input[type=text], input[type=password] {
     background-color: @modalInput;
     box-sizing: border-box;
@@ -725,24 +726,6 @@ html, body {
     padding-left: 5px;
     -moz-appearance: none;
     color:#111;
-  }
-}
-
-.modal, form {
-  &.wide-fields {
-    input[type=text], textarea {
-      width: 20em;
-      &.map-field {
-        width: 9.3em;
-      }
-    }
-  }
-}
-
-input[type=number], input[type=text], input[type=password], textarea {
-  .full-width &, &.full-width {
-    width: ~"calc(100% - 1px)";
-    box-sizing: border-box;
   }
 }
 
@@ -758,6 +741,7 @@ input[type=number], input[type=text], input[type=password], textarea {
 
 .option-select {
   margin-right: 3px;
+  margin-bottom: 1px;
   .consistent-select;
 }
 
@@ -836,6 +820,7 @@ input[type=number], input[type=text], input[type=password], textarea {
 
 .account-form-ignoremode {
   flex: 1;
+  margin: 0
 }
 
 .account-form-section {

@@ -2,8 +2,8 @@ export { default as FormView } from "./forms";
 export { postAdded } from "./tab";
 export { default as notifyAboutReply, OverlayNotification } from "./notification";
 
-import { HeaderModal } from "../base";
 import { page } from "../state";
+import FAQPanel from "./faq";
 import { init as initKeyboard } from "./keyboard";
 import { init as initNav } from "./nav";
 import OptionPanel from "./options";
@@ -16,10 +16,7 @@ export function init() {
     initTab();
   }
   // tslint:disable-next-line:no-unused-expression
-  new OptionPanel();
+  new FAQPanel();
   // tslint:disable-next-line:no-unused-expression
-  new HeaderModal(
-    document.getElementById("FAQ"),
-    document.querySelector(".header-faq-icon"),
-  );
+  new OptionPanel();
 }

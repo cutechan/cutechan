@@ -37,32 +37,8 @@ Renders the tab selection butts in tabbed windows
 	</div>
 {% endstripspace %}{% endfunc %}
 
-{% func faqModal() %}{% stripspace %}
-	<div id="FAQ" class="modal">
-		cutechan is licensed under the{% space %}
-		<a href="https://www.gnu.org/licenses/agpl.html" target="_blank">
-			GNU Affero General Public License
-		</a>
-		<br>
-		source code repository:{% space %}
-		<a href="https://github.com/cutechan/cutechan" target="_blank">
-			github.com/cutechan/cutechan
-		</a>
-		<br>
-		original project:{% space %}
-		<a href="https://github.com/bakape/meguca" target="_blank">
-			github.com/bakape/meguca
-		</a>
-		<br>
-		contacts:{% space %}
-		<a href="mailto:kagami@genshiken.org">
-			kagami@genshiken.org
-		</a>
-	</div>
-{% endstripspace %}{% endfunc %}
-
 {% func accountModal(ss *auth.Session, l string) %}{% stripspace %}
-	<div class="modal tab-modal" id="account-panel">
+	<div class="modal tab-modal account-modal">
 		{% if ss == nil %}
 			{%= tabButts(l, []string{"id", "register"}) %}
 			<div class="tab-cont">
@@ -114,7 +90,7 @@ Renders the tab selection butts in tabbed windows
 {% endstripspace %}{% endfunc %}
 
 {% func optionsModal(l string) %}{% stripspace %}
-	<div id="options" class="modal">
+	<div class="modal options-modal">
 		{%= tabButts(l, []string{"Options", "Hotkeys"}) %}
 		<div class="tab-cont">
 			{% for i, sp := range optionSpecs %}
