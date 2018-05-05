@@ -4,7 +4,7 @@
 import templates from "cc-templates";
 import * as Mustache from "mustache";
 import { bodyEmbeds, renderBody } from ".";
-import { ImageData } from "../common";
+import { fileTypes, ImageData } from "../common";
 import { _, days, months, ngettext } from "../lang";
 import { Backlinks, Post, sourcePath, Thread, thumbPath } from "../posts";
 import { mine } from "../state";
@@ -89,7 +89,27 @@ export function makePostContext(
   // NOOP because we need to re-render based on relativeTime setting.
   ctx.Time = "";
 
-  ctx.Files = (p.files || []).map(renderFile);
+  ctx.Files = (p.files || []).map((img: ImageData, n: number) =>
+    new TemplateContext("post-file", {
+      SHA1: img.SHA1,
+      HasTitle: !!img.title,
+      LCopy: _("clickToCopy"),
+      Title: img.title,
+      HasVideo: img.video,
+      HasAudio: img.audio,
+      HasLength: img.video || img.audio,
+      Length: duration(img.length || 0),
+      Record: img.audio && !img.video,
+      Size: fileSize(img.size),
+      Width: img.dims[0],
+      Height: img.dims[1],
+      TWidth: img.dims[2],
+      THeight: img.dims[3],
+      DName: getDownloadName(p, img, n),
+      SourcePath: sourcePath(img.fileType, img.SHA1),
+      ThumbPath: thumbPath(img.thumbType, img.SHA1),
+    }).render(),
+  );
 
   ctx.Body = renderBody(p);
 
@@ -100,25 +120,9 @@ export function makePostContext(
   return new TemplateContext("post", ctx);
 }
 
-function renderFile(img: ImageData): string {
-  return new TemplateContext("post-file", {
-    SHA1: img.SHA1,
-    HasTitle: !!img.title,
-    LCopy: _("clickToCopy"),
-    Title: img.title,
-    HasVideo: img.video,
-    HasAudio: img.audio,
-    HasLength: img.video || img.audio,
-    Length: duration(img.length || 0),
-    Record: img.audio && !img.video,
-    Size: fileSize(img.size),
-    Width: img.dims[0],
-    Height: img.dims[1],
-    TWidth: img.dims[2],
-    THeight: img.dims[3],
-    SourcePath: sourcePath(img.fileType, img.SHA1),
-    ThumbPath: thumbPath(img.thumbType, img.SHA1),
-  }).render();
+function getDownloadName(post: Post, img: ImageData, n: number): string {
+  const numStr = n > 0 ? `(${n + 1})` : "";
+  return `${post.board}-${post.id}${numStr}.${fileTypes[img.fileType]}`;
 }
 
 // Renders classic absolute timestamp.

@@ -51,6 +51,7 @@ type FileContext struct {
 	THeight    uint16
 	Width      uint16
 	Height     uint16
+	DName      string
 	SourcePath string
 	ThumbPath  string
 }
@@ -176,32 +177,42 @@ func (ctx *PostContext) Files() (files []string) {
 	if len(ctx.post.Files) == 0 {
 		return
 	}
-	for _, img := range ctx.post.Files {
-		files = append(files, renderFile(ctx.Lang, img))
+	for n, img := range ctx.post.Files {
+		files = append(files, ctx.renderFile(img, n))
 	}
 	return
 }
 
-func renderFile(l string, img *common.Image) string {
+func (ctx *PostContext) renderFile(img *common.Image, n int) string {
 	fileCtx := FileContext{
 		SHA1:       img.SHA1,
 		HasTitle:   img.Title != "",
-		LCopy:      lang.Get(l, "clickToCopy"),
+		LCopy:      lang.Get(ctx.Lang, "clickToCopy"),
 		Title:      img.Title,
 		HasVideo:   img.Video,
 		HasAudio:   img.Audio,
 		HasLength:  img.Video || img.Audio,
 		Length:     duration(img.Length),
 		Record:     img.Audio && !img.Video,
-		Size:       fileSize(l, img.Size),
+		Size:       fileSize(ctx.Lang, img.Size),
 		Width:      img.Dims[0],
 		Height:     img.Dims[1],
 		TWidth:     img.Dims[2],
 		THeight:    img.Dims[3],
+		DName:      ctx.getDownloadName(n, img),
 		SourcePath: assets.SourcePath(img.FileType, img.SHA1),
 		ThumbPath:  assets.ThumbPath(img.ThumbType, img.SHA1),
 	}
 	return renderMustache("post-file", &fileCtx)
+}
+
+func (ctx *PostContext) getDownloadName(n int, img *common.Image) string {
+	numStr := ""
+	if n > 0 {
+		numStr = fmt.Sprintf("(%d)", n+1)
+	}
+	ext := common.Extensions[img.FileType]
+	return fmt.Sprintf("%s-%d%s.%s", ctx.Board, ctx.post.ID, numStr, ext)
 }
 
 func (ctx *PostContext) Body() string {

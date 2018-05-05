@@ -10,7 +10,7 @@
       <span class="post-file-info-item post-file-title" title="{{ Title }} ({{ LCopy }})">{{ Title }}</span>
     {{/HasTitle}}
   </figcaption>
-  <a class="post-file-link" href="{{ SourcePath }}" target="_blank">
+  <a class="post-file-link" download="{{ DName }}" href="{{ SourcePath }}" target="_blank">
     {{^Record}}
       {{#HasVideo}}
         <i class="fa fa-play-circle-o post-file-badge post-file-video-badge"></i>
