@@ -6,15 +6,21 @@ import (
 	"net/http"
 	"os"
 	"path/filepath"
+	"regexp"
 	"time"
 
 	"meguca/common"
+)
+
+var (
+	stripNameRe = regexp.MustCompile("^(src/[^/]+/[^/]+)/.+")
 )
 
 // Serve uploads directory. Only makes sense for dev server, on
 // production you normally use nginx or CDN.
 func serveFiles(w http.ResponseWriter, r *http.Request) {
 	path := getParam(r, "path")
+	path = stripNameRe.ReplaceAllString(path, "$1")
 	file, err := os.Open(cleanJoin(common.ImageWebRoot, path))
 	if err != nil {
 		serve404(w, r)
