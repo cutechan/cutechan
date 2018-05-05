@@ -13,7 +13,14 @@ import (
 	"meguca/ipc"
 )
 
+const (
+	// Maximum number of thumbnailer processes executing at the same time.
+	thumbProcesses = 3
+)
+
 var (
+	jobs = make(chan jobRequest)
+
 	// Map of MIME types to the constants used internally.
 	mimeTypes = map[string]uint8{
 		"image/jpeg":      common.JPEG,
@@ -27,9 +34,14 @@ var (
 	}
 )
 
-func getSha1(data []byte) string {
-	hash := sha1.Sum(data)
-	return hex.EncodeToString(hash[:])
+type jobRequest struct {
+	fd       multipart.File
+	jresults chan<- jobResult
+}
+
+type jobResult struct {
+	res uploadResult
+	err error
 }
 
 type uploadResult struct {
@@ -50,12 +62,27 @@ func uploadFile(fh *multipart.FileHeader) (res uploadResult, err error) {
 	}
 	defer fd.Close()
 
-	data, err := ioutil.ReadAll(fd)
+	jresults := make(chan jobResult)
+	jreq := jobRequest{fd, jresults}
+	jobs <- jreq
+	jres := <-jresults
+	return jres.res, jres.err
+}
+
+func worker(user string) {
+	for {
+		jreq := <-jobs
+		res, err := work(user, jreq)
+		jreq.jresults <- jobResult{res, err}
+	}
+}
+
+func work(user string, jreq jobRequest) (res uploadResult, err error) {
+	data, err := ioutil.ReadAll(jreq.fd)
 	if err != nil {
 		err = aerrUploadRead.Hide(err)
 		return
 	}
-
 	hash := getSha1(data)
 	file, err := db.GetImage(hash)
 	switch err {
@@ -64,11 +91,16 @@ func uploadFile(fh *multipart.FileHeader) (res uploadResult, err error) {
 		return newFileToken(&file)
 	case sql.ErrNoRows:
 		file.SHA1 = hash
-		return saveFile(data, &file)
+		return saveFile(user, data, &file)
 	default:
 		err = aerrInternal.Hide(err)
 		return
 	}
+}
+
+func getSha1(data []byte) string {
+	hash := sha1.Sum(data)
+	return hex.EncodeToString(hash[:])
 }
 
 func newFileToken(file *common.ImageCommon) (res uploadResult, err error) {
@@ -83,8 +115,8 @@ func newFileToken(file *common.ImageCommon) (res uploadResult, err error) {
 
 // Create a new thumbnail, commit its resources to the DB and
 // filesystem, and return resulting token.
-func saveFile(srcData []byte, file *common.ImageCommon) (res uploadResult, err error) {
-	thumb, err := getThumbnail(srcData)
+func saveFile(user string, srcData []byte, file *common.ImageCommon) (res uploadResult, err error) {
+	thumb, err := ipc.GetThumbnail(user, srcData)
 	switch err {
 	case nil:
 		// Do nothing.
@@ -121,4 +153,12 @@ func saveFile(srcData []byte, file *common.ImageCommon) (res uploadResult, err e
 		return
 	}
 	return newFileToken(file)
+}
+
+// Start thumbnailer workers.
+func startThumbWorkers(user string) (err error) {
+	for i := 0; i < thumbProcesses; i++ {
+		go worker(user)
+	}
+	return
 }
