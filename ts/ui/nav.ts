@@ -8,10 +8,11 @@ import {
   TRIGGER_PAGE_NAV_BOTTOM_SEL, TRIGGER_PAGE_NAV_TOP_SEL,
 } from "../vars";
 
+let recalcPending = false;
 let topBtn = null as HTMLElement;
 let bottomBtn = null as HTMLElement;
 
-function onScroll() {
+function recalc() {
   const el = document.documentElement;
   const needTop = el.scrollTop > 300;
   const needBottom = el.scrollHeight - el.scrollTop  > el.clientHeight + 300;
@@ -19,6 +20,13 @@ function onScroll() {
   bottomBtn.style.display = needBottom ? "" : "none";
   topBtn.classList.toggle("page-nav-item_active", needTop);
   bottomBtn.classList.toggle("page-nav-item_active", needBottom);
+  recalcPending = false;
+}
+
+function onScroll() {
+  if (recalcPending) return;
+  recalcPending = true;
+  setTimeout(recalc, 100);
 }
 
 export function init() {
