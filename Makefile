@@ -77,7 +77,7 @@ serve: templates server
 	cutechan -H 0.0.0.0 --debug
 
 deb: clean templates smiles client server
-	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 go/bin/cutechan-thumb
+	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 go/bin/cutethumb
 	mkdir deb_dist
 	cp -a DEBIAN deb_dist
 	mkdir -p deb_dist/usr/share/cutechan/www
@@ -87,7 +87,7 @@ deb: clean templates smiles client server
 	cp -a go/src/github.com/Kagami/kpopnet/data/profiles deb_dist/usr/share/cutechan/data
 	cp -a go/src/github.com/Kagami/kpopnet/data/models deb_dist/usr/share/cutechan/data
 	mkdir -p deb_dist/usr/bin
-	cp -a go/bin/cutechan* deb_dist/usr/bin
+	cp -a go/bin/cute* deb_dist/usr/bin
 	chmod -R go+rX deb_dist
 	fakeroot dpkg-deb -z0 -b deb_dist cutechan.deb
 

@@ -14,7 +14,7 @@ import (
 )
 
 const (
-	THUMB_CMD             = "cutechan-thumb"
+	THUMB_CMD             = "cutethumb"
 	THUMB_ERROR_EXIT_CODE = 100
 	MAX_OBJ_LEN           = 65535
 )
