@@ -63,7 +63,6 @@ function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
   db = (target as IDBRequest).result;
   const t = (target as IDBRequest).transaction;
   // Helpers because case statements are not blocks.
-  let r = null as IDBRequest;
   let s = null as IDBObjectStore;
 
   switch (oldVersion) {
@@ -77,61 +76,6 @@ function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
     s.createIndex("expires", "expires");
     break;
   // Migrations. Must fall through.
-  case 1:
-    s = db.createObjectStore(embedStore, {keyPath: "url"});
-    s.createIndex("expires", "expires");
-    /* fall-through */
-  case 2:
-  case 3:
-    t.objectStore(embedStore).clear();
-    /* fall-through */
-  case 4:
-    db.deleteObjectStore("seen");
-    db.deleteObjectStore("seenPost");
-    db.deleteObjectStore("hidden");
-
-    const mine = [] as Array<[number, number]>;
-    const migrateMine = () => {
-      db.deleteObjectStore("mine");
-      s = db.createObjectStore("mine", {keyPath: "id"});
-      s.createIndex("op", "op");
-      for (const [id, op] of mine) {
-        s.put({id, op});
-      }
-    };
-
-    r = t.objectStore("mine").openCursor();
-    r.onsuccess = (e) => {
-      const cursor = (e.target as IDBRequest).result;
-      if (cursor) {
-        mine.push([cursor.value.id, cursor.value.op]);
-        cursor.continue();
-      } else {
-        migrateMine();
-      }
-    };
-    /* fall-through */
-  case 5:
-    const mine2 = [] as number[];
-    const migrateMine2 = () => {
-      localStorage.mine = JSON.stringify(mine2);
-      // Keep post store for now.
-    };
-
-    r = t.objectStore("mine").openCursor();
-    r.onsuccess = (e) => {
-      const cursor = (e.target as IDBRequest).result;
-      if (cursor) {
-        mine2.push(cursor.value.id);
-        cursor.continue();
-      } else {
-        migrateMine2();
-      }
-    };
-    /* fall-through */
-  case 6:
-    t.objectStore(embedStore).clear();
-    /* fall-through */
   case 7:
     t.objectStore(embedStore).clear();
     /* fall-through */
