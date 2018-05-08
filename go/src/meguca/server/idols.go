@@ -100,3 +100,8 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) (answer map[string]s
 	answer = map[string]string{"SHA1": res.file.SHA1}
 	return
 }
+
+func serveImageInfo(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Access-Control-Allow-Origin", IdolOrigin)
+	kpopnet.ServeImageInfo(w, r)
+}
