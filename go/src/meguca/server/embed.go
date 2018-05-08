@@ -1,13 +1,15 @@
 package server
 
 import (
+	"fmt"
 	"html"
 	"io"
-	"meguca/templates"
 	"net/http"
 	"regexp"
 	"strings"
 	"time"
+
+	"meguca/templates"
 )
 
 var (
@@ -67,7 +69,7 @@ func getVliveEmbed(url string) (doc oEmbedDoc, err error) {
 	client := &http.Client{Timeout: time.Second * 5}
 	resp, err := client.Get(url)
 	if err != nil || resp.StatusCode != 200 {
-		err = errInternal
+		err = fmt.Errorf("bad vlive response: %v (%d)", err, resp.StatusCode)
 		return
 	}
 
@@ -81,7 +83,7 @@ func getVliveEmbed(url string) (doc oEmbedDoc, err error) {
 	titleMatch := vliveTitleRe.FindSubmatch(buf)
 	thumbMatch := vliveThumbRe.FindSubmatch(buf)
 	if titleMatch == nil || thumbMatch == nil {
-		err = errInternal
+		err = fmt.Errorf("can't match vlive title/preview")
 		return
 	}
 

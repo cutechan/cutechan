@@ -53,9 +53,9 @@ func (ae ApiError) MarshalJSON() ([]byte, error) {
 	err := ae.err
 	// Do not leak sensitive data to users.
 	if ae.Code() >= 500 {
-		err = errInternal
+		err = aerrInternal
 	}
-	s := fmt.Sprintf("{\"error\": \"%v\"}", err)
+	s := fmt.Sprintf(`{"error":"%v"}`, err)
 	return []byte(s), nil
 }
 
@@ -100,7 +100,6 @@ var (
 	errReadOnly         = errors.New("read only board")
 	errBanned           = errors.New("you are banned")
 	errNoImage          = errors.New("post has no image")
-	errInternal         = errors.New("internal server error")
 	errNoNews           = errors.New("can't get news")
 	errPageOverflow     = errors.New("page not found")
 	errInvalidBoardName = errors.New("invalid board name")
