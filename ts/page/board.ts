@@ -1,7 +1,7 @@
 import { ThreadData } from "../common";
 import { Post } from "../posts";
 import { page, posts } from "../state";
-import { getID, on } from "../util";
+import { getID } from "../util";
 import { BOARD_SEARCH_INPUT_SEL, BOARD_SEARCH_SORT_SEL } from "../vars";
 import { extractPageData, extractPost } from "./common";
 
@@ -59,17 +59,6 @@ function getThreads(): [HTMLElement, HTMLElement[]] {
   return [container, Array.from(threads)];
 }
 
-function onSearchChange(e: Event) {
-  const filter = (e.target as HTMLInputElement).value;
-  filterThreads(filter);
-}
-
-// Persist thread sort order mode to localStorage and rerender threads.
-function onSortChange(e: Event) {
-  localStorage.setItem("catalogSort", (e.target as HTMLInputElement).value);
-  sortThreads(false);
-}
-
 // Filter against board and subject and toggle thread visibility.
 function filterThreads(filter: string) {
   const [ , threads ] = getThreads();
@@ -92,18 +81,8 @@ function filterThreads(filter: string) {
 }
 
 // Sort all threads on a board.
-function sortThreads(initial: boolean) {
-  // Index pages are paginated, so it does not make a lot of sense to
-  // sort them.
-  if (!page.catalog) return;
-
+function sortThreads(sortMode: string) {
   const [container, threads] = getThreads();
-
-  const sortMode = localStorage.getItem("catalogSort") || "bump";
-  // Already sorted as needed.
-  if (initial && sortMode === "bump") return;
-
-  // Sort threads by model properties.
   const els: { [id: number]: HTMLElement } = {};
   const sortedThreads = threads
     .map((el) => {
@@ -121,6 +100,14 @@ function sortThreads(initial: boolean) {
   container.append(...sortedThreads);
 }
 
+function onSearchChange(e: Event) {
+  filterThreads((e.target as HTMLInputElement).value);
+}
+
+function onSortChange(e: Event) {
+  sortThreads((e.target as HTMLInputElement).value);
+}
+
 // Apply client-side modifications to a board page's HTML.
 export function render() {
   if (page.catalog) {
@@ -130,11 +117,9 @@ export function render() {
   }
 
   if (page.catalog) {
-    const container = document.getElementById("threads");
-    on(container, "input", onSearchChange, {selector: BOARD_SEARCH_INPUT_SEL});
-    on(container, "input", onSortChange, {selector: BOARD_SEARCH_SORT_SEL});
-    const select = container.querySelector(BOARD_SEARCH_SORT_SEL) as HTMLSelectElement;
-    select.value = localStorage.getItem("catalogSort") || "bump";
-    sortThreads(true);
+    const input = document.querySelector(BOARD_SEARCH_INPUT_SEL) as HTMLInputElement;
+    input.oninput = onSearchChange;
+    const select = document.querySelector(BOARD_SEARCH_SORT_SEL) as HTMLSelectElement;
+    select.onchange = onSortChange;
   }
 }
