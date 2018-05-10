@@ -68,8 +68,12 @@ func getVliveEmbed(url string) (doc oEmbedDoc, err error) {
 
 	client := &http.Client{Timeout: time.Second * 5}
 	resp, err := client.Get(url)
-	if err != nil || resp.StatusCode != 200 {
-		err = fmt.Errorf("bad vlive response: %v (%d)", err, resp.StatusCode)
+	if err != nil {
+		err = fmt.Errorf("bad vlive response: %v", err)
+		return
+	}
+	if resp.StatusCode != 200 {
+		err = fmt.Errorf("bad vlive response code: %d", resp.StatusCode)
 		return
 	}
 
