@@ -100,7 +100,7 @@ function getFileInfo(file: File | Blob): Promise<Dict> {
   let skipCopy = false;
   if (file.type.startsWith("video/")) {
     fn = getVideoInfo;
-  } else if (file.type.startsWith("audio/") && (file as any).record) {
+  } else if (file.type === "audio/mpeg" || file.type === "audio/mp3") {
     fn = getAudioInfo;
   } else if (file.type.startsWith("image/")) {
     fn = getImageInfo;
@@ -109,7 +109,7 @@ function getFileInfo(file: File | Blob): Promise<Dict> {
       skipCopy = true;
     }
   } else {
-    fn = () => Promise.reject(new Error("unknown mime"));
+    fn = () => Promise.reject(new Error("Unsupported file type"));
   }
   return fn(file, skipCopy);
 }
@@ -122,9 +122,15 @@ function getClientY(e: MouseEvent | TouchEvent): number {
   return (e as any).touches ? (e as any).touches[0].clientY : (e as any).clientY;
 }
 
-class FilePreview extends Component<any, any> {
-  public render(props: any) {
-    const record = !!(props.file as any).record;
+interface FilePreviewProps {
+  info: Dict;
+  file: File | Blob;
+  onRemove: () => void;
+}
+
+class FilePreview extends Component<FilePreviewProps, {}> {
+  public render(props: FilePreviewProps) {
+    const record = props.file.type.startsWith("audio/");
     const { thumb } = props.info;
     const infoText = this.renderInfo();
     return (
@@ -307,7 +313,7 @@ class Reply extends Component<any, any> {
           class="reply-files-input"
           ref={s(this, "fileEl")}
           type="file"
-          accept="image/*,video/*"
+          accept="image/*,video/*,audio/mpeg,audio/mp3"
           multiple
           onChange={this.handleFileChange}
         />
@@ -642,8 +648,6 @@ class Reply extends Component<any, any> {
     }
     // Have to accept Blob because Edge doesn't have File constructor...
     vmsg.record({pitch}).then((blob) => {
-      // To distinguish from regular attachments.
-      (blob as any).record = true;
       this.handleFiles([blob]);
     });
   }
@@ -678,7 +682,8 @@ class Reply extends Component<any, any> {
         fwraps = fwraps.slice(Math.max(0, fwraps.length - config.maxFiles));
         this.setState({fwraps}, this.focus);
       }, (err) => {
-        showAlert(_("unsupFile") + ": " + err.message);
+        const errMsg = err.message ? `: ${err.message}` : "";
+        showAlert(_("unsupFile") + errMsg);
       }),
     );
   }
