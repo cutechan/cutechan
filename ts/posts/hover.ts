@@ -35,7 +35,7 @@ let container = null as HTMLElement;
 let lastTarget = null as EventTarget;
 let delayedTID = 0;
 let clearPostTID = 0;
-const postPreviews = [] as [PostPreview];
+const postPreviews = [] as PostPreview[];
 let imagePreview = null as HTMLImageElement;
 
 // Clone a post element as a preview.
