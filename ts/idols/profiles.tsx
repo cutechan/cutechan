@@ -264,7 +264,7 @@ export function init() {
     container.innerHTML = "";
     render(<ProfilesWrapper/>, container);
 
-    hook(HOOKS.focusSearch, () => {
+    hook(HOOKS.focusIdolSearch, () => {
       (document.querySelector(".header-profiles-search") as HTMLInputElement)
         .focus();
     });

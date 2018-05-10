@@ -105,10 +105,16 @@ msgid "spoilerTitle"
 msgstr "Kopiere Spoiler Markup"
 
 msgid "search"
+msgstr "Suche"
+
+msgid "idolSearch"
 msgstr "Suche nach Idols"
 
-msgid "searchTitle"
+msgid "idolSearchTitle"
 msgstr "Gehe zu Idols-Suche"
+
+msgid "searchIdol"
+msgstr "Suche nach Idol"
 
 msgid "smile"
 msgstr "Kopiere Emoticon"
@@ -409,9 +415,6 @@ msgstr "Seitenladefehler"
 
 msgid "sendErr"
 msgstr "Fehlerdaten übermitteln"
-
-msgid "searchIdol"
-msgstr "Suche nach Idol"
 
 msgid "aggregator"
 msgstr "Alle Boards"

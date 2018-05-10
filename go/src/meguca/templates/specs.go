@@ -170,7 +170,7 @@ var optionSpecs = [...][]inputSpec{
 			Type: _shortcut,
 		},
 		{
-			ID:   "search",
+			ID:   "idolSearch",
 			Type: _shortcut,
 		},
 	},

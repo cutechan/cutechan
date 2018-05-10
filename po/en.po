@@ -105,10 +105,16 @@ msgid "spoilerTitle"
 msgstr "Paste spoiler markup"
 
 msgid "search"
+msgstr "Search"
+
+msgid "idolSearch"
 msgstr "Search idols"
 
-msgid "searchTitle"
+msgid "idolSearchTitle"
 msgstr "Jump to idols search"
+
+msgid "searchIdol"
+msgstr "Search idol…"
 
 msgid "smile"
 msgstr "Paste smile"
@@ -409,9 +415,6 @@ msgstr "Site load error"
 
 msgid "sendErr"
 msgstr "Send error"
-
-msgid "searchIdol"
-msgstr "Search idol…"
 
 msgid "aggregator"
 msgstr "All boards"

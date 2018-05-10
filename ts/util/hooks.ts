@@ -16,7 +16,7 @@ export const enum HOOKS {
   boldMarkup,
   italicMarkup,
   spoilerMarkup,
-  focusSearch,
+  focusIdolSearch,
   openIgnoreModal,
 }
 

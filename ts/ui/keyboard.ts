@@ -49,9 +49,9 @@ function handleShortcut(e: KeyboardEvent) {
       caught = true;
       trigger(HOOKS.spoilerMarkup);
       break;
-    case options.search:
+    case options.idolSearch:
       caught = true;
-      trigger(HOOKS.focusSearch);
+      trigger(HOOKS.focusIdolSearch);
       break;
     case options.workMode:
       caught = true;

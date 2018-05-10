@@ -22,7 +22,7 @@ interface Options extends ChangeEmitter {
   bold: number;
   italic: number;
   spoiler: number;
-  search: number;
+  idolSearch: number;
   volume: number;
 }
 
@@ -152,7 +152,7 @@ const specs: { [id: string]: OptionSpec } = {
     default: "P",
     type: optionType.shortcut,
   },
-  search: {
+  idolSearch: {
     default: "F",
     type: optionType.shortcut,
   },
