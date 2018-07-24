@@ -101,7 +101,7 @@ gofmt-staged:
 tags:
 	ctags -R go/src/meguca ts
 
-clean: templates-clean smiles-clean client-clean server-clean deb-clean test-clean
+clean: templates-clean smiles-clean client-clean server-clean deb-clean
 
 templates-clean:
 	rm -rf mustache-pp
@@ -121,8 +121,3 @@ server-clean:
 
 deb-clean:
 	rm -rf deb_dist cutechan.deb
-
-test-clean:
-	rm -rf go/multipart-* \
-		go/src/meguca/imager/uploads \
-		go/src/meguca/assets/uploads
