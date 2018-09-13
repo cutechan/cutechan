@@ -65,7 +65,7 @@ export function makePostContext(
         break;
       }
     }
-    if (p.userID === "") {
+    if (!p.userID) {
       classes.push("post_by-anon");
     } else {
       const src = unescape(encodeURIComponent(p.userID));
