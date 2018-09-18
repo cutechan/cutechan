@@ -402,7 +402,7 @@ msgid "banConfirm"
 msgstr "Удалить пост и забанить автора?"
 
 msgid "unsupFile"
-msgstr "Неподдерживаемый тип файла"
+msgstr "Неподдерживаемый файл"
 
 msgid "unknownErr"
 msgstr "Неизвестная ошибка"

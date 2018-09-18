@@ -689,8 +689,7 @@ class Reply extends Component<any, any> {
   }
   private handleFile = (file: File | Blob): Promise<FWrap> => {
     if (file.size > config.maxSize * 1024 * 1024) {
-      showAlert(_("tooBig"));
-      return Promise.reject(new Error("file is too big"));
+      return Promise.reject(new Error(_("tooBig")));
     }
     return getFileInfo(file).then((info: Dict) => ({file, info}));
   }

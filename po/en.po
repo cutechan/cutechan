@@ -402,7 +402,7 @@ msgid "banConfirm"
 msgstr "Delete post and ban author?"
 
 msgid "unsupFile"
-msgstr "Unsupported file type"
+msgstr "Unsupported file"
 
 msgid "unknownErr"
 msgstr "Unknown error"
