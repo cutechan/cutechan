@@ -57,6 +57,10 @@ check out preconfigured
 * Startup script will automatically build and run server at http://192.168.56.101:8001
 * That's it, now you can do any experiments with your personal cutechan install
 
+## Donate
+
+Donations for development and server payments can be send to `1DNvp7EdVd66ydwRZiNp6qDJwSZzYWHKgm` (BTC). Thank you!
+
 ## License
 
 [AGPLv3+](LICENSE)
