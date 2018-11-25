@@ -72,7 +72,7 @@ account.ignoreMode = account.ignoreMode || 0;
 account.whitelist = account.whitelist || [];
 account.blacklist = account.blacklist || [];
 export const position = session ? session.positions.curBoard : ModerationLevel.notLoggedIn;
-export const anyposition = session ? session.positions.curBoard : ModerationLevel.notLoggedIn;
+export const anyposition = session ? session.positions.anyBoard : ModerationLevel.notLoggedIn;
 
 export function isModerator(): boolean {
   return position >= ModerationLevel.moderator;
