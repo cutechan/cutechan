@@ -25,9 +25,6 @@
 # Site directory location.
 #site_dir = "./dist"
 
-# Uploads directory location.
-#file_dir = "./uploads"
-
 # Kpopnet data directory location.
 #data_dir = "./go/src/github.com/Kagami/kpopnet/data"
 
@@ -36,3 +33,18 @@
 
 # Allowed origin for Idol API.
 #origin = "http://localhost:8000"
+
+# Uploads backend. Can be "fs" or "swift".
+#file_backend = "fs"
+
+# Uploads directory location. Valid only for fs backend.
+#file_dir = "./uploads"
+
+# Swift username. Valid only for swift backend.
+#file_username = "cutechan"
+
+# Swift password. Valid only for swift backend.
+#file_password = "password"
+
+# Swift authentication URL. Valid only for swift backend.
+#file_auth_url = "https://localhost/v1.0"

@@ -44,7 +44,6 @@ Options:
   -u <user>     Spawn thumbnail process as separate user.
   -z <size>     Cache size in megabytes (default: 128).
   -s <sitedir>  Site directory location (default: ./dist).
-  -f <filedir>  Uploads directory location (default: ./uploads).
   -d <datadir>  Kpopnet data directory location (default: ./go/src/github.com/Kagami/kpopnet/data).
   -g <geodir>   GeoIP databases directory location (default: ./geoip).
   -o <origin>   Allowed origin for Idol API (default: http://localhost:8000).
@@ -54,36 +53,44 @@ Options:
 // Duplicates USAGE so make sure to update consistently!
 // NOTE(Kagami): We don't use docopt's way to set defaults because need
 // to distinguish explicitly set options.
-var defaultConfig = config{
-	Host:    "127.0.0.1",
-	Port:    8001,
-	Conn:    "user=meguca password=meguca dbname=meguca sslmode=disable",
-	Cache:   128,
-	SiteDir: "./dist",
-	FileDir: "./uploads",
-	DataDir: "./go/src/github.com/Kagami/kpopnet/data",
-	GeoDir:  "./geoip",
-	Origin:  "http://localhost:8000",
-	Path:    "./cutechan.toml.example",
+var confDefault = config{
+	Host:         "127.0.0.1",
+	Port:         8001,
+	Conn:         "user=meguca password=meguca dbname=meguca sslmode=disable",
+	Cache:        128,
+	SiteDir:      "./dist",
+	DataDir:      "./go/src/github.com/Kagami/kpopnet/data",
+	GeoDir:       "./geoip",
+	Origin:       "http://localhost:8000",
+	Path:         "./cutechan.toml.example",
+	FileBackend:  "fs",
+	FileDir:      "./uploads",
+	FileUsername: "cutechan",
+	FilePassword: "password",
+	FileAuthURL:  "https://localhost/v1.0",
 }
 
 type config struct {
-	Profile bool `toml:"-"`
-	Import  bool `toml:"-"`
-	Debug   bool
-	Host    string `docopt:"-H"`
-	Port    int    `docopt:"-p"`
-	Conn    string `docopt:"-c"`
-	Rproxy  bool   `docopt:"-r"`
-	Secure  bool   `docopt:"-y"`
-	User    string `docopt:"-u"`
-	Cache   int    `docopt:"-z"`
-	SiteDir string `docopt:"-s" toml:"site_dir"`
-	FileDir string `docopt:"-f" toml:"file_dir"`
-	DataDir string `docopt:"-d" toml:"data_dir"`
-	GeoDir  string `docopt:"-g" toml:"geo_dir"`
-	Origin  string `docopt:"-o"`
-	Path    string `docopt:"--cfg" toml:"-"`
+	Profile      bool `toml:"-"`
+	Import       bool `toml:"-"`
+	Debug        bool
+	Host         string `docopt:"-H"`
+	Port         int    `docopt:"-p"`
+	Conn         string `docopt:"-c"`
+	Rproxy       bool   `docopt:"-r"`
+	Secure       bool   `docopt:"-y"`
+	User         string `docopt:"-u"`
+	Cache        int    `docopt:"-z"`
+	SiteDir      string `docopt:"-s" toml:"site_dir"`
+	DataDir      string `docopt:"-d" toml:"data_dir"`
+	GeoDir       string `docopt:"-g" toml:"geo_dir"`
+	Origin       string `docopt:"-o"`
+	Path         string `docopt:"--cfg" toml:"-"`
+	FileBackend  string `toml:"file_backend"`
+	FileDir      string `toml:"file_dir"`
+	FileUsername string `toml:"file_username"`
+	FilePassword string `toml:"file_password"`
+	FileAuthURL  string `toml:"file_auth_url"`
 }
 
 // Merge non-zero values from additional config.
@@ -151,24 +158,27 @@ func serve(conf config) {
 }
 
 func main() {
+	var conf config
+	var confFromFile config
+
 	opts, err := docopt.ParseArgs(USAGE, nil, VERSION)
 	if err != nil {
 		log.Fatal(err)
 	}
-
-	var conf config
 	if err := opts.Bind(&conf); err != nil {
 		log.Fatal(err)
 	}
 	if conf.Path == "" {
-		conf.Path = defaultConfig.Path
+		conf.Path = confDefault.Path
 	}
-
-	var confFile config
-	if _, err := toml.DecodeFile(conf.Path, &confFile); err != nil {
+	if _, err := toml.DecodeFile(conf.Path, &confFromFile); err != nil {
 		log.Fatal(err)
 	}
-	merge(&conf, &confFile, &defaultConfig)
+	merge(&conf, &confFromFile, &confDefault)
+
+	if conf.FileBackend != "fs" && conf.FileBackend != "swift" {
+		log.Fatalf("Bad uploads backend: %s", conf.FileBackend)
+	}
 
 	if conf.Profile && conf.Import {
 		importProfiles(conf)
