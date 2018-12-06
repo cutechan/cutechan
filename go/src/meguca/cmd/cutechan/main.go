@@ -10,6 +10,7 @@ import (
 	"meguca/cache"
 	"meguca/common"
 	"meguca/db"
+	"meguca/file"
 	"meguca/geoip"
 	"meguca/lang"
 	"meguca/server"
@@ -132,6 +133,13 @@ func serve(conf config) {
 	common.ImageWebRoot = conf.FileDir
 
 	address := fmt.Sprintf("%v:%v", conf.Host, conf.Port)
+	confFile := file.Config{
+		Backend:  conf.FileBackend,
+		Dir:      conf.FileDir,
+		Username: conf.FileUsername,
+		Password: conf.FilePassword,
+		AuthURL:  conf.FileAuthURL,
+	}
 	confServer := server.Config{
 		DebugRoutes:  conf.Debug,
 		Address:      address,
@@ -139,6 +147,9 @@ func serve(conf config) {
 		ThumbUser:    conf.User,
 		SiteDir:      conf.SiteDir,
 		IdolOrigin:   conf.Origin,
+	}
+	startFileBackend := func() error {
+		return file.StartBackend(confFile)
 	}
 	loadGeoIP := func() error {
 		return geoip.Load(conf.GeoDir)
@@ -149,7 +160,7 @@ func serve(conf config) {
 
 	// Prepare subsystems.
 	err := util.RunTasks([][]util.Task{
-		[]util.Task{db.StartDB, assets.CreateDirs, loadGeoIP, lang.Load, templates.CompileMustache},
+		[]util.Task{db.StartDB, startFileBackend, assets.CreateDirs, loadGeoIP, lang.Load, templates.CompileMustache},
 		[]util.Task{startKpopnetFaceRec},
 	})
 	if err != nil {

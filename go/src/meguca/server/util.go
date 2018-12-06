@@ -23,10 +23,6 @@ var (
 	vanillaHeaders = map[string]string{
 		"Cache-Control": "no-cache",
 	}
-	// Set of headers for serving images (and other uploaded files)
-	imageHeaders = map[string]string{
-		"Cache-Control": "max-age=31536000, public, immutable",
-	}
 )
 
 func writeData(w http.ResponseWriter, r *http.Request, data []byte) {

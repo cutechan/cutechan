@@ -1,19 +1,16 @@
 package server
 
 import (
-	"meguca/websockets"
 	"mime"
 	"net/http"
 	"net/http/pprof"
 	"runtime/debug"
 	"time"
 
-	"github.com/dimfeld/httptreemux"
-)
+	"meguca/file"
+	"meguca/websockets"
 
-var (
-	secureCookie bool
-	idolOrigin   string
+	"github.com/dimfeld/httptreemux"
 )
 
 type Config struct {
@@ -24,6 +21,11 @@ type Config struct {
 	SiteDir      string
 	IdolOrigin   string
 }
+
+var (
+	secureCookie bool
+	idolOrigin   string
+)
 
 func Start(conf Config) (err error) {
 	// TODO(Kagami): Use config structs instead of globals.
@@ -87,7 +89,9 @@ func createRouter(conf Config) http.Handler {
 	r.GET("/static/*path", func(w http.ResponseWriter, r *http.Request) {
 		serveFile(w, r, cleanJoin(conf.SiteDir, "static", getParam(r, "path")))
 	})
-	r.GET("/uploads/*path", serveFiles)
+	if file.IsServable() {
+		r.GET("/uploads/*path", file.Serve)
+	}
 	// Not yet in /etc/mime.types
 	mime.AddExtensionType(".wasm", "application/wasm")
 
