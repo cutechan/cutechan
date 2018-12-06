@@ -44,6 +44,5 @@ var (
 
 // Server paths
 var (
-	WebRoot      string
 	ImageWebRoot string
 )

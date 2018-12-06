@@ -125,16 +125,21 @@ func importProfiles(conf config) {
 }
 
 func serve(conf config) {
-	// Set subsystem options.
 	// TODO(Kagami): Use config structs instead of globals.
 	db.ConnArgs = conf.Conn
 	auth.IsReverseProxied = conf.Rproxy
-	server.SecureCookie = conf.Secure
 	cache.Size = conf.Cache
-	common.WebRoot = conf.SiteDir
 	common.ImageWebRoot = conf.FileDir
-	server.IdolOrigin = conf.Origin
+
 	address := fmt.Sprintf("%v:%v", conf.Host, conf.Port)
+	confServer := server.Config{
+		DebugRoutes:  conf.Debug,
+		Address:      address,
+		SecureCookie: conf.Secure,
+		ThumbUser:    conf.User,
+		SiteDir:      conf.SiteDir,
+		IdolOrigin:   conf.Origin,
+	}
 	loadGeoIP := func() error {
 		return geoip.Load(conf.GeoDir)
 	}
@@ -153,7 +158,7 @@ func serve(conf config) {
 
 	// Start serving requests.
 	log.Printf("Listening on %v", address)
-	log.Fatal(server.Start(address, conf.User, conf.Debug))
+	log.Fatal(server.Start(confServer))
 }
 
 func main() {

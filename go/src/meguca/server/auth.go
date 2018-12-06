@@ -17,9 +17,6 @@ import (
 )
 
 var (
-	// Add "secure" flag to auth cookies.
-	SecureCookie bool
-
 	userIDRe = regexp.MustCompile(`^[-_ \p{Latin}\p{Cyrillic}\d]+$`)
 )
 
@@ -99,7 +96,7 @@ func commitLogin(w http.ResponseWriter, r *http.Request, userID string) {
 		Value:    token,
 		Path:     "/",
 		Expires:  expires,
-		Secure:   SecureCookie,
+		Secure:   secureCookie,
 		HttpOnly: true,
 	}
 	setSameSiteCookie(w, &sessionCookie, SAMESITE_LAX_MODE)
@@ -160,7 +157,7 @@ func commitLogout(
 		Value:    "0",
 		Path:     "/",
 		Expires:  expires,
-		Secure:   SecureCookie,
+		Secure:   secureCookie,
 		HttpOnly: true,
 	}
 	setSameSiteCookie(w, &sessionCookie, SAMESITE_LAX_MODE)

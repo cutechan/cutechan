@@ -7,6 +7,8 @@ import (
 	"net"
 	"net/http"
 	"net/url"
+	"os"
+	"path/filepath"
 	"runtime/debug"
 	"syscall"
 
@@ -90,4 +92,34 @@ func parseUploadForm(w http.ResponseWriter, r *http.Request) (
 	f = r.Form
 	m = r.MultipartForm
 	return
+}
+
+func cleanJoin(parts ...string) string {
+	return filepath.Clean(filepath.Join(parts...))
+}
+
+func serveFile(w http.ResponseWriter, r *http.Request, path string) {
+	file, err := os.Open(path)
+	if err != nil {
+		serve404(w, r)
+		return
+	}
+	defer file.Close()
+
+	stats, err := file.Stat()
+	if err != nil {
+		text500(w, r, err)
+		return
+	}
+	if stats.IsDir() {
+		serve404(w, r)
+		return
+	}
+	modTime := stats.ModTime()
+
+	head := w.Header()
+	for key, val := range vanillaHeaders {
+		head.Set(key, val)
+	}
+	http.ServeContent(w, r, path, modTime, file)
 }

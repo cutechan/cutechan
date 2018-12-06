@@ -12,18 +12,16 @@ import (
 )
 
 var (
-	IdolOrigin string
-
 	uuidRe = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
 )
 
 func serveIdolProfiles(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", IdolOrigin)
+	w.Header().Set("Access-Control-Allow-Origin", idolOrigin)
 	kpopnet.ServeProfiles(w, r)
 }
 
 func serveIdolRecognize(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", IdolOrigin)
+	w.Header().Set("Access-Control-Allow-Origin", idolOrigin)
 	kpopnet.ServeRecognize(w, r)
 }
 
@@ -102,6 +100,6 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) (answer map[string]s
 }
 
 func serveImageInfo(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", IdolOrigin)
+	w.Header().Set("Access-Control-Allow-Origin", idolOrigin)
 	kpopnet.ServeImageInfo(w, r)
 }

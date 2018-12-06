@@ -11,11 +11,29 @@ import (
 	"github.com/dimfeld/httptreemux"
 )
 
-func Start(address, user string, debugRoutes bool) (err error) {
+var (
+	secureCookie bool
+	idolOrigin   string
+)
+
+type Config struct {
+	DebugRoutes  bool
+	Address      string
+	SecureCookie bool
+	ThumbUser    string
+	SiteDir      string
+	IdolOrigin   string
+}
+
+func Start(conf Config) (err error) {
+	// TODO(Kagami): Use config structs instead of globals.
+	secureCookie = conf.SecureCookie
+	idolOrigin = conf.IdolOrigin
+
+	startThumbWorkers(conf.ThumbUser)
+	router := createRouter(conf)
 	go runForceFreeTask()
-	startThumbWorkers(user)
-	router := createRouter(debugRoutes)
-	return http.ListenAndServe(address, router)
+	return http.ListenAndServe(conf.Address, router)
 }
 
 // If user uploads large file (40MB max by default), Go consumes quite a
@@ -36,13 +54,13 @@ func runForceFreeTask() {
 	}
 }
 
-func createRouter(debugRoutes bool) http.Handler {
+func createRouter(conf Config) http.Handler {
 	r := httptreemux.NewContextMux()
 	r.NotFoundHandler = serve404
 	r.PanicHandler = text500
 
 	// Make sure to control access in production.
-	if debugRoutes {
+	if conf.DebugRoutes {
 		r.Handle("GET", "/debug/pprof/*", pprof.Index)
 	}
 
@@ -66,7 +84,9 @@ func createRouter(debugRoutes bool) http.Handler {
 	r.GET("/admin/:board", assertBoardOwner(serveAdmin))
 
 	// Assets.
-	r.GET("/static/*path", serveStatic)
+	r.GET("/static/*path", func(w http.ResponseWriter, r *http.Request) {
+		serveFile(w, r, cleanJoin(conf.SiteDir, "static", getParam(r, "path")))
+	})
 	r.GET("/uploads/*path", serveFiles)
 	// Not yet in /etc/mime.types
 	mime.AddExtensionType(".wasm", "application/wasm")
