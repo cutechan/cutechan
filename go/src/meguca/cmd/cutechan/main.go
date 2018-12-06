@@ -47,7 +47,7 @@ Options:
   -d <datadir>  Kpopnet data directory location (default: ./go/src/github.com/Kagami/kpopnet/data).
   -g <geodir>   GeoIP databases directory location (default: ./geoip).
   -o <origin>   Allowed origin for Idol API (default: http://localhost:8000).
-  --cfg <path>  Path to TOML config (default: ./cutechan.toml.example).
+  --cfg <path>  Path to TOML config
 `
 
 // Duplicates USAGE so make sure to update consistently!
@@ -62,7 +62,6 @@ var confDefault = config{
 	DataDir:      "./go/src/github.com/Kagami/kpopnet/data",
 	GeoDir:       "./geoip",
 	Origin:       "http://localhost:8000",
-	Path:         "./cutechan.toml.example",
 	FileBackend:  "fs",
 	FileDir:      "./uploads",
 	FileUsername: "cutechan",
@@ -168,11 +167,10 @@ func main() {
 	if err := opts.Bind(&conf); err != nil {
 		log.Fatal(err)
 	}
-	if conf.Path == "" {
-		conf.Path = confDefault.Path
-	}
-	if _, err := toml.DecodeFile(conf.Path, &confFromFile); err != nil {
-		log.Fatal(err)
+	if conf.Path != "" {
+		if _, err := toml.DecodeFile(conf.Path, &confFromFile); err != nil {
+			log.Fatal(err)
+		}
 	}
 	merge(&conf, &confFromFile, &confDefault)
 

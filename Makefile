@@ -74,7 +74,10 @@ endif
 server: go/bin/cutechan
 
 serve: templates server
-	cutechan -H 0.0.0.0 --debug
+	cutechan -H 0.0.0.0 --debug --cfg cutechan.toml
+
+default-config:
+	cp cutechan.toml.example cutechan.toml
 
 deb: clean templates smiles client server
 	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 go/bin/cutethumb

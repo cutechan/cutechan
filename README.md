@@ -36,7 +36,7 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
 
 ## Development
 
-* `make serve` runs the server
+* `make serve` runs the server (run `make default-config` to create config)
 * `make client` and `make server` build the client and server separately
 * `make client-watch` watches the file system for changes and incrementally
   rebuilds the client
