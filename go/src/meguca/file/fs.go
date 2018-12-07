@@ -34,15 +34,15 @@ type fsBackend struct {
 	dir string
 }
 
-func (fs *fsBackend) IsServable() bool {
+func (b *fsBackend) IsServable() bool {
 	return true
 }
 
 // Serve uploads directory. Only makes sense for dev server, on
 // production you normally use nginx.
-func (fs *fsBackend) Serve(w http.ResponseWriter, r *http.Request) {
+func (b *fsBackend) Serve(w http.ResponseWriter, r *http.Request) {
 	path := getParam(r, "path")
-	file, err := os.Open(cleanJoin(fs.dir, path))
+	file, err := os.Open(cleanJoin(b.dir, path))
 	if err != nil {
 		http.Error(w, fmt.Sprintf("404 %s", err), 404)
 		return
@@ -90,8 +90,8 @@ func writeFile(path string, data []byte) error {
 }
 
 // Write writes file assets to disk
-func (fs *fsBackend) Write(SHA1 string, fileType, thumbType uint8, src, thumb []byte) error {
-	paths := getFilePaths(fs.dir, SHA1, fileType, thumbType)
+func (b *fsBackend) Write(SHA1 string, fileType, thumbType uint8, src, thumb []byte) error {
+	paths := getFilePaths(b.dir, SHA1, fileType, thumbType)
 
 	ch := make(chan error)
 	go func() {
@@ -110,8 +110,8 @@ func (fs *fsBackend) Write(SHA1 string, fileType, thumbType uint8, src, thumb []
 }
 
 // Delete deletes file assets belonging to a single upload
-func (fs *fsBackend) Delete(SHA1 string, fileType, thumbType uint8) error {
-	for _, path := range getFilePaths(fs.dir, SHA1, fileType, thumbType) {
+func (b *fsBackend) Delete(SHA1 string, fileType, thumbType uint8) error {
+	for _, path := range getFilePaths(b.dir, SHA1, fileType, thumbType) {
 		// Ignore somehow absent images
 		if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
 			return err
