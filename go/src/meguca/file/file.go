@@ -3,7 +3,7 @@ package file
 
 import (
 	"net/http"
-	"strings"
+	"path"
 
 	"meguca/common"
 	"meguca/config"
@@ -13,11 +13,12 @@ import (
 var Backend FileBackend
 
 type Config struct {
-	Backend  string
-	Dir      string
-	Username string
-	Password string
-	AuthURL  string
+	Backend   string
+	Dir       string
+	Username  string
+	Password  string
+	AuthURL   string
+	Container string
 }
 
 type FileBackend interface {
@@ -52,19 +53,14 @@ func imageRoot() string {
 	return DefaultUploadsPath
 }
 
-func imagePath(root string, dir string, typ uint8, SHA1 string) string {
-	return strings.Join([]string{
-		root,
-		dir,
-		SHA1[:2],
-		SHA1[2:] + "." + common.Extensions[typ],
-	}, "/")
+func imagePath(root string, dir string, typ uint8, sha1 string) string {
+	return path.Join(root, dir, sha1[:2], sha1[2:]+"."+common.Extensions[typ])
 }
 
-func SourcePath(fileType uint8, SHA1 string) string {
-	return imagePath(imageRoot(), srcDir, fileType, SHA1)
+func SourcePath(fileType uint8, sha1 string) string {
+	return imagePath(imageRoot(), srcDir, fileType, sha1)
 }
 
-func ThumbPath(thumbType uint8, SHA1 string) string {
-	return imagePath(imageRoot(), thumbDir, thumbType, SHA1)
+func ThumbPath(thumbType uint8, sha1 string) string {
+	return imagePath(imageRoot(), thumbDir, thumbType, sha1)
 }

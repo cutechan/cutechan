@@ -58,7 +58,7 @@ func (b *fsBackend) Serve(w http.ResponseWriter, r *http.Request) {
 }
 
 // Generate file paths of the source file and its thumbnail
-func getFilePaths(root string, SHA1 string, fileType, thumbType uint8) (paths [2]string) {
+func fsGetPaths(root string, SHA1 string, fileType, thumbType uint8) (paths [2]string) {
 	path := imagePath(root, srcDir, fileType, SHA1)
 	paths[0] = filepath.FromSlash(path)
 	path = imagePath(root, thumbDir, thumbType, SHA1)
@@ -67,9 +67,10 @@ func getFilePaths(root string, SHA1 string, fileType, thumbType uint8) (paths [2
 }
 
 // Write a single file to disk with the appropriate permissions and flags
-func writeFile(path string, data []byte) error {
+func fsWriteFile(path string, data []byte) error {
 	// One of the files might be empty (e.g. thumbnail in case of audio
 	// record).
+	// TODO(Kagami): Don't call for empty files?
 	if data == nil {
 		return nil
 	}
@@ -91,14 +92,14 @@ func writeFile(path string, data []byte) error {
 
 // Write writes file assets to disk
 func (b *fsBackend) Write(SHA1 string, fileType, thumbType uint8, src, thumb []byte) error {
-	paths := getFilePaths(b.dir, SHA1, fileType, thumbType)
+	paths := fsGetPaths(b.dir, SHA1, fileType, thumbType)
 
 	ch := make(chan error)
 	go func() {
-		ch <- writeFile(paths[0], src)
+		ch <- fsWriteFile(paths[0], src)
 	}()
 
-	for _, err := range [...]error{writeFile(paths[1], thumb), <-ch} {
+	for _, err := range [...]error{fsWriteFile(paths[1], thumb), <-ch} {
 		switch {
 		// Ignore files already written by another thread or process
 		case err == nil, os.IsExist(err):
@@ -111,7 +112,7 @@ func (b *fsBackend) Write(SHA1 string, fileType, thumbType uint8, src, thumb []b
 
 // Delete deletes file assets belonging to a single upload
 func (b *fsBackend) Delete(SHA1 string, fileType, thumbType uint8) error {
-	for _, path := range getFilePaths(b.dir, SHA1, fileType, thumbType) {
+	for _, path := range fsGetPaths(b.dir, SHA1, fileType, thumbType) {
 		// Ignore somehow absent images
 		if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
 			return err
@@ -120,7 +121,7 @@ func (b *fsBackend) Delete(SHA1 string, fileType, thumbType uint8) error {
 	return nil
 }
 
-func createDirs(root string) error {
+func fsCreateDirs(root string) error {
 	for _, dir := range [...]string{srcDir, thumbDir} {
 		path := filepath.Join(root, dir)
 		if err := os.MkdirAll(path, dirMode); err != nil {
@@ -131,7 +132,7 @@ func createDirs(root string) error {
 }
 
 func makeFSBackend(conf Config) (b FileBackend, err error) {
-	if err = createDirs(conf.Dir); err != nil {
+	if err = fsCreateDirs(conf.Dir); err != nil {
 		return
 	}
 	b = &fsBackend{dir: conf.Dir}

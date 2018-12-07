@@ -53,42 +53,44 @@ Options:
 // NOTE(Kagami): We don't use docopt's way to set defaults because need
 // to distinguish explicitly set options.
 var confDefault = config{
-	Host:         "127.0.0.1",
-	Port:         8001,
-	Conn:         "user=meguca password=meguca dbname=meguca sslmode=disable",
-	Cache:        128,
-	SiteDir:      "./dist",
-	DataDir:      "./go/src/github.com/Kagami/kpopnet/data",
-	GeoDir:       "./geoip",
-	Origin:       "http://localhost:8000",
-	FileBackend:  "fs",
-	FileDir:      "./uploads",
-	FileUsername: "cutechan",
-	FilePassword: "password",
-	FileAuthURL:  "https://localhost/v1.0",
+	Host:          "127.0.0.1",
+	Port:          8001,
+	Conn:          "user=meguca password=meguca dbname=meguca sslmode=disable",
+	Cache:         128,
+	SiteDir:       "./dist",
+	DataDir:       "./go/src/github.com/Kagami/kpopnet/data",
+	GeoDir:        "./geoip",
+	Origin:        "http://localhost:8000",
+	FileBackend:   "fs",
+	FileDir:       "./uploads",
+	FileUsername:  "cutechan",
+	FilePassword:  "password",
+	FileAuthURL:   "https://localhost/v1.0",
+	FileContainer: "uploads",
 }
 
 type config struct {
-	Profile      bool `toml:"-"`
-	Import       bool `toml:"-"`
-	Debug        bool
-	Host         string `docopt:"-H"`
-	Port         int    `docopt:"-p"`
-	Conn         string `docopt:"-c"`
-	Rproxy       bool   `docopt:"-r"`
-	Secure       bool   `docopt:"-y"`
-	User         string `docopt:"-u"`
-	Cache        int    `docopt:"-z"`
-	SiteDir      string `docopt:"-s" toml:"site_dir"`
-	DataDir      string `docopt:"-d" toml:"data_dir"`
-	GeoDir       string `docopt:"-g" toml:"geo_dir"`
-	Origin       string `docopt:"-o"`
-	Path         string `docopt:"--cfg" toml:"-"`
-	FileBackend  string `toml:"file_backend"`
-	FileDir      string `toml:"file_dir"`
-	FileUsername string `toml:"file_username"`
-	FilePassword string `toml:"file_password"`
-	FileAuthURL  string `toml:"file_auth_url"`
+	Profile       bool `toml:"-"`
+	Import        bool `toml:"-"`
+	Debug         bool
+	Host          string `docopt:"-H"`
+	Port          int    `docopt:"-p"`
+	Conn          string `docopt:"-c"`
+	Rproxy        bool   `docopt:"-r"`
+	Secure        bool   `docopt:"-y"`
+	User          string `docopt:"-u"`
+	Cache         int    `docopt:"-z"`
+	SiteDir       string `docopt:"-s" toml:"site_dir"`
+	DataDir       string `docopt:"-d" toml:"data_dir"`
+	GeoDir        string `docopt:"-g" toml:"geo_dir"`
+	Origin        string `docopt:"-o"`
+	Path          string `docopt:"--cfg" toml:"-"`
+	FileBackend   string `toml:"file_backend"`
+	FileDir       string `toml:"file_dir"`
+	FileUsername  string `toml:"file_username"`
+	FilePassword  string `toml:"file_password"`
+	FileAuthURL   string `toml:"file_auth_url"`
+	FileContainer string `toml:"file_container"`
 }
 
 // Merge non-zero values from additional config.
@@ -131,11 +133,12 @@ func serve(conf config) {
 
 	startFileBackend := func() error {
 		return file.StartBackend(file.Config{
-			Backend:  conf.FileBackend,
-			Dir:      conf.FileDir,
-			Username: conf.FileUsername,
-			Password: conf.FilePassword,
-			AuthURL:  conf.FileAuthURL,
+			Backend:   conf.FileBackend,
+			Dir:       conf.FileDir,
+			Username:  conf.FileUsername,
+			Password:  conf.FilePassword,
+			AuthURL:   conf.FileAuthURL,
+			Container: conf.FileContainer,
 		})
 	}
 	loadGeoIP := func() error {

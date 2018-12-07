@@ -48,3 +48,6 @@
 
 # Swift authentication URL. Valid only for swift backend.
 #file_auth_url = "https://localhost/v1.0"
+
+# Swift container. Valid only for swift backend.
+#file_container = "uploads"
