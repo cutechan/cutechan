@@ -24,15 +24,19 @@ func cleanJoin(parts ...string) string {
 	return filepath.Clean(filepath.Join(parts...))
 }
 
-func fsIsServable() bool {
+type fsBackend struct {
+	dir string
+}
+
+func (fs *fsBackend) IsServable() bool {
 	return true
 }
 
 // Serve uploads directory. Only makes sense for dev server, on
 // production you normally use nginx.
-func fsServe(w http.ResponseWriter, r *http.Request) {
+func (fs *fsBackend) Serve(w http.ResponseWriter, r *http.Request) {
 	path := getParam(r, "path")
-	file, err := os.Open(cleanJoin(backendConfig.Dir, path))
+	file, err := os.Open(cleanJoin(fs.dir, path))
 	if err != nil {
 		http.Error(w, fmt.Sprintf("404 %s", err), 404)
 		return
@@ -45,4 +49,8 @@ func fsServe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	http.ServeContent(w, r, path, time.Time{}, file)
+}
+
+func makeFSBackend(conf Config) FileBackend {
+	return &fsBackend{dir: conf.Dir}
 }

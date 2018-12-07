@@ -5,13 +5,8 @@ import (
 	"net/http"
 )
 
-// Public interface for the current backend.
-var (
-	// Whether backend serves uploads by itself.
-	IsServable func() bool
-	// Serve uploads handler. Don't call if backend is non-servable.
-	Serve http.HandlerFunc
-)
+// Current file backend.
+var Backend FileBackend
 
 type Config struct {
 	Backend  string
@@ -21,16 +16,16 @@ type Config struct {
 	AuthURL  string
 }
 
-var backendConfig Config
+type FileBackend interface {
+	IsServable() bool
+	Serve(w http.ResponseWriter, r *http.Request)
+}
 
 func StartBackend(conf Config) (err error) {
-	backendConfig = conf
 	if conf.Backend == "fs" {
-		IsServable = fsIsServable
-		Serve = fsServe
+		Backend = makeFSBackend(conf)
 	} else if conf.Backend == "swift" {
-		IsServable = swiftIsServable
-		Serve = swiftServe
+		Backend = makeSwiftBackend(conf)
 	} else {
 		panic("unknown backend")
 	}

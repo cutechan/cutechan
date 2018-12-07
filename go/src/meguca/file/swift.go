@@ -4,11 +4,18 @@ import (
 	"net/http"
 )
 
-func swiftIsServable() bool {
+type swiftBackend struct {
+}
+
+func (swift *swiftBackend) IsServable() bool {
 	return false
 }
 
 // Served by CDN.
-func swiftServe(w http.ResponseWriter, r *http.Request) {
+func (swift *swiftBackend) Serve(w http.ResponseWriter, r *http.Request) {
 	panic("non-servable backend")
+}
+
+func makeSwiftBackend(conf Config) FileBackend {
+	return &swiftBackend{}
 }
