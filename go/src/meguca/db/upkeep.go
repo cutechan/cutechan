@@ -3,9 +3,10 @@
 package db
 
 import (
-	"meguca/assets"
 	"strings"
 	"time"
+
+	"meguca/file"
 )
 
 // Run database clean up tasks at server start and regular intervals.
@@ -61,7 +62,7 @@ func deleteUnusedFiles() (err error) {
 		if err != nil {
 			return
 		}
-		err = assets.Delete(sha1, fileType, thumbType)
+		err = file.Backend.Delete(sha1, fileType, thumbType)
 		if err != nil {
 			return
 		}

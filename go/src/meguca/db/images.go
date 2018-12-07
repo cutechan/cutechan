@@ -2,11 +2,12 @@ package db
 
 import (
 	"database/sql"
-	"meguca/assets"
+	"time"
+
 	"meguca/auth"
 	"meguca/common"
+	"meguca/file"
 	"meguca/util"
-	"time"
 
 	"github.com/lib/pq"
 )
@@ -91,7 +92,7 @@ func AllocateImage(src, thumb []byte, img common.ImageCommon) (err error) {
 		return
 	}
 
-	err = assets.Write(img.SHA1, img.FileType, img.ThumbType, src, thumb)
+	err = file.Backend.Write(img.SHA1, img.FileType, img.ThumbType, src, thumb)
 	if err != nil {
 		err = cleanUpFailedAllocation(img, err)
 	}
@@ -101,7 +102,7 @@ func AllocateImage(src, thumb []byte, img common.ImageCommon) (err error) {
 
 // Delete any dangling image files in case of a failed image allocation.
 func cleanUpFailedAllocation(img common.ImageCommon, err error) error {
-	delErr := assets.Delete(img.SHA1, img.FileType, img.ThumbType)
+	delErr := file.Backend.Delete(img.SHA1, img.FileType, img.ThumbType)
 	if delErr != nil {
 		err = util.WrapError(err.Error(), delErr)
 	}

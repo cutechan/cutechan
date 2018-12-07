@@ -10,6 +10,12 @@ import (
 	"github.com/dimfeld/httptreemux"
 )
 
+const (
+	fileCreationFlags = os.O_WRONLY | os.O_CREATE | os.O_EXCL
+	fileMode          = 0644
+	dirMode           = 0755
+)
+
 var (
 	fileHeaders = map[string]string{
 		"Cache-Control": "max-age=31536000, public, immutable",
@@ -51,6 +57,83 @@ func (fs *fsBackend) Serve(w http.ResponseWriter, r *http.Request) {
 	http.ServeContent(w, r, path, time.Time{}, file)
 }
 
-func makeFSBackend(conf Config) FileBackend {
-	return &fsBackend{dir: conf.Dir}
+// Generate file paths of the source file and its thumbnail
+func getFilePaths(root string, SHA1 string, fileType, thumbType uint8) (paths [2]string) {
+	path := imagePath(root, srcDir, fileType, SHA1)
+	paths[0] = filepath.FromSlash(path)
+	path = imagePath(root, thumbDir, thumbType, SHA1)
+	paths[1] = filepath.FromSlash(path)
+	return
+}
+
+// Write a single file to disk with the appropriate permissions and flags
+func writeFile(path string, data []byte) error {
+	// One of the files might be empty (e.g. thumbnail in case of audio
+	// record).
+	if data == nil {
+		return nil
+	}
+
+	dir := filepath.Dir(path)
+	if err := os.Mkdir(dir, dirMode); err != nil && !os.IsExist(err) {
+		return err
+	}
+
+	file, err := os.OpenFile(path, fileCreationFlags, fileMode)
+	if err != nil {
+		return err
+	}
+	defer file.Close()
+
+	_, err = file.Write(data)
+	return err
+}
+
+// Write writes file assets to disk
+func (fs *fsBackend) Write(SHA1 string, fileType, thumbType uint8, src, thumb []byte) error {
+	paths := getFilePaths(fs.dir, SHA1, fileType, thumbType)
+
+	ch := make(chan error)
+	go func() {
+		ch <- writeFile(paths[0], src)
+	}()
+
+	for _, err := range [...]error{writeFile(paths[1], thumb), <-ch} {
+		switch {
+		// Ignore files already written by another thread or process
+		case err == nil, os.IsExist(err):
+		default:
+			return err
+		}
+	}
+	return nil
+}
+
+// Delete deletes file assets belonging to a single upload
+func (fs *fsBackend) Delete(SHA1 string, fileType, thumbType uint8) error {
+	for _, path := range getFilePaths(fs.dir, SHA1, fileType, thumbType) {
+		// Ignore somehow absent images
+		if err := os.Remove(path); err != nil && !os.IsNotExist(err) {
+			return err
+		}
+	}
+	return nil
+}
+
+func createDirs(root string) error {
+	for _, dir := range [...]string{srcDir, thumbDir} {
+		path := filepath.Join(root, dir)
+		if err := os.MkdirAll(path, dirMode); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func makeFSBackend(conf Config) (b FileBackend, err error) {
+	if err = createDirs(conf.Dir); err != nil {
+		return
+	}
+	b = &fsBackend{dir: conf.Dir}
+	return
 }

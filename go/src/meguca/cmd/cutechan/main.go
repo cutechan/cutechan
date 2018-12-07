@@ -5,10 +5,8 @@ import (
 	"log"
 	"reflect"
 
-	"meguca/assets"
 	"meguca/auth"
 	"meguca/cache"
-	"meguca/common"
 	"meguca/db"
 	"meguca/file"
 	"meguca/geoip"
@@ -128,48 +126,45 @@ func importProfiles(conf config) {
 func serve(conf config) {
 	// TODO(Kagami): Use config structs instead of globals.
 	db.ConnArgs = conf.Conn
-	auth.IsReverseProxied = conf.Rproxy
 	cache.Size = conf.Cache
-	common.ImageWebRoot = conf.FileDir
+	auth.IsReverseProxied = conf.Rproxy
 
-	address := fmt.Sprintf("%v:%v", conf.Host, conf.Port)
-	confFile := file.Config{
-		Backend:  conf.FileBackend,
-		Dir:      conf.FileDir,
-		Username: conf.FileUsername,
-		Password: conf.FilePassword,
-		AuthURL:  conf.FileAuthURL,
-	}
-	confServer := server.Config{
-		DebugRoutes:  conf.Debug,
-		Address:      address,
-		SecureCookie: conf.Secure,
-		ThumbUser:    conf.User,
-		SiteDir:      conf.SiteDir,
-		IdolOrigin:   conf.Origin,
-	}
 	startFileBackend := func() error {
-		return file.StartBackend(confFile)
+		return file.StartBackend(file.Config{
+			Backend:  conf.FileBackend,
+			Dir:      conf.FileDir,
+			Username: conf.FileUsername,
+			Password: conf.FilePassword,
+			AuthURL:  conf.FileAuthURL,
+		})
 	}
 	loadGeoIP := func() error {
 		return geoip.Load(conf.GeoDir)
 	}
-	startKpopnetFaceRec := func() error {
+	startKpopnet := func() error {
 		return kpopnet.StartFaceRec(conf.DataDir)
 	}
 
 	// Prepare subsystems.
 	err := util.RunTasks([][]util.Task{
-		[]util.Task{db.StartDB, startFileBackend, assets.CreateDirs, loadGeoIP, lang.Load, templates.CompileMustache},
-		[]util.Task{startKpopnetFaceRec},
+		[]util.Task{db.StartDB, lang.Load, templates.CompileMustache, startFileBackend, loadGeoIP},
+		[]util.Task{startKpopnet},
 	})
 	if err != nil {
 		log.Fatalf("Error preparing server: %v", err)
 	}
 
 	// Start serving requests.
+	address := fmt.Sprintf("%v:%v", conf.Host, conf.Port)
 	log.Printf("Listening on %v", address)
-	log.Fatal(server.Start(confServer))
+	log.Fatal(server.Start(server.Config{
+		DebugRoutes:  conf.Debug,
+		Address:      address,
+		SecureCookie: conf.Secure,
+		ThumbUser:    conf.User,
+		SiteDir:      conf.SiteDir,
+		IdolOrigin:   conf.Origin,
+	}))
 }
 
 func main() {

@@ -2,8 +2,8 @@
 {% import "strconv" %}
 {% import "strings" %}
 {% import "meguca/common" %}
+{% import "meguca/file" %}
 {% import "meguca/lang" %}
-{% import "meguca/assets" %}
 
 {% func renderPageNavigation(catalog bool) %}{% stripspace %}
 	{% if !catalog %}
@@ -89,7 +89,7 @@ function to allow caching of generated posts.
 				<figure class="post-file">
 					{% code img := t.Files[0] %}
 					<a class="post-file-link" href="{%s url %}">
-						<img class="post-file-thumb" src="{%s assets.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
+						<img class="post-file-thumb" src="{%s file.ThumbPath(img.ThumbType, img.SHA1) %}" width="{%d int(img.Dims[2]) %}" height="{%d int(img.Dims[3]) %}">
 					</a>
 				</figure>
 			{% endif %}

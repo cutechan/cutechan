@@ -10,9 +10,9 @@ import (
 	"strings"
 	"time"
 
-	"meguca/assets"
 	"meguca/auth"
 	"meguca/common"
+	"meguca/file"
 	"meguca/lang"
 
 	"github.com/valyala/quicktemplate"
@@ -200,8 +200,8 @@ func (ctx *PostContext) renderFile(img *common.Image, n int) string {
 		TWidth:     img.Dims[2],
 		THeight:    img.Dims[3],
 		DName:      ctx.getDownloadName(n, img),
-		SourcePath: assets.SourcePath(img.FileType, img.SHA1),
-		ThumbPath:  assets.ThumbPath(img.ThumbType, img.SHA1),
+		SourcePath: file.SourcePath(img.FileType, img.SHA1),
+		ThumbPath:  file.ThumbPath(img.ThumbType, img.SHA1),
 	}
 	return renderMustache("post-file", &fileCtx)
 }

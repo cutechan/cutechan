@@ -41,8 +41,3 @@ var (
 		"light", "dark",
 	}
 )
-
-// Server paths
-var (
-	ImageWebRoot string
-)
