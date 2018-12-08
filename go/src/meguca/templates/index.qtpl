@@ -51,7 +51,7 @@
 		<link rel="manifest" href="/static/mobile/manifest.json">
 		<link rel="stylesheet" href="/static/css/{%s conf.DefaultCSS %}.css" id="theme-css">
 		{% if conf.ImageRootOverride != "" %}
-			<link rel="dns-prefetch" href="{%s conf.ImageRootOverride %}">
+			<link rel="dns-prefetch" href="{%s getDNSPrefetchURL(conf.ImageRootOverride) %}">
 		{% endif %}
 		<style id="ignore-css">
 			{%= generateIgnoreCSS(ss) %}

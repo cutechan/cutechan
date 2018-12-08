@@ -28,6 +28,21 @@ func posClasses(pos auth.Positions) string {
 	return strings.Join(classes, " ")
 }
 
+// https://example.com/path -> //example.com
+// https://example.com -> //example.com
+// //example.com/path -> //example.com
+func getDNSPrefetchURL(url string) string {
+	colon := strings.IndexByte(url, ':')
+	if colon > 0 {
+		url = url[colon+1:]
+	}
+	slash := strings.IndexByte(url[2:], '/')
+	if slash > 0 {
+		url = url[:slash+2]
+	}
+	return url
+}
+
 // Extract reverse links to linked posts on a page
 func extractBacklinks(cap int, threads ...common.Thread) common.Backlinks {
 	bls := make(common.Backlinks, cap)
