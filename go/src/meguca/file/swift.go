@@ -23,11 +23,11 @@ func (b *swiftBackend) Serve(w http.ResponseWriter, r *http.Request) {
 }
 
 func getSwiftSourceName(fileType uint8, sha1 string) string {
-	return imagePath("", srcDir, fileType, sha1)
+	return getImageURL("", srcDir, fileType, sha1)
 }
 
 func getSwiftThumbName(thumbType uint8, sha1 string) string {
-	return imagePath("", thumbDir, thumbType, sha1)
+	return getImageURL("", thumbDir, thumbType, sha1)
 }
 
 func (b *swiftBackend) writeFile(name string, data []byte) (err error) {

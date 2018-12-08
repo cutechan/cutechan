@@ -3,7 +3,7 @@ package file
 
 import (
 	"net/http"
-	"path"
+	"strings"
 
 	"meguca/common"
 	"meguca/config"
@@ -29,7 +29,7 @@ type FileBackend interface {
 }
 
 const (
-	DefaultUploadsPath = "/uploads"
+	DefaultUploadsRoot = "/uploads"
 	srcDir             = "src"
 	thumbDir           = "thumb"
 )
@@ -45,22 +45,22 @@ func StartBackend(conf Config) (err error) {
 	return
 }
 
-func imageRoot() string {
+func getImageRoot() string {
 	r := config.Get().ImageRootOverride
 	if r != "" {
 		return r
 	}
-	return DefaultUploadsPath
+	return DefaultUploadsRoot
 }
 
-func imagePath(root string, dir string, typ uint8, sha1 string) string {
-	return path.Join(root, dir, sha1[:2], sha1[2:]+"."+common.Extensions[typ])
+func getImageURL(root string, dir string, typ uint8, sha1 string) string {
+	return strings.Join([]string{root, dir, sha1[:2], sha1[2:] + "." + common.Extensions[typ]}, "/")
 }
 
 func SourcePath(fileType uint8, sha1 string) string {
-	return imagePath(imageRoot(), srcDir, fileType, sha1)
+	return getImageURL(getImageRoot(), srcDir, fileType, sha1)
 }
 
 func ThumbPath(thumbType uint8, sha1 string) string {
-	return imagePath(imageRoot(), thumbDir, thumbType, sha1)
+	return getImageURL(getImageRoot(), thumbDir, thumbType, sha1)
 }

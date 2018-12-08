@@ -59,9 +59,9 @@ func (b *fsBackend) Serve(w http.ResponseWriter, r *http.Request) {
 
 // Generate file paths of the source file and its thumbnail
 func fsGetPaths(root string, SHA1 string, fileType, thumbType uint8) (paths [2]string) {
-	path := imagePath(root, srcDir, fileType, SHA1)
+	path := getImageURL(root, srcDir, fileType, SHA1)
 	paths[0] = filepath.FromSlash(path)
-	path = imagePath(root, thumbDir, thumbType, SHA1)
+	path = getImageURL(root, thumbDir, thumbType, SHA1)
 	paths[1] = filepath.FromSlash(path)
 	return
 }
