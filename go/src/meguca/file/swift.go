@@ -2,6 +2,7 @@ package file
 
 import (
 	"fmt"
+	"log"
 	"net/http"
 
 	"github.com/ncw/swift"
@@ -21,13 +22,21 @@ func (b *swiftBackend) Serve(w http.ResponseWriter, r *http.Request) {
 	panic("non-servable backend")
 }
 
+func getSwiftSourceName(fileType uint8, sha1 string) string {
+	return imagePath("", srcDir, fileType, sha1)
+}
+
+func getSwiftThumbName(thumbType uint8, sha1 string) string {
+	return imagePath("", thumbDir, thumbType, sha1)
+}
+
 func (b *swiftBackend) writeFile(name string, data []byte) (err error) {
 	if data == nil {
 		return
 	}
 	defer func() {
 		if err != nil {
-			err = fmt.Errorf("cannot create Swift object %s: %v", name, err)
+			err = fmt.Errorf("cannot create Swift object %s in %s: %v", name, b.container, err)
 		}
 	}()
 
@@ -45,12 +54,13 @@ func (b *swiftBackend) writeFile(name string, data []byte) (err error) {
 func (b *swiftBackend) Write(sha1 string, fileType, thumbType uint8, src, thumb []byte) error {
 	ch := make(chan error)
 	go func() {
-		name := imagePath("", srcDir, fileType, sha1)
-		ch <- b.writeFile(name, src)
+		// Full path logging might be useful for later manual PURGE.
+		log.Printf("[swift] creating <%s>", SourcePath(fileType, sha1))
+		ch <- b.writeFile(getSwiftSourceName(fileType, sha1), src)
 	}()
 	go func() {
-		name := imagePath("", thumbDir, thumbType, sha1)
-		ch <- b.writeFile(name, thumb)
+		log.Printf("[swift] creating <%s>", ThumbPath(thumbType, sha1))
+		ch <- b.writeFile(getSwiftThumbName(thumbType, sha1), thumb)
 	}()
 	for _, err := range [...]error{<-ch, <-ch} {
 		if err != nil {
@@ -60,8 +70,35 @@ func (b *swiftBackend) Write(sha1 string, fileType, thumbType uint8, src, thumb 
 	return nil
 }
 
+// TODO(Kagami): PURGE?
+func (b *swiftBackend) deleteFile(name string) (err error) {
+	err = b.conn.ObjectDelete(b.container, name)
+	// Ignore somehow absent files.
+	if err == swift.ObjectNotFound {
+		err = nil
+	}
+	if err != nil {
+		err = fmt.Errorf("cannot delete Swift object %s from %s: %v", name, b.container, err)
+	}
+	return
+}
+
 func (b *swiftBackend) Delete(sha1 string, fileType, thumbType uint8) error {
-	panic("not implemented")
+	ch := make(chan error)
+	go func() {
+		log.Printf("[swift] deleting <%s>", SourcePath(fileType, sha1))
+		ch <- b.deleteFile(getSwiftSourceName(fileType, sha1))
+	}()
+	go func() {
+		log.Printf("[swift] deleting <%s>", ThumbPath(thumbType, sha1))
+		ch <- b.deleteFile(getSwiftThumbName(thumbType, sha1))
+	}()
+	for _, err := range [...]error{<-ch, <-ch} {
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func makeSwiftBackend(conf Config) (b FileBackend, err error) {
