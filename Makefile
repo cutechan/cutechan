@@ -76,7 +76,7 @@ server: go/bin/cutechan
 serve: templates server
 	cutechan -H 0.0.0.0 --debug --cfg cutechan.toml
 
-default-config:
+server-config:
 	cp cutechan.toml.example cutechan.toml
 
 deb: clean templates smiles client server
