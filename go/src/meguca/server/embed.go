@@ -55,7 +55,7 @@ func serveEmbed(w http.ResponseWriter, r *http.Request) {
 
 	doc, err := getVliveEmbed(url)
 	if err != nil {
-		serveErrorJSON(w, r, aerrInternal.Hide(err))
+		serveErrorJSON(w, r, aerrNoEmbedPreview)
 		return
 	}
 

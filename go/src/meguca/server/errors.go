@@ -89,6 +89,7 @@ var (
 	aerrInvalidPosition = aerrorNew(400, "invalid position")
 	aerrTooManyStaff    = aerrorNew(400, "too many staff")
 	aerrTooManyBans     = aerrorNew(400, "too many bans")
+	aerrNoEmbedPreview  = aerrorNew(404, "can't find embed preview")
 	aerrUnsupported     = aerrorFrom(400, ipc.ErrThumbUnsupported)
 	aerrNoTracks        = aerrorFrom(400, ipc.ErrThumbTracks)
 )
