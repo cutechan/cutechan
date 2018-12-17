@@ -40,7 +40,7 @@ func (b *swiftBackend) writeFile(name string, data []byte) (err error) {
 		}
 	}()
 
-	f, err := b.conn.ObjectCreate(b.container, name, false, "", "", nil)
+	f, err := b.conn.ObjectCreate(b.container, name, true, "", "", nil)
 	if err != nil {
 		return
 	}
