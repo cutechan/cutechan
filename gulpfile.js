@@ -24,7 +24,6 @@ const po2json = require("gulp-po2json");
 const uglify = require("gulp-uglify/composer")(uglifyes, console);
 const notify = require("gulp-notify");
 const livereload = require("gulp-livereload");
-const runSequence = require("run-sequence");
 
 // Keep script alive and rebuild on file changes.
 const watch = process.argv.includes("-w");
@@ -116,7 +115,7 @@ function createTask(name, path, task, watchPath) {
 
   // Recompile on source update, if running with the `-w` flag.
   if (watch) {
-    gulp.watch(watchPath || path, [name]);
+    gulp.watch(watchPath || path, gulp.series(name));
   }
 }
 
@@ -156,7 +155,7 @@ function langs() {
       } catch (err) {
         return handleError(err);
       }
-      file.contents = new Buffer(`langs[${name}] = ${lang};`);
+      file.contents = Buffer.from(`langs[${name}] = ${lang};`);
     }))
     .pipe(concat("langs.js"))
     .pipe(tap(function(file) {
@@ -175,7 +174,7 @@ function templates() {
     .pipe(tap(function(file) {
       const name = JSON.stringify(path.basename(file.path, ".mustache"));
       const template = JSON.stringify(file.contents.toString());
-      file.contents = new Buffer(`templates[${name}] = ${template};`);
+      file.contents = Buffer.from(`templates[${name}] = ${template};`);
     }))
     .pipe(concat("templates.js"))
     .pipe(tap(function(file) {
@@ -307,7 +306,7 @@ gulp.task("tsc", () =>
       TEMPLATES_GLOB,
       SMILESJS_GLOB,
       TSC_TMP_FILE,
-    ], ["es6"]);
+    ], gulp.series("es6"));
   })
 );
 if (watch) {
@@ -529,9 +528,9 @@ if (!watch || all) {
 }
 
 // Build everything.
-gulp.task("default", (cb) => {
-  runSequence("clean", preTasks, tasks, cb)
-});
+gulp.task("default",
+  gulp.series("clean", gulp.parallel(...preTasks), gulp.parallel(...tasks))
+);
 
 if (watch) {
   livereload.listen({quiet: true})
