@@ -13,8 +13,7 @@ interface Props {
 }
 
 export default function({
-  progress, className, children,
-  ...props,
+  progress, className, children, ...props
 }: Props): JSX.Element {
   progress = Math.floor(progress);
   progress = Math.max(0, Math.min(progress, 100));

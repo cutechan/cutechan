@@ -12,9 +12,7 @@ export { ChangeEmitter, emitChanges } from "./changes";
 
 import { POST_SEL } from "../vars";
 
-export interface Constructable {
-  new (): any;
-}
+export type Constructable = new() => any;
 
 // Retrieve element id.
 export function getID(el: Element): number {

@@ -9,7 +9,7 @@ import { page } from "../state";
 import { escape, unescape } from "../util";
 import marked from "./marked";
 
-interface AnyClass { new(...args: any[]): any; }
+type AnyClass = new(...args: any[]) => any;
 
 const noop = marked.noop;
 
