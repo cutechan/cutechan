@@ -1,5 +1,4 @@
 /node_modules/
-/package-lock.json
 /dist/
 /smiles-pp/
 /labels-pp/
