@@ -43,7 +43,7 @@ tslint-staged:
 	./tslint-staged.sh
 
 go/src/github.com/Kagami/kpopnet:
-	go get github.com/Kagami/kpopnet
+	go get -d github.com/Kagami/kpopnet/go/src/kpopnet
 
 go/bin/go-bindata:
 	go get github.com/kevinburke/go-bindata/...
