@@ -90,7 +90,7 @@ func createRouter(conf Config) http.Handler {
 		serveFile(w, r, cleanJoin(conf.SiteDir, "static", getParam(r, "path")))
 	})
 	if file.Backend.IsServable() {
-		r.GET(file.DefaultUploadsRoot+"*path", file.Backend.Serve)
+		r.GET(file.DefaultUploadsRoot+"/*path", file.Backend.Serve)
 	}
 	// Not yet in /etc/mime.types
 	mime.AddExtensionType(".wasm", "application/wasm")
