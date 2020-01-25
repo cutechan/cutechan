@@ -15,7 +15,7 @@ import (
 
 const (
 	maxWidth        = 12000
-	maxHeight       = 14000
+	maxHeight       = 15000
 	thumbSize       = 200
 	jpegQuality     = 90
 	maxLenFileTitle = 300
