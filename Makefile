@@ -47,12 +47,10 @@ go/src/github.com/Kagami/kpopnet:
 
 go/bin/go-bindata:
 	go get github.com/kevinburke/go-bindata/...
-
-go/bin/easyjson:
 	go get github.com/mailru/easyjson/...
-
-go/bin/qtc:
 	go get github.com/valyala/quicktemplate/qtc/...
+	go get github.com/dchest/captcha/...
+	go get golang.org/x/crypto/bcrypt/...
 
 GENSRC = $(shell find go/src/meguca -type f -name '*.go' | xargs grep -l '^//go:generate')
 GENSRC += $(shell find go/src/meguca/db/sql -type f -name '*.sql')
@@ -60,7 +58,7 @@ GENSRC += $(wildcard go/src/meguca/templates/*.qtpl)
 GENSRC += $(wildcard po/*.po)
 GENSRC += $(TEMPLATESPP)
 go/src/meguca/db/bin_data.go: export TMPDIR = $(PWD)/go
-go/src/meguca/db/bin_data.go: go/bin/go-bindata go/bin/easyjson go/bin/qtc $(GENSRC)
+go/src/meguca/db/bin_data.go: go/bin/go-bindata $(GENSRC)
 	go generate meguca/...
 
 GOSRC = $(shell find go/src/meguca -type f -name '*.go')
@@ -74,10 +72,14 @@ endif
 server: go/bin/cutechan
 
 serve: templates server
-	cutechan -H 0.0.0.0 --debug --cfg cutechan.toml
+	cutechan --debug --cfg cutechan.toml
 
 server-config:
 	cp cutechan.toml.example cutechan.toml
+
+server-db:
+	sudo -u postgres createuser meguca -P
+	sudo -u postgres createdb meguca -O meguca
 
 deb: clean templates smiles client server
 	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 go/bin/cutethumb
