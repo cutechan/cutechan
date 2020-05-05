@@ -13,7 +13,7 @@ type swiftBackend struct {
 	conn      *swift.Connection
 }
 
-func (swift *swiftBackend) IsServable() bool {
+func (b *swiftBackend) IsServable() bool {
 	return false
 }
 
@@ -101,7 +101,7 @@ func (b *swiftBackend) Delete(sha1 string, fileType, thumbType uint8) error {
 	return nil
 }
 
-func makeSwiftBackend(conf Config) (b FileBackend, err error) {
+func makeSwiftBackend(conf Config) (b fileBackend, err error) {
 	c := swift.Connection{
 		UserName: conf.Username,
 		ApiKey:   conf.Password,

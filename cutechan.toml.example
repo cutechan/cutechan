@@ -34,16 +34,22 @@
 # Allowed origin for Idol API.
 #origin = "http://localhost:8000"
 
-# Uploads backend. Can be "fs" or "swift".
+# Uploads backend. Can be "fs", "sftp" or "swift".
 #file_backend = "fs"
 
 # Uploads directory location. Valid only for fs backend.
 #file_dir = "./uploads"
 
-# Swift username. Valid only for swift backend.
+# SFTP address. Valid only for sftp backend.
+#file_address = "localhost:22"
+
+# SFTP host public key. Valid only for sftp backend.
+#file_host_key = ""
+
+# SFTP/Swift username.
 #file_username = "cutechan"
 
-# Swift password. Valid only for swift backend.
+# SFTP/Swift password.
 #file_password = "password"
 
 # Swift authentication URL. Valid only for swift backend.

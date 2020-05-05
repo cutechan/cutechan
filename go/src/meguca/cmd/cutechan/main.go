@@ -20,7 +20,10 @@ import (
 	"github.com/docopt/docopt-go"
 )
 
+// VERSION is current version.
 const VERSION = "0.0.0"
+
+// USAGE is usage help in docopt DSL.
 const USAGE = `
 Usage:
   cutechan [options]
@@ -63,6 +66,8 @@ var confDefault = config{
 	Origin:        "http://localhost:8000",
 	FileBackend:   "fs",
 	FileDir:       "./uploads",
+	FileAddress:   "localhost:22",
+	FileHostKey:   "",
 	FileUsername:  "cutechan",
 	FilePassword:  "password",
 	FileAuthURL:   "https://localhost/v1.0",
@@ -87,6 +92,8 @@ type config struct {
 	Path          string `docopt:"--cfg" toml:"-"`
 	FileBackend   string `toml:"file_backend"`
 	FileDir       string `toml:"file_dir"`
+	FileAddress   string `toml:"file_address"`
+	FileHostKey   string `toml:"file_host_key"`
 	FileUsername  string `toml:"file_username"`
 	FilePassword  string `toml:"file_password"`
 	FileAuthURL   string `toml:"file_auth_url"`
@@ -135,6 +142,8 @@ func serve(conf config) {
 		return file.StartBackend(file.Config{
 			Backend:   conf.FileBackend,
 			Dir:       conf.FileDir,
+			Address:   conf.FileAddress,
+			HostKey:   conf.FileHostKey,
 			Username:  conf.FileUsername,
 			Password:  conf.FilePassword,
 			AuthURL:   conf.FileAuthURL,
@@ -150,8 +159,8 @@ func serve(conf config) {
 
 	// Prepare subsystems.
 	err := util.RunTasks([][]util.Task{
-		[]util.Task{db.StartDB, lang.Load, templates.CompileMustache, startFileBackend, loadGeoIP},
-		[]util.Task{startKpopnet},
+		{db.StartDB, lang.Load, templates.CompileMustache, startFileBackend, loadGeoIP},
+		{startKpopnet},
 	})
 	if err != nil {
 		log.Fatalf("Error preparing server: %v", err)
@@ -188,7 +197,7 @@ func main() {
 	}
 	merge(&conf, &confFromFile, &confDefault)
 
-	if conf.FileBackend != "fs" && conf.FileBackend != "swift" {
+	if conf.FileBackend != "fs" && conf.FileBackend != "sftp" && conf.FileBackend != "swift" {
 		log.Fatalf("Bad uploads backend: %s", conf.FileBackend)
 	}
 

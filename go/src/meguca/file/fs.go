@@ -131,7 +131,7 @@ func fsCreateDirs(root string) error {
 	return nil
 }
 
-func makeFSBackend(conf Config) (b FileBackend, err error) {
+func makeFSBackend(conf Config) (b fileBackend, err error) {
 	if err = fsCreateDirs(conf.Dir); err != nil {
 		return
 	}
