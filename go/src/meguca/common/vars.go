@@ -6,7 +6,7 @@ const (
 	MaxLenAuth         = 50
 	MaxLenSubject      = 100
 	MaxLenBody         = 4000
-	MaxLinesBody       = 100
+	MaxLinesBody       = 300
 	MaxLenPassword     = 50
 	MaxLenUserID       = 20
 	MaxLenBoardID      = 10
