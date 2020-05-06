@@ -94,7 +94,7 @@ deb: clean templates smiles client server
 	mkdir -p deb_dist/usr/bin
 	cp -a go/bin/cute* deb_dist/usr/bin
 	chmod -R go+rX deb_dist
-	fakeroot dpkg-deb -z0 -b deb_dist cutechan.deb
+	dpkg-deb --root-owner-group -z0 -b deb_dist cutechan.deb
 
 gofmt:
 	go fmt meguca/...
