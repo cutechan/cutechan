@@ -15,7 +15,7 @@ import (
 
 const (
 	// Maximum number of thumbnailer processes executing at the same time.
-	thumbProcesses = 3
+	thumbProcesses = 1
 )
 
 var (
