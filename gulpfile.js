@@ -1,15 +1,12 @@
 "use strict";
 
 const fs = require("fs");
-const os = require("os");
 const path = require("path");
 const assert = require("assert");
 const crypto = require("crypto");
 const { spawn, spawnSync } = require("child_process");
 const del = require("del");
 const merge = require("merge-stream");
-const colors = require("ansi-colors");
-const stripAnsi = require("strip-ansi");
 const uglifyes = require("uglify-es");
 const gulp = require("gulp");
 const concat = require("gulp-concat");
@@ -22,7 +19,6 @@ const spritesmith = require("gulp.spritesmith");
 const less = require("gulp-less");
 const po2json = require("gulp-po2json");
 const uglify = require("gulp-uglify/composer")(uglifyes, console);
-const notify = require("gulp-notify");
 const livereload = require("gulp-livereload");
 
 // Keep script alive and rebuild on file changes.
@@ -77,26 +73,12 @@ process.on("SIGTERM", (code) => {
   process.exit(code);
 });
 
-// Avoid "no notifier" errors on headless systems.
-const canNotify = os.platform() !== "linux" || !!process.env.DISPLAY;
-
-// Notify about errors.
-const notifyError = notify.onError({
-  title: "<%= error.name %>",
-  message: "<%= options.stripAnsi(error.message) %>",
-  templateOptions: {stripAnsi},
-});
-
 // Simply log the error on continuos builds, but fail the build and exit
 // with an error status, if failing a one-time build. This way we can
 // use failure to build the client to not pass Travis CL tests.
 function handleError(err) {
   if (watch) {
-    if (canNotify) {
-      notifyError(err);
-    } else {
-      console.error(err.message);
-    }
+    console.error(err.message);
     if (this) {
       this.emit("end");
     }
@@ -279,7 +261,7 @@ function spawnTsc() {
       data = data.replace(/\n+$/, "");
       // Fix date format and prefix.
       data = data.replace(/(?: [AP]M)?(?: GMT\+\d{4} \([A-Z]{3}\))?(....\])/g,
-                          `$1 ${colors.cyan("tsc")}:`);
+                          `$1 tsc:`);
       // Finally output "fixed" log messages.
       if (data.includes("error")) {
         const err = new Error(data);
