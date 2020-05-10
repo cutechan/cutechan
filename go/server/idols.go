@@ -1,4 +1,3 @@
-// Idol API handlers. See https://github.com/Kagami/kpopnet for details.
 package server
 
 import (
@@ -7,23 +6,11 @@ import (
 
 	"github.com/cutechan/cutechan/go/common"
 	"github.com/cutechan/cutechan/go/db"
-
-	"github.com/kpopnet/go-kpopnet"
 )
 
 var (
 	uuidRe = regexp.MustCompile(`^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$`)
 )
-
-func serveIdolProfiles(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", idolOrigin)
-	kpopnet.ServeProfiles(w, r)
-}
-
-func serveIdolRecognize(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", idolOrigin)
-	kpopnet.ServeRecognize(w, r)
-}
 
 func serveSetIdolPreview(w http.ResponseWriter, r *http.Request) {
 	ss, _ := getSession(r, "")
@@ -38,6 +25,7 @@ func serveSetIdolPreview(w http.ResponseWriter, r *http.Request) {
 	serveJSON(w, r, answer)
 }
 
+// TODO(Kagami): Move this to go-kpopnet?
 func setIdolPreview(w http.ResponseWriter, r *http.Request) (answer map[string]string, err error) {
 	idolId := getParam(r, "id")
 	if !uuidRe.MatchString(idolId) {
@@ -93,13 +81,8 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) (answer map[string]s
 		return
 	}
 
-	kpopnet.ClearProfilesCache()
+	//kpopnet.ClearProfilesCache()
 
 	answer = map[string]string{"SHA1": res.file.SHA1}
 	return
-}
-
-func serveImageInfo(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Access-Control-Allow-Origin", idolOrigin)
-	kpopnet.ServeImageInfo(w, r)
 }

@@ -1,7 +1,5 @@
 github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ=
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
-github.com/Kagami/go-face v0.0.0-20200508235642-fd24bba43a1f h1:AwoI0rbkUeZKeewWFZJCigc/k9xT+5g2dk+/oSMghR8=
-github.com/Kagami/go-face v0.0.0-20200508235642-fd24bba43a1f/go.mod h1:9wdDJkRgo3SGTcFwbQ7elVIQhIr2bbBjecuY7VoqmPU=
 github.com/cutechan/blackfriday v0.0.0-20171016195349-a1d253e12717 h1:O/Y5ZBDRnjZn8BIB6XuIko4W9nVmcnipwMLbKDo8Whs=
 github.com/cutechan/blackfriday v0.0.0-20171016195349-a1d253e12717/go.mod h1:tQywASKOX0U/F0wDH7NVVEYHVpt+r2jW0GJeiQ+vkls=
 github.com/cutechan/thumbnailer v0.0.0-20180501124647-1dbd31815d4d h1:eR/oanO1HVOBnZRmu+2GXPlSSbRBBb5OhlDsJixIH44=
@@ -22,8 +20,6 @@ github.com/kevinburke/go-bindata v3.19.0+incompatible h1:iB9FY0D/WyDVmzrfVbDKQJq
 github.com/kevinburke/go-bindata v3.19.0+incompatible/go.mod h1:/pEEZ72flUW2p0yi30bslSp9YqD9pysLxunQDdb2CPM=
 github.com/klauspost/compress v1.10.4/go.mod h1:aoV0uJVorq1K+umq18yTdKaF57EivdYsUV+/s2qKfXs=
 github.com/klauspost/compress v1.10.5/go.mod h1:aoV0uJVorq1K+umq18yTdKaF57EivdYsUV+/s2qKfXs=
-github.com/kpopnet/go-kpopnet v0.0.0-20200509001133-ab67ac3b9967 h1:wMRwR5lyghXK4x7zwpEvPQ0pocgwfgH4c8gUNNZ8UY8=
-github.com/kpopnet/go-kpopnet v0.0.0-20200509001133-ab67ac3b9967/go.mod h1:HlcD4d+tX4NAAq1NcdUzcqudycGxzqmO/WWwcgBdQA8=
 github.com/kr/fs v0.1.0 h1:Jskdu9ieNAYnjxsi0LbQp1ulIKZV1LAFgK1tWhpZgl8=
 github.com/kr/fs v0.1.0/go.mod h1:FFnZGqtBN9Gxj7eW1uZ42v5BccTP0vu6NEaFoC2HwRg=
 github.com/leonelquinteros/gotext v1.4.0 h1:2NHPCto5IoMXbrT0bldPrxj0qM5asOCwtb1aUQZ1tys=

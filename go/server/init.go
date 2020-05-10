@@ -19,18 +19,15 @@ type Config struct {
 	SecureCookie bool
 	ThumbUser    string
 	SiteDir      string
-	IdolOrigin   string
 }
 
 var (
 	secureCookie bool
-	idolOrigin   string
 )
 
 func Start(conf Config) (err error) {
 	// TODO(Kagami): Use config structs instead of globals.
 	secureCookie = conf.SecureCookie
-	idolOrigin = conf.IdolOrigin
 
 	startThumbWorkers(conf.ThumbUser)
 	router := createRouter(conf)
@@ -102,10 +99,7 @@ func createRouter(conf Config) http.Handler {
 	api.GET("/socket", websockets.Handler)
 	api.GET("/embed", serveEmbed)
 	// Idols.
-	api.GET("/idols/profiles", serveIdolProfiles)
-	api.POST("/idols/recognize", serveIdolRecognize)
 	api.POST("/idols/:id/preview", serveSetIdolPreview)
-	api.GET("/idols/by-image/:id", serveImageInfo)
 	// Posts.
 	api.GET("/post/:post", servePost)
 	api.POST("/post/token", createPostToken)

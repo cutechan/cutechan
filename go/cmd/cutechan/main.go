@@ -17,7 +17,6 @@ import (
 
 	"github.com/BurntSushi/toml"
 	"github.com/docopt/docopt-go"
-	"github.com/kpopnet/go-kpopnet"
 )
 
 // VERSION is current version.
@@ -29,7 +28,6 @@ Usage:
   cutechan [options]
   cutechan [-h | --help]
   cutechan [-V | --version]
-  cutechan profile import [options]
 
 Serve a k-pop oriented imageboard.
 
@@ -46,8 +44,6 @@ Options:
   -u <user>     Spawn thumbnail process as separate user.
   -z <size>     Cache size in megabytes (default: 128).
   -s <sitedir>  Site directory location (default: ./dist).
-  -d <datadir>  Kpopnet data directory location (default: ./go/src/github.com/Kagami/kpopnet/data).
-  -o <origin>   Allowed origin for Idol API (default: http://localhost:8000).
   --cfg <path>  Path to TOML config
 `
 
@@ -60,9 +56,7 @@ var confDefault = config{
 	Conn:          "user=meguca password=meguca dbname=meguca sslmode=disable",
 	Cache:         128,
 	SiteDir:       "./dist",
-	DataDir:       "./go/src/github.com/Kagami/kpopnet/data",
 	GeoHeader:     "",
-	Origin:        "http://localhost:8000",
 	FileBackend:   "fs",
 	FileDir:       "./uploads",
 	FileAddress:   "localhost:22",
@@ -74,8 +68,6 @@ var confDefault = config{
 }
 
 type config struct {
-	Profile       bool `toml:"-"`
-	Import        bool `toml:"-"`
 	Debug         bool
 	Host          string `docopt:"-H"`
 	Port          int    `docopt:"-p"`
@@ -85,9 +77,7 @@ type config struct {
 	User          string `docopt:"-u"`
 	Cache         int    `docopt:"-z"`
 	SiteDir       string `docopt:"-s" toml:"site_dir"`
-	DataDir       string `docopt:"-d" toml:"data_dir"`
 	GeoHeader     string `docopt:"-g" toml:"geo_header"`
-	Origin        string `docopt:"-o"`
 	Path          string `docopt:"--cfg" toml:"-"`
 	FileBackend   string `toml:"file_backend"`
 	FileDir       string `toml:"file_dir"`
@@ -123,14 +113,6 @@ func merge(conf, confAdd, confDef *config) {
 	}
 }
 
-func importProfiles(conf config) {
-	log.Printf("Importing profiles from %s", conf.DataDir)
-	if err := kpopnet.ImportProfiles(conf.Conn, conf.DataDir); err != nil {
-		log.Fatal(err)
-	}
-	log.Print("Done.")
-}
-
 func serve(conf config) {
 	// TODO(Kagami): Use config structs instead of globals.
 	db.ConnArgs = conf.Conn
@@ -150,12 +132,9 @@ func serve(conf config) {
 			Container: conf.FileContainer,
 		})
 	}
-	startKpopnet := func() error {
-		return kpopnet.StartFaceRec(conf.DataDir)
-	}
 
 	// Prepare subsystems.
-	err := util.RunTasks([][]util.Task{{db.StartDB, lang.Load, templates.CompileMustache, startFileBackend}, {startKpopnet}})
+	err := util.RunTasks([][]util.Task{{db.StartDB, lang.Load, templates.CompileMustache, startFileBackend}})
 	if err != nil {
 		log.Fatalf("Error preparing server: %v", err)
 	}
@@ -169,7 +148,6 @@ func serve(conf config) {
 		SecureCookie: conf.Secure,
 		ThumbUser:    conf.User,
 		SiteDir:      conf.SiteDir,
-		IdolOrigin:   conf.Origin,
 	}))
 }
 
@@ -195,9 +173,5 @@ func main() {
 		log.Fatalf("Bad uploads backend: %s", conf.FileBackend)
 	}
 
-	if conf.Profile && conf.Import {
-		importProfiles(conf)
-	} else {
-		serve(conf)
-	}
+	serve(conf)
 }

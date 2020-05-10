@@ -12,7 +12,6 @@ require (
 	github.com/gorilla/websocket v1.4.2
 	github.com/hoisie/mustache v0.0.0-20160804235033-6375acf62c69
 	github.com/kevinburke/go-bindata v3.19.0+incompatible
-	github.com/kpopnet/go-kpopnet v0.0.0-20200509001133-ab67ac3b9967
 	github.com/leonelquinteros/gotext v1.4.0
 	github.com/lib/pq v1.5.2
 	github.com/mailru/easyjson v0.7.1

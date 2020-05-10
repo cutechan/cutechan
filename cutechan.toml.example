@@ -25,14 +25,8 @@
 # Site directory location.
 #site_dir = "./dist"
 
-# Kpopnet data directory location.
-#data_dir = "./go/src/github.com/Kagami/kpopnet/data"
-
 # HTTP header to look country code in. Set "CF-IPCountry" for Cloudflare.
 #geo_header = ""
-
-# Allowed origin for Idol API.
-#origin = "http://localhost:8000"
 
 # Uploads backend. Can be "fs", "sftp" or "swift".
 #file_backend = "fs"

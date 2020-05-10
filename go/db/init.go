@@ -9,8 +9,6 @@ import (
 	"github.com/cutechan/cutechan/go/common"
 	"github.com/cutechan/cutechan/go/config"
 	"github.com/cutechan/cutechan/go/util"
-
-	"github.com/kpopnet/go-kpopnet"
 )
 
 const (
@@ -188,7 +186,6 @@ func StartDB() (err error) {
 	} else {
 		tasks = append(tasks, initDB)
 	}
-	tasks = append(tasks, startKpopnetDB)
 	tasks = append(tasks, genPrepared)
 	if !exists {
 		tasks = append(tasks, createAdminAccount)
@@ -259,10 +256,6 @@ func rollBack(tx *sql.Tx, err error) error {
 		err = util.WrapError(err.Error(), rbErr)
 	}
 	return err
-}
-
-func startKpopnetDB() (err error) {
-	return kpopnet.StartDb(db, ConnArgs)
 }
 
 // Create admin account with default password.
