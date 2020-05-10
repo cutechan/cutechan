@@ -4,9 +4,8 @@ import (
 	"github.com/cutechan/cutechan/go/auth"
 	"github.com/cutechan/cutechan/go/common"
 	"github.com/cutechan/cutechan/go/db"
-	"github.com/cutechan/cutechan/go/common"
-	. "github.com/cutechan/cutechan/go/test"
 	"github.com/cutechan/cutechan/go/feeds"
+	. "github.com/cutechan/cutechan/go/test"
 	"strconv"
 	"testing"
 

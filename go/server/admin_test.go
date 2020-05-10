@@ -3,12 +3,12 @@ package server
 import (
 	"bytes"
 	"fmt"
-	"io"
 	"github.com/cutechan/cutechan/go/auth"
 	"github.com/cutechan/cutechan/go/common"
 	"github.com/cutechan/cutechan/go/config"
 	"github.com/cutechan/cutechan/go/db"
 	. "github.com/cutechan/cutechan/go/test"
+	"io"
 	"net/http"
 	"net/http/httptest"
 	"testing"

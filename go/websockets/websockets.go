@@ -5,11 +5,11 @@ package websockets
 import (
 	"errors"
 	"fmt"
-	"log"
 	"github.com/cutechan/cutechan/go/auth"
 	"github.com/cutechan/cutechan/go/common"
 	"github.com/cutechan/cutechan/go/feeds"
 	"github.com/cutechan/cutechan/go/util"
+	"log"
 	"net/http"
 	"runtime/debug"
 	"strconv"

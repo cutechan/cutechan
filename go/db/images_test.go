@@ -7,7 +7,6 @@ import (
 	"testing"
 
 	"github.com/cutechan/cutechan/go/common"
-	"github.com/cutechan/cutechan/go/common"
 	. "github.com/cutechan/cutechan/go/test"
 )
 

@@ -9,8 +9,8 @@ import (
 	"strconv"
 
 	b "github.com/cutechan/blackfriday"
-	"github.com/microcosm-cc/bluemonday"
 	"github.com/cutechan/cutechan/go/smiles"
+	"github.com/microcosm-cc/bluemonday"
 )
 
 const HtmlFlags = 0 |
