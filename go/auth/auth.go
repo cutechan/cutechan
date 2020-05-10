@@ -61,22 +61,18 @@ func GetLogIP(r *http.Request) (ip string) {
 
 func getIP(req *http.Request) string {
 	if IsReverseProxied {
-		for _, h := range [...]string{"X-Forwarded-For", "X-Real-Ip"} {
-			addresses := strings.Split(req.Header.Get(h), ",")
-
-			// March from right to left until we get a public address.
-			// That will be the address right before our reverse proxy.
-			for i := len(addresses) - 1; i >= 0; i-- {
-				// Header can contain padding spaces
-				ip := strings.TrimSpace(addresses[i])
-
-				// Filter the reverse proxy IPs
-				switch {
-				case ip == ReverseProxyIP:
-				case !net.ParseIP(ip).IsGlobalUnicast():
-				default:
-					return ip
-				}
+		addresses := strings.Split(req.Header.Get("X-Forwarded-For"), ",")
+		// March from right to left until we get a public address.
+		// That will be the address right before our reverse proxy.
+		for i := len(addresses) - 1; i >= 0; i-- {
+			// Header can contain padding spaces
+			ip := strings.TrimSpace(addresses[i])
+			// Filter the reverse proxy IPs
+			switch {
+			case ip == ReverseProxyIP:
+			case !net.ParseIP(ip).IsGlobalUnicast():
+			default:
+				return ip
 			}
 		}
 	}
