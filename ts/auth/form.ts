@@ -54,7 +54,7 @@ export abstract class AccountForm extends FormView {
   }
 
   // Handle the response of a POST request
-  protected async  handlePostResponse(res: Response) {
+  protected async handlePostResponse(res: Response) {
     switch (res.status) {
       case 200:
         this.remove();
@@ -69,8 +69,9 @@ export abstract class AccountForm extends FormView {
 
   // Extract values from an input form and add them to the request map
   protected extractForm(req: {}) {
-    const els: NodeListOf<HTMLInputElement> = this.el
-      .querySelectorAll("input[name], select[name], textarea[name]");
+    const els: NodeListOf<HTMLInputElement> = this.el.querySelectorAll(
+      "input[name], select[name], textarea[name]"
+    );
     for (const el of els) {
       let val: any;
       switch (el.type) {
@@ -91,8 +92,9 @@ export abstract class AccountForm extends FormView {
 
     // Read all key-value maps
     for (const map of this.el.querySelectorAll(".map-form")) {
-      const fields: NodeListOf<HTMLInputElement> =
-        map.querySelectorAll(".map-field");
+      const fields: NodeListOf<HTMLInputElement> = map.querySelectorAll(
+        ".map-field"
+      );
       if (!fields.length) {
         continue;
       }
@@ -106,11 +108,11 @@ export abstract class AccountForm extends FormView {
 
     // Read all array forms
     for (const ar of this.el.querySelectorAll(".array-form")) {
-      const fields =
-        [...ar.querySelectorAll(".array-field")] as HTMLInputElement[];
+      const fields = [
+        ...ar.querySelectorAll(".array-field"),
+      ] as HTMLInputElement[];
       if (fields.length) {
-        req[ar.getAttribute("name")] = fields.map((f) =>
-          f.value);
+        req[ar.getAttribute("name")] = fields.map((f) => f.value);
       }
     }
 

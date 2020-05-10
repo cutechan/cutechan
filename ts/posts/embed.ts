@@ -32,11 +32,7 @@ const embedUrls: { [key: string]: (url: string) => string } = {
   },
   youtubepls: (url) => {
     const id = linkEmbeds.youtubepls.exec(url)[1];
-    const attrs = [
-      `key=${YT_KEY}`,
-      `id=${id}`,
-      `part=snippet,contentDetails`,
-    ];
+    const attrs = [`key=${YT_KEY}`, `id=${id}`, `part=snippet,contentDetails`];
     return `https://www.googleapis.com/youtube/v3/playlists?${attrs.join("&")}`;
   },
 };
@@ -110,21 +106,24 @@ const embedIcons = {
 function renderLink(link: HTMLLinkElement): Promise<void> {
   const provider = link.dataset.provider;
   const url = link.href;
-  return cachedFetch(url, provider).then((res) => {
-    const icon = document.createElement("i");
-    icon.className = `post-embed-icon ${embedIcons[provider]}`;
-    link.firstChild.replaceWith(icon, " " + res.title);
-    link.dataset.html = res.html;
-    link.dataset.width = res.width.toString();
-    link.dataset.height = res.height.toString();
-    link.dataset.thumbnail_url = res.thumbnail_url;
-    link.dataset.thumbnail_width = res.thumbnail_width.toString();
-    link.dataset.thumbnail_height = res.thumbnail_height.toString();
-    link.classList.add("trigger-media-popup");
-  }, (err) => {
-    // tslint:disable-next-line:no-console
-    console.error(`Failed to embed ${url}: ${err.message}`);
-  });
+  return cachedFetch(url, provider).then(
+    (res) => {
+      const icon = document.createElement("i");
+      icon.className = `post-embed-icon ${embedIcons[provider]}`;
+      link.firstChild.replaceWith(icon, " " + res.title);
+      link.dataset.html = res.html;
+      link.dataset.width = res.width.toString();
+      link.dataset.height = res.height.toString();
+      link.dataset.thumbnail_url = res.thumbnail_url;
+      link.dataset.thumbnail_width = res.thumbnail_width.toString();
+      link.dataset.thumbnail_height = res.thumbnail_height.toString();
+      link.classList.add("trigger-media-popup");
+    },
+    (err) => {
+      // tslint:disable-next-line:no-console
+      console.error(`Failed to embed ${url}: ${err.message}`);
+    }
+  );
 }
 
 /**

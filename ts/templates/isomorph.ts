@@ -29,8 +29,11 @@ export class TemplateContext {
 }
 
 export function makePostContext(
-  t: Thread, p: Post, bls: Backlinks,
-  index: boolean, all: boolean,
+  t: Thread,
+  p: Post,
+  bls: Backlinks,
+  index: boolean,
+  all: boolean
 ): TemplateContext {
   const ctx: Dict = {
     ID: p.id,
@@ -108,7 +111,7 @@ export function makePostContext(
       DName: getDownloadName(p, img, n),
       SourcePath: sourcePath(img.fileType, img.SHA1),
       ThumbPath: thumbPath(img.thumbType, img.SHA1),
-    }).render(),
+    }).render()
   );
 
   ctx.Body = renderBody(p);
@@ -128,9 +131,11 @@ function getDownloadName(post: Post, img: ImageData, n: number): string {
 // Renders classic absolute timestamp.
 export function readableTime(time: number): string {
   const d = new Date(time * 1000);
-  return `${pad(d.getDate())} ${_(months[d.getMonth()])} `
-    + `${d.getFullYear()} (${_(days[d.getDay()])}) `
-    + `${pad(d.getHours())}:${pad(d.getMinutes())}`;
+  return (
+    `${pad(d.getDate())} ${_(months[d.getMonth()])} ` +
+    `${d.getFullYear()} (${_(days[d.getDay()])}) ` +
+    `${pad(d.getHours())}:${pad(d.getMinutes())}`
+  );
 }
 
 export function duration(l: number): string {
@@ -149,8 +154,12 @@ export function fileSize(size: number): string {
 }
 
 // Render a link to other post.
-export function renderPostLink(id: number, cross: boolean, index: boolean): string {
-  const url = `${(cross || index) ? `/all/${id}` : ""}#${id}`;
+export function renderPostLink(
+  id: number,
+  cross: boolean,
+  index: boolean
+): string {
+  const url = `${cross || index ? `/all/${id}` : ""}#${id}`;
   return new TemplateContext("post-link", {
     Cross: cross,
     ID: id,
@@ -166,7 +175,8 @@ export function relativeTime(then: number): string {
   let time = Math.floor((now - then) / 60);
   let isFuture = false;
   if (time < 1) {
-    if (time > -5) { // Assume to be client clock imprecision
+    if (time > -5) {
+      // Assume to be client clock imprecision
       return _("justNow");
     } else {
       isFuture = true;
@@ -188,8 +198,14 @@ export function relativeTime(then: number): string {
 }
 
 // Renders "56 minutes ago" or "in 56 minutes" like relative time text.
-function ago(msgid1: string, msgid2: string, time: number, isFuture: boolean): string {
+function ago(
+  msgid1: string,
+  msgid2: string,
+  time: number,
+  isFuture: boolean
+): string {
   const unit = ngettext(msgid1, msgid2, time);
-  return isFuture ? printf(_("in %s %s"), time, unit)
-                  : printf(_("%s %s ago"), time, unit);
+  return isFuture
+    ? printf(_("in %s %s"), time, unit)
+    : printf(_("%s %s ago"), time, unit);
 }

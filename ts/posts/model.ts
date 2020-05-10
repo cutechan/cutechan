@@ -6,8 +6,12 @@ import Collection from "./collection";
 import { sourcePath, thumbPath } from "./images";
 import PostView from "./view";
 
-export interface Backlinks { [id: string]: PostBacklinks; }
-export interface PostBacklinks { [id: string]: number; }
+export interface Backlinks {
+  [id: string]: PostBacklinks;
+}
+export interface PostBacklinks {
+  [id: string]: number;
+}
 
 // Thread model, mirroring common.Thread.
 // Just a stub yet, for usage in isomorphic templates.

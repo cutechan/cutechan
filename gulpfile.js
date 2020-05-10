@@ -45,11 +45,15 @@ const FONTS_DIR = path.join(STATIC_DIR, "fonts");
 const TSC_TMP_FILE = path.join(JS_DIR, "_app.js");
 
 const KPOPNET_DIST_DIR = path.join(DIST_DIR, "kpopnet");
-const KPOPNET_API_PREFIX = process.env.KPOPNET_API_PREFIX || "http://localhost:8001/api";
-const KPOPNET_FILE_PREFIX = process.env.KPOPNET_FILE_PREFIX || "http://localhost:8001/uploads";
-const KPOPNET_WEBPACK_CONFIG = path.resolve(__dirname,
+const KPOPNET_API_PREFIX =
+  process.env.KPOPNET_API_PREFIX || "http://localhost:8001/api";
+const KPOPNET_FILE_PREFIX =
+  process.env.KPOPNET_FILE_PREFIX || "http://localhost:8001/uploads";
+const KPOPNET_WEBPACK_CONFIG = path.resolve(
+  __dirname,
   "go/src/github.com/Kagami/kpopnet",
-  "webpack.config.js");
+  "webpack.config.js"
+);
 
 // Tasks which needs to finish before main tasks.
 const preTasks = [];
@@ -91,9 +95,7 @@ function handleError(err) {
 // incrementally.
 function createTask(name, path, task, watchPath) {
   tasks.push(name);
-  gulp.task(name, () =>
-    task(gulp.src(path))
-  );
+  gulp.task(name, () => task(gulp.src(path)));
 
   // Recompile on source update, if running with the `-w` flag.
   if (watch) {
@@ -126,53 +128,66 @@ function raw2custom(src) {
 }
 
 function langs() {
-  return gulp.src(LANGS_GLOB)
+  return gulp
+    .src(LANGS_GLOB)
     .pipe(po2json())
     .on("error", handleError)
-    .pipe(tap(function(file) {
-      const name = JSON.stringify(path.basename(file.path, ".json"));
-      let lang = "";
-      try {
-        lang = raw2custom(file.contents.toString());
-      } catch (err) {
-        return handleError(err);
-      }
-      file.contents = Buffer.from(`langs[${name}] = ${lang};`);
-    }))
+    .pipe(
+      tap(function (file) {
+        const name = JSON.stringify(path.basename(file.path, ".json"));
+        let lang = "";
+        try {
+          lang = raw2custom(file.contents.toString());
+        } catch (err) {
+          return handleError(err);
+        }
+        file.contents = Buffer.from(`langs[${name}] = ${lang};`);
+      })
+    )
     .pipe(concat("langs.js"))
-    .pipe(tap(function(file) {
-      file.contents = Buffer.concat([
-        Buffer.from('define("cc-langs", ["exports"], function(exports) {\n'),
-        Buffer.from("var langs = {};\n"),
-        file.contents,
-        Buffer.from("\nexports.default = langs;\n"),
-        Buffer.from("});"),
-      ]);
-    }));
+    .pipe(
+      tap(function (file) {
+        file.contents = Buffer.concat([
+          Buffer.from('define("cc-langs", ["exports"], function(exports) {\n'),
+          Buffer.from("var langs = {};\n"),
+          file.contents,
+          Buffer.from("\nexports.default = langs;\n"),
+          Buffer.from("});"),
+        ]);
+      })
+    );
 }
 
 function templates() {
-  return gulp.src(TEMPLATES_GLOB)
-    .pipe(tap(function(file) {
-      const name = JSON.stringify(path.basename(file.path, ".mustache"));
-      const template = JSON.stringify(file.contents.toString());
-      file.contents = Buffer.from(`templates[${name}] = ${template};`);
-    }))
+  return gulp
+    .src(TEMPLATES_GLOB)
+    .pipe(
+      tap(function (file) {
+        const name = JSON.stringify(path.basename(file.path, ".mustache"));
+        const template = JSON.stringify(file.contents.toString());
+        file.contents = Buffer.from(`templates[${name}] = ${template};`);
+      })
+    )
     .pipe(concat("templates.js"))
-    .pipe(tap(function(file) {
-      file.contents = Buffer.concat([
-        Buffer.from('define("cc-templates", ["exports"], function(exports) {\n'),
-        Buffer.from("var templates = {};\n"),
-        file.contents,
-        Buffer.from("\nexports.default = templates;\n"),
-        Buffer.from("});"),
-      ]);
-    }));
+    .pipe(
+      tap(function (file) {
+        file.contents = Buffer.concat([
+          Buffer.from(
+            'define("cc-templates", ["exports"], function(exports) {\n'
+          ),
+          Buffer.from("var templates = {};\n"),
+          file.contents,
+          Buffer.from("\nexports.default = templates;\n"),
+          Buffer.from("});"),
+        ]);
+      })
+    );
 }
 
 function typescriptGulp(opts) {
   const project = ts.createProject("tsconfig.json", opts);
-  return gulp.src("app.ts")
+  return gulp
+    .src("app.ts")
     .pipe(project(ts.reporter.nullReporter()))
     .on("error", handleError);
 }
@@ -184,7 +199,7 @@ function typescriptTsc() {
 function injectLivereload() {
   const Vinyl = require("vinyl");
   const through = require("through2");
-  const stream = through.obj(function(chunk, enc, cb) {
+  const stream = through.obj(function (chunk, enc, cb) {
     chunk.contents = Buffer.concat([
       Buffer.from("(function() {\n"),
       Buffer.from('var script = document.createElement("script");\n'),
@@ -194,7 +209,7 @@ function injectLivereload() {
     ]);
     cb(null, new Vinyl(chunk));
   });
-  stream.end({path: path.resolve("livereload.js")});
+  stream.end({ path: path.resolve("livereload.js") });
   return stream;
 }
 
@@ -204,18 +219,21 @@ function buildClient(tsOpts) {
   if (watch) {
     stream.add(injectLivereload());
   }
-  return stream
-    .pipe(sourcemaps.init())
-    .pipe(concat(tsOpts.outFile));
+  return stream.pipe(sourcemaps.init()).pipe(concat(tsOpts.outFile));
 }
 
 // Build modern client.
 gulp.task("es6", () =>
-  buildClient({target: "ES6", outFile: "app.js"})
-    .pipe(gulpif(!watch, uglify({
-      mangle: {safari10: true},
-      compress: {inline: 1},
-    })))
+  buildClient({ target: "ES6", outFile: "app.js" })
+    .pipe(
+      gulpif(
+        !watch,
+        uglify({
+          mangle: { safari10: true },
+          compress: { inline: 1 },
+        })
+      )
+    )
     .pipe(sourcemaps.write("maps"))
     .pipe(gulp.dest(JS_DIR))
     .pipe(gulpif("**/*.js", livereload()))
@@ -224,7 +242,7 @@ tasks.push("es6");
 
 // Build legacy ES5 client for old browsers.
 gulp.task("es5", () =>
-  buildClient({target: "ES5", outFile: "app.es5.js"})
+  buildClient({ target: "ES5", outFile: "app.es5.js" })
     .pipe(uglify())
     .pipe(sourcemaps.write("maps"))
     .pipe(gulp.dest(JS_DIR))
@@ -239,18 +257,21 @@ let tscDone = false;
 // https://github.com/ivogabe/gulp-typescript/issues/549
 function spawnTsc() {
   return new Promise((resolve, reject) => {
-    tsc = spawn("node_modules/.bin/tsc", [
-      "-w", "-p", "tsconfig.json",
-      "--outFile", TSC_TMP_FILE,
-    ], {
-      stdio: ["ignore", "pipe", "inherit"],
-    }).on("error", (err) => {
-      tsc = null;
-      handleError(err);
-    }).on("exit", (code) => {
-      tsc = null;
-      handleError(new Error(`tsc exited with ${code}`));
-    });
+    tsc = spawn(
+      "node_modules/.bin/tsc",
+      ["-w", "-p", "tsconfig.json", "--outFile", TSC_TMP_FILE],
+      {
+        stdio: ["ignore", "pipe", "inherit"],
+      }
+    )
+      .on("error", (err) => {
+        tsc = null;
+        handleError(err);
+      })
+      .on("exit", (code) => {
+        tsc = null;
+        handleError(new Error(`tsc exited with ${code}`));
+      });
 
     // Make tsc output gulp-alike.
     // Too hacky but whatever, all of this is a big hack.
@@ -260,8 +281,10 @@ function spawnTsc() {
       // Remove extra newlines.
       data = data.replace(/\n+$/, "");
       // Fix date format and prefix.
-      data = data.replace(/(?: [AP]M)?(?: GMT\+\d{4} \([A-Z]{3}\))?(....\])/g,
-                          `$1 tsc:`);
+      data = data.replace(
+        /(?: [AP]M)?(?: GMT\+\d{4} \([A-Z]{3}\))?(....\])/g,
+        `$1 tsc:`
+      );
       // Finally output "fixed" log messages.
       if (data.includes("error")) {
         const err = new Error(data);
@@ -271,9 +294,11 @@ function spawnTsc() {
         console.log(data);
       }
 
-      if (!tscDone
-          && data.includes("Compilation complete")
-          && fs.existsSync(TSC_TMP_FILE)) {
+      if (
+        !tscDone &&
+        data.includes("Compilation complete") &&
+        fs.existsSync(TSC_TMP_FILE)
+      ) {
         tscDone = true;
         resolve();
       }
@@ -283,12 +308,10 @@ function spawnTsc() {
 
 gulp.task("tsc", () =>
   spawnTsc().then(() => {
-    gulp.watch([
-      LANGS_GLOB,
-      TEMPLATES_GLOB,
-      SMILESJS_GLOB,
-      TSC_TMP_FILE,
-    ], gulp.series("es6"));
+    gulp.watch(
+      [LANGS_GLOB, TEMPLATES_GLOB, SMILESJS_GLOB, TSC_TMP_FILE],
+      gulp.series("es6")
+    );
   })
 );
 if (watch) {
@@ -312,193 +335,243 @@ gulp.task("smiles", () => {
   let hash = "";
   const smileNames = fs.readdirSync("smiles");
   const smileIds = smileNames
-    .filter(n => /^[a-z0-9_]+\.png$/.test(n))
-    .map(n => n.slice(0, -4))
+    .filter((n) => /^[a-z0-9_]+\.png$/.test(n))
+    .map((n) => n.slice(0, -4))
     .sort();
   assert.equal(smileIds.length * 2, smileNames.length, "Smiles mismatch");
   // spritesmith requires correct sorting.
   const smilePaths = [];
-  smileIds.forEach(id =>
+  smileIds.forEach((id) =>
     smilePaths.push(`smiles/${id}.png`, `smiles/${id}@2x.png`)
   );
-  return gulp.src(smilePaths)
-    .pipe(spritesmith({
-      imgName: "__smiles.png",
-      cssName: "smiles.css",
-      retinaSrcFilter: "smiles/*@2x.png",
-      retinaImgName: "__smiles@2x.png",
-      // https://github.com/twolfson/gulp.spritesmith/issues/97
-      padding: 1,
-      cssOpts: {
-        cssSelector: s => ".smile-" + s.name,
-      },
-    }))
-    // This is slightly ineffecient because we read/write files twice but
-    // they are quite small so it's not that bad.
-    // XXX(Kagami): Needs explicit CSS dest.
-    .pipe(gulpif("*.css", gulp.dest(SMILES_TMP_DIR), gulp.dest(SMILES_TMP_DIR)))
-    .pipe(gulpif("*.png", tap(function({ basename, path: fpath }) {
-      // gulp-imagemin requires 240+ deps, fuck that shit.
-      const p = spawnSync("optipng", [
-        "-quiet",
-        "-strip", "all",
-        "-out", basename.slice(1),
-        basename,
-      ], {cwd: SMILES_TMP_DIR, stdio: "inherit"});
-      if (p.error) return handleError(p.error);
-      if (p.status) return handleError(new Error(`optipng exited with ${p.status}`));
-      // Fix paths.
-      // Sprite images are always synced so use hash of one of them.
-      if (!hash) {
-        hash = getSpriteHash(fpath);
-        replaceFile("smiles-pp/smiles.css", /__smiles/g, `/static/img/smiles-${hash}`);
-      }
-      // Avoid corrupted sprite copy in dist/ via atomic rename.
-      fs.renameSync(
-        path.join(SMILES_TMP_DIR, basename.slice(1)),
-        path.join(SMILES_TMP_DIR, `smiles-${hash}${basename.slice(8)}`)
-      );
-    })))
-    .on("end", () => {
-      const jsSmiles = smileIds.map(id => `"${id}"`).join(",");
-      const jsModule = `
+  return (
+    gulp
+      .src(smilePaths)
+      .pipe(
+        spritesmith({
+          imgName: "__smiles.png",
+          cssName: "smiles.css",
+          retinaSrcFilter: "smiles/*@2x.png",
+          retinaImgName: "__smiles@2x.png",
+          // https://github.com/twolfson/gulp.spritesmith/issues/97
+          padding: 1,
+          cssOpts: {
+            cssSelector: (s) => ".smile-" + s.name,
+          },
+        })
+      )
+      // This is slightly ineffecient because we read/write files twice but
+      // they are quite small so it's not that bad.
+      // XXX(Kagami): Needs explicit CSS dest.
+      .pipe(
+        gulpif("*.css", gulp.dest(SMILES_TMP_DIR), gulp.dest(SMILES_TMP_DIR))
+      )
+      .pipe(
+        gulpif(
+          "*.png",
+          tap(function ({ basename, path: fpath }) {
+            // gulp-imagemin requires 240+ deps, fuck that shit.
+            const p = spawnSync(
+              "optipng",
+              ["-quiet", "-strip", "all", "-out", basename.slice(1), basename],
+              { cwd: SMILES_TMP_DIR, stdio: "inherit" }
+            );
+            if (p.error) return handleError(p.error);
+            if (p.status)
+              return handleError(new Error(`optipng exited with ${p.status}`));
+            // Fix paths.
+            // Sprite images are always synced so use hash of one of them.
+            if (!hash) {
+              hash = getSpriteHash(fpath);
+              replaceFile(
+                "smiles-pp/smiles.css",
+                /__smiles/g,
+                `/static/img/smiles-${hash}`
+              );
+            }
+            // Avoid corrupted sprite copy in dist/ via atomic rename.
+            fs.renameSync(
+              path.join(SMILES_TMP_DIR, basename.slice(1)),
+              path.join(SMILES_TMP_DIR, `smiles-${hash}${basename.slice(8)}`)
+            );
+          })
+        )
+      )
+      .on("end", () => {
+        const jsSmiles = smileIds.map((id) => `"${id}"`).join(",");
+        const jsModule = `
         // AUTOGENERATED, DO NOT EDIT
         export default new Set([${jsSmiles}]);
       `;
-      fs.writeFileSync("smiles-pp/smiles.js", jsModule);
+        fs.writeFileSync("smiles-pp/smiles.js", jsModule);
 
-      const goSmiles = smileIds.map(id => `"${id}":true`).join(",");
-      const goModule = `
+        const goSmiles = smileIds.map((id) => `"${id}":true`).join(",");
+        const goModule = `
         // AUTOGENERATED, DO NOT EDIT
         package smiles
         var Smiles = map[string]bool{${goSmiles}}
       `;
-      try { fs.mkdirSync("go/smiles"); } catch(e) { /* skip */ }
-      fs.writeFileSync("go/smiles/smiles.go", goModule);
-    });
+        try {
+          fs.mkdirSync("go/smiles");
+        } catch (e) {
+          /* skip */
+        }
+        fs.writeFileSync("go/smiles/smiles.go", goModule);
+      })
+  );
 });
 
-gulp.task("clean", () =>
-  del([LABELS_TMP_DIR, DIST_DIR])
-);
+gulp.task("clean", () => del([LABELS_TMP_DIR, DIST_DIR]));
 
 // Third-party dependencies and loader.
-createTask("loader", "loader.js", src =>
+createTask("loader", "loader.js", (src) =>
   src
-    .pipe(rjsOptimize({
-      logLevel: 2,
-      optimize: "none",
-      cjsTranslate: true,
-      paths: {
-        almond: "node_modules/almond/almond",
-        events: "node_modules/events/events",
-        mustache: "node_modules/mustache/mustache",
-        classnames: "node_modules/classnames/index",
-        preact: "node_modules/preact/dist/preact",
-        "textarea-caret": "node_modules/textarea-caret/index",
-        vmsg: "node_modules/vmsg/vmsg.es5",
-        ruhangul: "node_modules/ruhangul/index.es5",
-      },
-    }))
+    .pipe(
+      rjsOptimize({
+        logLevel: 2,
+        optimize: "none",
+        cjsTranslate: true,
+        paths: {
+          almond: "node_modules/almond/almond",
+          events: "node_modules/events/events",
+          mustache: "node_modules/mustache/mustache",
+          classnames: "node_modules/classnames/index",
+          preact: "node_modules/preact/dist/preact",
+          "textarea-caret": "node_modules/textarea-caret/index",
+          vmsg: "node_modules/vmsg/vmsg.es5",
+          ruhangul: "node_modules/ruhangul/index.es5",
+        },
+      })
+    )
     .on("error", handleError)
     .pipe(gulpif(!watch, uglify()))
     .pipe(gulp.dest(JS_DIR))
 );
 
 // Polyfills and other deps.
-createTask("polyfills", [
-  "node_modules/core-js/client/core.min.js",
-  "node_modules/proxy-polyfill/proxy.min.js",
-  "node_modules/dom4/build/dom4.js",
-  "node_modules/whatwg-fetch/fetch.js",
-  "node_modules/vmsg/vmsg.wasm",
-  "node_modules/wasm-polyfill.js/wasm-polyfill.js",
-], src =>
-  src
-    .pipe(gulpif(/core\.min\.js$/, rjsOptimize({
-      logLevel: 2,
-      optimize: "none",
-    })))
-    .pipe(gulp.dest(JS_DIR))
+createTask(
+  "polyfills",
+  [
+    "node_modules/core-js/client/core.min.js",
+    "node_modules/proxy-polyfill/proxy.min.js",
+    "node_modules/dom4/build/dom4.js",
+    "node_modules/whatwg-fetch/fetch.js",
+    "node_modules/vmsg/vmsg.wasm",
+    "node_modules/wasm-polyfill.js/wasm-polyfill.js",
+  ],
+  (src) =>
+    src
+      .pipe(
+        gulpif(
+          /core\.min\.js$/,
+          rjsOptimize({
+            logLevel: 2,
+            optimize: "none",
+          })
+        )
+      )
+      .pipe(gulp.dest(JS_DIR))
 );
 
 gulp.task("labels", () =>
-  gulp.src("go/src/github.com/Kagami/kpopnet/ts/labels/icons/!(*@4x).png")
-    .pipe(spritesmith({
-      imgName: "labels.png",
-      cssName: "labels.css",
-      imgPath: "/static/img/labels.png",
-      retinaSrcFilter: "**/*@2x.png",
-      retinaImgName: "labels@2x.png",
-      retinaImgPath: "/static/img/labels@2x.png",
-      padding: 1,
-      cssOpts: {
-        cssSelector: l => ".label-" + l.name,
-      },
-    }))
-    .pipe(gulpif("*.png",
-      gulp.dest(IMG_DIR),
-      gulp.dest(LABELS_TMP_DIR)
-    ))
+  gulp
+    .src("go/src/github.com/Kagami/kpopnet/ts/labels/icons/!(*@4x).png")
+    .pipe(
+      spritesmith({
+        imgName: "labels.png",
+        cssName: "labels.css",
+        imgPath: "/static/img/labels.png",
+        retinaSrcFilter: "**/*@2x.png",
+        retinaImgName: "labels@2x.png",
+        retinaImgPath: "/static/img/labels@2x.png",
+        padding: 1,
+        cssOpts: {
+          cssSelector: (l) => ".label-" + l.name,
+        },
+      })
+    )
+    .pipe(gulpif("*.png", gulp.dest(IMG_DIR), gulp.dest(LABELS_TMP_DIR)))
 );
 preTasks.push("labels");
 
 // Compile Less to CSS.
-createTask("css", "less/[^_]*.less", src =>
-  src
-    .pipe(sourcemaps.init())
-    .pipe(less())
-    .on("error", handleError)
-    .pipe(gulpif(!watch, require("gulp-postcss")([
-      // NOTE(Kagami): Takes ~1sec to just require them.
-      require("autoprefixer")(),
-      require("cssnano")({
-        // Avoid fixing z-index which might be used in animation.
-        zindex: false,
-        // Avoid renaming counters which should be accessed from JS.
-        reduceIdents: false,
-        // Remove all comments.
-        discardComments: {removeAll: true},
-      }),
-    ])))
-    .on("error", handleError)
-    .pipe(sourcemaps.write("maps"))
-    .pipe(gulp.dest(CSS_DIR))
-    .pipe(gulpif("**/*.css", livereload()))
-, ["less/*.less", "smiles-pp/smiles*.css"]);
+createTask(
+  "css",
+  "less/[^_]*.less",
+  (src) =>
+    src
+      .pipe(sourcemaps.init())
+      .pipe(less())
+      .on("error", handleError)
+      .pipe(
+        gulpif(
+          !watch,
+          require("gulp-postcss")([
+            // NOTE(Kagami): Takes ~1sec to just require them.
+            require("autoprefixer")(),
+            require("cssnano")({
+              // Avoid fixing z-index which might be used in animation.
+              zindex: false,
+              // Avoid renaming counters which should be accessed from JS.
+              reduceIdents: false,
+              // Remove all comments.
+              discardComments: { removeAll: true },
+            }),
+          ])
+        )
+      )
+      .on("error", handleError)
+      .pipe(sourcemaps.write("maps"))
+      .pipe(gulp.dest(CSS_DIR))
+      .pipe(gulpif("**/*.css", livereload())),
+  ["less/*.less", "smiles-pp/smiles*.css"]
+);
 
 // Static assets.
-createTask("assets", [
-  "assets/**/*",
-  "smiles-pp/smiles*.png",
-  "node_modules/font-awesome/fonts/fontawesome-webfont.*",
-], src =>
-  src
-    .pipe(gulpif("smiles*.png",
-      gulp.dest(IMG_DIR),
-      gulpif("fontawesome*",
-        gulp.dest(FONTS_DIR),
-        gulp.dest(STATIC_DIR)
+createTask(
+  "assets",
+  [
+    "assets/**/*",
+    "smiles-pp/smiles*.png",
+    "node_modules/font-awesome/fonts/fontawesome-webfont.*",
+  ],
+  (src) =>
+    src.pipe(
+      gulpif(
+        "smiles*.png",
+        gulp.dest(IMG_DIR),
+        gulpif("fontawesome*", gulp.dest(FONTS_DIR), gulp.dest(STATIC_DIR))
       )
-    ))
+    )
 );
 
 // Kpopnet static.
 gulp.task("kpopnet", () => {
   return new Promise((resolve, reject) => {
-    spawn("node_modules/.bin/webpack-cli", [
-      "--mode", "production",
-      "--env.output", KPOPNET_DIST_DIR,
-      "--env.api_prefix", KPOPNET_API_PREFIX,
-      "--env.file_prefix", KPOPNET_FILE_PREFIX,
-      "--config", KPOPNET_WEBPACK_CONFIG,
-      "--display", "errors-only",
-    ], {
-      stdio: "inherit",
-    }).on("error", reject)
+    spawn(
+      "node_modules/.bin/webpack-cli",
+      [
+        "--mode",
+        "production",
+        "--env.output",
+        KPOPNET_DIST_DIR,
+        "--env.api_prefix",
+        KPOPNET_API_PREFIX,
+        "--env.file_prefix",
+        KPOPNET_FILE_PREFIX,
+        "--config",
+        KPOPNET_WEBPACK_CONFIG,
+        "--display",
+        "errors-only",
+      ],
+      {
+        stdio: "inherit",
+      }
+    )
+      .on("error", reject)
       .on("exit", (code) => {
         if (code === 0) {
-          resolve()
+          resolve();
         } else {
           reject(new Error(`webpack exited with ${code}`));
         }
@@ -510,10 +583,11 @@ if (!watch || all) {
 }
 
 // Build everything.
-gulp.task("default",
+gulp.task(
+  "default",
   gulp.series("clean", gulp.parallel(...preTasks), gulp.parallel(...tasks))
 );
 
 if (watch) {
-  livereload.listen({quiet: true})
+  livereload.listen({ quiet: true });
 }

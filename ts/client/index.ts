@@ -33,9 +33,7 @@ export function insertPost(data: PostData) {
   model.propagateLinks();
 
   // Find last allocated post and insert after it
-  const last = document
-    .getElementById("thread-container")
-    .firstChild
+  const last = document.getElementById("thread-container").firstChild
     .lastElementChild;
   last.after(view.el);
 
@@ -56,8 +54,7 @@ export function init() {
   handlers[message.insertPost] = insertPost;
 
   handlers[message.deletePost] = (id: number) =>
-    handle(id, (m) =>
-      m.setDeleted());
+    handle(id, (m) => m.setDeleted());
 
   handlers[message.redirect] = (board: string) => {
     location.href = `/${board}/`;

@@ -50,8 +50,7 @@ export default class PostCollection extends Model {
 
   /** Return all models. */
   public all(): Post[] {
-    return Object.keys(this.models)
-      .map((id) => this.models[id]);
+    return Object.keys(this.models).map((id) => this.models[id]);
   }
 
   /** Make collection iterable. */

@@ -33,7 +33,7 @@ export function getCenteredRect({ width, height }: any) {
   }
   const left = (pW - width) / 2;
   const top = (pH - height) / 2;
-  return {width, height, left, top};
+  return { width, height, left, top };
 }
 
 interface PopupProps {
@@ -74,7 +74,7 @@ class Popup extends Component<PopupProps, PopupState> {
     super(props);
 
     const { width, height } = props;
-    const rect = getCenteredRect({width, height});
+    const rect = getCenteredRect({ width, height });
     this.aspect = width / height;
 
     if (props.embed) {
@@ -89,7 +89,6 @@ class Popup extends Component<PopupProps, PopupState> {
       moving: false,
       resizing: false,
     };
-
   }
   public componentDidMount() {
     opened.add(this.props.url);
@@ -109,7 +108,10 @@ class Popup extends Component<PopupProps, PopupState> {
     document.removeEventListener("click", this.handleGlobalClick);
   }
 
-  public render({ video, record, embed }: PopupProps, { left, top }: PopupState) {
+  public render(
+    { video, record, embed }: PopupProps,
+    { left, top }: PopupState
+  ) {
     let cls = "";
     let fn = null;
     if (video) {
@@ -126,7 +128,7 @@ class Popup extends Component<PopupProps, PopupState> {
       fn = this.renderImage;
     }
     return (
-      <div class={cx("popup", cls)} style={{left, top}}>
+      <div class={cx("popup", cls)} style={{ left, top }}>
         {fn.call(this)}
         {embed ? this.renderControls() : null}
       </div>
@@ -139,17 +141,16 @@ class Popup extends Component<PopupProps, PopupState> {
         <video
           class="popup-item popup-video-item"
           ref={s(this, "itemEl")}
-          style={{width}}
+          style={{ width }}
           loop
           autoPlay
           controls={this.needVideoControls()}
           onVolumeChange={this.handleMediaVolume}
         />
         <div
-          class={cx(
-            "popup-video-overlay",
-            {"popup-video-overlay_full": !this.needVideoControls()},
-          )}
+          class={cx("popup-video-overlay", {
+            "popup-video-overlay_full": !this.needVideoControls(),
+          })}
           onMouseDown={this.handleMediaDown}
           onWheel={this.handleMediaWheel}
         />
@@ -164,7 +165,7 @@ class Popup extends Component<PopupProps, PopupState> {
       <img
         class="popup-item"
         ref={s(this, "itemEl")}
-        style={{width}}
+        style={{ width }}
         src={url}
         draggable={0 as any}
         onDragStart={this.handleMediaDrag}
@@ -189,12 +190,12 @@ class Popup extends Component<PopupProps, PopupState> {
   }
   private renderEmbed() {
     const { width, height, moving, resizing } = this.state;
-    const pointerEvents = (moving || resizing) ? "none" : "auto";
+    const pointerEvents = moving || resizing ? "none" : "auto";
     return (
       <iframe
         class="popup-item"
         ref={s(this, "itemEl")}
-        style={{width, height, pointerEvents}}
+        style={{ width, height, pointerEvents }}
         allowFullScreen
         frameBorder={0}
         referrerPolicy="no-referrer"
@@ -230,16 +231,16 @@ class Popup extends Component<PopupProps, PopupState> {
 
   private needVideoControls() {
     return (
-      this.props.video
-      && !this.props.transparent
-      && (this.props.audio || this.props.duration > 2)
+      this.props.video &&
+      !this.props.transparent &&
+      (this.props.audio || this.props.duration > 2)
     );
   }
   private handleGlobalKey = (e: KeyboardEvent) => {
     if (e.keyCode === 27) {
       this.props.onClose();
     }
-  }
+  };
   private handleMediaDrag = (e: DragEvent) => {
     // NOTE(Kagami): Note that both draggable AND ondragstart are
     // required:
@@ -248,29 +249,29 @@ class Popup extends Component<PopupProps, PopupState> {
     // * draggable attr doesn't seem to be working in Firefox so
     //   dragstart handler required
     e.preventDefault();
-  }
+  };
   private handleMediaVolume = () => {
     options.volume = this.itemEl.volume;
-  }
+  };
   private handleMediaDown = (e: MouseEvent) => {
     if (e.button !== 0) return;
-    this.setState({moving: true});
+    this.setState({ moving: true });
     this.baseX = e.clientX;
     this.baseY = e.clientY;
     this.startX = this.state.left;
     this.startY = this.state.top;
-  }
+  };
   private handleResizerDown = (e: MouseEvent) => {
     if (e.button !== 0) return;
     e.preventDefault();
-    this.setState({resizing: true});
+    this.setState({ resizing: true });
     this.baseX = e.clientX;
     this.baseY = e.clientY;
     this.startX = this.state.left;
     this.startY = this.state.top;
     this.startW = this.state.width;
     this.startH = this.state.height;
-  }
+  };
   private handleGlobalMove = (e: MouseEvent) => {
     if (this.state.moving) {
       this.setState({
@@ -295,13 +296,13 @@ class Popup extends Component<PopupProps, PopupState> {
       width = Math.max(width, limit);
       height = Math.max(height, limit);
 
-      this.setState({left, top, width, height});
+      this.setState({ left, top, width, height });
     }
-  }
+  };
   private handleControlsClick = (e: MouseEvent) => {
     e.stopPropagation();
-    this.setState({moving: false, resizing: false});
-  }
+    this.setState({ moving: false, resizing: false });
+  };
   private handleGlobalClick = (e: MouseEvent) => {
     if (e.button === 0) {
       if (this.state.moving) {
@@ -316,8 +317,8 @@ class Popup extends Component<PopupProps, PopupState> {
         }
       }
     }
-    this.setState({moving: false, resizing: false});
-  }
+    this.setState({ moving: false, resizing: false });
+  };
   private handleMediaWheel = (e: WheelEvent) => {
     e.preventDefault();
     const order = e.deltaY < 0 ? 1 : -1;
@@ -327,8 +328,8 @@ class Popup extends Component<PopupProps, PopupState> {
     top = top - (ZOOM_STEP_PX / this.aspect / 2) * order;
     width = Math.max(50, width + ZOOM_STEP_PX * order);
     height = Math.ceil(width / this.aspect);
-    this.setState({left, top, width, height});
-  }
+    this.setState({ left, top, width, height });
+  };
 }
 
 interface PopupsState {
@@ -347,13 +348,13 @@ class Popups extends Component<any, PopupsState> {
   public render({}, { popups }: PopupsState) {
     return (
       <div class="popup-container-inner">
-        {popups.map((props) =>
+        {popups.map((props) => (
           <Popup
             {...props}
             key={props.url}
             onClose={this.makeHandleClose(props.url)}
-          />,
-        )}
+          />
+        ))}
       </div>
     );
   }
@@ -378,7 +379,9 @@ class Popups extends Component<any, PopupsState> {
 
     if (target.matches(POST_FILE_THUMB_SEL)) {
       const post = getModel(target);
-      const file = post.getFileByHash((target as HTMLImageElement).dataset.sha1);
+      const file = post.getFileByHash(
+        (target as HTMLImageElement).dataset.sha1
+      );
       Object.assign(props, {
         video: file.video,
         audio: file.audio,
@@ -407,13 +410,13 @@ class Popups extends Component<any, PopupsState> {
     if (popups.length === was) {
       popups = popups.concat(props);
     }
-    this.setState({popups});
-  }
+    this.setState({ popups });
+  };
   private makeHandleClose(url: string) {
     return () => {
       let { popups } = this.state;
       popups = popups.filter((p) => p.url !== url);
-      this.setState({popups});
+      this.setState({ popups });
     };
   }
 }
@@ -421,6 +424,6 @@ class Popups extends Component<any, PopupsState> {
 export function init() {
   const container = document.querySelector(POPUP_CONTAINER_SEL);
   if (container) {
-    render(<Popups/>, container);
+    render(<Popups />, container);
   }
 }

@@ -55,20 +55,23 @@ function getThreads(): [HTMLElement, HTMLElement[]] {
     threadSel = ".thread";
   }
   const container = document.getElementById(contID);
-  const threads: NodeListOf<HTMLElement> = container.querySelectorAll(threadSel);
+  const threads: NodeListOf<HTMLElement> = container.querySelectorAll(
+    threadSel
+  );
   return [container, Array.from(threads)];
 }
 
 // Filter against board and subject and toggle thread visibility.
 function filterThreads(filter: string) {
-  const [ , threads ] = getThreads();
+  const [, threads] = getThreads();
   const r = new RegExp(filter, "i");
   const matched = new Set<number>();
 
   for (const p of posts) {
-    const match = (p.board && r.test(`/${p.board}/`))
-      || r.test(p.subject)
-      || r.test(p.body);
+    const match =
+      (p.board && r.test(`/${p.board}/`)) ||
+      r.test(p.subject) ||
+      r.test(p.body);
     if (match) {
       matched.add(p.op);
     }
@@ -117,9 +120,13 @@ export function render() {
   }
 
   if (page.catalog) {
-    const input = document.querySelector(BOARD_SEARCH_INPUT_SEL) as HTMLInputElement;
+    const input = document.querySelector(
+      BOARD_SEARCH_INPUT_SEL
+    ) as HTMLInputElement;
     input.oninput = onSearchChange;
-    const select = document.querySelector(BOARD_SEARCH_SORT_SEL) as HTMLSelectElement;
+    const select = document.querySelector(
+      BOARD_SEARCH_SORT_SEL
+    ) as HTMLSelectElement;
     select.onchange = onSortChange;
   }
 }

@@ -7,9 +7,7 @@ let db = null as IDBDatabase;
 let dbDisabled = false;
 
 // Post number sets.
-const postStores = [
-  "mine",
-];
+const postStores = ["mine"];
 
 // Store for caching embed metadata.
 const embedStore = "embedCache";
@@ -46,10 +44,11 @@ export function init(): Promise<void> {
     if (
       // IndexedDB is null in Tor Browser. This also ignores old
       // browsers without IDB which is fine.
-      !window.indexedDB
+      !window.indexedDB ||
       // FF IndexedDB implementation is broken in private mode, see:
       // <https://bugzilla.mozilla.org/show_bug.cgi?id=781982>.
-      || err.message === "A mutation operation was attempted on a database that did not allow mutations."
+      err.message ===
+        "A mutation operation was attempted on a database that did not allow mutations."
     ) {
       dbDisabled = true;
       return;
@@ -66,18 +65,18 @@ function upgradeDB({ oldVersion, target }: IDBVersionChangeEvent) {
   let s = null as IDBObjectStore;
 
   switch (oldVersion) {
-  // Clean state.
-  case 0:
-    for (const name of postStores) {
-      s = db.createObjectStore(name, {keyPath: "id"});
-      s.createIndex("op", "op");
-    }
-    s = db.createObjectStore(embedStore, {keyPath: "url"});
-    s.createIndex("expires", "expires");
-    break;
-  // Migrations. Must fall through.
-  case 7:
-    t.objectStore(embedStore).clear();
+    // Clean state.
+    case 0:
+      for (const name of postStores) {
+        s = db.createObjectStore(name, { keyPath: "id" });
+        s.createIndex("op", "op");
+      }
+      s = db.createObjectStore(embedStore, { keyPath: "url" });
+      s.createIndex("expires", "expires");
+      break;
+    // Migrations. Must fall through.
+    case 7:
+      t.objectStore(embedStore).clear();
     /* fall-through */
   }
 }
@@ -148,8 +147,8 @@ export function getIDs(store: string, ...ops: number[]): Promise<number[]> {
     // more IDs than needed.
     ops.sort((a, b) => a - b);
     const r = newTransaction(store, false)
-        .index("op")
-        .openCursor(IDBKeyRange.bound(ops[0], ops[ops.length - 1]));
+      .index("op")
+      .openCursor(IDBKeyRange.bound(ops[0], ops[ops.length - 1]));
 
     r.onsuccess = (e) => {
       const cursor = (e.target as IDBRequest).result;
@@ -169,7 +168,7 @@ export function getIDs(store: string, ...ops: number[]): Promise<number[]> {
 
 /** Asynchronously add new post id object into postStore. */
 export function setID(store: string, id: number, op: number) {
-  putObj(store, {id, op});
+  putObj(store, { id, op });
 }
 
 /** Clear the target object store asynchronously. */
@@ -186,5 +185,5 @@ export function getEmbed<T>(url: string): Promise<T> {
 
 export function setEmbed(url: string, obj: any, expiry: number) {
   const expires = Date.now() + expiry;
-  return putObj(embedStore, {...obj, url, expires});
+  return putObj(embedStore, { ...obj, url, expires });
 }

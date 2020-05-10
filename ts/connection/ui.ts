@@ -6,12 +6,12 @@ const syncEl = document.querySelector(".header-status");
 
 function statusToClass(status: syncStatus) {
   switch (status) {
-  case syncStatus.synced:
-    return "fa-link";
-  case syncStatus.desynced:
-    return "fa-unlink";
-  default:
-    return "fa-spinner fa-pulse fa-fw";
+    case syncStatus.synced:
+      return "fa-link";
+    case syncStatus.desynced:
+      return "fa-unlink";
+    default:
+      return "fa-spinner fa-pulse fa-fw";
   }
 }
 

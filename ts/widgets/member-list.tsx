@@ -20,13 +20,16 @@ class MemberList extends Component<MemberListProps, {}> {
   public render({ members, disabled }: MemberListProps) {
     return (
       <ul class={cx("member-list", disabled && "member-list_disabled")}>
-        {members.map((name) =>
+        {members.map((name) => (
           <li key={name} class="member-list-item">
-            <span class="member-list-name" onClick={() => this.handleRemove(name)}>
+            <span
+              class="member-list-name"
+              onClick={() => this.handleRemove(name)}
+            >
               {name}
             </span>
-          </li>,
-        )}
+          </li>
+        ))}
         <li class="member-list-newitem">
           <input
             class="member-list-input"
@@ -43,9 +46,9 @@ class MemberList extends Component<MemberListProps, {}> {
   private isValid(name: string): boolean {
     // TODO(Kagami): Validate name chars and highlight invalid inputs?
     return (
-      name.length >= 1
-      && name !== session.userID
-      && !this.props.members.includes(name)
+      name.length >= 1 &&
+      name !== session.userID &&
+      !this.props.members.includes(name)
     );
   }
   private handleRemove = (name: string) => {
@@ -53,7 +56,7 @@ class MemberList extends Component<MemberListProps, {}> {
     if (name === session.userID) return;
     const members = this.props.members.filter((n) => n !== name);
     this.props.onChange(members);
-  }
+  };
   private handleNameKey = (e: KeyboardEvent) => {
     if (e.keyCode === 13) {
       const nameEl = e.target as HTMLInputElement;
@@ -63,7 +66,7 @@ class MemberList extends Component<MemberListProps, {}> {
       this.props.onChange(members);
       nameEl.value = "";
     }
-  }
+  };
 }
 
 export default MemberList;

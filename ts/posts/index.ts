@@ -30,10 +30,15 @@ function initRenderTime() {
 }
 
 function initFileTitle() {
-  on(document, "click", (e) => {
-    const title = (e.target as HTMLElement).textContent;
-    copyToClipboard(title);
-  }, {selector: POST_FILE_TITLE_SEL});
+  on(
+    document,
+    "click",
+    (e) => {
+      const title = (e.target as HTMLElement).textContent;
+      copyToClipboard(title);
+    },
+    { selector: POST_FILE_TITLE_SEL }
+  );
 }
 
 export function init() {

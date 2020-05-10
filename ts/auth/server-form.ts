@@ -4,7 +4,7 @@ import { AccountForm } from "./form";
 // Panel for server administration controls such as global server settings
 export class ServerConfigForm extends AccountForm {
   constructor() {
-    super({tag: "form"});
+    super({ tag: "form" });
     this.render();
   }
 
@@ -29,7 +29,6 @@ export class ServerConfigForm extends AccountForm {
 
   // Extract and send the configuration struct from the form
   protected send() {
-    this.postResponse("/api/configure-server", (req) =>
-      this.extractForm(req));
+    this.postResponse("/api/configure-server", (req) => this.extractForm(req));
   }
 }

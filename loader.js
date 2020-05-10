@@ -32,7 +32,7 @@ define("loader", [
 
   function loadScript(path) {
     var script = document.createElement("script");
-    script.src = "/static/js/" + path + ".js"
+    script.src = "/static/js/" + path + ".js";
     script.async = true;
     document.body.appendChild(script);
     return script;
@@ -40,7 +40,7 @@ define("loader", [
 
   var es6Tests = [
     // Arrow functions
-    'return (()=>5)()===5;',
+    "return (()=>5)()===5;",
 
     // Block scoped const
     '"use strict";  const bar = 123; {const bar = 456;} return bar===123;',
@@ -58,40 +58,40 @@ define("loader", [
     'var a = "ba"; return `foo bar${a + "z"}` === "foo barbaz";',
 
     // for...of
-    'var arr = [5]; for (var item of arr) return item === 5;',
+    "var arr = [5]; for (var item of arr) return item === 5;",
 
     // Spread operator
-    'return Math.max(...[1, 2, 3]) === 3',
+    "return Math.max(...[1, 2, 3]) === 3",
 
     // Class statement
     '"use strict"; class C {}; return typeof C === "function"',
 
     // Super call
-    '"use strict"; var passed = false;'
-    + 'class B {constructor(a) {  passed = (a === "barbaz")}};'
-    + 'class C extends B {constructor(a) {super("bar" + a)}};'
-    + 'new C("baz"); return passed;',
+    '"use strict"; var passed = false;' +
+      'class B {constructor(a) {  passed = (a === "barbaz")}};' +
+      'class C extends B {constructor(a) {super("bar" + a)}};' +
+      'new C("baz"); return passed;',
 
     // Default parameters
-    'return (function (a = 1, b = 2) { return a === 3 && b === 2; }(3));',
+    "return (function (a = 1, b = 2) { return a === 3 && b === 2; }(3));",
 
     // Destructuring declaration
-    'var [a,,[b],c] = [5,null,[6]];return a===5 && b===6 && c===undefined',
+    "var [a,,[b],c] = [5,null,[6]];return a===5 && b===6 && c===undefined",
 
     // Parameter destructuring
-    'return function([a,,[b],c]){return a===5 && b===6 && c===undefined;}'
-    + '([5,null,[6]])',
+    "return function([a,,[b],c]){return a===5 && b===6 && c===undefined;}" +
+      "([5,null,[6]])",
 
     // Generators
-    'function * generator(){yield 5; yield 6};'
-    + 'var iterator = generator();'
-    + 'var item = iterator.next();'
-    + 'var passed = item.value === 5 && item.done === false;'
-    + 'item = iterator.next();'
-    + 'passed &= item.value === 6 && item.done === false;'
-    + 'item = iterator.next();'
-    + 'passed &= item.value === undefined && item.done === true;'
-    + 'return passed;'
+    "function * generator(){yield 5; yield 6};" +
+      "var iterator = generator();" +
+      "var item = iterator.next();" +
+      "var passed = item.value === 5 && item.done === false;" +
+      "item = iterator.next();" +
+      "passed &= item.value === 6 && item.done === false;" +
+      "item = iterator.next();" +
+      "passed &= item.value === undefined && item.done === true;" +
+      "return passed;",
   ];
   for (var i = 0; i < es6Tests.length; i++) {
     if (!check(es6Tests[i])) {
@@ -145,11 +145,12 @@ define("loader", [
   }
   // Check event listener option support.
   if (DOMUpToDate) {
-    var s = "var a = document.createElement(\"a\");"
-      + "var ctr = 0;"
-      + "a.addEventListener(\"click\", () => ctr++, {once: true});"
-      + "a.click(); a.click();"
-      + "return ctr === 1;";
+    var s =
+      'var a = document.createElement("a");' +
+      "var ctr = 0;" +
+      'a.addEventListener("click", () => ctr++, {once: true});' +
+      "a.click(); a.click();" +
+      "return ctr === 1;";
     DOMUpToDate = check(s);
   }
   if (!DOMUpToDate) {

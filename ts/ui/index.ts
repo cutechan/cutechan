@@ -1,6 +1,9 @@
 export { default as FormView } from "./forms";
 export { postAdded } from "./tab";
-export { default as notifyAboutReply, OverlayNotification } from "./notification";
+export {
+  default as notifyAboutReply,
+  OverlayNotification,
+} from "./notification";
 
 import { page } from "../state";
 import FAQPanel from "./faq";

@@ -4,8 +4,8 @@ import { synchronise } from "./synchronization";
 import { renderStatus } from "./ui";
 
 const path =
-  (location.protocol === "https:" ? "wss" : "ws")
-  + `://${location.host}/api/socket`;
+  (location.protocol === "https:" ? "wss" : "ws") +
+  `://${location.host}/api/socket`;
 
 let socket: WebSocket;
 let attempts: number;
@@ -13,17 +13,32 @@ let attemptTimer: number;
 
 // Websocket connection and synchronization with server states
 export const enum syncStatus {
-  disconnected, connecting, syncing, synced, desynced,
+  disconnected,
+  connecting,
+  syncing,
+  synced,
+  desynced,
 }
 
 // States of the connection finite state machine
 export const enum connState {
-  loading, connecting, syncing, synced, reconnecting, dropped, desynced,
+  loading,
+  connecting,
+  syncing,
+  synced,
+  reconnecting,
+  dropped,
+  desynced,
 }
 
 // Events passable to the connection FSM
 export const enum connEvent {
-  start, open, close, retry, error, sync,
+  start,
+  open,
+  close,
+  retry,
+  error,
+  sync,
 }
 
 // Finite state machine for managing websocket connectivity
@@ -48,13 +63,7 @@ function connect() {
 // Strip all handlers and remove references from Websocket instance
 function nullSocket() {
   if (socket) {
-    socket.onclose
-      = socket.onmessage
-      = socket.onopen
-      = socket.onclose
-      = socket.onerror
-      = socket
-      = null;
+    socket.onclose = socket.onmessage = socket.onopen = socket.onclose = socket.onerror = socket = null;
   }
 }
 

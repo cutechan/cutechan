@@ -9,8 +9,17 @@ import _ from "../lang";
 import { boards, config, page, storeMine } from "../state";
 import { duration, fileSize, renderBody } from "../templates";
 import {
-  AbortError, Dict, FutureAPI, getID, hook, HOOKS, on,
-  printf, scrollToTop, setter as s, unhook,
+  AbortError,
+  Dict,
+  FutureAPI,
+  getID,
+  hook,
+  HOOKS,
+  on,
+  printf,
+  scrollToTop,
+  setter as s,
+  unhook,
 } from "../util";
 import {
   HEADER_HEIGHT_PX,
@@ -117,10 +126,14 @@ function getFileInfo(file: File | Blob): Promise<Dict> {
 
 // Event helpers.
 function getClientX(e: MouseEvent | TouchEvent): number {
-  return (e as any).touches ? (e as any).touches[0].clientX : (e as any).clientX;
+  return (e as any).touches
+    ? (e as any).touches[0].clientX
+    : (e as any).clientX;
 }
 function getClientY(e: MouseEvent | TouchEvent): number {
-  return (e as any).touches ? (e as any).touches[0].clientY : (e as any).clientY;
+  return (e as any).touches
+    ? (e as any).touches[0].clientY
+    : (e as any).clientY;
 }
 
 interface FilePreviewProps {
@@ -139,13 +152,16 @@ class FilePreview extends Component<FilePreviewProps, {}> {
         <a class="control reply-remove-file-control" onClick={props.onRemove}>
           <i class="fa fa-remove" />
         </a>
-        {record
-          ? <div class="reply-file-thumb reply-file-thumb_record">
-              <i class="reply-file-thumb-icon fa fa-music" />
-            </div>
-          : <img class="reply-file-thumb" src={thumb} />
-        }
-        <div class="reply-file-info" title={infoText}>{infoText}</div>
+        {record ? (
+          <div class="reply-file-thumb reply-file-thumb_record">
+            <i class="reply-file-thumb-icon fa fa-music" />
+          </div>
+        ) : (
+          <img class="reply-file-thumb" src={thumb} />
+        )}
+        <div class="reply-file-info" title={infoText}>
+          {infoText}
+        </div>
       </div>
     );
   }
@@ -169,12 +185,12 @@ class BodyPreview extends Component<any, any> {
     return body !== this.props.body;
   }
   public render({ body }: any) {
-    const post = {body} as PostData;
+    const post = { body } as PostData;
     const html = renderBody(post);
     return (
       <div
         class="reply-body reply-message"
-        dangerouslySetInnerHTML={{__html: html}}
+        dangerouslySetInnerHTML={{ __html: html }}
       />
     );
   }
@@ -292,9 +308,7 @@ class Reply extends Component<any, any> {
         onMouseDown={this.handleFormDown}
         onMouseMove={this.handleFormMove}
       >
-
         <div class="reply-inner">
-
           <div class="reply-content">
             {this.renderFiles()}
             <div class="reply-content-inner">
@@ -304,7 +318,6 @@ class Reply extends Component<any, any> {
           </div>
 
           {this.renderSideControls()}
-
         </div>
 
         {this.renderFooterControls()}
@@ -318,26 +331,25 @@ class Reply extends Component<any, any> {
           multiple
           onChange={this.handleFileChange}
         />
-
       </div>
     );
   }
   private get cursor() {
     switch (this.state.pos) {
-    case "nw":
-    case "se":
-      return "nwse-resize";
-    case "ne":
-    case "sw":
-      return "nesw-resize";
-    case "n":
-    case "s":
-      return "ns-resize";
-    case "e":
-    case "w":
-      return "ew-resize";
-    default:
-      return "inherit";
+      case "nw":
+      case "se":
+        return "nwse-resize";
+      case "ne":
+      case "sw":
+        return "nesw-resize";
+      case "n":
+      case "s":
+        return "ns-resize";
+      case "e":
+      case "w":
+        return "ew-resize";
+      default:
+        return "inherit";
     }
   }
   private get minWidth() {
@@ -351,7 +363,7 @@ class Reply extends Component<any, any> {
     const { float, left, top, width } = this.state;
     // Recalc because it depends on state.
     const height = Math.max(this.minHeight, this.state.height);
-    const o = {width, height, cursor: this.cursor} as Dict;
+    const o = { width, height, cursor: this.cursor } as Dict;
     if (float) {
       o.position = "fixed";
       o.left = left;
@@ -381,16 +393,17 @@ class Reply extends Component<any, any> {
     }
 
     let cited = "";
-    const prevCh = (start > 0) ? body[start - 1] : "";
+    const prevCh = start > 0 ? body[start - 1] : "";
     const prevNL = !prevCh || prevCh === "\n";
-    const nextCh = (end < body.length) ? body[end] : "";
+    const nextCh = end < body.length ? body[end] : "";
     const hasID = body.includes(">>" + postID);
     const sel = window.getSelection();
     const text = quoteText(sel.toString());
-    const hasText = !sel.isCollapsed
-        && postBody.contains(sel.anchorNode)
-        && postBody.contains(sel.focusNode)
-        && !!text;
+    const hasText =
+      !sel.isCollapsed &&
+      postBody.contains(sel.anchorNode) &&
+      postBody.contains(sel.focusNode) &&
+      !!text;
 
     if (hasText && !prevNL) {
       cited += "\n";
@@ -425,7 +438,7 @@ class Reply extends Component<any, any> {
     }
 
     body = body.slice(0, start) + cited + body.slice(end);
-    this.setState({body}, () => {
+    this.setState({ body }, () => {
       // Don't focus invisible element.
       if (this.bodyEl && this.bodyEl.offsetParent !== null) {
         this.focus();
@@ -447,13 +460,13 @@ class Reply extends Component<any, any> {
     const left = Math.max(leftest, Math.min(x, rightest));
     const top = Math.max(toppest, Math.min(y, bottomest));
 
-    this.setState({float: true, left, top});
+    this.setState({ float: true, left, top });
   }
   private focus = () => {
     if (this.bodyEl) {
       this.bodyEl.focus();
     }
-  }
+  };
   private focusAndScroll = () => {
     this.focus();
     if (this.bodyEl) {
@@ -465,7 +478,7 @@ class Reply extends Component<any, any> {
         scrollToTop();
       }
     }
-  }
+  };
   private saveCoords(e: MouseEvent | TouchEvent) {
     this.baseX = getClientX(e);
     this.baseY = getClientY(e);
@@ -476,23 +489,22 @@ class Reply extends Component<any, any> {
     this.startH = rect.height;
   }
   private pasteMarkup(markup: string, opts?: Dict) {
-    const { mono, nosep, offset } = opts || {} as Dict;
+    const { mono, nosep, offset } = opts || ({} as Dict);
     const start = this.bodyEl.selectionStart - (offset || 0);
     const end = this.bodyEl.selectionEnd;
     let { body } = this.state;
     if (start < end && !mono) {
       const sel = body.slice(start, end);
-      body = body.slice(0, start) +
-             markup + sel + markup +
-             body.slice(end);
-      this.setState({body}, this.focus);
+      body = body.slice(0, start) + markup + sel + markup + body.slice(end);
+      this.setState({ body }, this.focus);
     } else {
-      const prevCh = (start > 0) ? body[start - 1] : "";
-      const sep = (!prevCh || prevCh === "\n" || prevCh === " " || nosep) ? "" : " ";
+      const prevCh = start > 0 ? body[start - 1] : "";
+      const sep =
+        !prevCh || prevCh === "\n" || prevCh === " " || nosep ? "" : " ";
       const sndMarkup = mono ? "" : markup;
       body = body.slice(0, start) + sep + markup + sndMarkup + body.slice(end);
       const caret = start + sep.length + markup.length;
-      this.setState({body}, () => {
+      this.setState({ body }, () => {
         this.focus();
         this.bodyEl.setSelectionRange(caret, caret);
       });
@@ -516,74 +528,78 @@ class Reply extends Component<any, any> {
       const dy = getClientY(e) - this.baseY;
       let { startW: width, startH: height, startX: left, startY: top } = this;
       switch (pos) {
-      case "nw":
-        left += dx;
-        width -= dx;
-        top += dy;
-        height -= dy;
-        break;
-      case "se":
-        width += dx;
-        height += dy;
-        break;
-      case "ne":
-        width += dx;
-        top += dy;
-        height -= dy;
-        break;
-      case "sw":
-        left += dx;
-        width -= dx;
-        height += dy;
-        break;
-      case "n":
-        top += dy;
-        height -= dy;
-        break;
-      case "s":
-        height += dy;
-        break;
-      case "e":
-        width += dx;
-        break;
-      case "w":
-        left += dx;
-        width -= dx;
-        break;
+        case "nw":
+          left += dx;
+          width -= dx;
+          top += dy;
+          height -= dy;
+          break;
+        case "se":
+          width += dx;
+          height += dy;
+          break;
+        case "ne":
+          width += dx;
+          top += dy;
+          height -= dy;
+          break;
+        case "sw":
+          left += dx;
+          width -= dx;
+          height += dy;
+          break;
+        case "n":
+          top += dy;
+          height -= dy;
+          break;
+        case "s":
+          height += dy;
+          break;
+        case "e":
+          width += dx;
+          break;
+        case "w":
+          left += dx;
+          width -= dx;
+          break;
       }
 
       // Restore out-of-bound values.
-      if (width < this.minWidth
-          && (pos === "nw" || pos === "sw" || pos === "w")) {
+      if (
+        width < this.minWidth &&
+        (pos === "nw" || pos === "sw" || pos === "w")
+      ) {
         left -= this.minWidth - width;
       }
-      if (height < this.minHeight
-          && (pos === "nw" || pos === "ne" || pos === "n")) {
+      if (
+        height < this.minHeight &&
+        (pos === "nw" || pos === "ne" || pos === "n")
+      ) {
         top -= this.minHeight - height;
       }
       width = Math.max(width, this.minWidth);
       height = Math.max(height, this.minHeight);
 
-      this.setState({width, height, left, top});
+      this.setState({ width, height, left, top });
     }
-  // https://github.com/Microsoft/TypeScript/issues/22565
+    // https://github.com/Microsoft/TypeScript/issues/22565
   }) as EventListenerOrEventListenerObject;
   private handleGlobalUp = () => {
     this.moving = false;
     this.resizing = false;
-  }
+  };
 
   private handleMoveDown = (e: MouseEvent | TouchEvent) => {
     e.preventDefault();
     this.moving = true;
     this.saveCoords(e);
-  }
+  };
   private handleFormDown = (e: MouseEvent) => {
     if (this.state.pos === "i") return;
     e.preventDefault();
     this.resizing = true;
     this.saveCoords(e);
-  }
+  };
   private handleFormMove = (e: MouseEvent) => {
     if (this.resizing) return;
     const rect = this.mainEl.getBoundingClientRect();
@@ -611,24 +627,26 @@ class Reply extends Component<any, any> {
     } else if (oy >= h - b) {
       pos = "s";
     }
-    this.setState({pos});
-  }
+    this.setState({ pos });
+  };
   private handleFormPin = () => {
-    this.setState({float: false}, this.focus);
-  }
+    this.setState({ float: false }, this.focus);
+  };
   private handleFormHide = () => {
     this.props.onHide();
-  }
+  };
   private handleSubjectChange = (e: any) => {
-    this.setState({subject: e.target.value});
-  }
+    this.setState({ subject: e.target.value });
+  };
   private handleBoardChange = (e: any) => {
-    this.setState({board: e.target.value});
-  }
+    this.setState({ board: e.target.value });
+  };
   private setBodyScroll() {
     const hasScroll = this.bodyEl.scrollHeight > this.bodyEl.clientHeight;
-    (this.bodyEl.parentNode as HTMLElement)
-      .classList.toggle("reply-body_scrollable", hasScroll);
+    (this.bodyEl.parentNode as HTMLElement).classList.toggle(
+      "reply-body_scrollable",
+      hasScroll
+    );
     const scrollWidth = this.bodyEl.offsetWidth - this.bodyEl.clientWidth;
     this.coverEl.style.width = scrollWidth + "px";
   }
@@ -636,121 +654,144 @@ class Reply extends Component<any, any> {
     this.setBodyScroll();
     const smileBoxAC = autocomplete(this.bodyEl);
     const smileBox = !!smileBoxAC;
-    this.setState({body: e.target.value, smileBox, smileBoxAC});
-  }
+    this.setState({ body: e.target.value, smileBox, smileBoxAC });
+  };
   private handleAttach = () => {
     this.fileEl.click();
-  }
+  };
   private handleRecord = () => {
-    let pitch = Math.random() * 2 - 1;  // [-1, 1]
+    let pitch = Math.random() * 2 - 1; // [-1, 1]
     if (pitch > -0.2 && pitch < 0.2) {
       // Don't tolerate zero pitch shift.
       pitch = 0.2;
     }
     // Have to accept Blob because Edge doesn't have File constructor...
-    vmsg.record({pitch}).then((blob) => {
+    vmsg.record({ pitch }).then((blob) => {
       this.handleFiles([blob]);
     });
-  }
+  };
   private handleAttachRemove = (src: string) => {
     if (this.state.sending) return;
     const fwraps = this.state.fwraps.filter((f) => f.info.src !== src);
-    this.setState({fwraps}, this.focus);
-  }
+    this.setState({ fwraps }, this.focus);
+  };
   private handleDrop = (files: FileList) => {
     if (files.length) {
       this.handleFiles(files);
     }
-  }
+  };
   private handleFileChange = () => {
     const files = this.fileEl.files;
     if (files.length) {
       this.handleFiles(files);
     }
-    this.fileEl.value = null;  // Allow to select same file again
-  }
+    this.fileEl.value = null; // Allow to select same file again
+  };
   private handleFiles = (files: FileList | Blob[]) => {
     // Limit number of selected files.
-    const fslice: Array<File | Blob> = Array.prototype.slice.call(files, 0, config.maxFiles);
+    const fslice: Array<File | Blob> = Array.prototype.slice.call(
+      files,
+      0,
+      config.maxFiles
+    );
     const fwrapsOld = this.state.fwraps;
     const fwrapsNew = Array(fslice.length);
     fslice.map(this.handleFile).forEach((p, i) =>
-      p.then((fwrap) => {
-        // Append in order.
-        fwrapsNew[i] = fwrap;
-        let fwraps = fwrapsOld.concat(fwrapsNew.filter((f) => f != null));
-        // Skip elder attachments.
-        fwraps = fwraps.slice(Math.max(0, fwraps.length - config.maxFiles));
-        this.setState({fwraps}, this.focus);
-      }, (err) => {
-        const errMsg = err.message ? `: ${err.message}` : "";
-        showAlert(_("unsupFile") + errMsg);
-      }),
+      p.then(
+        (fwrap) => {
+          // Append in order.
+          fwrapsNew[i] = fwrap;
+          let fwraps = fwrapsOld.concat(fwrapsNew.filter((f) => f != null));
+          // Skip elder attachments.
+          fwraps = fwraps.slice(Math.max(0, fwraps.length - config.maxFiles));
+          this.setState({ fwraps }, this.focus);
+        },
+        (err) => {
+          const errMsg = err.message ? `: ${err.message}` : "";
+          showAlert(_("unsupFile") + errMsg);
+        }
+      )
     );
-  }
+  };
   private handleFile = (file: File | Blob): Promise<FWrap> => {
     if (file.size > config.maxSize * 1024 * 1024) {
       return Promise.reject(new Error(_("tooBig")));
     }
-    return getFileInfo(file).then((info: Dict) => ({file, info}));
-  }
+    return getFileInfo(file).then((info: Dict) => ({ file, info }));
+  };
   private handleSend = () => {
     if (this.disabled) return;
     const { board, thread, subject, body, showBadge } = this.state;
     const files = this.state.fwraps.map((f) => f.file);
     const sendFn = page.thread ? API.post.create : API.thread.create;
-    this.setState({sending: true});
-    API.post.createToken().then(({ id: token }: Dict) => {
-      const sign = signature.gen(token);
-      return sendFn({
-        board, thread,
-        subject, body, files, showBadge,
-        token, sign,
-      }, this.handleSendProgress, this.sendAPI);
-    }).then((res: Dict) => {
-      if (page.thread) {
-        storeMine(res.id, page.thread);
-        this.handleFormHide();
-      } else {
-        storeMine(res.id, res.id);
-        location.href = `/${board}/${res.id}`;
-      }
-    }, (err: Error) => {
-      if (err instanceof AbortError) return;
-      showAlert({title: _("sendErr"), message: err.message});
-    }).then(() => {
-      this.setState({sending: false, progress: 0});
-      this.sendAPI = {};
-    });
-  }
+    this.setState({ sending: true });
+    API.post
+      .createToken()
+      .then(({ id: token }: Dict) => {
+        const sign = signature.gen(token);
+        return sendFn(
+          {
+            board,
+            thread,
+            subject,
+            body,
+            files,
+            showBadge,
+            token,
+            sign,
+          },
+          this.handleSendProgress,
+          this.sendAPI
+        );
+      })
+      .then(
+        (res: Dict) => {
+          if (page.thread) {
+            storeMine(res.id, page.thread);
+            this.handleFormHide();
+          } else {
+            storeMine(res.id, res.id);
+            location.href = `/${board}/${res.id}`;
+          }
+        },
+        (err: Error) => {
+          if (err instanceof AbortError) return;
+          showAlert({ title: _("sendErr"), message: err.message });
+        }
+      )
+      .then(() => {
+        this.setState({ sending: false, progress: 0 });
+        this.sendAPI = {};
+      });
+  };
   private handleSendProgress = (e: ProgressEvent) => {
-    const progress = Math.floor(e.loaded / e.total * 100);
-    this.setState({progress});
-  }
+    const progress = Math.floor((e.loaded / e.total) * 100);
+    this.setState({ progress });
+  };
   private handleSendAbort = () => {
     if (this.sendAPI.abort) {
       this.sendAPI.abort();
     }
-  }
+  };
   private handleToggleEditing = () => {
     const editing = !this.state.editing;
-    this.setState({editing, smileBox: false}, this.focus);
-  }
+    this.setState({ editing, smileBox: false }, this.focus);
+  };
   private handleToggleShowBadge = () => {
     const showBadge = !this.state.showBadge;
-    this.setState({showBadge}, this.focus);
-  }
+    this.setState({ showBadge }, this.focus);
+  };
   private handleToggleSmileBox = (e: MouseEvent) => {
     // Needed because of https://github.com/developit/preact/issues/838
     e.stopPropagation();
     const smileBox = !!this.state.smileBoxAC || !this.state.smileBox;
-    this.setState({smileBox, smileBoxAC: null});
-  }
+    this.setState({ smileBox, smileBoxAC: null });
+  };
   private handleHideSmileBox = () => {
-    this.setState({smileBox: false});
-  }
+    this.setState({ smileBox: false });
+  };
   private handleSmileSelect = (id: string) => {
-    this.setState({smileBox: false});
+    this.setState({ smileBox: false });
 
     // Remove already typed smile chunk.
     const ac = !!this.state.smileBoxAC;
@@ -764,8 +805,8 @@ class Reply extends Component<any, any> {
       offset++;
     }
 
-    this.pasteMarkup(`:${id}:`, {mono: true, nosep: ac, offset});
-  }
+    this.pasteMarkup(`:${id}:`, { mono: true, nosep: ac, offset });
+  };
 
   private renderBoards() {
     if (page.board !== "all") return null;
@@ -777,9 +818,11 @@ class Reply extends Component<any, any> {
         disabled={sending}
         onInput={this.handleBoardChange}
       >
-        {boards.map(({ id }) =>
-        <option class="reply-board-item" key={id} value={id}>{id}</option>,
-        )}
+        {boards.map(({ id }) => (
+          <option class="reply-board-item" key={id} value={id}>
+            {id}
+          </option>
+        ))}
       </select>
     );
   }
@@ -787,14 +830,14 @@ class Reply extends Component<any, any> {
     const { fwraps } = this.state;
     return (
       <div class="reply-files">
-        {fwraps.map(({ file, info }) =>
+        {fwraps.map(({ file, info }) => (
           <FilePreview
             key={info.src}
             info={info}
             file={file}
             onRemove={this.handleAttachRemove.bind(null, info.src)}
-          />,
-        )}
+          />
+        ))}
       </div>
     );
   }
@@ -836,14 +879,14 @@ class Reply extends Component<any, any> {
     return (
       <div class="reply-controls reply-side-controls">
         <div class="reply-side-controls-inner">
-          {float &&
+          {float && (
             <a
               class="control reply-side-control reply-pin-control"
               onClick={this.handleFormPin}
             >
               <i class="fa fa-thumb-tack" />
             </a>
-          }
+          )}
           <button
             class="control reply-side-control reply-hide-control"
             onClick={this.handleFormHide}
@@ -922,24 +965,28 @@ class Reply extends Component<any, any> {
         >
           <i class={cx("fa", editing ? "fa-print" : "fa-pencil")} />
         </button>
-        {isModerator() &&
+        {isModerator() && (
           <button
-            class={cx("control", "reply-footer-control", "reply-badge-control",
-                      {control_active: showBadge})}
+            class={cx(
+              "control",
+              "reply-footer-control",
+              "reply-badge-control",
+              { control_active: showBadge }
+            )}
             title={_("staffBadge")}
             disabled={sending}
             onClick={this.handleToggleShowBadge}
           >
             <i class="fa fa-id-badge" />
           </button>
-        }
+        )}
 
         <div
           class="reply-dragger"
           onMouseDown={this.handleMoveDown}
           onTouchStart={this.handleMoveDown}
         />
-        {this.valid &&
+        {this.valid && (
           <Progress
             className="button reply-send-button"
             progress={progress}
@@ -948,7 +995,7 @@ class Reply extends Component<any, any> {
           >
             {sending ? "" : _("submit")}
           </Progress>
-        }
+        )}
       </div>
     );
   }
@@ -976,16 +1023,26 @@ class ReplyContainer extends Component<any, any> {
   };
   public componentDidMount() {
     hook(HOOKS.openReply, () => {
-      this.setState({show: true});
+      this.setState({ show: true });
     });
     hook(HOOKS.closeReply, this.handleHide);
 
-    on(document, "click", () => {
-      this.setState({show: true});
-    }, {selector: TRIGGER_OPEN_REPLY_SEL});
-    on(document, "click", (e) => {
-      this.setState({show: true, quoted: e});
-    }, {selector: TRIGGER_QUOTE_POST_SEL});
+    on(
+      document,
+      "click",
+      () => {
+        this.setState({ show: true });
+      },
+      { selector: TRIGGER_OPEN_REPLY_SEL }
+    );
+    on(
+      document,
+      "click",
+      (e) => {
+        this.setState({ show: true, quoted: e });
+      },
+      { selector: TRIGGER_QUOTE_POST_SEL }
+    );
 
     on(document, "dragover", (e) => {
       e.preventDefault();
@@ -994,23 +1051,23 @@ class ReplyContainer extends Component<any, any> {
       e.preventDefault();
       const files = (e as DragEvent).dataTransfer.files;
       if (files.length) {
-        this.setState({show: true, dropped: files});
+        this.setState({ show: true, dropped: files });
       }
     });
   }
   public render({}, { show, quoted, dropped }: any) {
-    return show
-      ? <Reply quoted={quoted} dropped={dropped} onHide={this.handleHide} />
-      : null;
+    return show ? (
+      <Reply quoted={quoted} dropped={dropped} onHide={this.handleHide} />
+    ) : null;
   }
   private handleHide = () => {
-    this.setState({show: false, quoted: null, dropped: null});
-  }
+    this.setState({ show: false, quoted: null, dropped: null });
+  };
 }
 
 export function init() {
   const container = document.querySelector(REPLY_CONTAINER_SEL);
   if (container) {
-    render(<ReplyContainer/>, container);
+    render(<ReplyContainer />, container);
   }
 }

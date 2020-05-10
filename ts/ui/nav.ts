@@ -4,8 +4,10 @@
 
 import { on, scrollToBottom, scrollToTop } from "../util";
 import {
-  PAGE_NAV_BOTTOM_SEL, PAGE_NAV_TOP_SEL,
-  TRIGGER_PAGE_NAV_BOTTOM_SEL, TRIGGER_PAGE_NAV_TOP_SEL,
+  PAGE_NAV_BOTTOM_SEL,
+  PAGE_NAV_TOP_SEL,
+  TRIGGER_PAGE_NAV_BOTTOM_SEL,
+  TRIGGER_PAGE_NAV_TOP_SEL,
 } from "../vars";
 
 let recalcPending = false;
@@ -15,7 +17,7 @@ let bottomBtn = null as HTMLElement;
 function recalc() {
   const el = document.documentElement;
   const needTop = el.scrollTop > 300;
-  const needBottom = el.scrollHeight - el.scrollTop  > el.clientHeight + 300;
+  const needBottom = el.scrollHeight - el.scrollTop > el.clientHeight + 300;
   topBtn.style.display = needTop ? "" : "none";
   bottomBtn.style.display = needBottom ? "" : "none";
   topBtn.classList.toggle("page-nav-item_active", needTop);
@@ -34,8 +36,10 @@ export function init() {
   bottomBtn = document.querySelector(PAGE_NAV_BOTTOM_SEL);
   if (!topBtn || !bottomBtn) return;
 
-  document.addEventListener("scroll", onScroll, {passive: true});
-  on(document, "click", scrollToTop, {selector: TRIGGER_PAGE_NAV_TOP_SEL});
-  on(document, "click", scrollToBottom, {selector: TRIGGER_PAGE_NAV_BOTTOM_SEL});
+  document.addEventListener("scroll", onScroll, { passive: true });
+  on(document, "click", scrollToTop, { selector: TRIGGER_PAGE_NAV_TOP_SEL });
+  on(document, "click", scrollToBottom, {
+    selector: TRIGGER_PAGE_NAV_BOTTOM_SEL,
+  });
   onScroll();
 }

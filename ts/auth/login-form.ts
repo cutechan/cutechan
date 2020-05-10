@@ -4,7 +4,11 @@ import { inputElement, sendJSON } from "../util";
 
 // Set a password match validator function for 2 input elements, that
 // are children of the passed element.
-export function validatePasswordMatch(parent: Element, name1: string, name2: string) {
+export function validatePasswordMatch(
+  parent: Element,
+  name1: string,
+  name2: string
+) {
   const el1 = inputElement(parent, name1);
   const el2 = inputElement(parent, name2);
   el1.onchange = el2.onchange = () => {
@@ -18,7 +22,7 @@ export class LoginForm extends FormView {
   private url: string;
 
   constructor(id: string, url: string) {
-    super({el: document.getElementById(id)});
+    super({ el: document.getElementById(id) });
     this.url = "/api/" + url;
   }
 
@@ -26,7 +30,7 @@ export class LoginForm extends FormView {
   protected async send() {
     const id = this.inputElement("id").value.trim();
     const password = this.inputElement("password").value;
-    const req = {id, password};
+    const req = { id, password };
     const res = await sendJSON(this.url, req);
     switch (res.status) {
       case 200:

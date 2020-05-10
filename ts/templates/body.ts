@@ -3,13 +3,13 @@
  */
 // MUST BE KEPT IN SYNC WITH go/src/meguca/templates/body.go!
 
-import { renderPostLink } from ".";  // TODO(Kagami): Avoid circular import
+import { renderPostLink } from "."; // TODO(Kagami): Avoid circular import
 import { Command, PostData, PostLink } from "../common";
 import { page } from "../state";
 import { escape, unescape } from "../util";
 import marked from "./marked";
 
-type AnyClass = new(...args: any[]) => any;
+type AnyClass = new (...args: any[]) => any;
 
 const noop = marked.noop;
 
@@ -45,7 +45,7 @@ class CustomInlineLexer extends ((marked as any).InlineLexer as AnyClass) {
   constructor(links: any, options: any, post: PostData) {
     // XXX(Kagami): Inject post link logic via hardcoded link defs.
     // Hacky, but unfortunately marked can't be easily extended.
-    links[""] = {href: "post-link", title: ""};
+    links[""] = { href: "post-link", title: "" };
     super(links, options);
     this.post = post;
     const textSrc = this.rules.text.source;
@@ -80,8 +80,7 @@ class CustomParser extends ((marked as any).Parser as AnyClass) {
 }
 
 const embeds = {
-  vlive:
-    String.raw`https?://(?:(?:www|m)\.)?vlive\.tv/video/([0-9]+)`,
+  vlive: String.raw`https?://(?:(?:www|m)\.)?vlive\.tv/video/([0-9]+)`,
   youtube:
     String.raw`https?://(?:[^\.]+\.)?` +
     String.raw`(?:youtube\.com/watch\?(?:.+&)?v=|youtu\.be/)` +
@@ -142,7 +141,7 @@ export function render(post: PostData): string {
     tables: false,
     breaks: true,
     // pedantic: false,
-    sanitize: true,  // Very important!
+    sanitize: true, // Very important!
     // sanitizer: null,
     // mangle: true,
     // smartLists: false,

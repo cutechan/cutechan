@@ -12,8 +12,11 @@ interface Props {
   [key: string]: any;
 }
 
-export default function({
-  progress, className, children, ...props
+export default function ({
+  progress,
+  className,
+  children,
+  ...props
 }: Props): JSX.Element {
   progress = Math.floor(progress);
   progress = Math.max(0, Math.min(progress, 100));
@@ -26,7 +29,7 @@ export default function({
     )
   `;
   return (
-    <div class={cls} style={{background}} title={`${progress}%`} {...props}>
+    <div class={cls} style={{ background }} title={`${progress}%`} {...props}>
       {children}
     </div>
   );

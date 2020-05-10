@@ -20,7 +20,7 @@ interface EventTarget {
   addEventListener(
     type: string,
     handler: EventListener,
-    options?: boolean | EventListenerOptions,
+    options?: boolean | EventListenerOptions
   ): void;
 }
 
@@ -34,7 +34,7 @@ interface Element extends ChildNode, ParentNode {
   addEventListener(
     type: string,
     handler: EventListener,
-    options?: boolean | EventListenerOptions,
+    options?: boolean | EventListenerOptions
   ): void;
 }
 
@@ -42,7 +42,7 @@ interface HTMLElement {
   addEventListener(
     type: string,
     handler: EventListener,
-    options?: boolean | EventListenerOptions,
+    options?: boolean | EventListenerOptions
   ): void;
 }
 
@@ -50,7 +50,7 @@ interface HTMLInputElement {
   addEventListener(
     type: string,
     handler: EventListener,
-    options?: boolean | EventListenerOptions,
+    options?: boolean | EventListenerOptions
   ): void;
 }
 
@@ -58,7 +58,7 @@ interface HTMLAnchorElement {
   addEventListener(
     type: string,
     handler: EventListener,
-    options?: boolean | EventListenerOptions,
+    options?: boolean | EventListenerOptions
   ): void;
 }
 
@@ -66,7 +66,7 @@ interface Window {
   addEventListener(
     type: string,
     handler: EventListener,
-    options?: boolean | EventListenerOptions,
+    options?: boolean | EventListenerOptions
   ): void;
 }
 
@@ -74,7 +74,7 @@ interface Node extends ChildNode, ParentNode {
   addEventListener(
     type: string,
     handler: EventListener,
-    options?: boolean | EventListenerOptions,
+    options?: boolean | EventListenerOptions
   ): void;
 }
 
@@ -82,7 +82,7 @@ interface Document extends ChildNode, ParentNode {
   addEventListener(
     type: string,
     handler: EventListener,
-    options?: boolean | EventListenerOptions,
+    options?: boolean | EventListenerOptions
   ): void;
 }
 

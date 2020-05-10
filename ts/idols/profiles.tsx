@@ -7,10 +7,17 @@
 import { Component, h, render } from "preact";
 import * as ruhangul from "ruhangul";
 import {
-  BandMap, getBandMap, getIdolPreviewUrl,
-  getProfiles, Idol, ImageIdData,
-  Profiles, RenderedLine, renderIdol,
-  searchIdols, setIdolPreview,
+  BandMap,
+  getBandMap,
+  getIdolPreviewUrl,
+  getProfiles,
+  Idol,
+  ImageIdData,
+  Profiles,
+  RenderedLine,
+  renderIdol,
+  searchIdols,
+  setIdolPreview,
 } from "../../go/src/github.com/Kagami/kpopnet/ts/api";
 import { showAlert } from "../alerts";
 import { isPowerUser } from "../auth";
@@ -28,17 +35,13 @@ interface PreviewProps {
 class IdolPreview extends Component<PreviewProps, any> {
   private fileEl: HTMLInputElement = null;
   public render({ idol }: PreviewProps) {
-    const opts = {small: true, prefix: getFilePrefix()};
+    const opts = { small: true, prefix: getFilePrefix() };
     const previewUrl = getIdolPreviewUrl(idol, opts);
-    const style = {backgroundImage: `url(${previewUrl})`};
+    const style = { backgroundImage: `url(${previewUrl})` };
     return (
-      <div
-        class="idol-preview"
-        style={style}
-        onClick={this.handlePreviewClick}
-      >
+      <div class="idol-preview" style={style} onClick={this.handlePreviewClick}>
         <input
-          ref={(f) => this.fileEl = f as HTMLInputElement}
+          ref={(f) => (this.fileEl = f as HTMLInputElement)}
           type="file"
           accept="image/jpeg"
           class="idol-preview-file"
@@ -51,19 +54,21 @@ class IdolPreview extends Component<PreviewProps, any> {
     if (isPowerUser()) {
       this.fileEl.click();
     }
-  }
+  };
   private handleFileChange = () => {
     const files = this.fileEl.files;
     if (files.length) {
       this.handleFile(files[0]);
     }
-    this.fileEl.value = "";  // Allow to select same file again
-  }
+    this.fileEl.value = ""; // Allow to select same file again
+  };
   private handleFile(file: File) {
     const { idol } = this.props;
-    setIdolPreview(idol, file).then(({ SHA1 }: ImageIdData) => {
-      this.props.onChange(idol, SHA1);
-    }).catch(showAlert);
+    setIdolPreview(idol, file)
+      .then(({ SHA1 }: ImageIdData) => {
+        this.props.onChange(idol, SHA1);
+      })
+      .catch(showAlert);
   }
 }
 
@@ -87,11 +92,11 @@ class IdolItem extends Component<ItemProps, any> {
         <div class="idol-info">
           {lines.map(this.rerenderLine.bind(this, idol))}
         </div>
-        {label_icon &&
+        {label_icon && (
           <div class="idol-label" title={label_name}>
             <i class={`label label-${label_icon}`} />
           </div>
-        }
+        )}
       </section>
     );
   }
@@ -101,42 +106,44 @@ class IdolItem extends Component<ItemProps, any> {
     // everything by ourself.
     let ru = "";
     switch (key) {
-    case "Name":
-      if (!idol.name_hangul) break;
-      ru = ruhangul.name(idol.name_hangul);
-      if (!ru) break;
-      return (
-        <p class="idol-info-line">
-          <span class="idol-info-key">{_(key)}</span>
-          <span class="idol-info-val">
-            {idol.name} (
-            <abbr class="idol-info-abbr" title={ru}>
-              {idol.name_hangul}
-            </abbr>)
-          </span>
-        </p>
-      );
-    case "Real name":
-      if (!idol.birth_name_hangul) break;
-      ru = ruhangul.name(idol.birth_name_hangul);
-      if (!ru) break;
-      return (
-        <p class="idol-info-line">
-          <span class="idol-info-key">{_(key)}</span>
-          <span class="idol-info-val">
-            {idol.birth_name} (
-            <abbr class="idol-info-abbr" title={ru}>
-              {idol.birth_name_hangul}
-            </abbr>)
-          </span>
-        </p>
-      );
-    case "Height":
-      val = printf(_("cm"), idol.height);
-      break;
-    case "Weight":
-      val = printf(_("kg"), idol.weight);
-      break;
+      case "Name":
+        if (!idol.name_hangul) break;
+        ru = ruhangul.name(idol.name_hangul);
+        if (!ru) break;
+        return (
+          <p class="idol-info-line">
+            <span class="idol-info-key">{_(key)}</span>
+            <span class="idol-info-val">
+              {idol.name} (
+              <abbr class="idol-info-abbr" title={ru}>
+                {idol.name_hangul}
+              </abbr>
+              )
+            </span>
+          </p>
+        );
+      case "Real name":
+        if (!idol.birth_name_hangul) break;
+        ru = ruhangul.name(idol.birth_name_hangul);
+        if (!ru) break;
+        return (
+          <p class="idol-info-line">
+            <span class="idol-info-key">{_(key)}</span>
+            <span class="idol-info-val">
+              {idol.birth_name} (
+              <abbr class="idol-info-abbr" title={ru}>
+                {idol.birth_name_hangul}
+              </abbr>
+              )
+            </span>
+          </p>
+        );
+      case "Height":
+        val = printf(_("cm"), idol.height);
+        break;
+      case "Weight":
+        val = printf(_("kg"), idol.weight);
+        break;
     }
     return (
       <p class="idol-info-line">
@@ -150,7 +157,7 @@ class IdolItem extends Component<ItemProps, any> {
     // time.
     idol.image_id = imageId;
     this.forceUpdate();
-  }
+  };
 }
 
 interface ListProps {
@@ -167,22 +174,16 @@ class IdolList extends Component<ListProps, any> {
     const idols = searchIdols(query, profiles, bandMap).slice(0, 20);
     return (
       <article class="idols">
-        {idols.map((idol) =>
-          <IdolItem
-            key={idol.id}
-            idol={idol}
-            bandMap={bandMap}
-          />,
-        )}
+        {idols.map((idol) => (
+          <IdolItem key={idol.id} idol={idol} bandMap={bandMap} />
+        ))}
       </article>
     );
   }
 }
 
 function Spinner() {
-  return (
-    <i class="header-profiles-spinner fa fa-spinner fa-pulse fa-fw"></i>
-  );
+  return <i class="header-profiles-spinner fa fa-spinner fa-pulse fa-fw"></i>;
 }
 
 // tslint:disable-next-line:interface-over-type-literal
@@ -213,7 +214,7 @@ class ProfilesWrapperBase extends Component<WrapperProps, WrapperState> {
           onFocus={this.handleSearchFocus}
           onInput={this.handleSearch}
         />
-        {loading && <Spinner/>}
+        {loading && <Spinner />}
         <IdolList
           profiles={this.profiles}
           bandMap={this.bandMap}
@@ -224,37 +225,41 @@ class ProfilesWrapperBase extends Component<WrapperProps, WrapperState> {
   }
   public onBackgroundClick = () => {
     this.hide();
-  }
+  };
   public onEscapePress = () => {
     this.hide();
-  }
+  };
   private hide = () => {
     if (this.state.query) {
-      this.setState({query: ""});
+      this.setState({ query: "" });
     }
-  }
+  };
   private handleWrapperClick = (e: Event) => {
     e.stopPropagation();
-  }
+  };
   private handleSearchFocus = () => {
     if (!this.state.loading && !this.state.query) {
-      this.setState({loading: true});
-      getProfiles().then((profiles) => {
-        this.profiles = profiles;
-        this.bandMap = getBandMap(profiles);
-        this.setState({loading: false});
-      }).catch(showAlert);
+      this.setState({ loading: true });
+      getProfiles()
+        .then((profiles) => {
+          this.profiles = profiles;
+          this.bandMap = getBandMap(profiles);
+          this.setState({ loading: false });
+        })
+        .catch(showAlert);
     }
-  }
+  };
   private handleSearch = (e: Event) => {
     if (!this.state.loading) {
       const query = (e.target as HTMLInputElement).value;
-      this.setState({query});
+      this.setState({ query });
     }
-  }
+  };
 }
 
-const ProfilesWrapper = EscapePressMixin(BackgroundClickMixin(ProfilesWrapperBase));
+const ProfilesWrapper = EscapePressMixin(
+  BackgroundClickMixin(ProfilesWrapperBase)
+);
 
 export function init() {
   const container = document.querySelector(PROFILES_CONTAINER_SEL);
@@ -262,11 +267,12 @@ export function init() {
     // Server-side template renders exactly same search input in order
     // to make preact's kick off seamless.
     container.innerHTML = "";
-    render(<ProfilesWrapper/>, container);
+    render(<ProfilesWrapper />, container);
 
     hook(HOOKS.focusIdolSearch, () => {
-      (document.querySelector(".header-profiles-search") as HTMLInputElement)
-        .focus();
+      (document.querySelector(
+        ".header-profiles-search"
+      ) as HTMLInputElement).focus();
     });
   }
 }

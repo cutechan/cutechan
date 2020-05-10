@@ -10,12 +10,11 @@ export default class OptionsPanel extends TabbedModal {
   constructor() {
     super(
       document.querySelector(".options-modal"),
-      document.querySelector(".header-options-icon"),
+      document.querySelector(".header-options-icon")
     );
     panel = this;
 
-    this.on("change", (e) =>
-      this.applyChange(e));
+    this.on("change", (e) => this.applyChange(e));
 
     this.assignValues();
 
@@ -45,7 +44,7 @@ export default class OptionsPanel extends TabbedModal {
       case optionType.number:
       case optionType.menu:
       case optionType.textarea:
-        el.value = val as string || "";
+        el.value = (val as string) || "";
         break;
       case optionType.shortcut:
         el.value = String.fromCodePoint(val as number).toUpperCase();

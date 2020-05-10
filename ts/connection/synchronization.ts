@@ -61,7 +61,11 @@ handlers[message.synchronise] = async (data: SyncData) => {
     for (const id of recent) {
       if (id >= minID && !posts.has(id)) {
         // FIXME(Kagami): Remove deleted posts from recent.
-        proms.push(fetchMissingPost(id).catch(() => { /* skip */ }));
+        proms.push(
+          fetchMissingPost(id).catch(() => {
+            /* skip */
+          })
+        );
       }
     }
 

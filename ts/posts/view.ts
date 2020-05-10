@@ -3,8 +3,11 @@ import _ from "../lang";
 import options from "../options";
 import { page } from "../state";
 import {
-  makePostContext, readableTime,
-  relativeTime, renderPostLink, TemplateContext,
+  makePostContext,
+  readableTime,
+  relativeTime,
+  renderPostLink,
+  TemplateContext,
 } from "../templates";
 import { getID } from "../util";
 import { POST_BACKLINKS_SEL, THREAD_SEL } from "../vars";
@@ -21,7 +24,8 @@ export default class PostView extends View<Post> {
     const thread = new Thread(model);
     const index = thread.id !== page.thread;
     const all = page.board === "all";
-    attrs.el = el || makePostContext(thread, model, null, index, all).renderNode();
+    attrs.el =
+      el || makePostContext(thread, model, null, index, all).renderNode();
 
     super(attrs);
 

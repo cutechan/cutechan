@@ -3,7 +3,9 @@
  */
 
 type HookHandler = (arg: any) => void;
-interface HookMap { [key: string]: HookHandler[]; }
+interface HookMap {
+  [key: string]: HookHandler[];
+}
 
 export interface ChangeEmitter {
   onChange(key: string, func: HookHandler): void;

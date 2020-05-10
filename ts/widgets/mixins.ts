@@ -8,7 +8,9 @@ interface BackgroundClick extends Component<any, any> {
 
 const handleClickProp = Symbol("handleClick");
 
-export function BackgroundClickMixin<TBase extends BackgroundClickComponent>(Base: TBase) {
+export function BackgroundClickMixin<TBase extends BackgroundClickComponent>(
+  Base: TBase
+) {
   return class extends Base {
     constructor(...args: any[]) {
       super(...args);
@@ -41,7 +43,9 @@ interface EscapePress extends Component<any, any> {
 
 const handleKeyProp = Symbol("handleKey");
 
-export function EscapePressMixin<TBase extends EscapePressComponent>(Base: TBase) {
+export function EscapePressMixin<TBase extends EscapePressComponent>(
+  Base: TBase
+) {
   return class extends Base {
     constructor(...args: any[]) {
       super(...args);

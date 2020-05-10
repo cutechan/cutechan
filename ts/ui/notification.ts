@@ -18,10 +18,12 @@ export default function notifyAboutReply(post: Post) {
   repliedToMe(post);
 
   // Check if notifications are available.
-  if (!options.notification
-      || typeof Notification !== "function"
-      || (Notification as any).permission !== "granted"
-  ) return;
+  if (
+    !options.notification ||
+    typeof Notification !== "function" ||
+    (Notification as any).permission !== "granted"
+  )
+    return;
 
   // Finally display sticky notification.
   let icon = "";
@@ -49,8 +51,7 @@ export default function notifyAboutReply(post: Post) {
 export class OverlayNotification extends View<null> {
   constructor(text: string) {
     super({ el: null }); // importTemplate("notification").firstChild as HTMLElement });
-    this.on("click", () =>
-      this.remove());
+    this.on("click", () => this.remove());
     this.el.querySelector("b").textContent = text;
     // overlay.prepend(this.el)
   }

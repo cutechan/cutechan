@@ -6,7 +6,8 @@ export class PasswordChangeForm extends AccountForm {
   constructor() {
     super({ tag: "form" });
     this.renderPublicForm("/html/change-password").then(() =>
-      validatePasswordMatch(this.el, "newPassword", "repeat"));
+      validatePasswordMatch(this.el, "newPassword", "repeat")
+    );
   }
 
   protected send() {

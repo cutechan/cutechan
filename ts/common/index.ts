@@ -32,7 +32,10 @@ export interface PostData {
 export type PostLink = [number, number];
 
 /** Possible command types. */
-export const enum commandType { roll, flip }
+export const enum commandType {
+  roll,
+  flip,
+}
 
 /** Single command result delivered from the server. */
 export interface Command {
@@ -58,7 +61,19 @@ export interface ImageData {
 /** Possible file types of a post image. */
 // MUST BE KEPT IN SYNC WITH go/src/meguca/common/images.go!
 export enum fileTypes {
-  jpg, png, gif, webm, pdf, svg, mp4, mp3, ogg, zip, "7z", "tar.gz", "tar.xz",
+  jpg,
+  png,
+  gif,
+  webm,
+  pdf,
+  svg,
+  mp4,
+  mp3,
+  ogg,
+  zip,
+  "7z",
+  "tar.gz",
+  "tar.xz",
 }
 
 export const thumbSize = 200;

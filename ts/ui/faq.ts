@@ -25,7 +25,7 @@ class FAQPanel extends HeaderModal {
   constructor() {
     super(
       document.querySelector(".faq-modal"),
-      document.querySelector(".header-faq-icon"),
+      document.querySelector(".header-faq-icon")
     );
   }
 

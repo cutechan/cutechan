@@ -2,9 +2,13 @@
  * Helper functions for communicating with the server's API.
  */
 
-export interface Dict { [key: string]: any; }
+export interface Dict {
+  [key: string]: any;
+}
 export type ProgressFn = (e: ProgressEvent) => void;
-export interface FutureAPI { abort?: () => void; }
+export interface FutureAPI {
+  abort?: () => void;
+}
 export class AbortError extends Error {}
 
 function toFormData(data: Dict): FormData {
@@ -39,7 +43,7 @@ function xhrToFetchHeaders(xhr: XMLHttpRequest): Headers {
 export function uncachedGET(url: string): Promise<Response> {
   return fetch(url, {
     credentials: "same-origin",
-    headers: {"Cache-Control": "no-cache"},
+    headers: { "Cache-Control": "no-cache" },
     method: "GET",
   });
 }
@@ -57,7 +61,11 @@ export function fetchJSON<T>(url: string): Promise<T> {
 }
 
 // Send a JSON request to the server.
-export function sendJSON(url: string, data: Dict, method = "POST"): Promise<Response> {
+export function sendJSON(
+  url: string,
+  data: Dict,
+  method = "POST"
+): Promise<Response> {
   return fetch(url, {
     body: JSON.stringify(data),
     credentials: "same-origin",
@@ -66,7 +74,11 @@ export function sendJSON(url: string, data: Dict, method = "POST"): Promise<Resp
 }
 
 // Send a multipart/form-data request to the server.
-export function sendForm(url: string, data: Dict, method = "POST"): Promise<Response> {
+export function sendForm(
+  url: string,
+  data: Dict,
+  method = "POST"
+): Promise<Response> {
   return fetch(url, {
     body: toFormData(data),
     credentials: "same-origin",
@@ -79,8 +91,11 @@ export function sendForm(url: string, data: Dict, method = "POST"): Promise<Resp
 // Implemented using XHR underneath because Fetch API currently lacks
 // this functionality, but provides roughly same API as fetch version.
 export function sendFormProgress(
-  url: string, data: Dict, method = "POST",
-  onProgress?: ProgressFn, api?: FutureAPI,
+  url: string,
+  data: Dict,
+  method = "POST",
+  onProgress?: ProgressFn,
+  api?: FutureAPI
 ): Promise<Response> {
   return new Promise((resolve, reject) => {
     const xhr = new XMLHttpRequest();
@@ -88,7 +103,7 @@ export function sendFormProgress(
     xhr.onload = () => {
       const { status, statusText } = xhr;
       const headers = xhrToFetchHeaders(xhr);
-      const init = {status, statusText, headers};
+      const init = { status, statusText, headers };
       resolve(new Response(xhr.responseText, init));
     };
     xhr.onerror = reject;

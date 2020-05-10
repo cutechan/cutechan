@@ -12,10 +12,20 @@ import { TabbedModal } from "../base";
 import _ from "../lang";
 import { Post } from "../posts";
 import { getModel, page } from "../state";
-import { Constructable, hook, HOOKS, on, remove, trigger, unhook } from "../util";
 import {
-  MODAL_CONTAINER_SEL, TRIGGER_BAN_BY_POST_SEL,
-  TRIGGER_DELETE_POST_SEL, TRIGGER_IGNORE_USER_SEL,
+  Constructable,
+  hook,
+  HOOKS,
+  on,
+  remove,
+  trigger,
+  unhook,
+} from "../util";
+import {
+  MODAL_CONTAINER_SEL,
+  TRIGGER_BAN_BY_POST_SEL,
+  TRIGGER_DELETE_POST_SEL,
+  TRIGGER_IGNORE_USER_SEL,
 } from "../vars";
 import { BackgroundClickMixin, EscapePressMixin, MemberList } from "../widgets";
 import { BoardCreationForm } from "./board-form";
@@ -24,7 +34,7 @@ import { PasswordChangeForm } from "./password-form";
 import { ServerConfigForm } from "./server-form";
 
 export const enum ModerationLevel {
-  notLoggedIn = - 1,
+  notLoggedIn = -1,
   notStaff,
   blacklisted,
   whitelisted,
@@ -71,8 +81,12 @@ export const account = session ? session.settings : {};
 account.ignoreMode = account.ignoreMode || 0;
 account.whitelist = account.whitelist || [];
 account.blacklist = account.blacklist || [];
-export const position = session ? session.positions.curBoard : ModerationLevel.notLoggedIn;
-export const anyposition = session ? session.positions.anyBoard : ModerationLevel.notLoggedIn;
+export const position = session
+  ? session.positions.curBoard
+  : ModerationLevel.notLoggedIn;
+export const anyposition = session
+  ? session.positions.anyBoard
+  : ModerationLevel.notLoggedIn;
 
 export function isModerator(): boolean {
   return position >= ModerationLevel.moderator;
@@ -97,10 +111,18 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
     blacklist: account.blacklist.slice(),
     saving: false,
   };
-  public render({}, {
-    name, showName, ignoreMode, includeAnon, whitelist, blacklist,
-    saving,
-  }: IdentityState) {
+  public render(
+    {},
+    {
+      name,
+      showName,
+      ignoreMode,
+      includeAnon,
+      whitelist,
+      blacklist,
+      saving,
+    }: IdentityState
+  ) {
     return (
       <div class="account-identity-tab-inner">
         <article class="account-form-section">
@@ -164,7 +186,9 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
         </article>
         <article class="account-form-section">
           <div class="account-form-sbody">
-            <label class={cx("option-label", saving && "option-label_disabled")}>
+            <label
+              class={cx("option-label", saving && "option-label_disabled")}
+            >
               <input
                 class="account-form-checkbox option-checkbox"
                 type="checkbox"
@@ -176,11 +200,17 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
             </label>
           </div>
         </article>
-        <button class="button account-save-button" disabled={saving} onClick={this.handleSave}>
-          <i class={cx("account-save-icon fa", {
-            "fa-spinner fa-pulse fa-fw": saving,
-            "fa-check-circle": !saving,
-          })} />
+        <button
+          class="button account-save-button"
+          disabled={saving}
+          onClick={this.handleSave}
+        >
+          <i
+            class={cx("account-save-icon fa", {
+              "fa-spinner fa-pulse fa-fw": saving,
+              "fa-check-circle": !saving,
+            })}
+          />
           {_("Save")}
         </button>
       </div>
@@ -189,28 +219,28 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
   private handleShowNameToggle = (e: Event) => {
     e.preventDefault();
     const showName = !this.state.showName;
-    this.setState({showName});
-  }
+    this.setState({ showName });
+  };
   private handleNameChange = (e: Event) => {
     // TODO(Kagami): Validate name properly.
     const name = (e.target as HTMLInputElement).value;
-    this.setState({name});
-  }
+    this.setState({ name });
+  };
   private handleIgnoreModeChange = (e: Event) => {
     const ignoreMode = +(e.target as HTMLInputElement).value;
-    this.setState({ignoreMode});
-  }
+    this.setState({ ignoreMode });
+  };
   private handleWhitelistChange = (whitelist: string[]) => {
-    this.setState({whitelist});
-  }
+    this.setState({ whitelist });
+  };
   private handleBlacklistChange = (blacklist: string[]) => {
-    this.setState({blacklist});
-  }
+    this.setState({ blacklist });
+  };
   private handleIncludeAnonToggle = (e: Event) => {
     e.preventDefault();
     const includeAnon = !this.state.includeAnon;
-    this.setState({includeAnon});
-  }
+    this.setState({ includeAnon });
+  };
   private handleSave = () => {
     const s = this.state;
     const settings = {
@@ -222,16 +252,17 @@ class IdentityTab extends Component<IdentityProps, IdentityState> {
       whitelist: s.whitelist,
       blacklist: s.blacklist,
     };
-    this.setState({saving: true});
-    API.account.setSettings(settings)
+    this.setState({ saving: true });
+    API.account
+      .setSettings(settings)
       .then(() => {
         Object.assign(account, settings);
         this.props.modal.hide();
       }, showSendAlert)
       .then(() => {
-        this.setState({saving: false});
+        this.setState({ saving: false });
       });
-  }
+  };
 }
 
 interface IgnoreState {
@@ -273,9 +304,12 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
   public componentWillUnmount() {
     unhook(HOOKS.openIgnoreModal, this.show);
   }
-  public render({}, { shown, left, top, userID, savingWL, savingBL }: IgnoreState) {
+  public render(
+    {},
+    { shown, left, top, userID, savingWL, savingBL }: IgnoreState
+  ) {
     if (!shown) return null;
-    const style = {left, top};
+    const style = { left, top };
     return (
       <div
         class={cx("ignore-modal", {
@@ -286,21 +320,23 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
         style={style}
         onClick={this.handleModalClick}
       >
-        <div class="ignore-modal-info">
-          {userID}
-        </div>
+        <div class="ignore-modal-info">{userID}</div>
         <div class="ignore-modal-item" onClick={this.addToWhitelist}>
-          <i class={cx("ignore-save-icon control fa", {
-            "fa-spinner fa-pulse fa-fw": savingWL,
-            "fa-check-circle": !savingWL,
-          })} />
+          <i
+            class={cx("ignore-save-icon control fa", {
+              "fa-spinner fa-pulse fa-fw": savingWL,
+              "fa-check-circle": !savingWL,
+            })}
+          />
           <span> {_(this.wled ? "From whitelist" : "To whitelist")}</span>
         </div>
         <div class="ignore-modal-item" onClick={this.addToBlacklist}>
-          <i class={cx("ignore-save-icon control fa", {
-            "fa-spinner fa-pulse fa-fw": savingBL,
-            "fa-times-circle": !savingBL,
-          })} />
+          <i
+            class={cx("ignore-save-icon control fa", {
+              "fa-spinner fa-pulse fa-fw": savingBL,
+              "fa-times-circle": !savingBL,
+            })}
+          />
           <span> {_(this.bled ? "From blacklist" : "To blacklist")}</span>
         </div>
       </div>
@@ -311,10 +347,10 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
     if (this.state.shown) {
       this.hide();
     }
-  }
+  };
   public onEscapePress = () => {
     this.hide();
-  }
+  };
   private show = (target: Element) => {
     if (target === this.state.target) {
       this.hide();
@@ -327,19 +363,21 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
     top += window.pageYOffset + 20;
     this.setState({
       shown: true,
-      target, left, top,
+      target,
+      left,
+      top,
       userID: post.userID,
       whitelist: account.whitelist.slice(),
       blacklist: account.blacklist.slice(),
     });
-  }
+  };
   private hide = () => {
     if (this.saving) return;
-    this.setState({target: null, shown: false});
-  }
+    this.setState({ target: null, shown: false });
+  };
   private handleModalClick = (e: Event) => {
     e.stopPropagation();
-  }
+  };
   private addToWhitelist = () => {
     if (this.saving) return;
     const { userID, whitelist, blacklist } = this.state;
@@ -349,17 +387,19 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
       remove(blacklist, userID);
       whitelist.push(userID);
     }
-    const settings = {...account, whitelist, blacklist};
-    this.setState({savingWL: true});
-    API.account.setSettings(settings)
-      .then(() => {
+    const settings = { ...account, whitelist, blacklist };
+    this.setState({ savingWL: true });
+    API.account.setSettings(settings).then(
+      () => {
         Object.assign(account, settings);
-        this.setState({savingWL: false}, this.hide);
-      }, (err) => {
+        this.setState({ savingWL: false }, this.hide);
+      },
+      (err) => {
         showSendAlert(err);
-        this.setState({savingWL: false});
-      });
-  }
+        this.setState({ savingWL: false });
+      }
+    );
+  };
   private addToBlacklist = () => {
     if (this.saving) return;
     const { userID, whitelist, blacklist } = this.state;
@@ -369,17 +409,19 @@ class IgnoreModalBase extends Component<{}, IgnoreState> {
       remove(whitelist, userID);
       blacklist.push(userID);
     }
-    const settings = {...account, whitelist, blacklist};
-    this.setState({savingBL: true});
-    API.account.setSettings(settings)
-      .then(() => {
+    const settings = { ...account, whitelist, blacklist };
+    this.setState({ savingBL: true });
+    API.account.setSettings(settings).then(
+      () => {
         Object.assign(account, settings);
-        this.setState({savingBL: false}, this.hide);
-      }, (err) => {
+        this.setState({ savingBL: false }, this.hide);
+      },
+      (err) => {
         showSendAlert(err);
-        this.setState({savingBL: false});
-      });
-  }
+        this.setState({ savingBL: false });
+      }
+    );
+  };
 }
 
 const IgnoreModal = EscapePressMixin(BackgroundClickMixin(IgnoreModalBase));
@@ -404,7 +446,7 @@ class AccountPanel extends TabbedModal {
   constructor() {
     super(
       document.querySelector(".account-modal"),
-      document.querySelector(".header-account-icon"),
+      document.querySelector(".header-account-icon")
     );
     this.onClick({
       "#logout": () => logout("/api/logout"),
@@ -452,15 +494,18 @@ function deletePost(post: Post, force?: boolean) {
 function banUser(post: Post) {
   if (!confirm(_("banConfirm"))) return;
   const YEAR = 365 * 24 * 60;
-  API.user.banByPost({
-    // Hardcode for now.
-    duration: YEAR,
-    global: position >= ModerationLevel.admin,
-    ids: [post.id],
-    reason: "default",
-  }).then(() => {
-    deletePost(post, true);
-  }).catch(showAlert);
+  API.user
+    .banByPost({
+      // Hardcode for now.
+      duration: YEAR,
+      global: position >= ModerationLevel.admin,
+      ids: [post.id],
+      reason: "default",
+    })
+    .then(() => {
+      deletePost(post, true);
+    })
+    .catch(showAlert);
 }
 
 export function init() {
@@ -475,18 +520,33 @@ export function init() {
     const container = document.querySelector(MODAL_CONTAINER_SEL);
     if (container) {
       render(<IgnoreModal />, container);
-      on(document, "click", (e) => {
-        trigger(HOOKS.openIgnoreModal, e.target);
-      }, {selector: TRIGGER_IGNORE_USER_SEL});
+      on(
+        document,
+        "click",
+        (e) => {
+          trigger(HOOKS.openIgnoreModal, e.target);
+        },
+        { selector: TRIGGER_IGNORE_USER_SEL }
+      );
     }
   }
   if (position >= ModerationLevel.moderator) {
-    on(document, "click", (e) => {
-      deletePost(getModelByEvent(e));
-    }, {selector: TRIGGER_DELETE_POST_SEL});
+    on(
+      document,
+      "click",
+      (e) => {
+        deletePost(getModelByEvent(e));
+      },
+      { selector: TRIGGER_DELETE_POST_SEL }
+    );
 
-    on(document, "click", (e) => {
-      banUser(getModelByEvent(e));
-    }, {selector: TRIGGER_BAN_BY_POST_SEL});
+    on(
+      document,
+      "click",
+      (e) => {
+        banUser(getModelByEvent(e));
+      },
+      { selector: TRIGGER_BAN_BY_POST_SEL }
+    );
   }
 }

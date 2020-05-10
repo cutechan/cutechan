@@ -48,25 +48,23 @@ export default class FSM<S extends Stringable, E extends Stringable> {
     } else {
       const transition = this.transitionString(this.state, event);
       const handler = this.transitions[transition];
-      if (!handler) { // Not registered. NOOP
+      if (!handler) {
+        // Not registered. NOOP
         return;
       }
       result = handler(arg);
     }
     this.state = result;
     const r = result.toString();
-    this.stateHandlers.forEach(r, (fn) =>
-      fn(arg));
-    this.onceHandlers.forEach(r, (fn) =>
-      fn(arg));
+    this.stateHandlers.forEach(r, (fn) => fn(arg));
+    this.onceHandlers.forEach(r, (fn) => fn(arg));
     this.onceHandlers.removeAll(r);
   }
 
   // Returns a function that executes FSM.prototype.feed with the passed
   // argument
   public feeder(event: E): StateHandler {
-    return (arg) =>
-      this.feed(event, arg);
+    return (arg) => this.feed(event, arg);
   }
 
   // Generate a transition string representation

@@ -7,13 +7,20 @@ import { View } from "../base";
 import options from "../options";
 import { getModel, page, posts } from "../state";
 import {
-  ChangeEmitter, emitChanges,
-  getClosestID, getID, hook, HOOKS,
+  ChangeEmitter,
+  emitChanges,
+  getClosestID,
+  getID,
+  hook,
+  HOOKS,
 } from "../util";
 import {
-  HOVER_CONTAINER_SEL, HOVER_TRIGGER_TIMEOUT_SECS,
-  POST_EMBED_SEL, POST_FILE_THUMB_SEL,
-  POST_HOVER_TIMEOUT_SECS, POST_LINK_SEL,
+  HOVER_CONTAINER_SEL,
+  HOVER_TRIGGER_TIMEOUT_SECS,
+  POST_EMBED_SEL,
+  POST_FILE_THUMB_SEL,
+  POST_HOVER_TIMEOUT_SECS,
+  POST_LINK_SEL,
   TRIGGER_MEDIA_HOVER_SEL,
 } from "../vars";
 import { Post } from "./model";
@@ -54,7 +61,7 @@ class PostPreview extends View<Post> {
 
   constructor(model: Post, parent: HTMLElement) {
     const { el } = model.view;
-    super({el: clonePost(el)});
+    super({ el: clonePost(el) });
     this.parent = parent;
     this.model = Object.assign({}, model);
     this.render();
@@ -69,7 +76,7 @@ class PostPreview extends View<Post> {
 
   private render() {
     // Underline reverse post links in preview.
-    const re = new RegExp("[>\/]" + getClosestID(this.parent));
+    const re = new RegExp("[>/]" + getClosestID(this.parent));
     for (const el of this.el.querySelectorAll(POST_LINK_SEL)) {
       if (re.test(el.textContent)) {
         el.classList.add("post-link_ref");
@@ -107,7 +114,7 @@ async function renderPostPreview(event: MouseEvent) {
     if (postPreviews.length && !clearPostTID) {
       clearPostTID = window.setTimeout(
         clearInactivePostPreviews,
-        POST_HOVER_TIMEOUT_SECS * 1000,
+        POST_HOVER_TIMEOUT_SECS * 1000
       );
     }
     return;
@@ -137,7 +144,7 @@ async function renderPostPreview(event: MouseEvent) {
 
 function showImage(url: string, width: number, height: number) {
   if (popup.isOpen(url)) return;
-  const rect = popup.getCenteredRect({width, height});
+  const rect = popup.getCenteredRect({ width, height });
   imagePreview = document.createElement("img");
   imagePreview.className = "media_hover";
   imagePreview.src = url;
@@ -211,9 +218,9 @@ function onMouseMove(event: MouseEvent) {
     lastTarget = event.target;
     clearTimeout(delayedTID);
     // Don't show previews when moving mouse across the page.
-    delayedTID = window.setTimeout(() =>
-      delayedSetEvent(event),
-      HOVER_TRIGGER_TIMEOUT_SECS * 1000,
+    delayedTID = window.setTimeout(
+      () => delayedSetEvent(event),
+      HOVER_TRIGGER_TIMEOUT_SECS * 1000
     );
   }
 }
@@ -224,7 +231,9 @@ export function isOpen(): boolean {
 
 export function init() {
   container = document.querySelector(HOVER_CONTAINER_SEL);
-  container.classList.add(page.thread ? "hover-container_thread" : "hover-container_board");
+  container.classList.add(
+    page.thread ? "hover-container_thread" : "hover-container_board"
+  );
   document.addEventListener("mouseover", onMouseMove);
   mouseMove.onChange("event", renderPostPreview);
   mouseMove.onChange("event", renderImagePreview);

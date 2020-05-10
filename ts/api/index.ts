@@ -5,13 +5,20 @@
 
 import _ from "../lang";
 import {
-  Dict, FutureAPI, ProgressFn,
-  sendFormProgress, sendJSON, uncachedGET,
+  Dict,
+  FutureAPI,
+  ProgressFn,
+  sendFormProgress,
+  sendJSON,
+  uncachedGET,
 } from "../util";
 
 type ReqFn = (
-  url: string, data?: Dict, method?: string,
-  onProgress?: ProgressFn, api?: FutureAPI,
+  url: string,
+  data?: Dict,
+  method?: string,
+  onProgress?: ProgressFn,
+  api?: FutureAPI
 ) => Promise<Response>;
 
 function isJson(res: Response): boolean {
@@ -35,7 +42,7 @@ function handleErrorCode(res: Response): Promise<any> {
   } else if (isJson(res)) {
     // Probably standardly-shaped JSON error.
     return res.json().then((data) => {
-      throw new Error(data && data.error || _("unknownErr"));
+      throw new Error((data && data.error) || _("unknownErr"));
     });
   } else {
     // Probably text/plain or something like this.
@@ -50,10 +57,15 @@ function handleError(err: Error) {
 }
 
 function makeReq(reqFn: ReqFn, method?: string) {
-  return (url: string) =>
-    (data?: Dict, onProgress?: ProgressFn, api?: FutureAPI) =>
-      reqFn(`/api/${url}`, data, method, onProgress, api)
-        .then(handleResponse, handleError);
+  return (url: string) => (
+    data?: Dict,
+    onProgress?: ProgressFn,
+    api?: FutureAPI
+  ) =>
+    reqFn(`/api/${url}`, data, method, onProgress, api).then(
+      handleResponse,
+      handleError
+    );
 }
 
 // Convenient helper.

@@ -6,7 +6,7 @@ let visible: HeaderModal;
 // A modal element, that is positioned fixed right beneath the header
 export class HeaderModal extends View<null> {
   constructor(el: HTMLElement, toggleEl: HTMLElement) {
-    super({el});
+    super({ el });
     toggleEl.addEventListener("click", this.toggle);
   }
 
@@ -22,20 +22,20 @@ export class HeaderModal extends View<null> {
     } else {
       this.show();
     }
-  }
+  };
 
   // Unhide the element. If the element has not been rendered yet, do it.
   public show = () => {
     this.el.style.display = "block";
     visible = this;
     this.showHook();
-  }
+  };
 
   // Hide the element
   public hide = () => {
     this.el.style.display = "none";
     visible = null;
-  }
+  };
 
   // Hook to execute when the the modal is displayed.
   // Do nothing by default.
@@ -49,8 +49,7 @@ export class TabbedModal extends HeaderModal {
   constructor(el: HTMLElement, toggleEl: HTMLElement) {
     super(el, toggleEl);
     this.onClick({
-      ".tab-link": (e) =>
-        this.switchTab(e),
+      ".tab-link": (e) => this.switchTab(e),
     });
   }
 

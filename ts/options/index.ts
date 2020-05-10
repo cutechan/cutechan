@@ -28,7 +28,12 @@ interface Options extends ChangeEmitter {
 
 // Types of option models
 export const enum optionType {
-  checkbox, number, image, shortcut, menu, textarea,
+  checkbox,
+  number,
+  image,
+  shortcut,
+  menu,
+  textarea,
 }
 
 // Full schema of the option interface
@@ -73,9 +78,10 @@ const specs: { [id: string]: OptionSpec } = {
   notification: {
     default: false,
     exec(enabled: boolean) {
-      const req = enabled
-        && typeof Notification === "function"
-        && (Notification as any).permission !== "granted";
+      const req =
+        enabled &&
+        typeof Notification === "function" &&
+        (Notification as any).permission !== "granted";
       if (req) {
         Notification.requestPermission();
       }
@@ -184,7 +190,7 @@ class OptionModel {
 
   // Create new option model from template spec
   constructor(id: string, spec: OptionSpec) {
-    this.spec = spec = {...spec};
+    this.spec = spec = { ...spec };
     this.id = id;
 
     // No type = checkbox + default false
@@ -197,7 +203,7 @@ class OptionModel {
     }
 
     // Store option value in central storage options Model
-    const val = options[this.id] = this.get();
+    const val = (options[this.id] = this.get());
     options.onChange(this.id, (v) => this.onChange(v));
     if (!spec.noExecOnStart) {
       this.execute(val);

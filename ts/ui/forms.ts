@@ -4,11 +4,9 @@ abstract class FormView extends View<null> {
   constructor(attrs: ViewAttrs) {
     super(attrs);
     this.onClick({
-      "input[name=cancel]": () =>
-        this.remove(),
+      "input[name=cancel]": () => this.remove(),
     });
-    this.on("submit", (e) =>
-      this.submit(e));
+    this.on("submit", (e) => this.submit(e));
   }
 
   protected abstract send(): void;

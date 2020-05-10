@@ -9,16 +9,24 @@ import smiles from "../../smiles-pp/smiles";
 import { reverse, rotateRecent, setter } from "../util";
 
 const smileList = Array.from(smiles).sort();
-const thingSmiles = new Set(`
+const thingSmiles = new Set(
+  `
   heart heart2 heart3 heart4 cigarette soju wine coffee
   cola chips goose nogoose gun gun2 karandash knife
   ovsyanka ramyun
-`.trim().split(/\s+/));
-const memeSmiles = new Set(`
+`
+    .trim()
+    .split(/\s+/)
+);
+const memeSmiles = new Set(
+  `
   beast cool frukt heechul hyunsuk jyp jyp2 kwangsoo lookup priunil sooman
   tellmemore v_gugudalnik sekshie plsno orly police autism hyperlol iljin
   blinchick hug shy
-`.trim().split(/\s+/));
+`
+    .trim()
+    .split(/\s+/)
+);
 
 const KEY_A = 97;
 const KEY_Z = 122;
@@ -90,7 +98,7 @@ export function autocomplete(el: HTMLTextAreaElement): string[] | null {
 
   const body = el.value;
   const len = body.length;
-  const nextCh = (pos < len) ? body.charCodeAt(pos) : 0;
+  const nextCh = pos < len ? body.charCodeAt(pos) : 0;
   if (nextCh && nextCh !== KEY_SPC && nextCh !== KEY_NL) return null;
 
   let i = pos - 1;
@@ -113,7 +121,7 @@ export function autocomplete(el: HTMLTextAreaElement): string[] | null {
 
   if (!colon) return null;
   if (chunk.length < 3) return null;
-  const prevCh = (i > 0) ? body.charCodeAt(i - 1) : 0;
+  const prevCh = i > 0 ? body.charCodeAt(i - 1) : 0;
   if (prevCh && prevCh !== KEY_SPC && prevCh !== KEY_NL) return null;
 
   chunk = reverse(chunk);
@@ -145,7 +153,7 @@ export default class extends Component<any, any> {
     }
     // Reset smile selection.
     if (acList !== this.props.acList) {
-      this.setState({cur: 0}, this.scrollToSmile);
+      this.setState({ cur: 0 }, this.scrollToSmile);
     }
   }
   private setAutocompletePos() {
@@ -173,15 +181,17 @@ export default class extends Component<any, any> {
       left += rect.left - wrect.left;
       top += rect.top - wrect.top;
 
-      this.setState({left, top});
+      this.setState({ left, top });
     }
   }
   private scrollToSmile() {
     const l = this.listEl;
     // XXX(Kagami): Might be wrong if Preact adds some junk node.
     const s = l.children[this.state.cur] as HTMLElement;
-    if (s.offsetLeft < l.scrollLeft
-        || s.offsetLeft + s.offsetWidth > l.offsetWidth + l.scrollLeft) {
+    if (
+      s.offsetLeft < l.scrollLeft ||
+      s.offsetLeft + s.offsetWidth > l.offsetWidth + l.scrollLeft
+    ) {
       l.scrollLeft = s.offsetLeft;
     }
   }
@@ -191,12 +201,12 @@ export default class extends Component<any, any> {
     } else if (e.target === this.props.textarea) {
       this.handleBodyKey(e);
     }
-  }
+  };
   private handleGlobalClick = (e: MouseEvent) => {
     if (e.button === 0) {
       this.props.onClose();
     }
-  }
+  };
   private handleBodyKey = (e: KeyboardEvent) => {
     const { acList } = this.props;
     if (!acList) return;
@@ -206,36 +216,36 @@ export default class extends Component<any, any> {
       e.preventDefault();
       cur -= 1;
       cur = cur < 0 ? last : cur;
-      this.setState({cur}, this.scrollToSmile);
+      this.setState({ cur }, this.scrollToSmile);
     } else if (e.keyCode === KEY_RIGHT) {
       e.preventDefault();
       cur += 1;
       cur = cur > last ? 0 : cur;
-      this.setState({cur}, this.scrollToSmile);
+      this.setState({ cur }, this.scrollToSmile);
     } else if (e.keyCode === KEY_ENTER) {
       e.preventDefault();
       this.handleSmileSelect(acList[cur]);
     } else if (
-        e.keyCode === KEY_HOME
-        || e.keyCode === KEY_END
-        || e.keyCode === KEY_UP
-        || e.keyCode === KEY_DOWN
-      ) {
+      e.keyCode === KEY_HOME ||
+      e.keyCode === KEY_END ||
+      e.keyCode === KEY_UP ||
+      e.keyCode === KEY_DOWN
+    ) {
       // Prefer to close autocomplete box on common cursor movements
       // to not annoy the user in case of false-positives.
       this.props.onClose();
     }
-  }
+  };
   private handleIgnore = (e: MouseEvent) => {
     e.stopPropagation();
-  }
+  };
   private handleSmileOver = (cur: number) => {
-    this.setState({cur});
-  }
+    this.setState({ cur });
+  };
   private handleSmileSelect = (id: string) => {
     storeRecent(id);
     this.props.onSelect(id);
-  }
+  };
   // tslint:disable-next-line:member-ordering
   public render({ acList }: any, { left, top }: any) {
     const style = acList ? { left, top } : null;
@@ -251,7 +261,7 @@ export default class extends Component<any, any> {
         onClick={this.handleIgnore}
       >
         <div class="smiles" ref={setter(this, "listEl")}>
-          {(!acList && recent.length) ? this.renderRecent() : null}
+          {!acList && recent.length ? this.renderRecent() : null}
           {acList ? this.renderList(acList) : this.renderAll()}
         </div>
       </div>
@@ -259,9 +269,7 @@ export default class extends Component<any, any> {
   }
   private renderRecent() {
     return [
-      <div class="smiles-group">
-        {this.renderList(recent)}
-      </div>,
+      <div class="smiles-group">{this.renderList(recent)}</div>,
       <hr class="smiles-separator" />,
     ];
   }
@@ -282,15 +290,15 @@ export default class extends Component<any, any> {
   }
   private renderList(list: string[]) {
     const cur = this.props.acList ? this.state.cur : -1;
-    return list.map((id: string, i: number) =>
-      <div class={cx("smiles-item", {"smiles-item_cur": i === cur})}>
+    return list.map((id: string, i: number) => (
+      <div class={cx("smiles-item", { "smiles-item_cur": i === cur })}>
         <i
           class={cx("smile", `smile-${id}`, "smiles-icon")}
           title={`:${id}:`}
           onMouseOver={this.handleSmileOver.bind(null, i)}
           onClick={this.handleSmileSelect.bind(null, id)}
         />
-      </div>,
-    );
+      </div>
+    ));
   }
 }

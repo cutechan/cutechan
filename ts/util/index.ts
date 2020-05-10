@@ -4,15 +4,22 @@
 
 export { default as FSM } from "./fsm";
 export {
-  Dict, ProgressFn, FutureAPI, AbortError,
-  uncachedGET, fetchJSON, sendJSON, sendForm, sendFormProgress,
+  Dict,
+  ProgressFn,
+  FutureAPI,
+  AbortError,
+  uncachedGET,
+  fetchJSON,
+  sendJSON,
+  sendForm,
+  sendFormProgress,
 } from "./fetch";
 export { HOOKS, hook, unhook, trigger } from "./hooks";
 export { ChangeEmitter, emitChanges } from "./changes";
 
 import { POST_SEL } from "../vars";
 
-export type Constructable = new() => any;
+export type Constructable = new () => any;
 
 // Retrieve element id.
 export function getID(el: Element): number {
@@ -47,7 +54,7 @@ export function on(
   el: EventTarget,
   type: string,
   fn: EventListener,
-  opts?: OnOptions,
+  opts?: OnOptions
 ) {
   if (opts && opts.selector) {
     const origFn = fn;
@@ -92,13 +99,16 @@ export function escape(str: string): string {
 
 // Reverse escape() effect.
 export function unescape(html: string): string {
-  return html.replace(/&(amp|lt|gt|quot|apos);/g, (entity) => unescapeMap[entity]);
+  return html.replace(
+    /&(amp|lt|gt|quot|apos);/g,
+    (entity) => unescapeMap[entity]
+  );
 }
 
 // Find the first child of an element, that matches a check function, if any
 export function firstChild(
   el: Element,
-  check: (el: Element) => boolean,
+  check: (el: Element) => boolean
 ): HTMLElement | null {
   for (const ch of Array.from(el.children)) {
     if (check(ch)) {
@@ -109,10 +119,7 @@ export function firstChild(
 }
 
 // Returns an input element inside the parent by name
-export function inputElement(
-  parent: Element,
-  name: string,
-): HTMLInputElement {
+export function inputElement(parent: Element, name: string): HTMLInputElement {
   return parent.querySelector(`input[name="${name}"]`) as HTMLInputElement;
 }
 

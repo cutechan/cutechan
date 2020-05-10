@@ -12,7 +12,7 @@ export function isBanned(): boolean {
 }
 
 // Extract pregenerated rendered post data from DOM.
-export function extractPageData<T>(): {threads: T, backlinks: Backlinks} {
+export function extractPageData<T>(): { threads: T; backlinks: Backlinks } {
   return {
     threads: extractJSON("post-data"),
     backlinks: extractJSON("backlink-data"),
@@ -21,7 +21,12 @@ export function extractPageData<T>(): {threads: T, backlinks: Backlinks} {
 
 // Extract post model and view from the HTML fragment and apply
 // client-specific formatting. Returns whether the element was removed.
-export function extractPost(data: PostData, op: number, board: string, backlinks: Backlinks): boolean {
+export function extractPost(
+  data: PostData,
+  op: number,
+  board: string,
+  backlinks: Backlinks
+): boolean {
   const el = document.getElementById(`post${data.id}`);
   // if (hidden.has(post.id)) {
   //   el.remove();
