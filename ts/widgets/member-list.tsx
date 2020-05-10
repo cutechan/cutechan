@@ -2,7 +2,7 @@
  * Member list widget.
  */
 
-import * as cx from "classnames";
+import cx from "classnames";
 import { Component, h } from "preact";
 import { session } from "../auth";
 import _ from "../lang";

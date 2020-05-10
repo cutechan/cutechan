@@ -5,7 +5,7 @@
  */
 
 import { Component, h, render } from "preact";
-import * as ruhangul from "ruhangul";
+import hangul from "hangeul";
 import {
   BandMap,
   getBandMap,
@@ -108,7 +108,7 @@ class IdolItem extends Component<ItemProps, any> {
     switch (key) {
       case "Name":
         if (!idol.name_hangul) break;
-        ru = ruhangul.name(idol.name_hangul);
+        ru = hangul.runame(idol.name_hangul);
         if (!ru) break;
         return (
           <p class="idol-info-line">
@@ -124,7 +124,7 @@ class IdolItem extends Component<ItemProps, any> {
         );
       case "Real name":
         if (!idol.birth_name_hangul) break;
-        ru = ruhangul.name(idol.birth_name_hangul);
+        ru = hangul.runame(idol.birth_name_hangul);
         if (!ru) break;
         return (
           <p class="idol-info-line">

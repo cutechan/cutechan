@@ -276,14 +276,13 @@ function spawnTsc() {
 
       if (
         !tscDone &&
-        data.includes("Compilation complete") &&
+        data.includes("Watching for file changes") &&
         fs.existsSync(TSC_TMP_FILE)
       ) {
         tscDone = true;
         resolve();
       }
     }
-
     tsc.stdout.on("data", logger);
     tsc.stderr.on("data", logger);
   });
@@ -422,7 +421,7 @@ createTask("loader", "loader.js", (src) =>
           preact: "node_modules/preact/dist/preact",
           "textarea-caret": "node_modules/textarea-caret/index",
           vmsg: "node_modules/vmsg/vmsg.es5",
-          ruhangul: "node_modules/ruhangul/index.es5",
+          hangeul: "node_modules/hangeul/index.es5",
         },
       })
     )

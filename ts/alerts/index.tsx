@@ -5,7 +5,7 @@
  * @module cutechan/alerts
  */
 
-import * as cx from "classnames";
+import cx from "classnames";
 import { Component, h, render } from "preact";
 import _ from "../lang";
 import { hook, HOOKS, trigger, unhook } from "../util";

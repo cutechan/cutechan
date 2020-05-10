@@ -1,4 +1,4 @@
-import * as cx from "classnames";
+import cx from "classnames";
 import { Component, h, render } from "preact";
 import vmsg from "vmsg";
 import { showAlert } from "../alerts";
@@ -33,7 +33,7 @@ import {
   TRIGGER_QUOTE_POST_SEL,
 } from "../vars";
 import { Progress } from "../widgets";
-import * as signature from "./signature";
+import { gen as genSign } from "./signature";
 import SmileBox, { autocomplete } from "./smile-box";
 
 function quoteText(text: string): string {
@@ -728,7 +728,7 @@ class Reply extends Component<any, any> {
     API.post
       .createToken()
       .then(({ id: token }: Dict) => {
-        const sign = signature.gen(token);
+        const sign = genSign(token);
         return sendFn(
           {
             board,

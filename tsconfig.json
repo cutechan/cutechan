@@ -1,12 +1,14 @@
 {
   "files": ["app.ts"],
   "compilerOptions": {
+    "outDir": "dist",
     "lib": ["DOM", "ES6", "DOM.Iterable", "ScriptHost", "ES2017.object"],
     "downlevelIteration": true,
     "moduleResolution": "node",
+    "esModuleInterop": true,
     "module": "AMD",
     "target": "ES6",
-    "jsx": "React",
+    "jsx": "react",
     "jsxFactory": "h",
     "strict": true,
     "strictNullChecks": false,

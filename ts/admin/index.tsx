@@ -4,7 +4,7 @@
  * @module cutechan/admin
  */
 
-import * as cx from "classnames";
+import cx from "classnames";
 import { Component, h, render } from "preact";
 import { showSendAlert } from "../alerts";
 import API from "../api";

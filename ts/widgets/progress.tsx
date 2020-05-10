@@ -2,7 +2,7 @@
  * Progress bar widget.
  */
 
-import * as cx from "classnames";
+import cx from "classnames";
 import { h } from "preact";
 
 interface Props {

@@ -2,7 +2,7 @@
  * Expand media attachments to the middle of the screen.
  */
 
-import * as cx from "classnames";
+import cx from "classnames";
 import { Component, h, render } from "preact";
 import options from "../options";
 import { getModel } from "../state";

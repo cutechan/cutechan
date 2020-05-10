@@ -4,7 +4,7 @@
  * @module cutechan/auth
  */
 
-import * as cx from "classnames";
+import cx from "classnames";
 import { Component, h, render } from "preact";
 import { showAlert, showSendAlert } from "../alerts";
 import API from "../api";

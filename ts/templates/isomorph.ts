@@ -2,7 +2,7 @@
 // MUST BE KEPT IN SYNC WITH go/src/meguca/templates/isomorph.go!
 
 import templates from "cc-templates";
-import * as Mustache from "mustache";
+import Mustache from "mustache";
 import { bodyEmbeds, renderBody } from ".";
 import { fileTypes, ImageData } from "../common";
 import { _, days, months, ngettext } from "../lang";

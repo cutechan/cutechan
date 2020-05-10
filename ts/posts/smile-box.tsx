@@ -2,9 +2,9 @@
  * Smile box widget with autocomplete feature.
  */
 
-import * as cx from "classnames";
+import cx from "classnames";
 import { Component, h } from "preact";
-import * as getCaretCoordinates from "textarea-caret";
+import getCaretCoordinates from "textarea-caret";
 import smiles from "../../smiles-pp/smiles";
 import { reverse, rotateRecent, setter } from "../util";
 
