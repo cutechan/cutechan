@@ -8,7 +8,7 @@ import { h } from "preact";
 interface Props {
   progress: number;
   className?: string;
-  children?: JSX.Element;
+  children?: JSX.Element | string;
   [key: string]: any;
 }
 

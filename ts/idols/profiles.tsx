@@ -18,7 +18,7 @@ import {
   renderIdol,
   searchIdols,
   setIdolPreview,
-} from "../../go/src/github.com/Kagami/kpopnet/ts/api";
+} from "kpopnet/api";
 import { showAlert } from "../alerts";
 import { isPowerUser } from "../auth";
 import _ from "../lang";

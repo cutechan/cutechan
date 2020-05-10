@@ -24,12 +24,6 @@ const livereload = require("gulp-livereload");
 // Keep script alive and rebuild on file changes.
 const watch = process.argv.includes("-w");
 
-// Build also tasks which are rarely needed.
-const all = process.argv.includes("-a");
-
-// Host where livereload server will be available.
-const LR_HOST = process.env.CC_LR_HOST || "127.0.0.1:35729";
-
 const LANGS_GLOB = "po/*.po";
 const TEMPLATES_GLOB = "mustache-pp/*.mustache";
 const SMILESJS_GLOB = "smiles-pp/smiles.js";
@@ -43,17 +37,6 @@ const CSS_DIR = path.join(STATIC_DIR, "css");
 const IMG_DIR = path.join(STATIC_DIR, "img");
 const FONTS_DIR = path.join(STATIC_DIR, "fonts");
 const TSC_TMP_FILE = path.join(JS_DIR, "_app.js");
-
-const KPOPNET_DIST_DIR = path.join(DIST_DIR, "kpopnet");
-const KPOPNET_API_PREFIX =
-  process.env.KPOPNET_API_PREFIX || "http://localhost:8001/api";
-const KPOPNET_FILE_PREFIX =
-  process.env.KPOPNET_FILE_PREFIX || "http://localhost:8001/uploads";
-const KPOPNET_WEBPACK_CONFIG = path.resolve(
-  __dirname,
-  "go/src/github.com/Kagami/kpopnet",
-  "webpack.config.js"
-);
 
 // Tasks which needs to finish before main tasks.
 const preTasks = [];
@@ -203,7 +186,7 @@ function injectLivereload() {
     chunk.contents = Buffer.concat([
       Buffer.from("(function() {\n"),
       Buffer.from('var script = document.createElement("script");\n'),
-      Buffer.from(`script.src = "http://${LR_HOST}/livereload.js";\n`),
+      Buffer.from('script.src = "http://localhost:35729/livereload.js";\n'),
       Buffer.from("document.body.appendChild(script);\n"),
       Buffer.from("})();"),
     ]);
@@ -261,7 +244,7 @@ function spawnTsc() {
       "node_modules/.bin/tsc",
       ["-w", "-p", "tsconfig.json", "--outFile", TSC_TMP_FILE],
       {
-        stdio: ["ignore", "pipe", "inherit"],
+        stdio: ["ignore", "pipe", "pipe"],
       }
     )
       .on("error", (err) => {
@@ -275,18 +258,15 @@ function spawnTsc() {
 
     // Make tsc output gulp-alike.
     // Too hacky but whatever, all of this is a big hack.
-    tsc.stdout.on("data", (data) => {
+    function logger(data) {
       // Might be buffer.
       data = data.toString();
+      // Remove terminal reset.
+      data = data.replace(/\x1bc/g, "");
       // Remove extra newlines.
       data = data.replace(/\n+$/, "");
-      // Fix date format and prefix.
-      data = data.replace(
-        /(?: [AP]M)?(?: GMT\+\d{4} \([A-Z]{3}\))?(....\])/g,
-        `$1 tsc:`
-      );
       // Finally output "fixed" log messages.
-      if (data.includes("error")) {
+      if (data.match(/\berror\b/)) {
         const err = new Error(data);
         err.name = "TypeScript error";
         handleError(err);
@@ -302,7 +282,10 @@ function spawnTsc() {
         tscDone = true;
         resolve();
       }
-    });
+    }
+
+    tsc.stdout.on("data", logger);
+    tsc.stderr.on("data", logger);
   });
 }
 
@@ -475,7 +458,7 @@ createTask(
 
 gulp.task("labels", () =>
   gulp
-    .src("go/src/github.com/Kagami/kpopnet/ts/labels/icons/!(*@4x).png")
+    .src("node_modules/kpopnet/labels/icons/!(*@4x).png")
     .pipe(
       spritesmith({
         imgName: "labels.png",
@@ -544,43 +527,6 @@ createTask(
       )
     )
 );
-
-// Kpopnet static.
-gulp.task("kpopnet", () => {
-  return new Promise((resolve, reject) => {
-    spawn(
-      "node_modules/.bin/webpack-cli",
-      [
-        "--mode",
-        "production",
-        "--env.output",
-        KPOPNET_DIST_DIR,
-        "--env.api_prefix",
-        KPOPNET_API_PREFIX,
-        "--env.file_prefix",
-        KPOPNET_FILE_PREFIX,
-        "--config",
-        KPOPNET_WEBPACK_CONFIG,
-        "--display",
-        "errors-only",
-      ],
-      {
-        stdio: "inherit",
-      }
-    )
-      .on("error", reject)
-      .on("exit", (code) => {
-        if (code === 0) {
-          resolve();
-        } else {
-          reject(new Error(`webpack exited with ${code}`));
-        }
-      });
-  });
-});
-if (!watch || all) {
-  tasks.push("kpopnet");
-}
 
 // Build everything.
 gulp.task(
