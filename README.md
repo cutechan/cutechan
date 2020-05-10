@@ -30,4 +30,4 @@ sudo apt install nodejs
 
 ## License
 
-[AGPLv3+](LICENSE)
+[AGPLv3+](LICENSE).
