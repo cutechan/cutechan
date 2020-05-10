@@ -1,0 +1,112 @@
+{% import "strconv" %}
+{% import "github.com/cutechan/cutechan/go/lang" %}
+{% import "github.com/cutechan/cutechan/go/common" %}
+{% import "encoding/json" %}
+
+{% func renderThreadNavigation(l, b string, top bool) %}{% stripspace %}
+	{% code cls := "thread-nav_top" %}
+	{% code if !top { cls = "thread-nav_bottom" } %}
+	<nav class="thread-nav{% space %}{%s cls %}">
+		{% if !top %}
+			<a name="bottom"></a>
+		{% endif %}
+		<a class="button thread-nav-item thread-nav-back" href="/{%s b %}/">
+			{%s lang.Get(l, "return") %}
+		</a>
+		<a class="button thread-nav-item thread-nav-catalog" href="/{%s b %}/catalog">
+			{%s lang.Get(l, "catalog") %}
+		</a>
+		<a class="button thread-nav-item thread-nav-reply trigger-open-reply">
+			{%s lang.Get(l, "reply") %}
+		</a>
+	</nav>
+{% endstripspace %}{% endfunc %}
+
+{% func renderThread(postHTML []byte, id uint64, l, board, title string) %}{% stripspace %}
+	<section class="board" id="threads">
+		<h1 class="page-title">{%s title %}</h1>
+		{%= renderPageNavigation(false) %}
+		{%= renderThreadNavigation(l, board, true) %}
+		<hr class="separator">
+		{%z= postHTML %}
+		<aside class="reply-container reply-container_thread"></aside>
+		<hr class="separator">
+		{%= renderThreadNavigation(l, board, false) %}
+	</section>
+{% endstripspace %}{% endfunc %}
+
+ThreadPosts renders the post content of a thread. Separate function to allow
+caching of generated posts.
+{% func ThreadPosts(l string, t common.Thread, json []byte, last100 bool) %}{% stripspace %}
+	{% code idStr := strconv.FormatUint(t.ID, 10) %}
+	{% code bls := extractBacklinks(1<<10, t) %}
+	<section class="threads-container" id="thread-container">
+		<article class="thread thread_single" id="thread{%s idStr %}" data-id="{%s idStr %}"{%= counterStyle(t, last100) %}>
+			{%= renderThreadPosts(l, t, bls, false, false, last100) %}
+		</article>
+		<script id="post-data" type="application/json">
+			{%z= json %}
+		</script>
+		{%= encodeBacklinks(bls) %}
+	</section>
+{% endstripspace %}{% endfunc %}
+
+Shift post numbers for incomplete thread (+1 for OP post).
+{% func counterStyle(t common.Thread, last100 bool) %}{% stripspace %}
+	{% if last100 && t.PostCtr > 101 %}
+		{% code shift := int(t.PostCtr - 101) %}
+		{% space %}style="counter-reset: p{% space %}{%d shift %}"
+	{% endif %}
+{% endstripspace %}{% endfunc %}
+
+Common functionality between index board pages and threads pages
+{% func renderThreadPosts(l string, t common.Thread, bls common.Backlinks, index, all, last100 bool) %}{% stripspace %}
+	{%s= MakePostContext(l, t, t.Post, bls, index, all).Render() %}
+	{% if index || last100 %}
+		{%= renderOmit(l, t, last100) %}
+	{% endif %}
+	{% for _, post := range t.Posts %}
+		{%s= MakePostContext(l, t, post, bls, index, all).Render() %}
+	{% endfor %}
+{% endstripspace %}{% endfunc %}
+
+Omitted posts and images info
+{% func renderOmit(l string, t common.Thread, last100 bool) %}{% stripspace %}
+	{% code omit, imageOmit := CalculateOmit(t) %}
+	{% code idStr := strconv.FormatUint(t.ID, 10) %}
+	<div class="omit">
+		{% if omit > 0 %}
+			<div class="omit-info">
+				{%d omit %}{% space %}{%s lang.GetN(l, "post", "posts", omit) %}
+				{% if imageOmit > 0 %}
+					{% space %}{%s lang.Get(l, "and") %}{% space %}
+					{%d imageOmit %}{% space %}{%s lang.GetN(l, "file", "files", imageOmit) %}
+				{% endif %}
+				{% space %}{%s lang.GetN(l, "omitted", "omitted", omit + imageOmit) %}
+			</div>
+		{% endif %}
+		<a class="omit-link" href="/{%s t.Board %}/{%s idStr %}">
+			{% if last100 %}
+				{%s lang.Get(l, "seeAll") %}
+			{% else %}
+				{%s lang.Get(l, "goToThread") %}
+			{% endif %}
+		</a>
+		{% if omit > 97 && !last100 %}
+			{% space %}{%= last100Link(l, t.Board, idStr) %}
+		{% endif %}
+	</div>
+{% endstripspace %}{% endfunc %}
+
+{% func encodeBacklinks(bls common.Backlinks) %}{% stripspace %}
+	<script id="backlink-data" type="application/json">
+		{% code buf, _ := json.Marshal(bls) %}
+		{%z= buf %}
+	</script>
+{% endstripspace %}{% endfunc %}
+
+{% func last100Link(l, board, id string) %}{% stripspace %}
+	<a class="thread-link lastN-link" href="/{%s board %}/{%s id %}?last=100#bottom">
+		{%s lang.Get(l, "last") %}{% space %}100
+	</a>
+{% endstripspace %}{% endfunc %}

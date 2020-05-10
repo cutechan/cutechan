@@ -1,0 +1,330 @@
+// Package websockets manages active websocket connections and messages received
+// from and sent to them
+package websockets
+
+import (
+	"errors"
+	"fmt"
+	"log"
+	"github.com/cutechan/cutechan/go/auth"
+	"github.com/cutechan/cutechan/go/common"
+	"github.com/cutechan/cutechan/go/feeds"
+	"github.com/cutechan/cutechan/go/util"
+	"net/http"
+	"runtime/debug"
+	"strconv"
+	"time"
+
+	"github.com/gorilla/websocket"
+)
+
+const pingWriteTimeout = time.Second * 30
+
+var (
+	// Overrideable for faster tests
+	pingTimer = time.Minute
+
+	upgrader = websocket.Upgrader{
+		HandshakeTimeout: 5 * time.Second,
+		CheckOrigin: func(_ *http.Request) bool {
+			return true
+		},
+	}
+)
+
+// errInvalidPayload denotes a malformed messages received from the client
+type errInvalidPayload []byte
+
+func (e errInvalidPayload) Error() string {
+	return fmt.Sprintf("invalid message: %s", string(e))
+}
+
+// errInvalidFrame denotes an invalid websocket frame in some other way than
+// errInvalidMessage
+type errInvalidFrame string
+
+func (e errInvalidFrame) Error() string {
+	return string(e)
+}
+
+// Client stores and manages a websocket-connected remote client and its
+// interaction with the server and database
+type Client struct {
+	// Have received first message, which must be a common.MessageSynchronise
+	gotFirstMessage bool
+	// Currently subscribed to update feed, if any
+	feed *feeds.Feed
+	// Underlying websocket connection
+	conn *websocket.Conn
+	// Client IP
+	ip string
+	// Internal message receiver channel
+	receive chan receivedMessage
+	// Only used to pass messages from the Send method.
+	sendExternal chan []byte
+	// Redirect client to target board
+	redirect chan string
+	// Close the client and free all used resources
+	close chan error
+}
+
+type receivedMessage struct {
+	typ int
+	msg []byte
+}
+
+// Handler is an http.HandleFunc that responds to new websocket connection
+// requests.
+func Handler(w http.ResponseWriter, r *http.Request) {
+	conn, err := upgrader.Upgrade(w, r, nil)
+	if err != nil {
+		ip, IPErr := auth.GetIP(r)
+		if IPErr != nil {
+			ip = "invalid IP"
+		}
+		log.Printf("websockets: %s: %s\n", ip, err)
+		return
+	}
+
+	c, err := newClient(conn, r)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("400 %s", err), 400)
+		return
+	}
+	if err := c.listen(); err != nil {
+		c.logError(err)
+	}
+}
+
+// newClient creates a new websocket client
+func newClient(conn *websocket.Conn, req *http.Request) (*Client, error) {
+	ip, err := auth.GetIP(req)
+	if err != nil {
+		return nil, err
+	}
+	return &Client{
+		ip:       ip,
+		close:    make(chan error, 2),
+		receive:  make(chan receivedMessage),
+		redirect: make(chan string),
+		// Allows for ~60 seconds of messages, until the buffer overflows.
+		// A larger gap is more acceptable to shitty connections and mobile
+		// phones, especially while uploading.
+		sendExternal: make(chan []byte, time.Second*60/feeds.TickerInterval),
+		conn:         conn,
+	}, nil
+}
+
+// Listen listens for incoming messages on the channels and processes them
+func (c *Client) listen() error {
+	go c.receiverLoop()
+
+	// Clean up, when loop exits
+	err := c.listenerLoop()
+	feeds.RemoveClient(c)
+	return c.closeConnections(err)
+}
+
+// Separate function to ease error handling of the internal client loop
+func (c *Client) listenerLoop() error {
+	// Periodically ping the client to ensure external proxies and CDNs do not
+	// close the connection. Those have a tendency of sending 1001 to both ends
+	// after rather short timeout, if no messages have been sent.
+	ping := time.NewTicker(pingTimer)
+	defer ping.Stop()
+
+	for {
+		select {
+		case err := <-c.close:
+			return err
+		case msg := <-c.sendExternal:
+			if err := c.send(msg); err != nil {
+				return err
+			}
+		case <-ping.C:
+			deadline := time.Now().Add(pingWriteTimeout)
+			err := c.conn.WriteControl(websocket.PingMessage, nil, deadline)
+			if err != nil {
+				return err
+			}
+		case msg := <-c.receive:
+			if err := c.handleMessage(msg.typ, msg.msg); err != nil {
+				return err
+			}
+		case board := <-c.redirect:
+			err := c.sendMessage(common.MessageRedirect, board)
+			if err != nil {
+				return err
+			}
+			if err := c.registerSync(0, board); err != nil {
+				return err
+			}
+		}
+	}
+}
+
+// Close all connections an goroutines associated with the Client
+func (c *Client) closeConnections(err error) error {
+	// Close receiver loop
+	c.Close(nil)
+
+	// Send the client the reason for closing
+	var closeType int
+	switch err.(type) {
+	case *websocket.CloseError:
+		switch err.(*websocket.CloseError).Code {
+
+		// Normal client-side websocket closure
+		case websocket.CloseNormalClosure, websocket.CloseGoingAway:
+			err = nil
+			closeType = websocket.CloseNormalClosure
+
+		// Ignore abnormal websocket closure as a network fault
+		case websocket.CloseAbnormalClosure:
+			err = nil
+		}
+	case nil:
+		closeType = websocket.CloseNormalClosure
+	default:
+		c.sendMessage(common.MessageInvalid, err.Error())
+		closeType = websocket.CloseInvalidFramePayloadData
+	}
+
+	// Try to send the client a close frame. This might fail, so ignore any
+	// errors.
+	if closeType != 0 {
+		msg := websocket.FormatCloseMessage(closeType, "")
+		deadline := time.Now().Add(time.Second)
+		c.conn.WriteControl(websocket.CloseMessage, msg, deadline)
+	}
+
+	// Close socket
+	closeError := c.conn.Close()
+	if closeError != nil {
+		err = util.WrapError(closeError.Error(), err)
+	}
+
+	return err
+}
+
+// Send a message to the client. Can be used concurrently.
+func (c *Client) Send(msg []byte) {
+	select {
+	case c.sendExternal <- msg:
+	default:
+		c.Close(errors.New("send buffer overflow"))
+	}
+}
+
+// Sends a message to the client. Not safe for concurrent use.
+func (c *Client) send(msg []byte) error {
+	return c.conn.WriteMessage(websocket.TextMessage, msg)
+}
+
+// Format a message type as JSON and send it to the client. Not safe for
+// concurrent use.
+func (c *Client) sendMessage(typ common.MessageType, msg interface{}) error {
+	encoded, err := common.EncodeMessage(typ, msg)
+	if err != nil {
+		return err
+	}
+	return c.send(encoded)
+}
+
+// receiverLoop proxies the blocking conn.ReadMessage() into the main client
+// select loop.
+func (c *Client) receiverLoop() {
+	for {
+		var (
+			err error
+			msg receivedMessage
+		)
+		msg.typ, msg.msg, err = c.conn.ReadMessage() // Blocking
+		if err != nil {
+			c.Close(err)
+			return
+		}
+
+		select {
+		case <-c.close:
+			return
+		case c.receive <- msg:
+		}
+	}
+}
+
+// handleMessage parses a message received from the client through websockets
+func (c *Client) handleMessage(msgType int, msg []byte) error {
+	if msgType != websocket.TextMessage {
+		return errInvalidFrame("only text frames allowed")
+	}
+	if len(msg) < 2 {
+		return errInvalidPayload(msg)
+	}
+
+	// First two characters of a message define its type
+	uncast, err := strconv.ParseUint(string(msg[:2]), 10, 8)
+	if err != nil {
+		return errInvalidPayload(msg)
+	}
+	typ := common.MessageType(uncast)
+	if !c.gotFirstMessage {
+		if typ != common.MessageSynchronise {
+			return errInvalidPayload(msg)
+		}
+		c.gotFirstMessage = true
+
+		// Send current server time on first synchronization
+		err = c.sendMessage(common.MessageServerTime, time.Now().Unix())
+		if err != nil {
+			return err
+		}
+
+		// If the IP needs a captcha on the next post allocation, notify the
+		// client
+		if !auth.CanPost(c.ip) {
+			err = c.sendMessage(common.MessageCaptcha, 0)
+			if err != nil {
+				return err
+			}
+		}
+	}
+
+	return c.runHandler(typ, msg)
+}
+
+// logError writes the client's websocket error to the error log (or stdout)
+func (c *Client) logError(err error) {
+	log.Printf("error by %s: %v\n%s\n", c.ip, err, debug.Stack())
+}
+
+// Close closes a websocket connection with the provided status code and
+// optional reason
+func (c *Client) Close(err error) {
+	select {
+	case <-c.close:
+	default:
+		// Exit both for-select loops, if they have not exited yet
+		for i := 0; i < 2; i++ {
+			select {
+			case c.close <- err:
+			default:
+			}
+		}
+	}
+}
+
+// Redirect closes any open posts and forces the client to sync to the target
+// board
+func (c *Client) Redirect(board string) {
+	select {
+	case c.redirect <- board:
+	default:
+	}
+}
+
+// IP returns the IP of the  client connection. Thread-safe, as the IP is never
+// written to after assignment.
+func (c *Client) IP() string {
+	return c.ip
+}

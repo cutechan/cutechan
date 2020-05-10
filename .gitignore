@@ -2,21 +2,18 @@
 /dist/
 /smiles-pp/
 /labels-pp/
+/mustache-pp/
 
+/bin/
+/geoip/
+/go/smiles/
 *_easyjson.go
 bin_data.go
 *.qtpl.go
-/mustache-pp/
-/go/src/*
-/go/bin/
-/go/pkg/
-!/go/src/meguca/
-/go/multipart-*
+
 uploads
 thumb_*.jpg
 thumb_*.png
-tags
-/geoip/
 
 /deb_dist/
 /cutechan.deb

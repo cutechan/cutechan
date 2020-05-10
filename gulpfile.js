@@ -391,8 +391,8 @@ gulp.task("smiles", () => {
         package smiles
         var Smiles = map[string]bool{${goSmiles}}
       `;
-      try { fs.mkdirSync("go/src/smiles"); } catch(e) { /* skip */ }
-      fs.writeFileSync("go/src/smiles/smiles.go", goModule);
+      try { fs.mkdirSync("go/smiles"); } catch(e) { /* skip */ }
+      fs.writeFileSync("go/smiles/smiles.go", goModule);
     });
 });
 

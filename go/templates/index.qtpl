@@ -1,0 +1,129 @@
+{% import "github.com/cutechan/cutechan/go/config" %}
+{% import "github.com/cutechan/cutechan/go/lang" %}
+{% import "github.com/cutechan/cutechan/go/auth" %}
+
+{% func renderHeader(l string, cs config.BoardConfigs, status bool) %}{% stripspace %}
+	<header class="header">
+		<a class="header-item header-logo" href="/" title="{%s lang.Get(l, "main") %}">
+			<i class="logo"></i>
+		</a>
+		<a class="header-item header-board" href="/all/">{%s lang.Get(l, "aggregator") %}</a>
+		{% for _, conf := range cs %}
+			<a class="header-item header-board" href="/{%s conf.ID %}/">{%s conf.Title %}</a>
+		{% endfor %}
+		<div class="header-spacer"></div>
+		<span class="header-item header-profiles">
+			<input class="header-profiles-search" placeholder="{%s lang.Get(l, "searchIdol") %}">
+		</span>
+		{% if status %}
+		<span class="header-item header-status" title="{%s lang.Get(l, "sync") %}">
+			<i class="fa fa-spinner fa-pulse fa-fw"></i>
+		</span>
+		{% endif %}
+		<a class="header-item header-icon header-faq-icon" title="{%s lang.Get(l, "FAQ") %}">
+			<i class="fa fa-info-circle"></i>
+		</a>
+		<a class="header-item header-icon header-account-icon" title="{%s lang.Get(l, "account") %}">
+			<i class="fa fa-user-circle-o"></i>
+		</a>
+		<a class="header-item header-icon header-options-icon" title="{%s lang.Get(l, "options") %}">
+			<i class="fa fa-gear"></i>
+		</a>
+	</header>
+{% endstripspace %}{% endfunc %}
+
+{% func renderPage(ss *auth.Session, l, title, page string, status bool) %}{% stripspace %}
+	{% code conf := config.Get() %}
+	{% code confJSON := config.GetJSON() %}
+	{% code boards := config.GetBoardConfigs() %}
+	{% code boardsJSON := config.GetBoardsJSON() %}
+	{% code sessionJSON := ss.TryMarshal() %}
+	{% code pos := ss.GetPositions() %}
+	<!DOCTYPE html>
+	<html class="{%s posClasses(pos) %}">
+	<head>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="application-name" content="cutechan">
+		<meta name="description" content="Cute chan">
+		<title>{%s title %}</title>
+		<link rel="icon" href="/static/favicons/default.ico" id="favicon">
+		<link rel="manifest" href="/static/mobile/manifest.json">
+		<link rel="stylesheet" href="/static/css/{%s conf.DefaultCSS %}.css" id="theme-css">
+		{% if conf.ImageRootOverride != "" %}
+			<link rel="dns-prefetch" href="{%s getDNSPrefetchURL(conf.ImageRootOverride) %}">
+		{% endif %}
+		<style id="ignore-css">
+			{%= generateIgnoreCSS(ss) %}
+		</style>
+		<script>
+			var lang="{%s l %}",config={%z= confJSON %},boards={%z= boardsJSON %},session={%z= sessionJSON %};
+			if (localStorage.theme !== config.DefaultCSS) {
+				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
+			}
+		</script>
+	</head>
+	<body>
+		{%= renderHeader(l, boards, status) %}
+		<main class="main">{%s= page %}</main>
+		<aside class="alerts-container"></aside>
+		<aside class="hover-container"></aside>
+		<aside class="popup-container"></aside>
+		<aside class="modal-container">
+			<div class="modal faq-modal"></div>
+			{%= accountModal(ss, l) %}
+			{%= optionsModal(l) %}
+		</aside>
+		<script src="/static/js/loader.js"></script>
+	</body>
+	</html>
+{% endstripspace %}{% endfunc %}
+
+Custom not found page.
+{% func NotFound(l string) %}{% stripspace %}
+	<!DOCTYPE html>
+	<html>
+	<head>
+		<meta charset="utf-8">
+		<link rel="icon" href="/static/favicons/default.ico">
+		<title>{%s lang.Get(l, "notFound") %}</title>
+		<style>
+			html, body {
+				margin: 0;
+				padding: 0;
+				height: 100%;
+			}
+			body {
+				color: #fff;
+				background: #131416;
+				font-family: Helvetica, sans-serif;
+			}
+			main {
+				height: 100%;
+				display: flex;
+				text-align: center;
+				flex-direction: column;
+				justify-content: center;
+				background: center/contain no-repeat url(/static/img/luda.jpg);
+			}
+			h1 {
+				font-size: 56px;
+				font-weight: normal;
+				margin: 0;
+				margin-bottom: 10px;
+			}
+			h2 {
+				font-size: 26px;
+				font-weight: normal;
+				margin: 0;
+			}
+		</style>
+	</head>
+	<body>
+		<main>
+			<h1>404</h1>
+			<h2>{%s lang.Get(l, "notFound") %}</h2>
+		</main>
+	</body>
+	</html>
+{% endstripspace %}{% endfunc %}
