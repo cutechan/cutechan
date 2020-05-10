@@ -78,7 +78,7 @@ server-config:
 	cp cutechan.toml.example cutechan.toml
 
 server-db:
-	sudo -u postgres createuser meguca -P
+	sudo -u postgres psql -c "CREATE USER meguca WITH PASSWORD 'meguca';"
 	sudo -u postgres createdb meguca -O meguca
 
 deb: clean templates smiles client server

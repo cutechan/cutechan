@@ -28,8 +28,8 @@
   },
   "devDependencies": {
     "@types/classnames": "^2.2.3",
+    "@types/events": "^3.0.0",
     "@types/mustache": "^0.8.30",
-    "@types/node": "^9.4.7",
     "autoprefixer": "^8.1.0",
     "cssnano": "^4.1.10",
     "del": "^3.0.0",
