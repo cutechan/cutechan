@@ -53,27 +53,10 @@ server-db:
 	sudo -u postgres psql -c "CREATE USER meguca WITH PASSWORD 'meguca';"
 	sudo -u postgres createdb meguca -O meguca
 
-deb: clean templates smiles client server
-	-patchelf --replace-needed libGraphicsMagick.so.3 libGraphicsMagick-Q16.so.3 go/bin/cutethumb
-	mkdir deb_dist
-	cp -a DEBIAN deb_dist
-	mkdir -p deb_dist/usr/share/cutechan/www
-	cp -a dist/* deb_dist/usr/share/cutechan/www
-	mkdir -p deb_dist/usr/share/cutechan/data
-	-cp -a geoip deb_dist/usr/share/cutechan/data
-	-cp -a go/src/github.com/Kagami/kpopnet/data/models deb_dist/usr/share/cutechan/data
-	cp -a go/src/github.com/Kagami/kpopnet/data/profiles deb_dist/usr/share/cutechan/data
-	mkdir -p deb_dist/usr/bin
-	cp -a go/bin/cute* deb_dist/usr/bin
-	chmod -R go+rX deb_dist
-	dpkg-deb --root-owner-group -z0 -b deb_dist cutechan.deb
-
 gofmt:
 	cd go; go fmt ./...
 
-clean: templates-clean smiles-clean client-clean server-clean deb-clean
-
-templates-clean:
+mustache-clean:
 	rm -rf mustache-pp
 
 smiles-clean:
@@ -85,5 +68,4 @@ client-clean:
 server-clean:
 	rm -rf bin go/*/bin_data.go go/*/*_easyjson.go go/templates/*.qtpl.go
 
-deb-clean:
-	rm -rf deb_dist cutechan.deb
+clean: mustache-clean smiles-clean client-clean server-clean

@@ -1,12 +1,13 @@
 /node_modules/
 /dist/
+/mustache-pp/
 /smiles-pp/
 /labels-pp/
-/mustache-pp/
 
 /bin/
 /geoip/
 /go/smiles/
+/cutechan.toml
 bin_data.go
 *_easyjson.go
 *.qtpl.go
@@ -14,7 +15,3 @@ bin_data.go
 uploads
 thumb_*.jpg
 thumb_*.png
-
-/deb_dist/
-/cutechan.deb
-/cutechan.toml
