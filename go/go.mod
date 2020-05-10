@@ -18,7 +18,6 @@ require (
 	github.com/mailru/easyjson v0.7.1
 	github.com/microcosm-cc/bluemonday v1.0.2
 	github.com/ncw/swift v1.0.50
-	github.com/oschwald/maxminddb-golang v1.6.0
 	github.com/pkg/sftp v1.11.0
 	github.com/valyala/quicktemplate v1.5.0
 	golang.org/x/crypto v0.0.0-20200429183012-4b2356b1ed79

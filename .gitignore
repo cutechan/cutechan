@@ -5,7 +5,6 @@
 /labels-pp/
 
 /bin/
-/geoip/
 /go/smiles/
 /cutechan.toml
 bin_data.go

@@ -47,7 +47,6 @@ Options:
   -z <size>     Cache size in megabytes (default: 128).
   -s <sitedir>  Site directory location (default: ./dist).
   -d <datadir>  Kpopnet data directory location (default: ./go/src/github.com/Kagami/kpopnet/data).
-  -g <geodir>   GeoIP databases directory location (default: ./geoip).
   -o <origin>   Allowed origin for Idol API (default: http://localhost:8000).
   --cfg <path>  Path to TOML config
 `
@@ -62,7 +61,7 @@ var confDefault = config{
 	Cache:         128,
 	SiteDir:       "./dist",
 	DataDir:       "./go/src/github.com/Kagami/kpopnet/data",
-	GeoDir:        "./geoip",
+	GeoHeader:     "",
 	Origin:        "http://localhost:8000",
 	FileBackend:   "fs",
 	FileDir:       "./uploads",
@@ -87,7 +86,7 @@ type config struct {
 	Cache         int    `docopt:"-z"`
 	SiteDir       string `docopt:"-s" toml:"site_dir"`
 	DataDir       string `docopt:"-d" toml:"data_dir"`
-	GeoDir        string `docopt:"-g" toml:"geo_dir"`
+	GeoHeader     string `docopt:"-g" toml:"geo_header"`
 	Origin        string `docopt:"-o"`
 	Path          string `docopt:"--cfg" toml:"-"`
 	FileBackend   string `toml:"file_backend"`
@@ -137,6 +136,7 @@ func serve(conf config) {
 	db.ConnArgs = conf.Conn
 	cache.Size = conf.Cache
 	auth.IsReverseProxied = conf.Rproxy
+	geoip.CountryHeader = conf.GeoHeader
 
 	startFileBackend := func() error {
 		return file.StartBackend(file.Config{
@@ -150,18 +150,12 @@ func serve(conf config) {
 			Container: conf.FileContainer,
 		})
 	}
-	loadGeoIP := func() error {
-		return geoip.Load(conf.GeoDir)
-	}
 	startKpopnet := func() error {
 		return kpopnet.StartFaceRec(conf.DataDir)
 	}
 
 	// Prepare subsystems.
-	err := util.RunTasks([][]util.Task{
-		{db.StartDB, lang.Load, templates.CompileMustache, startFileBackend, loadGeoIP},
-		{startKpopnet},
-	})
+	err := util.RunTasks([][]util.Task{{db.StartDB, lang.Load, templates.CompileMustache, startFileBackend}, {startKpopnet}})
 	if err != nil {
 		log.Fatalf("Error preparing server: %v", err)
 	}

@@ -72,7 +72,7 @@ func FromReq(r *http.Request) string {
 
 // Try to guess appropriate default language based on request's IP.
 func DefaultFromReq(r *http.Request) string {
-	code := geoip.CountyFromReq(r)
+	code := geoip.CountryFromReq(r)
 	switch code {
 	case "RU", "BY", "UA", "KZ":
 		return "ru"
