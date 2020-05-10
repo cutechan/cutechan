@@ -1,77 +1,49 @@
-export GOPATH = $(PWD)/go
-export PATH := $(PATH):$(PWD)/go/bin
-export NODE_BIN = $(PWD)/node_modules/.bin
-export HTMLMIN = $(NODE_BIN)/html-minifier
-export GULP = $(NODE_BIN)/gulp
+export GOBIN = $(PWD)/bin
+export PATH := $(PATH):$(GOBIN)
+export NODEBIN = $(PWD)/node_modules/.bin
+export HTMLMIN = $(NODEBIN)/html-minifier
+export GULP = $(NODEBIN)/gulp
 
-all: templates smiles client server
-precommit: gofmt-staged tslint-staged
-
-update-main-deps:
-	npm install
-	-go get -u -v -tags nodlib \
-		github.com/Kagami/kpopnet/go/src/kpopnet \
-		github.com/cutechan/blackfriday \
-		github.com/cutechan/thumbnailer
+all: client server
 
 node_modules:
 	npm install
 
-TEMPLATES = $(wildcard mustache/*.mustache)
-TEMPLATESPP = $(subst mustache/,mustache-pp/,$(TEMPLATES))
-
-mustache-pp:
-	mkdir mustache-pp
-
 mustache-pp/%.mustache: mustache/%.mustache
-	$(HTMLMIN) --collapse-whitespace --collapse-inline-tag-whitespace \
-		-o $@ $<
+	@mkdir -p mustache-pp
+	$(HTMLMIN) --collapse-whitespace --collapse-inline-tag-whitespace -o $@ $<
 
-templates: node_modules mustache-pp $(TEMPLATESPP)
+mustache-pp: node_modules $(subst mustache/,mustache-pp/,$(wildcard mustache/*.mustache))
 
-.PHONY: smiles
-smiles: node_modules
+smiles-pp: node_modules $(wildcard smiles/*.png)
 	$(GULP) smiles
 
-client: node_modules go/src/github.com/Kagami/kpopnet
+client: mustache-pp smiles-pp
 	$(GULP)
 
-client-watch:
+client-watch: mustache-pp smiles-pp
 	$(GULP) -w
 
-tslint-staged:
-	./tslint-staged.sh
+bin/go-bindata:
+	cd go; go install github.com/kevinburke/go-bindata/go-bindata
 
-go/src/github.com/Kagami/kpopnet:
-	go get -d github.com/Kagami/kpopnet/go/src/kpopnet
+bin/easyjson:
+	cd go; go install github.com/mailru/easyjson/easyjson
 
-go/bin/go-bindata:
-	go get github.com/kevinburke/go-bindata/...
-	go get github.com/mailru/easyjson/...
-	go get github.com/valyala/quicktemplate/qtc/...
-	go get github.com/dchest/captcha/...
-	go get golang.org/x/crypto/bcrypt/...
+bin/qtc:
+	cd go; go install github.com/valyala/quicktemplate/qtc
 
-GENSRC = $(shell find go/src/meguca -type f -name '*.go' | xargs grep -l '^//go:generate')
-GENSRC += $(shell find go/src/meguca/db/sql -type f -name '*.sql')
-GENSRC += $(wildcard go/src/meguca/templates/*.qtpl)
+GENSRC  = $(shell find go -type f -name '*.go' | xargs grep -l '^//go:generate')
+GENSRC += $(shell find go/db/sql -type f -name '*.sql')
+GENSRC += $(wildcard go/templates/*.qtpl)
 GENSRC += $(wildcard po/*.po)
-GENSRC += $(TEMPLATESPP)
-go/src/meguca/db/bin_data.go: export TMPDIR = $(PWD)/go
-go/src/meguca/db/bin_data.go: go/bin/go-bindata $(GENSRC)
-	go generate meguca/...
+go/db/bin_data.go: bin/go-bindata bin/easyjson bin/qtc mustache-pp $(GENSRC)
+	cd go; go generate ./...
 
-GOSRC = $(shell find go/src/meguca -type f -name '*.go')
-go/bin/cutechan: go/src/meguca/db/bin_data.go go/src/smiles/smiles.go $(GOSRC)
-ifeq ($(GOTAGS),)
-	go get -v meguca/...
-else
-	go get -v -tags $(GOTAGS) meguca/...
-endif
+server: smiles-pp go/db/bin_data.go
+	cd go; go install ./cmd/...
 
-server: go/bin/cutechan
-
-serve: templates server
+serve: server
 	cutechan --debug --cfg cutechan.toml
 
 server-config:
@@ -97,14 +69,7 @@ deb: clean templates smiles client server
 	dpkg-deb --root-owner-group -z0 -b deb_dist cutechan.deb
 
 gofmt:
-	go fmt meguca/...
-
-gofmt-staged:
-	./gofmt-staged.sh
-
-.PHONY: tags
-tags:
-	ctags -R go/src/meguca ts
+	cd go; go fmt ./...
 
 clean: templates-clean smiles-clean client-clean server-clean deb-clean
 
@@ -112,17 +77,13 @@ templates-clean:
 	rm -rf mustache-pp
 
 smiles-clean:
-	rm -rf smiles-pp go/src/smiles
+	rm -rf smiles-pp go/smiles
 
 client-clean:
 	rm -rf labels-pp dist
 
 server-clean:
-	rm -f \
-		go/bin/cutechan* \
-		go/src/meguca/*/bin_data.go \
-		go/src/meguca/*/*_easyjson.go \
-		go/src/meguca/templates/*.qtpl.go
+	rm -rf bin go/*/bin_data.go go/*/*_easyjson.go go/templates/*.qtpl.go
 
 deb-clean:
 	rm -rf deb_dist cutechan.deb

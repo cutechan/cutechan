@@ -7,8 +7,8 @@
 /bin/
 /geoip/
 /go/smiles/
-*_easyjson.go
 bin_data.go
+*_easyjson.go
 *.qtpl.go
 
 uploads
