@@ -69,3 +69,9 @@ server-clean:
 	rm -rf bin go/*/bin_data.go go/*/*_easyjson.go go/templates/*.qtpl.go
 
 clean: mustache-clean smiles-clean client-clean server-clean
+
+docker-build:
+	docker build -t cutechan .
+
+docker-copy:
+	docker save cutechan | pv | ssh -C ${CC_DEPLOY_HOST} 'docker load'

@@ -9,9 +9,7 @@
 // tslint:disable-next-line:no-reference
 /// <reference path="ts/util/modules.d.ts" />
 
-// FIXME(Kagami): Circular imports, must go before client module.
 import { init as initOptions } from "./ts/options";
-
 import { init as initAdmin } from "./ts/admin";
 import { init as initAlerts, showAlert } from "./ts/alerts";
 import { init as initAuth } from "./ts/auth";

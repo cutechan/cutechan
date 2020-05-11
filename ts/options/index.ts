@@ -2,7 +2,6 @@
  * User-set settings storage and change handling.
  */
 
-import { config } from "../state";
 import { ChangeEmitter, emitChanges, trigger } from "../util";
 
 interface Options extends ChangeEmitter {
@@ -112,7 +111,7 @@ const specs: { [id: string]: OptionSpec } = {
   // Change theme
   theme: {
     get default() {
-      return config.defaultCSS;
+      return (window as any).config.defaultCSS;
     },
     exec(theme: string) {
       if (!theme) {
