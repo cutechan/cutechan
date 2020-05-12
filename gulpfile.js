@@ -167,8 +167,8 @@ function templates() {
 
 function typescriptGulp(opts) {
   const project = ts.createProject("tsconfig.json", opts);
-  return gulp
-    .src("app.ts")
+  return project
+    .src()
     .pipe(project(ts.reporter.nullReporter()))
     .on("error", handleError);
 }

@@ -163,3 +163,8 @@ CREATE TABLE sticker_tags (
   PRIMARY KEY (sticker_hash, tag_id)
 );
 CREATE INDEX sticker_tags_tag_id ON sticker_tags (tag_id);
+
+CREATE TABLE idol_previews (
+  id uuid PRIMARY KEY,
+  image_id char(40) UNIQUE NOT NULL REFERENCES images
+);

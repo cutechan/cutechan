@@ -70,8 +70,13 @@ server-clean:
 
 clean: mustache-clean smiles-clean client-clean server-clean
 
-docker-build:
-	docker build -t cutechan .
+client-deploy: client
+	ssh ${CC_DEPLOY_HOST} 'rm -rf /srv/cutechan/www/static'
+	scp -Cqr dist/static ${CC_DEPLOY_HOST}:/srv/cutechan/www/
 
-docker-copy:
+server-deploy: server
+	docker build -t cutechan .
 	docker save cutechan | pv | ssh -C ${CC_DEPLOY_HOST} 'docker load'
+	ssh ${CC_DEPLOY_HOST} 'systemctl restart docker-compose@cutechan.service'
+
+deploy: client-deploy server-deploy
