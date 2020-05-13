@@ -44,7 +44,7 @@ Options:
   -u <user>     Spawn thumbnail process as separate user.
   -z <size>     Cache size in megabytes (default: 128).
   -s <sitedir>  Site directory location (default: ./dist).
-  --cfg <path>  Path to TOML config
+  --cfg <path>  Path to TOML config.
 `
 
 // Duplicates USAGE so make sure to update consistently!

@@ -12,6 +12,17 @@ services:
     environment:
       - TZ=Europe/Moscow
 
+  kpopnet:
+    image: kpopnet
+    ports:
+      - "8002:8002"
+    networks:
+      - db
+    volumes:
+      - "./kpopnet.toml:/kpopnet.toml"
+    environment:
+      - TZ=Europe/Moscow
+
 networks:
   db:
     external: true
