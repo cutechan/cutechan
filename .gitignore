@@ -7,7 +7,6 @@
 /bin/
 /go/smiles/
 /cutechan.toml
-/docker-compose.yml
 bin_data.go
 *_easyjson.go
 *.qtpl.go

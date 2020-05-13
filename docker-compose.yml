@@ -1,0 +1,17 @@
+version: "3"
+services:
+  cutechan:
+    image: cutechan
+    ports:
+      - "8001:8001"
+    networks:
+      - db
+    volumes:
+      - "./cutechan.toml:/cutechan.toml"
+      - "./dist:/dist"
+    environment:
+      - TZ=Europe/Moscow
+
+networks:
+  db:
+    external: true
