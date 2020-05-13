@@ -2,7 +2,7 @@ FROM ubuntu:20.04
 
 RUN sed -i 's|http://archive.ubuntu.com/ubuntu/|mirror://mirrors.ubuntu.com/mirrors.txt|g' /etc/apt/sources.list \
  && apt update && apt install -y --no-install-recommends libavformat58 libswscale5 libgraphicsmagick-q16-3 sudo ca-certificates && apt clean \
- && addgroup --gid 2000 cutechan && adduser --system --gid 2000 --no-create-home --disabled-login cutechan \
+ && adduser --system --group --no-create-home --disabled-login --uid 2000 cutechan \
  && adduser --system --group --no-create-home --disabled-login cutethumb \
  && echo 'cutechan ALL=(cutethumb) NOPASSWD: /usr/bin/cutethumb' > /etc/sudoers.d/cutechan && chmod 440 /etc/sudoers.d/cutechan \
  && echo 'Set disable_coredump false' >> /etc/sudo.conf \
