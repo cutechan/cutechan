@@ -47,6 +47,12 @@ msgstr "Bildquelle überschreiben"
 msgid "imageRootOverrideTitle"
 msgstr "Wenn du Bilder von einer anderen Quelle hosten willst, schreibe hier die volle Quellenadresse. Lasse das Feld leer um die Standardadresse zu benutzen. Beispiel: 'https://images.meguca.org'"
 
+msgid "kpopnetRootOverride"
+msgstr "Kpopnet API root"
+
+msgid "kpopnetRootOverrideTitle"
+msgstr "Set root URL of the kpopnet-compatible API backend"
+
 msgid "lang"
 msgstr "Language"
 
@@ -415,6 +421,9 @@ msgstr "Seitenladefehler"
 
 msgid "sendErr"
 msgstr "Fehlerdaten übermitteln"
+
+msgid "profileErr"
+msgstr "Profiles load error"
 
 msgid "aggregator"
 msgstr "Alle Boards"

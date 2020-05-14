@@ -10,6 +10,7 @@ interface Config {
   maxFiles: number;
   defaultCSS: string;
   imageRootOverride: string;
+  kpopnetRootOverride: string;
 }
 
 // Board-specific configurations

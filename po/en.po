@@ -47,6 +47,12 @@ msgstr "Image root override"
 msgid "imageRootOverrideTitle"
 msgstr "If you wish to host images from a separate location like a CDN, enter the full root address here. Leave empty to use the default address. Example: 'https://images.meguca.org'"
 
+msgid "kpopnetRootOverride"
+msgstr "Kpopnet API root"
+
+msgid "kpopnetRootOverrideTitle"
+msgstr "Set root URL of the kpopnet-compatible API backend"
+
 msgid "lang"
 msgstr "Language"
 
@@ -415,6 +421,9 @@ msgstr "Site load error"
 
 msgid "sendErr"
 msgstr "Send error"
+
+msgid "profileErr"
+msgstr "Profiles load error"
 
 msgid "aggregator"
 msgstr "All boards"

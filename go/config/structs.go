@@ -8,10 +8,11 @@ type ServerConfig struct {
 
 //easyjson:json
 type ServerPublic struct {
-	MaxSize           int64  `json:"maxSize"`
-	MaxFiles          int    `json:"maxFiles"`
-	DefaultCSS        string `json:"defaultCSS"`
-	ImageRootOverride string `json:"imageRootOverride,omitempty"`
+	MaxSize             int64  `json:"maxSize"`
+	MaxFiles            int    `json:"maxFiles"`
+	DefaultCSS          string `json:"defaultCSS"`
+	ImageRootOverride   string `json:"imageRootOverride,omitempty"`
+	KpopnetRootOverride string `json:"kpopnetRootOverride,omitempty"`
 }
 
 type AccessMode int

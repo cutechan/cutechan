@@ -25,7 +25,6 @@ func serveSetIdolPreview(w http.ResponseWriter, r *http.Request) {
 	serveJSON(w, r, answer)
 }
 
-// TODO(Kagami): Move this to go-kpopnet?
 func setIdolPreview(w http.ResponseWriter, r *http.Request) (answer map[string]string, err error) {
 	idolId := getParam(r, "id")
 	if !uuidRe.MatchString(idolId) {
@@ -80,8 +79,6 @@ func setIdolPreview(w http.ResponseWriter, r *http.Request) (answer map[string]s
 		}
 		return
 	}
-
-	//kpopnet.ClearProfilesCache()
 
 	answer = map[string]string{"SHA1": res.file.SHA1}
 	return

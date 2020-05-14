@@ -47,6 +47,12 @@ msgstr "Адрес сайта изображений"
 msgid "imageRootOverrideTitle"
 msgstr "Для размещения изображений на отдельном сайте введите его полный адрес, например «https://images.example.com»"
 
+msgid "kpopnetRootOverride"
+msgstr "Адрес kpopnet API"
+
+msgid "kpopnetRootOverrideTitle"
+msgstr "Установить базовый URL kpopnet-совместимого сервера"
+
 msgid "lang"
 msgstr "Language"
 
@@ -415,6 +421,9 @@ msgstr "Ошибка загрузки сайта"
 
 msgid "sendErr"
 msgstr "Ошибка отправки"
+
+msgid "profileErr"
+msgstr "Ошибка загрузки профилей"
 
 msgid "aggregator"
 msgstr "Все доски"

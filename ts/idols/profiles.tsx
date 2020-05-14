@@ -23,9 +23,13 @@ import { showAlert } from "../alerts";
 import { isPowerUser } from "../auth";
 import _ from "../lang";
 import { getFilePrefix } from "../posts";
+import { config } from "../state";
 import { hook, HOOKS, printf } from "../util";
 import { PROFILES_CONTAINER_SEL } from "../vars";
 import { BackgroundClickMixin, EscapePressMixin } from "../widgets";
+
+const cutechanApiPrefix = "/api/idols";
+const apiPrefix = config.kpopnetRootOverride || cutechanApiPrefix;
 
 interface PreviewProps {
   idol: Idol;
@@ -35,8 +39,10 @@ interface PreviewProps {
 class IdolPreview extends Component<PreviewProps, any> {
   private fileEl: HTMLInputElement = null;
   public render({ idol }: PreviewProps) {
-    const opts = { small: true, prefix: getFilePrefix() };
-    const previewUrl = getIdolPreviewUrl(idol, opts);
+    const previewUrl = getIdolPreviewUrl(idol, {
+      small: true,
+      prefix: getFilePrefix(),
+    });
     const style = { backgroundImage: `url(${previewUrl})` };
     return (
       <div class="idol-preview" style={style} onClick={this.handlePreviewClick}>
@@ -64,7 +70,8 @@ class IdolPreview extends Component<PreviewProps, any> {
   };
   private handleFile(file: File) {
     const { idol } = this.props;
-    setIdolPreview(idol, file)
+    // This request always goes through cutechan backend.
+    setIdolPreview(idol, file, { prefix: cutechanApiPrefix })
       .then(({ SHA1 }: ImageIdData) => {
         this.props.onChange(idol, SHA1);
       })
@@ -240,13 +247,16 @@ class ProfilesWrapperBase extends Component<WrapperProps, WrapperState> {
   private handleSearchFocus = () => {
     if (!this.state.loading && !this.state.query) {
       this.setState({ loading: true });
-      getProfiles()
+      getProfiles({ prefix: apiPrefix })
         .then((profiles) => {
           this.profiles = profiles;
           this.bandMap = getBandMap(profiles);
           this.setState({ loading: false });
         })
-        .catch(showAlert);
+        .catch((err) => {
+          showAlert(new Error(_("profileErr") + ": " + _(err.message)));
+          this.setState({ loading: false });
+        });
     }
   };
   private handleSearch = (e: Event) => {

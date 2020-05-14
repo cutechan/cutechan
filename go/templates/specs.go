@@ -113,6 +113,10 @@ var specs = map[string][]inputSpec{
 			ID:   "imageRootOverride",
 			Type: _string,
 		},
+		{
+			ID:   "kpopnetRootOverride",
+			Type: _string,
+		},
 	},
 }
 
