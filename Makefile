@@ -71,8 +71,7 @@ server-clean:
 clean: mustache-clean smiles-clean client-clean server-clean
 
 client-deploy: client
-	ssh ${CC_DEPLOY_HOST} 'rm -rf /srv/cutechan/www/static'
-	scp -Cqr dist/static ${CC_DEPLOY_HOST}:/srv/cutechan/www/
+	rsync -rvze ssh --delete dist/ ${CC_DEPLOY_HOST}:/srv/cutechan/www/
 
 server-deploy: server
 	docker build -t cutechan .
