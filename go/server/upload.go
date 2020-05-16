@@ -123,6 +123,9 @@ func saveFile(user string, srcData []byte, file *common.ImageCommon) (res upload
 	case ipc.ErrThumbUnsupported:
 		err = aerrUnsupported
 		return
+	case ipc.ErrThumbDimensions:
+		err = aerrBadDimensions
+		return
 	case ipc.ErrThumbTracks:
 		err = aerrNoTracks
 		return

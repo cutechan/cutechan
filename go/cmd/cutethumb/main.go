@@ -14,8 +14,8 @@ import (
 )
 
 const (
-	maxWidth        = 12000
-	maxHeight       = 15000
+	maxWidth        = 10000
+	maxHeight       = 10000
 	thumbSize       = 200
 	jpegQuality     = 90
 	maxLenFileTitle = 300
@@ -62,6 +62,9 @@ func getThumbnail(srcData []byte) (ithumb *ipc.Thumb, err error) {
 		// TODO(Kagami): Fix in upstream.
 		src.HasAudio = true
 		err = nil
+	case thumbnailer.ErrTooWide, thumbnailer.ErrTooTall:
+		err = ipc.ErrThumbDimensions
+		return
 	default:
 		switch err.(type) {
 		case thumbnailer.UnsupportedMIMEError:

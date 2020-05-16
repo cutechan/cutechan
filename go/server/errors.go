@@ -60,6 +60,7 @@ func (ae ApiError) MarshalJSON() ([]byte, error) {
 }
 
 // Predefined API errors.
+// TODO(Kagami): i18n!
 var (
 	aerrNoURL           = aerrorNew(400, "no url")
 	aerrNotSupportedURL = aerrorNew(400, "url not supported")
@@ -91,6 +92,7 @@ var (
 	aerrTooManyBans     = aerrorNew(400, "too many bans")
 	aerrNoEmbedPreview  = aerrorNew(404, "can't find embed preview")
 	aerrUnsupported     = aerrorFrom(400, ipc.ErrThumbUnsupported)
+	aerrBadDimensions   = aerrorFrom(400, ipc.ErrThumbDimensions)
 	aerrNoTracks        = aerrorFrom(400, ipc.ErrThumbTracks)
 )
 

@@ -22,6 +22,7 @@ const (
 var (
 	ErrThumbProcess     = errors.New("error generating thumbnail")
 	ErrThumbUnsupported = errors.New("unsupported file format")
+	ErrThumbDimensions  = errors.New("unsupported file dimensions")
 	ErrThumbTracks      = errors.New("unsupported track set")
 )
 
@@ -81,6 +82,7 @@ func decodeThumbError(s string) error {
 	for _, e := range []error{
 		ErrThumbProcess,
 		ErrThumbUnsupported,
+		ErrThumbDimensions,
 		ErrThumbTracks,
 	} {
 		if s == e.Error() {
