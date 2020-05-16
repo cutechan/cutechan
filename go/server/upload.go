@@ -133,7 +133,7 @@ func saveFile(user string, srcData []byte, file *common.ImageCommon) (res upload
 		err = aerrCorrupted
 		return
 	default:
-		err = aerrInternal
+		err = aerrInternal.Hide(err)
 		return
 	}
 

@@ -82,6 +82,7 @@ func getThumbnail(srcData []byte) (ithumb *ipc.Thumb, err error) {
 	if isMp3 {
 		thumb.Data = nil
 	} else if thumb.Data == nil {
+		log.Printf("thumbnailer error: no data")
 		err = ipc.ErrThumbProcess
 		return
 	}
