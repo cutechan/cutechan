@@ -9,6 +9,7 @@ services:
       - db
     volumes:
       - "./cutechan.toml:/cutechan.toml"
+      - "./uploads:/uploads"
       - "./dist:/dist"
     environment:
       - TZ=Europe/Moscow
