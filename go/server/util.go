@@ -1,10 +1,10 @@
 package server
 
 import (
+	"errors"
 	"fmt"
 	"log"
 	"mime/multipart"
-	"net"
 	"net/http"
 	"net/url"
 	"os"
@@ -30,10 +30,8 @@ func writeData(w http.ResponseWriter, r *http.Request, data []byte) {
 	if err == nil {
 		return
 	}
-	if opErr, ok := err.(*net.OpError); ok {
-		if opErr.Err == syscall.EPIPE {
-			return
-		}
+	if errors.Is(err, syscall.EPIPE) {
+		return
 	}
 	logError(r, err)
 }
