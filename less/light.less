@@ -64,7 +64,7 @@
 @searchplaceholder: #757575;
 @pagecurrent: inherit;
 @replyboard: @link;
-@accountformshead:#333;
+@accountformshead: #333;
 
 // Borders.
 @border: 1px solid hsl(275, 10%, 50%);
@@ -80,19 +80,43 @@
 @buttonBorderHover: @border;
 @replysendBorder: 1px solid hsl(275, 25%, 40%);
 @replysendBorderHover: @buttonBorderHover;
-@lightHBorder: linear-gradient(90deg, transparent, #bfb4d6 10%, #bfb4d6 90%, transparent 100%) 1;
-@darkHBorder: linear-gradient(90deg, transparent, #a295bf 10%, #a295bf 90%, transparent 100%) 1;
-@darkVBorder: linear-gradient(transparent, #a295bf 20%, #a295bf 80%, transparent 100%) 1;
+@lightHBorder: linear-gradient(
+    90deg,
+    transparent,
+    #bfb4d6 10%,
+    #bfb4d6 90%,
+    transparent 100%
+  )
+  1;
+@darkHBorder: linear-gradient(
+    90deg,
+    transparent,
+    #a295bf 10%,
+    #a295bf 90%,
+    transparent 100%
+  )
+  1;
+@darkVBorder: linear-gradient(
+    transparent,
+    #a295bf 20%,
+    #a295bf 80%,
+    transparent 100%
+  )
+  1;
 
 // Shadows.
 @buttonShadow: 0px 0px 2px 0px hsla(275, 30%, 30%, 0.6);
-@searchShadow: inset 0 1px 1px rgba(0,0,0,.075),0 0 3px rgba(149, 92, 158, 0.9);
+@searchShadow: inset 0 1px 1px rgba(0, 0, 0, 0.075),
+  0 0 3px rgba(149, 92, 158, 0.9);
 @headerShadow: 0 0 2px 0 rgba(80, 64, 107, 0.8);
 @modalShadow: @headerShadow;
-@previewShadow: 1px 1px 2px 0px hsl(275, 8%, 57%), 0px 0px 2px 0px hsl(275, 8%, 57%), 0 0 30px 0 hsla(0, 0%, 0%, 0.07);
-@postShadow: 1px 1px 3px 0px hsl(275, 8%, 57%), 0px 0px 2px 0px hsl(275, 8%, 57%);
+@previewShadow: 1px 1px 2px 0px hsl(275, 8%, 57%),
+  0px 0px 2px 0px hsl(275, 8%, 57%), 0 0 30px 0 hsla(0, 0%, 0%, 0.07);
+@postShadow: 1px 1px 3px 0px hsl(275, 8%, 57%),
+  0px 0px 2px 0px hsl(275, 8%, 57%);
 @postfilebadgeShadow: 1px 1px 2px #734474;
-@replyShadow: 1px 1px 3px 0px hsl(275, 8%, 57%), 0px 0px 2px 0px hsl(275, 8%, 57%);
+@replyShadow: 1px 1px 3px 0px hsl(275, 8%, 57%),
+  0px 0px 2px 0px hsl(275, 8%, 57%);
 @replysendShadow: @buttonShadow;
 
 // Style everything.

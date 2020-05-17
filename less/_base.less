@@ -29,47 +29,48 @@ body {
 }
 
 @font-face {
-  font-family: 'Open Sans';
+  font-family: "Open Sans";
   font-style: normal;
   font-weight: 400;
   font-display: swap;
-  src: local('Open Sans Regular'), local('OpenSans-Regular'), local('Open Sans'),
-       url('../fonts/opensans-regular.woff2') format('woff2'),
-       url('../fonts/opensans-regular.woff') format('woff');
+  src: local("Open Sans Regular"), local("OpenSans-Regular"), local("Open Sans"),
+    url("../fonts/opensans-regular.woff2") format("woff2"),
+    url("../fonts/opensans-regular.woff") format("woff");
 }
 
 @font-face {
-  font-family: 'Open Sans';
+  font-family: "Open Sans";
   font-style: italic;
   font-weight: 400;
   font-display: swap;
-  src: local('Open Sans Italic'), local('OpenSans-Italic'),
-       url('../fonts/opensans-italic.woff2') format('woff2'),
-       url('../fonts/opensans-italic.woff') format('woff');
+  src: local("Open Sans Italic"), local("OpenSans-Italic"),
+    url("../fonts/opensans-italic.woff2") format("woff2"),
+    url("../fonts/opensans-italic.woff") format("woff");
 }
 
 @font-face {
-  font-family: 'Open Sans';
+  font-family: "Open Sans";
   font-style: normal;
   font-weight: 700;
   font-display: swap;
-  src: local('Open Sans Bold'), local('OpenSans-Bold'),
-       url('../fonts/opensans-700.woff2') format('woff2'),
-       url('../fonts/opensans-700.woff') format('woff');
+  src: local("Open Sans Bold"), local("OpenSans-Bold"),
+    url("../fonts/opensans-700.woff2") format("woff2"),
+    url("../fonts/opensans-700.woff") format("woff");
 }
 
 @font-face {
-  font-family: 'Open Sans';
+  font-family: "Open Sans";
   font-style: italic;
   font-weight: 700;
   font-display: swap;
-  src: local('Open Sans Bold Italic'), local('OpenSans-BoldItalic'),
-       url('../fonts/opensans-700italic.woff2') format('woff2'),
-       url('../fonts/opensans-700italic.woff') format('woff');
+  src: local("Open Sans Bold Italic"), local("OpenSans-BoldItalic"),
+    url("../fonts/opensans-700italic.woff2") format("woff2"),
+    url("../fonts/opensans-700italic.woff") format("woff");
 }
 
-body, textarea {
-  font-family: 'Open Sans', sans-serif;
+body,
+textarea {
+  font-family: "Open Sans", sans-serif;
   font-size: @fontSize;
   line-height: @lineHeight;
   font-weight: 400;
@@ -103,7 +104,8 @@ td {
   padding: 0;
 }
 
-h1, h2 {
+h1,
+h2 {
   text-align: center;
 }
 
@@ -147,10 +149,10 @@ h2 {
   cursor: pointer;
   outline: none;
   user-select: none;
-  transition:0.1s;
+  transition: 0.1s;
   &:not(:disabled):hover {
     color: @controlHover;
-    transition:0.1s;
+    transition: 0.1s;
   }
   &:disabled {
     cursor: default;
@@ -184,7 +186,7 @@ h2 {
     color: @buttonHover;
     border: @buttonBorderHover;
     box-shadow: @buttonShadow;
-    transition:0.1s linear;
+    transition: 0.1s linear;
   }
   &:disabled {
     cursor: default;
@@ -199,7 +201,8 @@ h2 {
 // MAIN CONTAINERS
 //////////////////////////////
 
-html, body {
+html,
+body {
   height: 100%;
 }
 
@@ -217,7 +220,9 @@ html, body {
   padding: 0 60px 60px;
 }
 
-.threads-container, .catalog, .stickers {
+.threads-container,
+.catalog,
+.stickers {
   flex: 1 auto;
 }
 
@@ -231,7 +236,8 @@ html, body {
   }
 }
 
-.thread_index, .hover-container_board {
+.thread_index,
+.hover-container_board {
   .post-quote-control {
     display: none;
   }
@@ -245,12 +251,12 @@ html, body {
 }
 
 .omit-link {
-    font-size: 16px;
-    font-weight: 600;
+  font-size: 16px;
+  font-weight: 600;
 }
 
 .lastN-link {
-    margin-left: 5px;
+  margin-left: 5px;
   font-size: 16px;
 }
 
@@ -294,7 +300,7 @@ html, body {
   color: @headeritem;
   text-decoration: none;
   outline: none;
-  transition:0.05s linear;
+  transition: 0.05s linear;
 }
 
 .header-board {
@@ -303,10 +309,12 @@ html, body {
   white-space: nowrap;
 }
 
-.header-logo:hover, .header-board:hover, .header-icon:hover {
+.header-logo:hover,
+.header-board:hover,
+.header-icon:hover {
   color: @headeritem;
   background: @headerBGHover;
-  transition:0.05s linear;
+  transition: 0.05s linear;
 }
 
 .logo {
@@ -320,7 +328,9 @@ html, body {
   flex: 1;
 }
 
-.header-counter, .header-status, .header-icon {
+.header-counter,
+.header-status,
+.header-icon {
   width: 70px;
   &:empty {
     display: none;
@@ -600,13 +610,15 @@ html, body {
   color: @modal;
   box-shadow: @modalShadow;
 
-  a:hover, .control:not(:disabled):hover {
+  a:hover,
+  .control:not(:disabled):hover {
     color: @linkHover;
   }
 }
 
 .tab-modal_empty {
-  .tab-butts, .tab-cont {
+  .tab-butts,
+  .tab-cont {
     display: none;
   }
 }
@@ -648,8 +660,8 @@ html, body {
   &:last-child {
     border-bottom: none;
   }
-  & .control:not(:disabled):hover{
-    color:@control;
+  & .control:not(:disabled):hover {
+    color: @control;
   }
 }
 
@@ -676,7 +688,7 @@ html, body {
   }
 }
 
-.tab-cont{
+.tab-cont {
   & > div {
     display: none;
     padding-top: 5px;
@@ -690,21 +702,20 @@ html, body {
 .tab-link {
   cursor: pointer;
   font-weight: bold;
-  transition:transform  0.1s;
-    &:hover {
-    color:@link;
-    transition:transform  0.07s;
+  transition: transform 0.1s;
+  &:hover {
+    color: @link;
+    transition: transform 0.07s;
     padding-bottom: 4px;
   }
   &.tab-sel {
     transform: translateY(-3px);
     margin-bottom: 3px;
-    transition:transform  0.07s;
-      &:hover {
-       padding-bottom: 3px;
-      }
+    transition: transform 0.07s;
+    &:hover {
+      padding-bottom: 3px;
+    }
   }
-
 }
 
 //////////////////////////////
@@ -712,11 +723,12 @@ html, body {
 //////////////////////////////
 
 .modal {
-  input[type=number] {
+  input[type="number"] {
     width: 5em;
   }
 
-  input[type=text], input[type=password] {
+  input[type="text"],
+  input[type="password"] {
     background-color: @modalInput;
     box-sizing: border-box;
     border: 1px solid rgb(169, 169, 169);
@@ -725,7 +737,7 @@ html, body {
     outline: none;
     padding-left: 5px;
     -moz-appearance: none;
-    color:#111;
+    color: #111;
   }
 }
 
@@ -820,7 +832,7 @@ html, body {
 
 .account-form-ignoremode {
   flex: 1;
-  margin: 0
+  margin: 0;
 }
 
 .account-form-section {
@@ -897,7 +909,7 @@ html, body {
 }
 
 .thread-nav_top {
-  display:none;
+  display: none;
 }
 
 //////////////////////////////
@@ -918,12 +930,12 @@ html, body {
 }
 
 .board-pagination-page:hover {
-    opacity: 1;
+  opacity: 1;
 }
 
 .board-pagination-page_current {
   color: @pagecurrent;
-  border:@border;
+  border: @border;
   border-radius: 2px;
   opacity: 1;
 }
@@ -958,7 +970,7 @@ html, body {
   transition: 0.1s linear;
   &:focus {
     transition: 0.1s linear;
-  };
+  }
 }
 
 .board-search-sort {
@@ -974,8 +986,7 @@ html, body {
   outline: none;
   appearance: none;
   direction: ltr;
-  background-image:
-    linear-gradient(45deg, transparent 50%, gray 50%),
+  background-image: linear-gradient(45deg, transparent 50%, gray 50%),
     linear-gradient(135deg, gray 50%, transparent 50%);
   background-position: 7px 12px, 12px 12px;
   background-size: 5px 5px;
@@ -1073,7 +1084,7 @@ header {
 }
 
 .thread_single .post_op .post-subject {
-    display: none;
+  display: none;
 }
 
 .post-name {
@@ -1216,7 +1227,7 @@ html.work-mode {
 
 .post-backlink {
   &:before {
-    content: " "
+    content: " ";
   }
 }
 
@@ -1233,21 +1244,24 @@ html.work-mode {
   float: right;
   margin-right: 0;
   padding: 0 0 0 15px;
-   font-size:15px;
+  font-size: 15px;
 }
 
 //////////////////////////////
 // POST FORMATTING
 //////////////////////////////
 
-.post-message, .reply-message {
+.post-message,
+.reply-message {
   // Spoiler.
   del {
     padding: 0.1ex 0 0;
     text-decoration: none;
     background-color: @spoiler;
     &:not(:hover) {
-      &, a, .post-embed-icon {
+      &,
+      a,
+      .post-embed-icon {
         padding: 0.1ex 0 0;
         color: transparent;
       }
@@ -1257,7 +1271,8 @@ html.work-mode {
     }
     &:hover {
       cursor: text;
-      a, a:hover {
+      a,
+      a:hover {
         cursor: pointer;
         padding: 0.1ex 0 0;
         color: @spoilerlink;
@@ -1288,7 +1303,8 @@ html.work-mode {
   }
 
   // Paragraph/quote inside quote.
-  blockquote > p, blockquote > blockquote {
+  blockquote > p,
+  blockquote > blockquote {
     display: inline;
   }
 
@@ -1301,7 +1317,8 @@ html.work-mode {
   }
 
   // List.
-  ul, ol {
+  ul,
+  ol {
     margin: 0;
     padding-left: 20px;
   }
@@ -1317,22 +1334,26 @@ html.work-mode {
 //////////////////////////////
 
 html:not(.pos_moderators) {
-  .post-delete-control, .post-ban-control {
+  .post-delete-control,
+  .post-ban-control {
     display: none;
   }
 }
-.post-delete-control, .post-ban-control {
-   opacity: 0.3;
+.post-delete-control,
+.post-ban-control {
+  opacity: 0.3;
 }
-.post-delete-control:hover, .post-ban-control:hover {
-   opacity: 1;
+.post-delete-control:hover,
+.post-ban-control:hover {
+  opacity: 1;
 }
 
 //////////////////////////////
 // POST EMBED
 //////////////////////////////
 
-.post-youtube-embed, .post-youtubepls-embed {
+.post-youtube-embed,
+.post-youtubepls-embed {
   .post-embed-icon {
     color: #f00;
   }
@@ -1405,7 +1426,7 @@ html:not(.pos_moderators) {
   }
 
   .post-quote-control {
-    float: none
+    float: none;
   }
 }
 
@@ -1502,7 +1523,7 @@ html:not(.pos_moderators) {
     counter-increment: p 0;
   }
   .post-id:after {
-    content: " ("counter(p)")";
+    content: " (" counter(p) ")";
     color: @postcounter;
   }
   .post_op .post-id:after {
@@ -1656,7 +1677,7 @@ html:not(.pos_moderators) {
   background: none;
   outline: none;
   border: none;
-  color:@body;
+  color: @body;
 }
 
 .reply-body {
@@ -1686,7 +1707,7 @@ html:not(.pos_moderators) {
   height: 100%;
   pointer-events: none;
   opacity: 1;
-  transition: opacity .5s;
+  transition: opacity 0.5s;
 }
 .reply-body_scrollable:hover {
   .reply-body-coverbar {
@@ -1729,7 +1750,8 @@ html:not(.pos_moderators) {
   margin-right: 10px;
 }
 
-.reply-attach-control, .reply-record-control {
+.reply-attach-control,
+.reply-record-control {
   font-size: 22px;
   line-height: 20px;
 }
@@ -2223,7 +2245,8 @@ html.user_power {
 .admin-ban-id-header {
   width: 80px;
 }
-.admin-ban-id, .admin-log-id {
+.admin-ban-id,
+.admin-log-id {
   box-sizing: border-box;
   width: 80px;
   text-align: center;
@@ -2240,7 +2263,8 @@ html.user_power {
   color: #d9534f;
 }
 
-.admin-ban-by, .admin-log-by {
+.admin-ban-by,
+.admin-log-by {
   white-space: nowrap;
   text-align: center;
 }
@@ -2248,7 +2272,8 @@ html.user_power {
 .admin-ban-time-header {
   width: 160px;
 }
-.admin-ban-time, .admin-log-time {
+.admin-ban-time,
+.admin-log-time {
   width: 160px;
   white-space: nowrap;
   text-decoration: dotted underline;
@@ -2273,7 +2298,7 @@ html.user_power {
   text-align: center;
   background: @control;
   opacity: 0;
-  transition: opacity .5s;
+  transition: opacity 0.5s;
 }
 .admin-footer_visible {
   opacity: 1;
