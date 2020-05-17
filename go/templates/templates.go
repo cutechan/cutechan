@@ -7,6 +7,7 @@ package templates
 import (
 	"bytes"
 	"fmt"
+	"net/http"
 	"strings"
 
 	"github.com/cutechan/cutechan/go/auth"
@@ -20,62 +21,68 @@ var (
 	mustacheTemplates = map[string]*mustache.Template{}
 )
 
-func Page(ss *auth.Session, l, title, html string, status bool) []byte {
+// Params are essential params for any rendered page.
+type Params struct {
+	Req     *http.Request
+	Session *auth.Session
+	Lang    string
+}
+
+func Page(p Params, title, html string, status bool) []byte {
 	var buf bytes.Buffer
-	writerenderPage(&buf, ss, l, title, html, status)
+	writerenderPage(&buf, p, title, html, status)
 	return buf.Bytes()
 }
 
 func Board(
-	l, title string,
+	p Params,
+	title string,
 	page, total int,
-	ss *auth.Session,
 	catalog bool,
 	threadHTML []byte,
 ) []byte {
 	html := renderBoard(
 		threadHTML,
-		l, title,
+		p.Lang, title,
 		page, total,
 		catalog,
 	)
-	return Page(ss, l, title, html, false)
+	return Page(p, title, html, false)
 }
 
 func Thread(
+	p Params,
 	id uint64,
-	l, board, title string,
+	board, title string,
 	abbrev bool,
-	ss *auth.Session,
 	postHTML []byte,
 ) []byte {
-	html := renderThread(postHTML, id, l, board, title)
-	return Page(ss, l, title, html, true)
+	html := renderThread(postHTML, id, p.Lang, board, title)
+	return Page(p, title, html, true)
 }
 
-func Landing(ss *auth.Session, l string) []byte {
-	title := lang.Get(l, "main")
-	html := renderLanding(l)
-	return Page(ss, l, title, html, false)
+func Landing(p Params) []byte {
+	title := lang.Get(p.Lang, "main")
+	html := renderLanding(p.Lang)
+	return Page(p, title, html, false)
 }
 
-func Stickers(ss *auth.Session, l string, stickHTML []byte) []byte {
-	html := renderStickers(l, stickHTML)
-	title := lang.Get(l, "stickers")
-	return Page(ss, l, title, html, false)
+func Stickers(p Params, stickHTML []byte) []byte {
+	html := renderStickers(p.Lang, stickHTML)
+	title := lang.Get(p.Lang, "stickers")
+	return Page(p, title, html, false)
 }
 
 func Admin(
-	ss *auth.Session,
-	l string,
+	p Params,
 	cs config.BoardConfigs,
 	staff auth.Staff,
 	bans auth.BanRecords,
 	log auth.ModLogRecords,
 ) []byte {
 	html := renderAdmin(cs, staff, bans, log)
-	title := lang.Get(l, "Admin")
-	return Page(ss, l, title, html, false)
+	title := lang.Get(p.Lang, "Admin")
+	return Page(p, title, html, false)
 }
 
 func CompileMustache() (err error) {

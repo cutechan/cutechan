@@ -1,6 +1,5 @@
 {% import "github.com/cutechan/cutechan/go/config" %}
 {% import "github.com/cutechan/cutechan/go/lang" %}
-{% import "github.com/cutechan/cutechan/go/auth" %}
 
 {% func renderHeader(l string, cs config.BoardConfigs, status bool) %}{% stripspace %}
 	<header class="header">
@@ -32,13 +31,13 @@
 	</header>
 {% endstripspace %}{% endfunc %}
 
-{% func renderPage(ss *auth.Session, l, title, page string, status bool) %}{% stripspace %}
+{% func renderPage(p Params, title, page string, status bool) %}{% stripspace %}
 	{% code conf := config.Get() %}
 	{% code confJSON := config.GetJSON() %}
 	{% code boards := config.GetBoardConfigs() %}
 	{% code boardsJSON := config.GetBoardsJSON() %}
-	{% code sessionJSON := ss.TryMarshal() %}
-	{% code pos := ss.GetPositions() %}
+	{% code sessionJSON := p.Session.TryMarshal() %}
+	{% code pos := p.Session.GetPositions() %}
 	<!DOCTYPE html>
 	<html class="{%s posClasses(pos) %}">
 	<head>
@@ -54,25 +53,25 @@
 			<link rel="dns-prefetch" href="{%s getDNSPrefetchURL(conf.ImageRootOverride) %}">
 		{% endif %}
 		<style id="ignore-css">
-			{%= generateIgnoreCSS(ss) %}
+			{%= generateIgnoreCSS(p.Session) %}
 		</style>
 		<script>
-			var lang="{%s l %}",config={%z= confJSON %},boards={%z= boardsJSON %},session={%z= sessionJSON %};
+			var lang="{%s p.Lang %}",config={%z= confJSON %},boards={%z= boardsJSON %},session={%z= sessionJSON %};
 			if (localStorage.theme !== config.DefaultCSS) {
 				document.getElementById("theme-css").href = "/static/css/" + localStorage.theme + ".css";
 			}
 		</script>
 	</head>
 	<body>
-		{%= renderHeader(l, boards, status) %}
+		{%= renderHeader(p.Lang, boards, status) %}
 		<main class="main">{%s= page %}</main>
 		<aside class="alerts-container"></aside>
 		<aside class="hover-container"></aside>
 		<aside class="popup-container"></aside>
 		<aside class="modal-container">
 			<div class="modal faq-modal"></div>
-			{%= accountModal(ss, l) %}
-			{%= optionsModal(l) %}
+			{%= accountModal(p.Session, p.Lang) %}
+			{%= optionsModal(p.Lang) %}
 		</aside>
 		<script src="/static/js/loader.js"></script>
 	</body>

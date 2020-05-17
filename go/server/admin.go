@@ -491,7 +491,7 @@ func serveAdmin(
 
 	l := lang.FromReq(r)
 	cs := config.GetBoardConfigsByID(boards)
-	html := templates.Admin(ss, l, cs, staff, bans, log)
+	html := templates.Admin(templates.Params{r, ss, l}, cs, staff, bans, log)
 	serveHTML(w, r, html)
 }
 

@@ -31,7 +31,7 @@ func serveHTML(w http.ResponseWriter, r *http.Request, buf []byte) {
 
 func serveLanding(w http.ResponseWriter, r *http.Request) {
 	ss, _ := getSession(r, "")
-	html := templates.Landing(ss, lang.FromReq(r))
+	html := templates.Landing(templates.Params{r, ss, lang.FromReq(r)})
 	serveHTML(w, r, html)
 }
 
@@ -76,7 +76,7 @@ func boardHTML(w http.ResponseWriter, r *http.Request, b string, catalog bool) {
 	if b == "all" {
 		title = lang.Get(l, "aggregator")
 	}
-	html = templates.Board(l, title, n, total, ss, catalog, html)
+	html = templates.Board(templates.Params{r, ss, l}, title, n, total, catalog, html)
 	serveHTML(w, r, html)
 }
 
@@ -98,7 +98,7 @@ func threadHTML(w http.ResponseWriter, r *http.Request) {
 
 	b := getParam(r, "board")
 	title := data.(common.Thread).Subject
-	html = templates.Thread(id, l, b, title, lastN != 0, ss, html)
+	html = templates.Thread(templates.Params{r, ss, l}, id, b, title, lastN != 0, html)
 	serveHTML(w, r, html)
 }
 
@@ -161,7 +161,7 @@ func crossRedirect(w http.ResponseWriter, r *http.Request) {
 func serveStickers(w http.ResponseWriter, r *http.Request) {
 	ss, _ := getSession(r, "")
 	stickHTML := []byte{}
-	html := templates.Stickers(ss, lang.FromReq(r), stickHTML)
+	html := templates.Stickers(templates.Params{r, ss, lang.FromReq(r)}, stickHTML)
 	serveHTML(w, r, html)
 }
 
