@@ -74,11 +74,11 @@ server-clean:
 clean: mustache-clean smiles-clean client-clean server-clean
 
 client-deploy: client
-	rsync -rvze ssh --delete dist/ ${CC_DEPLOY_HOST}:/srv/cutechan/www/
+	rsync -rvze ssh --delete dist/ ${CUTECHAN_DEPLOY_HOST}:/srv/cutechan/www/
 
 server-deploy: server
 	docker build -t cutechan .
-	docker save cutechan | pv | ssh -C ${CC_DEPLOY_HOST} 'docker load'
-	ssh ${CC_DEPLOY_HOST} 'systemctl restart docker-compose@cutechan.service'
+	docker save cutechan | pv | ssh -C ${CUTECHAN_DEPLOY_HOST} 'docker load'
+	ssh ${CUTECHAN_DEPLOY_HOST} 'systemctl restart docker-compose@cutechan.service'
 
 deploy: client-deploy server-deploy
