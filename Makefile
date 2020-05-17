@@ -22,7 +22,10 @@ client: mustache-pp smiles-pp
 	$(GULP)
 
 client-watch: mustache-pp smiles-pp
-	$(GULP) -w
+	NODE_ENV=development $(GULP) -w
+
+client-dev: mustache-pp smiles-pp
+	NODE_ENV=development $(GULP)
 
 bin/go-bindata:
 	cd go; go install github.com/kevinburke/go-bindata/go-bindata

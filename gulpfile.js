@@ -21,6 +21,8 @@ const po2json = require("gulp-po2json");
 const uglify = require("gulp-uglify/composer")(uglifyes, console);
 const livereload = require("gulp-livereload");
 
+// Development mode.
+const dev = process.env.NODE_ENV === "development";
 // Keep script alive and rebuild on file changes.
 const watch = process.argv.includes("-w");
 
@@ -208,7 +210,7 @@ gulp.task("es6", () =>
   buildClient({ target: "ES6", outFile: "app.js" })
     .pipe(
       gulpif(
-        !watch,
+        !dev,
         uglify({
           mangle: { safari10: true },
           compress: { inline: 1 },
@@ -228,7 +230,7 @@ gulp.task("es5", () =>
     .pipe(sourcemaps.write("maps"))
     .pipe(gulp.dest(JS_DIR))
 );
-if (!watch) {
+if (!dev) {
   tasks.push("es5");
 }
 
@@ -424,7 +426,7 @@ createTask("loader", "loader.js", (src) =>
       })
     )
     .on("error", handleError)
-    .pipe(gulpif(!watch, uglify()))
+    .pipe(gulpif(!dev, uglify()))
     .pipe(gulp.dest(JS_DIR))
 );
 
@@ -485,7 +487,7 @@ createTask(
       .on("error", handleError)
       .pipe(
         gulpif(
-          !watch,
+          !dev,
           require("gulp-postcss")([
             // NOTE(Kagami): Takes ~1sec to just require them.
             require("autoprefixer")(),
