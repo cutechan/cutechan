@@ -383,9 +383,6 @@ msgstr "Перейти к списку тредов"
 msgid "rules"
 msgstr "Правила"
 
-msgid "news"
-msgstr "Новости"
-
 msgid "stickers"
 msgstr "Стикеры"
 

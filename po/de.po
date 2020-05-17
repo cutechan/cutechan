@@ -383,9 +383,6 @@ msgstr "Gehe zu Threads"
 msgid "rules"
 msgstr "Regeln"
 
-msgid "news"
-msgstr "Neuigkeiten"
-
 msgid "stickers"
 msgstr "Aufkleber"
 

@@ -1,27 +1,5 @@
 {% import "github.com/cutechan/cutechan/go/lang" %}
 
-{% comment %}
-{% func News(l string, news []common.NewsEntry) %}{% stripspace %}
-	<section class="news">
-		<header class="news-header">{%s lang.Get(l, "news") %}</header>
-		<section class="news-content">
-			{% for _, item := range news %}
-				<article class="news-item">
-					<figure class="news-item-file">
-						<time class="news-item-time">{%s readableTime(l, item.Time) %}</time>
-						<img class="news-item-thumb" src="{%s item.ImageName %}">
-					</figure>
-					<section class="news-item-body">
-						<div class="news-item-title">{%s item.Subject %}</div>
-						{%s= item.Body %}
-					</section>
-				</article>
-			{% endfor %}
-		</section>
-	</section>
-{% endstripspace %}{% endfunc %}
-{% endcomment %}
-
 {% func renderLanding(l string) %}{% stripspace %}
 	<section class="landing">
 		<h1 class="landing-header">

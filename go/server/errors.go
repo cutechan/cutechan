@@ -103,7 +103,6 @@ var (
 	errReadOnly         = errors.New("read only board")
 	errBanned           = errors.New("you are banned")
 	errNoImage          = errors.New("post has no image")
-	errNoNews           = errors.New("can't get news")
 	errPageOverflow     = errors.New("page not found")
 	errInvalidBoardName = errors.New("invalid board name")
 	errBoardNameTaken   = errors.New("board name taken")

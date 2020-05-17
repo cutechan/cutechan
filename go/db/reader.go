@@ -2,6 +2,7 @@ package db
 
 import (
 	"database/sql"
+
 	"github.com/cutechan/cutechan/go/common"
 
 	"github.com/lib/pq"
@@ -366,27 +367,6 @@ func GetRecentPosts(op uint64) (posts []PostStats, err error) {
 			return
 		}
 		posts = append(posts, p)
-	}
-	err = r.Err()
-	return
-}
-
-// Retrieve latest news.
-func GetNews() (news []common.NewsEntry, err error) {
-	r, err := prepared["get_news"].Query()
-	if err != nil {
-		return
-	}
-	defer r.Close()
-
-	news = make([]common.NewsEntry, 0, 5)
-	var entry common.NewsEntry
-	for r.Next() {
-		err = r.Scan(&entry.Subject, &entry.Body, &entry.ImageName, &entry.Time)
-		if err != nil {
-			return
-		}
-		news = append(news, entry)
 	}
 	err = r.Err()
 	return

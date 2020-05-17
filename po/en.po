@@ -383,9 +383,6 @@ msgstr "Go to threads"
 msgid "rules"
 msgstr "Rules"
 
-msgid "news"
-msgstr "News"
-
 msgid "stickers"
 msgstr "Stickers"
 
