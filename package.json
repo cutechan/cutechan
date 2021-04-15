@@ -8,6 +8,9 @@
     "type": "git",
     "url": "https://github.com/cutechan/cutechan.git"
   },
+  "scripts": {
+    "test": "true"
+  },
   "dependencies": {
     "almond": "^0.3.3",
     "classnames": "^2.2.5",
