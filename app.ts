@@ -49,10 +49,13 @@ async function init() {
       initPosts();
     }
   }
-
+  
   initUI();
   initAuth();
   initProfiles();
+
+  // Fire off site fully loaded event for userscripts
+  document.dispatchEvent(new CustomEvent('site_fully_loaded', {bubbles:true}));
 }
 
 init().catch((err) => {

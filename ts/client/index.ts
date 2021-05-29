@@ -42,6 +42,9 @@ export function insertPost(data: PostData) {
   if (options.scrollToBottom && atBottom && !isHoverActive()) {
     scrollToBottom();
   }
+  // Fire event to signal userscripts that a new post was added
+  document.dispatchEvent(new CustomEvent('new_post_hook', {bubbles:true,
+    detail: {post: view.el}}));
 }
 
 export function init() {
