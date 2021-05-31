@@ -14,7 +14,7 @@ require (
 	github.com/kevinburke/go-bindata v3.19.0+incompatible
 	github.com/leonelquinteros/gotext v1.4.0
 	github.com/lib/pq v1.5.2
-	github.com/mailru/easyjson v0.7.1
+	github.com/mailru/easyjson v0.7.7
 	github.com/microcosm-cc/bluemonday v1.0.2
 	github.com/ncw/swift v1.0.50
 	github.com/pkg/sftp v1.11.0
