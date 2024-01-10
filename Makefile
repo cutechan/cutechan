@@ -47,7 +47,7 @@ server: smiles-pp go/db/bin_data.go
 	cd go; go install ./cmd/...
 
 serve: server
-	cutechan --debug --cfg cutechan.toml
+	cutechan --debug -H 0.0.0.0 --cfg cutechan.toml
 
 server-config:
 	cp cutechan.toml.example cutechan.toml

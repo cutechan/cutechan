@@ -1,7 +1,6 @@
-FROM ubuntu:21.10
+FROM ubuntu:23.10
 
-RUN sed -i 's|http://archive.ubuntu.com/ubuntu/|http://mirror.yandex.ru/ubuntu/|g' /etc/apt/sources.list \
- && apt update && apt install -y --no-install-recommends libavformat58 libswscale5 libgraphicsmagick-q16-3 sudo ca-certificates tzdata && apt clean \
+RUN apt update && apt install -y --no-install-recommends libavformat60 libswscale7 libgraphicsmagick-q16-3 sudo ca-certificates tzdata && apt clean \
  && adduser --system --group --no-create-home --disabled-login --uid 2000 user \
  && adduser --system --group --no-create-home --disabled-login cutethumb \
  && echo 'user ALL=(cutethumb) NOPASSWD: /usr/bin/cutethumb' > /etc/sudoers.d/cutechan && chmod 440 /etc/sudoers.d/cutechan \
