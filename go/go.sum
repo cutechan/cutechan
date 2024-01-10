@@ -2,8 +2,8 @@ github.com/BurntSushi/toml v0.3.1 h1:WXkYYl6Yr3qBf1K79EBnL4mak0OimBfB0XUf9Vl28OQ
 github.com/BurntSushi/toml v0.3.1/go.mod h1:xHWCNGjB5oqiDr8zfno3MHue2Ht5sIBksp03qcyfWMU=
 github.com/cutechan/blackfriday v0.0.0-20171016195349-a1d253e12717 h1:O/Y5ZBDRnjZn8BIB6XuIko4W9nVmcnipwMLbKDo8Whs=
 github.com/cutechan/blackfriday v0.0.0-20171016195349-a1d253e12717/go.mod h1:tQywASKOX0U/F0wDH7NVVEYHVpt+r2jW0GJeiQ+vkls=
-github.com/cutechan/thumbnailer v0.0.0-20240110093006-5c61994332fb h1:bkVwrqZYiua3gTM3bFjmW/Auz0pN2MqTa8FUlODpQ+Y=
-github.com/cutechan/thumbnailer v0.0.0-20240110093006-5c61994332fb/go.mod h1:/WC5oJ6r0pxry8MxZT5N6oGIPCfpYlFAogw0GMRVl00=
+github.com/cutechan/thumbnailer v0.0.0-20240110173437-cc758dd26cfb h1:GMfKE6eGhdW+UHKXHEu6kcLG8IVpO/NLm86YBYejq08=
+github.com/cutechan/thumbnailer v0.0.0-20240110173437-cc758dd26cfb/go.mod h1:/WC5oJ6r0pxry8MxZT5N6oGIPCfpYlFAogw0GMRVl00=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dchest/captcha v0.0.0-20170622155422-6a29415a8364 h1:U+BMqUt8LFgyrF0/NKgPZdr1sGZ3j6uBECpOGcISpFI=

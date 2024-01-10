@@ -7,7 +7,7 @@ toolchain go1.21.6
 require (
 	github.com/BurntSushi/toml v0.3.1
 	github.com/cutechan/blackfriday v0.0.0-20171016195349-a1d253e12717
-	github.com/cutechan/thumbnailer v0.0.0-20240110093006-5c61994332fb
+	github.com/cutechan/thumbnailer v0.0.0-20240110173437-cc758dd26cfb
 	github.com/dchest/captcha v0.0.0-20170622155422-6a29415a8364
 	github.com/dimfeld/httptreemux v5.0.1+incompatible
 	github.com/docopt/docopt-go v0.0.0-20180111231733-ee0de3bc6815
