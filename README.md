@@ -5,9 +5,16 @@ K-pop oriented imageboard started as [meguca](https://github.com/bakape/meguca) 
 ## Prepare
 
 ```bash
-docker build -f Dockerfile-dev -t cutechan-dev .
-docker run -it --name cutechan-dev -v $PWD:/cutechan -p 127.0.0.1:8001:8001 cutechan-dev
-/etc/init.d/postgresql start
+docker volume create pgdata
+docker build -f Dockerfile-dev -t amd64/cutechan-dev .
+docker run -it --rm --name cutechan-dev -v ./pgdata:/var/lib/postgresql -v $PWD:/cutechan -p 127.0.0.1:8001:8001 amd64/cutechan-dev
+
+# Recreate cluster on first run
+#pg_dropcluster --stop 15 main
+#pg_createcluster --start 15 main
+
+# Run DB server after container start
+#/etc/init.d/postgresql start
 ```
 
 ## Build

@@ -12,6 +12,7 @@ bin_data.go
 *_easyjson.go
 *.qtpl.go
 
+/pgdata/
 uploads
 thumb_*.jpg
 thumb_*.png
