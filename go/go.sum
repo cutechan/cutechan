@@ -6,6 +6,8 @@ github.com/cutechan/thumbnailer v0.0.0-20240110173437-cc758dd26cfb h1:GMfKE6eGhd
 github.com/cutechan/thumbnailer v0.0.0-20240110173437-cc758dd26cfb/go.mod h1:/WC5oJ6r0pxry8MxZT5N6oGIPCfpYlFAogw0GMRVl00=
 github.com/cutechan/thumbnailer v0.0.0-20240203102447-90eeef3a8811 h1:sfrhafOf/iFTCQ4khh8h9r5GMBFyc2HqL/OytQQE0DE=
 github.com/cutechan/thumbnailer v0.0.0-20240203102447-90eeef3a8811/go.mod h1:/WC5oJ6r0pxry8MxZT5N6oGIPCfpYlFAogw0GMRVl00=
+github.com/cutechan/thumbnailer v0.0.0-20240203110456-8526510586c8 h1:pbGbie/qiRt73P2euz/qpdqaQU9Sx3gJk0V94EcelqU=
+github.com/cutechan/thumbnailer v0.0.0-20240203110456-8526510586c8/go.mod h1:/WC5oJ6r0pxry8MxZT5N6oGIPCfpYlFAogw0GMRVl00=
 github.com/davecgh/go-spew v1.1.0 h1:ZDRjVQ15GmhC3fiQ8ni8+OwkZQO4DARzQgrnXU1Liz8=
 github.com/davecgh/go-spew v1.1.0/go.mod h1:J7Y8YcW2NihsgmVo/mv3lAwl/skON4iLHjSsI+c5H38=
 github.com/dchest/captcha v0.0.0-20170622155422-6a29415a8364 h1:U+BMqUt8LFgyrF0/NKgPZdr1sGZ3j6uBECpOGcISpFI=
