@@ -71,7 +71,7 @@ func getParam(r *http.Request, id string) string {
 
 // Maximum amount of data server will deal with.
 func getMaxBodySize() int64 {
-	n := config.Get().MaxSize*1024*1024 + jsonLimit
+	n := config.Get().MaxSize*1024*1024*int64(config.Get().MaxFiles) + jsonLimit
 	return int64(n)
 }
 
